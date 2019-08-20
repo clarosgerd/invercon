@@ -3200,9 +3200,7 @@ class csolicitud_list extends csolicitud {
 
 		// Example:
 		//$header = "your header";
-	   // $this->OtherOptions["addedit"]->Items["edit"]->Visible = FALSE;
 
-		var_dump($this->OtherOptions);
 	}
 
 	// Page Data Rendered event
@@ -3246,6 +3244,7 @@ class csolicitud_list extends csolicitud {
 		// Example:
 		//$this->ListOptions->Items["new"]->Body = "xxx";
 
+		var_dump($this->ListOptions);
 	}
 
 	// Row Custom Action event
