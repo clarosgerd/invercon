@@ -8,6 +8,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "pago_avaluoinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
 <?php include_once "pagoinfo.php" ?>
+<?php include_once "viewavaluoscinfo.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -262,6 +263,9 @@ class cpago_avaluo_edit extends cpago_avaluo {
 
 		// Table object (pago)
 		if (!isset($GLOBALS['pago'])) $GLOBALS['pago'] = new cpago();
+
+		// Table object (viewavaluosc)
+		if (!isset($GLOBALS['viewavaluosc'])) $GLOBALS['viewavaluosc'] = new cviewavaluosc();
 
 		// Page ID
 		if (!defined("EW_PAGE_ID"))
@@ -734,7 +738,7 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -823,6 +827,30 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			// avaluo_id
 			$this->avaluo_id->EditAttrs["class"] = "form-control";
 			$this->avaluo_id->EditCustomAttributes = "";
+			if ($this->avaluo_id->getSessionValue() <> "") {
+				$this->avaluo_id->CurrentValue = $this->avaluo_id->getSessionValue();
+			if (strval($this->avaluo_id->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+			$sWhereWrk = "";
+			$this->avaluo_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
+					$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->avaluo_id->ViewValue = $this->avaluo_id->CurrentValue;
+				}
+			} else {
+				$this->avaluo_id->ViewValue = NULL;
+			}
+			$this->avaluo_id->ViewCustomAttributes = "";
+			} else {
 			if (trim(strval($this->avaluo_id->CurrentValue)) == "") {
 				$sFilterWrk = "0=1";
 			} else {
@@ -837,7 +865,12 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			$rswrk = Conn()->Execute($sSqlWrk);
 			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
 			if ($rswrk) $rswrk->Close();
+			$rowswrk = count($arwrk);
+			for ($rowcntwrk = 0; $rowcntwrk < $rowswrk; $rowcntwrk++) {
+				$arwrk[$rowcntwrk][1] = ew_FormatNumber($arwrk[$rowcntwrk][1], 0, -2, -2, -2);
+			}
 			$this->avaluo_id->EditValue = $arwrk;
+			}
 
 			// q
 			$this->q->EditAttrs["class"] = "form-control";
@@ -951,6 +984,28 @@ class cpago_avaluo_edit extends cpago_avaluo {
 				return FALSE;
 			}
 
+			// Check referential integrity for master table 'viewavaluosc'
+			$bValidMasterRecord = TRUE;
+			$sMasterFilter = $this->SqlMasterFilter_viewavaluosc();
+			$KeyValue = isset($rsnew['avaluo_id']) ? $rsnew['avaluo_id'] : $rsold['avaluo_id'];
+			if (strval($KeyValue) <> "") {
+				$sMasterFilter = str_replace("@id@", ew_AdjustSql($KeyValue), $sMasterFilter);
+			} else {
+				$bValidMasterRecord = FALSE;
+			}
+			if ($bValidMasterRecord) {
+				if (!isset($GLOBALS["viewavaluosc"])) $GLOBALS["viewavaluosc"] = new cviewavaluosc();
+				$rsmaster = $GLOBALS["viewavaluosc"]->LoadRs($sMasterFilter);
+				$bValidMasterRecord = ($rsmaster && !$rsmaster->EOF);
+				$rsmaster->Close();
+			}
+			if (!$bValidMasterRecord) {
+				$sRelatedRecordMsg = str_replace("%t", "viewavaluosc", $Language->Phrase("RelatedRecordRequired"));
+				$this->setFailureMessage($sRelatedRecordMsg);
+				$rs->Close();
+				return FALSE;
+			}
+
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
 			if ($bUpdateRow) {
@@ -1006,6 +1061,17 @@ class cpago_avaluo_edit extends cpago_avaluo {
 					$bValidMaster = FALSE;
 				}
 			}
+			if ($sMasterTblVar == "viewavaluosc") {
+				$bValidMaster = TRUE;
+				if (@$_GET["fk_id"] <> "") {
+					$GLOBALS["viewavaluosc"]->id->setQueryStringValue($_GET["fk_id"]);
+					$this->avaluo_id->setQueryStringValue($GLOBALS["viewavaluosc"]->id->QueryStringValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->QueryStringValue);
+					if (!is_numeric($GLOBALS["viewavaluosc"]->id->QueryStringValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
 		} elseif (isset($_POST[EW_TABLE_SHOW_MASTER])) {
 			$sMasterTblVar = $_POST[EW_TABLE_SHOW_MASTER];
 			if ($sMasterTblVar == "") {
@@ -1020,6 +1086,17 @@ class cpago_avaluo_edit extends cpago_avaluo {
 					$this->pago_id->setFormValue($GLOBALS["pago"]->id->FormValue);
 					$this->pago_id->setSessionValue($this->pago_id->FormValue);
 					if (!is_numeric($GLOBALS["pago"]->id->FormValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
+			if ($sMasterTblVar == "viewavaluosc") {
+				$bValidMaster = TRUE;
+				if (@$_POST["fk_id"] <> "") {
+					$GLOBALS["viewavaluosc"]->id->setFormValue($_POST["fk_id"]);
+					$this->avaluo_id->setFormValue($GLOBALS["viewavaluosc"]->id->FormValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->FormValue);
+					if (!is_numeric($GLOBALS["viewavaluosc"]->id->FormValue)) $bValidMaster = FALSE;
 				} else {
 					$bValidMaster = FALSE;
 				}
@@ -1040,6 +1117,9 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			// Clear previous master key from Session
 			if ($sMasterTblVar <> "pago") {
 				if ($this->pago_id->CurrentValue == "") $this->pago_id->setSessionValue("");
+			}
+			if ($sMasterTblVar <> "viewavaluosc") {
+				if ($this->avaluo_id->CurrentValue == "") $this->avaluo_id->setSessionValue("");
 			}
 		}
 		$this->DbMasterFilter = $this->GetMasterFilter(); // Get master filter
@@ -1262,6 +1342,10 @@ $pago_avaluo_edit->ShowMessage();
 <input type="hidden" name="<?php echo EW_TABLE_SHOW_MASTER ?>" value="pago">
 <input type="hidden" name="fk_id" value="<?php echo $pago_avaluo->pago_id->getSessionValue() ?>">
 <?php } ?>
+<?php if ($pago_avaluo->getCurrentMasterTable() == "viewavaluosc") { ?>
+<input type="hidden" name="<?php echo EW_TABLE_SHOW_MASTER ?>" value="viewavaluosc">
+<input type="hidden" name="fk_id" value="<?php echo $pago_avaluo->avaluo_id->getSessionValue() ?>">
+<?php } ?>
 <?php if (!$pago_avaluo_edit->IsMobileOrModal) { ?>
 <div class="ewDesktop"><!-- desktop -->
 <?php } ?>
@@ -1341,22 +1425,38 @@ $pago_avaluo_edit->ShowMessage();
 	<div id="r_avaluo_id" class="form-group">
 		<label id="elh_pago_avaluo_avaluo_id" for="x_avaluo_id" class="<?php echo $pago_avaluo_edit->LeftColumnClass ?>"><?php echo $pago_avaluo->avaluo_id->FldCaption() ?></label>
 		<div class="<?php echo $pago_avaluo_edit->RightColumnClass ?>"><div<?php echo $pago_avaluo->avaluo_id->CellAttributes() ?>>
+<?php if ($pago_avaluo->avaluo_id->getSessionValue() <> "") { ?>
+<span id="el_pago_avaluo_avaluo_id">
+<span<?php echo $pago_avaluo->avaluo_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago_avaluo->avaluo_id->ViewValue ?></p></span>
+</span>
+<input type="hidden" id="x_avaluo_id" name="x_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->CurrentValue) ?>">
+<?php } else { ?>
 <span id="el_pago_avaluo_avaluo_id">
 <select data-table="pago_avaluo" data-field="x_avaluo_id" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" id="x_avaluo_id" name="x_avaluo_id"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
 <?php echo $pago_avaluo->avaluo_id->SelectOptionListHtml("x_avaluo_id") ?>
 </select>
 </span>
+<?php } ?>
 <?php echo $pago_avaluo->avaluo_id->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_avaluo_id">
 		<td class="col-sm-3"><span id="elh_pago_avaluo_avaluo_id"><?php echo $pago_avaluo->avaluo_id->FldCaption() ?></span></td>
 		<td<?php echo $pago_avaluo->avaluo_id->CellAttributes() ?>>
+<?php if ($pago_avaluo->avaluo_id->getSessionValue() <> "") { ?>
+<span id="el_pago_avaluo_avaluo_id">
+<span<?php echo $pago_avaluo->avaluo_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago_avaluo->avaluo_id->ViewValue ?></p></span>
+</span>
+<input type="hidden" id="x_avaluo_id" name="x_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->CurrentValue) ?>">
+<?php } else { ?>
 <span id="el_pago_avaluo_avaluo_id">
 <select data-table="pago_avaluo" data-field="x_avaluo_id" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" id="x_avaluo_id" name="x_avaluo_id"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
 <?php echo $pago_avaluo->avaluo_id->SelectOptionListHtml("x_avaluo_id") ?>
 </select>
 </span>
+<?php } ?>
 <?php echo $pago_avaluo->avaluo_id->CustomMsg ?></td>
 	</tr>
 <?php } ?>

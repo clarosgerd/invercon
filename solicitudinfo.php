@@ -363,7 +363,7 @@ class csolicitud extends cTable {
 
 		// imagen_maquinaria03
 		$this->imagen_maquinaria03 = new cField('solicitud', 'solicitud', 'x_imagen_maquinaria03', 'imagen_maquinaria03', '`imagen_maquinaria03`', '`imagen_maquinaria03`', 205, -1, TRUE, '`imagen_maquinaria03`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_maquinaria03->Sortable = TRUE; // Allow sort
+		$this->imagen_maquinaria03->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_maquinaria03'] = &$this->imagen_maquinaria03;
 
 		// imagen_maquinaria04
@@ -749,6 +749,35 @@ class csolicitud extends cTable {
 	// Update
 	function Update(&$rs, $where = "", $rsold = NULL, $curfilter = TRUE) {
 		$conn = &$this->Connection();
+
+		// Cascade Update detail table 'avaluo'
+		$bCascadeUpdate = FALSE;
+		$rscascade = array();
+		if (!is_null($rsold) && (isset($rs['id']) && $rsold['id'] <> $rs['id'])) { // Update detail field 'id_solicitud'
+			$bCascadeUpdate = TRUE;
+			$rscascade['id_solicitud'] = $rs['id']; 
+		}
+		if ($bCascadeUpdate) {
+			if (!isset($GLOBALS["avaluo"])) $GLOBALS["avaluo"] = new cavaluo();
+			$rswrk = $GLOBALS["avaluo"]->LoadRs("`id_solicitud` = " . ew_QuotedValue($rsold['id'], EW_DATATYPE_NUMBER, 'DB')); 
+			while ($rswrk && !$rswrk->EOF) {
+				$rskey = array();
+				$fldname = 'id';
+				$rskey[$fldname] = $rswrk->fields[$fldname];
+				$rsdtlold = &$rswrk->fields;
+				$rsdtlnew = array_merge($rsdtlold, $rscascade);
+
+				// Call Row_Updating event
+				$bUpdate = $GLOBALS["avaluo"]->Row_Updating($rsdtlold, $rsdtlnew);
+				if ($bUpdate)
+					$bUpdate = $GLOBALS["avaluo"]->Update($rscascade, $rskey, $rswrk->fields);
+				if (!$bUpdate) return FALSE;
+
+				// Call Row_Updated event
+				$GLOBALS["avaluo"]->Row_Updated($rsdtlold, $rsdtlnew);
+				$rswrk->MoveNext();
+			}
+		}
 		$bUpdate = $conn->Execute($this->UpdateSQL($rs, $where, $curfilter));
 		return $bUpdate;
 	}
@@ -775,6 +804,31 @@ class csolicitud extends cTable {
 	function Delete(&$rs, $where = "", $curfilter = TRUE) {
 		$bDelete = TRUE;
 		$conn = &$this->Connection();
+
+		// Cascade delete detail table 'avaluo'
+		if (!isset($GLOBALS["avaluo"])) $GLOBALS["avaluo"] = new cavaluo();
+		$rscascade = $GLOBALS["avaluo"]->LoadRs("`id_solicitud` = " . ew_QuotedValue($rs['id'], EW_DATATYPE_NUMBER, "DB")); 
+		$dtlrows = ($rscascade) ? $rscascade->GetRows() : array();
+
+		// Call Row Deleting event
+		foreach ($dtlrows as $dtlrow) {
+			$bDelete = $GLOBALS["avaluo"]->Row_Deleting($dtlrow);
+			if (!$bDelete) break;
+		}
+		if ($bDelete) {
+			foreach ($dtlrows as $dtlrow) {
+				$bDelete = $GLOBALS["avaluo"]->Delete($dtlrow); // Delete
+				if ($bDelete === FALSE)
+					break;
+			}
+		}
+
+		// Call Row Deleted event
+		if ($bDelete) {
+			foreach ($dtlrows as $dtlrow) {
+				$GLOBALS["avaluo"]->Row_Deleted($dtlrow);
+			}
+		}
 		if ($bDelete)
 			$bDelete = $conn->Execute($this->DeleteSQL($rs, $where, $curfilter));
 		return $bDelete;
@@ -1146,8 +1200,10 @@ class csolicitud extends cTable {
 
 		// imagen_maquinaria02
 		// imagen_maquinaria03
-		// imagen_maquinaria04
 
+		$this->imagen_maquinaria03->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_maquinaria04
 		$this->imagen_maquinaria04->CellCssStyle = "white-space: nowrap;";
 
 		// imagen_maquinaria05
@@ -1780,7 +1836,7 @@ class csolicitud extends cTable {
 			}
 		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
 		$sWhereWrk = "";
-		$this->tipomercaderia->LookupFilters = array();
+		$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='MERCADERIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2866,7 +2922,6 @@ class csolicitud extends cTable {
 					if ($this->id_ciudad_maquinaria->Exportable) $Doc->ExportCaption($this->id_ciudad_maquinaria);
 					if ($this->id_provincia_maquinaria->Exportable) $Doc->ExportCaption($this->id_provincia_maquinaria);
 					if ($this->imagen_maquinaria02->Exportable) $Doc->ExportCaption($this->imagen_maquinaria02);
-					if ($this->imagen_maquinaria03->Exportable) $Doc->ExportCaption($this->imagen_maquinaria03);
 					if ($this->imagen_maquinaria05->Exportable) $Doc->ExportCaption($this->imagen_maquinaria05);
 					if ($this->imagen_maquinaria06->Exportable) $Doc->ExportCaption($this->imagen_maquinaria06);
 					if ($this->imagen_maquinaria07->Exportable) $Doc->ExportCaption($this->imagen_maquinaria07);
@@ -2955,7 +3010,6 @@ class csolicitud extends cTable {
 						if ($this->id_ciudad_maquinaria->Exportable) $Doc->ExportField($this->id_ciudad_maquinaria);
 						if ($this->id_provincia_maquinaria->Exportable) $Doc->ExportField($this->id_provincia_maquinaria);
 						if ($this->imagen_maquinaria02->Exportable) $Doc->ExportField($this->imagen_maquinaria02);
-						if ($this->imagen_maquinaria03->Exportable) $Doc->ExportField($this->imagen_maquinaria03);
 						if ($this->imagen_maquinaria05->Exportable) $Doc->ExportField($this->imagen_maquinaria05);
 						if ($this->imagen_maquinaria06->Exportable) $Doc->ExportField($this->imagen_maquinaria06);
 						if ($this->imagen_maquinaria07->Exportable) $Doc->ExportField($this->imagen_maquinaria07);
@@ -3095,28 +3149,28 @@ class csolicitud extends cTable {
 			{
 				if ($tipoinmueble[$x]!=null)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipoinmueble[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',0,0,0,NOW())");
+					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipoinmueble[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW())");
 				}
 			}
 			for($x=0;$x<count($tipovehiculo);$x++)
 			{
 				if ($tipovehiculo[$x]!=null)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipovehiculo[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',0,0,0,NOW())");
+					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipovehiculo[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW())");
 				}
 			}
 		  for($x=0;$x<count($tipomaquinaria);$x++)
 			{
 				if ($tipomaquinaria[$x]!=null)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipomaquinaria[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',0,0,0,NOW())");
+					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipomaquinaria[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW())");
 				}
 			}
 			 for($x=0;$x<count($tipoespecial);$x++)
 			{
 				if ($tipoespecial[$x]!=null)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipoespecial[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',0,0,0,NOW())");
+					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipoespecial[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW())");
 				}
 			}
 	}

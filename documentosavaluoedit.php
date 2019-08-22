@@ -335,7 +335,7 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 		$this->descripcion->SetVisibility();
 		$this->imagen->SetVisibility();
 		$this->avaluo->SetVisibility();
-		$this->created_at->SetVisibility();
+		$this->id_tipodocumento->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -586,9 +586,8 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 		if (!$this->avaluo->FldIsDetailKey) {
 			$this->avaluo->setFormValue($objForm->GetValue("x_avaluo"));
 		}
-		if (!$this->created_at->FldIsDetailKey) {
-			$this->created_at->setFormValue($objForm->GetValue("x_created_at"));
-			$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
+		if (!$this->id_tipodocumento->FldIsDetailKey) {
+			$this->id_tipodocumento->setFormValue($objForm->GetValue("x_id_tipodocumento"));
 		}
 	}
 
@@ -598,8 +597,7 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 		$this->id->CurrentValue = $this->id->FormValue;
 		$this->descripcion->CurrentValue = $this->descripcion->FormValue;
 		$this->avaluo->CurrentValue = $this->avaluo->FormValue;
-		$this->created_at->CurrentValue = $this->created_at->FormValue;
-		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
+		$this->id_tipodocumento->CurrentValue = $this->id_tipodocumento->FormValue;
 	}
 
 	// Load row based on key values
@@ -641,8 +639,9 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 		if (is_array($this->imagen->Upload->DbValue) || is_object($this->imagen->Upload->DbValue)) // Byte array
 			$this->imagen->Upload->DbValue = ew_BytesToStr($this->imagen->Upload->DbValue);
 		$this->avaluo->setDbValue($row['avaluo']);
-		$this->created_at->setDbValue($row['created_at']);
 		$this->path_drive->setDbValue($row['path_drive']);
+		$this->id_tipodocumento->setDbValue($row['id_tipodocumento']);
+		$this->created_at->setDbValue($row['created_at']);
 	}
 
 	// Return a row with default values
@@ -652,8 +651,9 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 		$row['descripcion'] = NULL;
 		$row['imagen'] = NULL;
 		$row['avaluo'] = NULL;
-		$row['created_at'] = NULL;
 		$row['path_drive'] = NULL;
+		$row['id_tipodocumento'] = NULL;
+		$row['created_at'] = NULL;
 		return $row;
 	}
 
@@ -666,8 +666,9 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 		$this->descripcion->DbValue = $row['descripcion'];
 		$this->imagen->Upload->DbValue = $row['imagen'];
 		$this->avaluo->DbValue = $row['avaluo'];
-		$this->created_at->DbValue = $row['created_at'];
 		$this->path_drive->DbValue = $row['path_drive'];
+		$this->id_tipodocumento->DbValue = $row['id_tipodocumento'];
+		$this->created_at->DbValue = $row['created_at'];
 	}
 
 	// Load old record
@@ -706,8 +707,9 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 		// descripcion
 		// imagen
 		// avaluo
-		// created_at
 		// path_drive
+		// id_tipodocumento
+		// created_at
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -751,10 +753,28 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 		}
 		$this->avaluo->ViewCustomAttributes = "";
 
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
+		// id_tipodocumento
+		if (strval($this->id_tipodocumento->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_tipodocumento->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipodocumento`";
+		$sWhereWrk = "";
+		$this->id_tipodocumento->LookupFilters = array("dx1" => '`nombre`');
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_tipodocumento, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->id_tipodocumento->ViewValue = $this->id_tipodocumento->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_tipodocumento->ViewValue = $this->id_tipodocumento->CurrentValue;
+			}
+		} else {
+			$this->id_tipodocumento->ViewValue = NULL;
+		}
+		$this->id_tipodocumento->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -783,10 +803,10 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 			$this->avaluo->HrefValue = "";
 			$this->avaluo->TooltipValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
+			// id_tipodocumento
+			$this->id_tipodocumento->LinkCustomAttributes = "";
+			$this->id_tipodocumento->HrefValue = "";
+			$this->id_tipodocumento->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// id
@@ -856,7 +876,31 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 			$this->avaluo->EditValue = $arwrk;
 			}
 
-			// created_at
+			// id_tipodocumento
+			$this->id_tipodocumento->EditCustomAttributes = "";
+			if (trim(strval($this->id_tipodocumento->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_tipodocumento->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipodocumento`";
+			$sWhereWrk = "";
+			$this->id_tipodocumento->LookupFilters = array("dx1" => '`nombre`');
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->id_tipodocumento, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+				$this->id_tipodocumento->ViewValue = $this->id_tipodocumento->DisplayValue($arwrk);
+			} else {
+				$this->id_tipodocumento->ViewValue = $Language->Phrase("PleaseSelect");
+			}
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->id_tipodocumento->EditValue = $arwrk;
+
 			// Edit refer script
 			// id
 
@@ -882,9 +926,9 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 			$this->avaluo->LinkCustomAttributes = "";
 			$this->avaluo->HrefValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
+			// id_tipodocumento
+			$this->id_tipodocumento->LinkCustomAttributes = "";
+			$this->id_tipodocumento->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -958,9 +1002,8 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 			// avaluo
 			$this->avaluo->SetDbValueDef($rsnew, $this->avaluo->CurrentValue, NULL, $this->avaluo->ReadOnly);
 
-			// created_at
-			$this->created_at->SetDbValueDef($rsnew, ew_CurrentDateTime(), ew_CurrentDate());
-			$rsnew['created_at'] = &$this->created_at->DbValue;
+			// id_tipodocumento
+			$this->id_tipodocumento->SetDbValueDef($rsnew, $this->id_tipodocumento->CurrentValue, NULL, $this->id_tipodocumento->ReadOnly);
 
 			// Check referential integrity for master table 'avaluo'
 			$bValidMasterRecord = TRUE;
@@ -1105,6 +1148,18 @@ class cdocumentosavaluo_edit extends cdocumentosavaluo {
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->avaluo, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_id_tipodocumento":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipodocumento`";
+			$sWhereWrk = "{filter}";
+			$fld->LookupFilters = array("dx1" => '`nombre`');
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->id_tipodocumento, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			if ($sSqlWrk <> "")
 				$fld->LookupFilters["s"] .= $sSqlWrk;
@@ -1262,6 +1317,8 @@ fdocumentosavaluoedit.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDA
 // Dynamic selection lists
 fdocumentosavaluoedit.Lists["x_avaluo"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_tipoinmueble","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
 fdocumentosavaluoedit.Lists["x_avaluo"].Data = "<?php echo $documentosavaluo_edit->avaluo->LookupFilterQuery(FALSE, "edit") ?>";
+fdocumentosavaluoedit.Lists["x_id_tipodocumento"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipodocumento"};
+fdocumentosavaluoedit.Lists["x_id_tipodocumento"].Data = "<?php echo $documentosavaluo_edit->id_tipodocumento->LookupFilterQuery(FALSE, "edit") ?>";
 
 // Form object for search
 </script>
@@ -1359,7 +1416,9 @@ $documentosavaluo_edit->ShowMessage();
 <input type="hidden" name="fx_x_imagen" id= "fx_x_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen" id= "fm_x_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluoedit", "x_imagen");</script>
+<?php } ?>
 </span>
 <?php echo $documentosavaluo->imagen->CustomMsg ?></div></div>
 	</div>
@@ -1383,7 +1442,9 @@ $documentosavaluo_edit->ShowMessage();
 <input type="hidden" name="fx_x_imagen" id= "fx_x_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen" id= "fm_x_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluoedit", "x_imagen");</script>
+<?php } ?>
 </span>
 <?php echo $documentosavaluo->imagen->CustomMsg ?></td>
 	</tr>
@@ -1427,6 +1488,41 @@ $documentosavaluo_edit->ShowMessage();
 </span>
 <?php } ?>
 <?php echo $documentosavaluo->avaluo->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($documentosavaluo->id_tipodocumento->Visible) { // id_tipodocumento ?>
+<?php if ($documentosavaluo_edit->IsMobileOrModal) { ?>
+	<div id="r_id_tipodocumento" class="form-group">
+		<label id="elh_documentosavaluo_id_tipodocumento" for="x_id_tipodocumento" class="<?php echo $documentosavaluo_edit->LeftColumnClass ?>"><?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></label>
+		<div class="<?php echo $documentosavaluo_edit->RightColumnClass ?>"><div<?php echo $documentosavaluo->id_tipodocumento->CellAttributes() ?>>
+<span id="el_documentosavaluo_id_tipodocumento">
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_tipodocumento"><?php echo (strval($documentosavaluo->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $documentosavaluo->id_tipodocumento->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($documentosavaluo->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($documentosavaluo->id_tipodocumento->ReadOnly || $documentosavaluo->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $documentosavaluo->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x_id_tipodocumento" id="x_id_tipodocumento" value="<?php echo $documentosavaluo->id_tipodocumento->CurrentValue ?>"<?php echo $documentosavaluo->id_tipodocumento->EditAttributes() ?>>
+<?php if (AllowAdd(CurrentProjectID() . "tipodocumento") && !$documentosavaluo->id_tipodocumento->ReadOnly) { ?>
+<button type="button" title="<?php echo ew_HtmlTitle($Language->Phrase("AddLink")) . "&nbsp;" . $documentosavaluo->id_tipodocumento->FldCaption() ?>" onclick="ew_AddOptDialogShow({lnk:this,el:'x_id_tipodocumento',url:'tipodocumentoaddopt.php'});" class="ewAddOptBtn btn btn-default btn-sm" id="aol_x_id_tipodocumento"><span class="glyphicon glyphicon-plus ewIcon"></span><span class="hide"><?php echo $Language->Phrase("AddLink") ?>&nbsp;<?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></span></button>
+<?php } ?>
+</span>
+<?php echo $documentosavaluo->id_tipodocumento->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_id_tipodocumento">
+		<td class="col-sm-3"><span id="elh_documentosavaluo_id_tipodocumento"><?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></span></td>
+		<td<?php echo $documentosavaluo->id_tipodocumento->CellAttributes() ?>>
+<span id="el_documentosavaluo_id_tipodocumento">
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_tipodocumento"><?php echo (strval($documentosavaluo->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $documentosavaluo->id_tipodocumento->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($documentosavaluo->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($documentosavaluo->id_tipodocumento->ReadOnly || $documentosavaluo->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $documentosavaluo->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x_id_tipodocumento" id="x_id_tipodocumento" value="<?php echo $documentosavaluo->id_tipodocumento->CurrentValue ?>"<?php echo $documentosavaluo->id_tipodocumento->EditAttributes() ?>>
+<?php if (AllowAdd(CurrentProjectID() . "tipodocumento") && !$documentosavaluo->id_tipodocumento->ReadOnly) { ?>
+<button type="button" title="<?php echo ew_HtmlTitle($Language->Phrase("AddLink")) . "&nbsp;" . $documentosavaluo->id_tipodocumento->FldCaption() ?>" onclick="ew_AddOptDialogShow({lnk:this,el:'x_id_tipodocumento',url:'tipodocumentoaddopt.php'});" class="ewAddOptBtn btn btn-default btn-sm" id="aol_x_id_tipodocumento"><span class="glyphicon glyphicon-plus ewIcon"></span><span class="hide"><?php echo $Language->Phrase("AddLink") ?>&nbsp;<?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></span></button>
+<?php } ?>
+</span>
+<?php echo $documentosavaluo->id_tipodocumento->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>

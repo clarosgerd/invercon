@@ -387,6 +387,7 @@ class cnotificaciones_view extends cnotificaciones {
 		$this->creadopor->SetVisibility();
 		$this->recibidopor->SetVisibility();
 		$this->leido->SetVisibility();
+		$this->desde->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -474,8 +475,6 @@ class cnotificaciones_view extends cnotificaciones {
 	var $StopRec;
 	var $TotalRecs = 0;
 	var $RecRange = 10;
-	var $Pager;
-	var $AutoHidePager = EW_AUTO_HIDE_PAGER;
 	var $RecCnt;
 	var $RecKey = array();
 	var $IsModal = FALSE;
@@ -503,46 +502,17 @@ class cnotificaciones_view extends cnotificaciones {
 				$this->id->setFormValue($_POST["id"]);
 				$this->RecKey["id"] = $this->id->FormValue;
 			} else {
-				$bLoadCurrentRecord = TRUE;
+				$sReturnUrl = "notificacioneslist.php"; // Return to list
 			}
 
 			// Get action
 			$this->CurrentAction = "I"; // Display form
 			switch ($this->CurrentAction) {
 				case "I": // Get a record to display
-					$this->StartRec = 1; // Initialize start position
-					if ($this->Recordset = $this->LoadRecordset()) // Load records
-						$this->TotalRecs = $this->Recordset->RecordCount(); // Get record count
-					if ($this->TotalRecs <= 0) { // No record found
-						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
-							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
-						$this->Page_Terminate("notificacioneslist.php"); // Return to list page
-					} elseif ($bLoadCurrentRecord) { // Load current record position
-						$this->SetupStartRec(); // Set up start record position
-
-						// Point to current record
-						if (intval($this->StartRec) <= intval($this->TotalRecs)) {
-							$bMatchRecord = TRUE;
-							$this->Recordset->Move($this->StartRec-1);
-						}
-					} else { // Match key values
-						while (!$this->Recordset->EOF) {
-							if (strval($this->id->CurrentValue) == strval($this->Recordset->fields('id'))) {
-								$this->setStartRecordNumber($this->StartRec); // Save record position
-								$bMatchRecord = TRUE;
-								break;
-							} else {
-								$this->StartRec++;
-								$this->Recordset->MoveNext();
-							}
-						}
-					}
-					if (!$bMatchRecord) {
+					if (!$this->LoadRow()) { // Load record based on key
 						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
 							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
 						$sReturnUrl = "notificacioneslist.php"; // No matching record, return to list
-					} else {
-						$this->LoadRowValues($this->Recordset); // Load row values
 					}
 			}
 		} else {
@@ -649,32 +619,6 @@ class cnotificaciones_view extends cnotificaciones {
 		}
 	}
 
-	// Load recordset
-	function LoadRecordset($offset = -1, $rowcnt = -1) {
-
-		// Load List page SQL
-		$sSql = $this->ListSQL();
-		$conn = &$this->Connection();
-
-		// Load recordset
-		$dbtype = ew_GetConnectionType($this->DBID);
-		if ($this->UseSelectLimit) {
-			$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
-			if ($dbtype == "MSSQL") {
-				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset, array("_hasOrderBy" => trim($this->getOrderBy()) || trim($this->getSessionOrderBy())));
-			} else {
-				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset);
-			}
-			$conn->raiseErrorFn = '';
-		} else {
-			$rs = ew_LoadRecordset($sSql, $conn);
-		}
-
-		// Call Recordset Selected event
-		$this->Recordset_Selected($rs);
-		return $rs;
-	}
-
 	// Load row based on key values
 	function LoadRow() {
 		global $Security, $Language;
@@ -716,6 +660,7 @@ class cnotificaciones_view extends cnotificaciones {
 		$this->estado->setDbValue($row['estado']);
 		$this->fecha->setDbValue($row['fecha']);
 		$this->fechaleido->setDbValue($row['fechaleido']);
+		$this->desde->setDbValue($row['desde']);
 	}
 
 	// Return a row with default values
@@ -729,6 +674,7 @@ class cnotificaciones_view extends cnotificaciones {
 		$row['estado'] = NULL;
 		$row['fecha'] = NULL;
 		$row['fechaleido'] = NULL;
+		$row['desde'] = NULL;
 		return $row;
 	}
 
@@ -745,6 +691,7 @@ class cnotificaciones_view extends cnotificaciones {
 		$this->estado->DbValue = $row['estado'];
 		$this->fecha->DbValue = $row['fecha'];
 		$this->fechaleido->DbValue = $row['fechaleido'];
+		$this->desde->DbValue = $row['desde'];
 	}
 
 	// Render row values based on field settings
@@ -771,6 +718,7 @@ class cnotificaciones_view extends cnotificaciones {
 		// estado
 		// fecha
 		// fechaleido
+		// desde
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -793,6 +741,10 @@ class cnotificaciones_view extends cnotificaciones {
 		// leido
 		$this->leido->ViewValue = $this->leido->CurrentValue;
 		$this->leido->ViewCustomAttributes = "";
+
+		// desde
+		$this->desde->ViewValue = $this->desde->CurrentValue;
+		$this->desde->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -818,6 +770,11 @@ class cnotificaciones_view extends cnotificaciones {
 			$this->leido->LinkCustomAttributes = "";
 			$this->leido->HrefValue = "";
 			$this->leido->TooltipValue = "";
+
+			// desde
+			$this->desde->LinkCustomAttributes = "";
+			$this->desde->HrefValue = "";
+			$this->desde->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -1056,32 +1013,18 @@ $notificaciones_view->ShowMessage();
 </td>
 	</tr>
 <?php } ?>
+<?php if ($notificaciones->desde->Visible) { // desde ?>
+	<tr id="r_desde">
+		<td class="col-sm-3"><span id="elh_notificaciones_desde"><?php echo $notificaciones->desde->FldCaption() ?></span></td>
+		<td data-name="desde"<?php echo $notificaciones->desde->CellAttributes() ?>>
+<span id="el_notificaciones_desde">
+<span<?php echo $notificaciones->desde->ViewAttributes() ?>>
+<?php echo $notificaciones->desde->ViewValue ?></span>
+</span>
+</td>
+	</tr>
+<?php } ?>
 </table>
-<?php if (!$notificaciones_view->IsModal) { ?>
-<?php if (!isset($notificaciones_view->Pager)) $notificaciones_view->Pager = new cNumericPager($notificaciones_view->StartRec, $notificaciones_view->DisplayRecs, $notificaciones_view->TotalRecs, $notificaciones_view->RecRange, $notificaciones_view->AutoHidePager) ?>
-<?php if ($notificaciones_view->Pager->RecordCount > 0 && $notificaciones_view->Pager->Visible) { ?>
-<div class="ewPager">
-<div class="ewNumericPage"><ul class="pagination">
-	<?php if ($notificaciones_view->Pager->FirstButton->Enabled) { ?>
-	<li><a href="<?php echo $notificaciones_view->PageUrl() ?>start=<?php echo $notificaciones_view->Pager->FirstButton->Start ?>"><?php echo $Language->Phrase("PagerFirst") ?></a></li>
-	<?php } ?>
-	<?php if ($notificaciones_view->Pager->PrevButton->Enabled) { ?>
-	<li><a href="<?php echo $notificaciones_view->PageUrl() ?>start=<?php echo $notificaciones_view->Pager->PrevButton->Start ?>"><?php echo $Language->Phrase("PagerPrevious") ?></a></li>
-	<?php } ?>
-	<?php foreach ($notificaciones_view->Pager->Items as $PagerItem) { ?>
-		<li<?php if (!$PagerItem->Enabled) { echo " class=\" active\""; } ?>><a href="<?php if ($PagerItem->Enabled) { echo $notificaciones_view->PageUrl() . "start=" . $PagerItem->Start; } else { echo "#"; } ?>"><?php echo $PagerItem->Text ?></a></li>
-	<?php } ?>
-	<?php if ($notificaciones_view->Pager->NextButton->Enabled) { ?>
-	<li><a href="<?php echo $notificaciones_view->PageUrl() ?>start=<?php echo $notificaciones_view->Pager->NextButton->Start ?>"><?php echo $Language->Phrase("PagerNext") ?></a></li>
-	<?php } ?>
-	<?php if ($notificaciones_view->Pager->LastButton->Enabled) { ?>
-	<li><a href="<?php echo $notificaciones_view->PageUrl() ?>start=<?php echo $notificaciones_view->Pager->LastButton->Start ?>"><?php echo $Language->Phrase("PagerLast") ?></a></li>
-	<?php } ?>
-</ul></div>
-</div>
-<?php } ?>
-<div class="clearfix"></div>
-<?php } ?>
 </form>
 <script type="text/javascript">
 fnotificacionesview.Init();

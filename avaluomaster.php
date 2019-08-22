@@ -1,15 +1,13 @@
 <?php
 
 // codigoavaluo
+// tipoinmueble
 // id_solicitud
 // id_oficialcredito
-// id_inspector
 // id_cliente
+// estado
 // estadointerno
 // estadopago
-// fecha_avaluo
-// montoincial
-// id_metodopago
 
 ?>
 <?php if ($avaluo->Visible) { ?>
@@ -23,6 +21,17 @@
 <span id="el_avaluo_codigoavaluo">
 <span<?php echo $avaluo->codigoavaluo->ViewAttributes() ?>>
 <?php echo $avaluo->codigoavaluo->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($avaluo->tipoinmueble->Visible) { // tipoinmueble ?>
+		<tr id="r_tipoinmueble">
+			<td class="col-sm-3"><?php echo $avaluo->tipoinmueble->FldCaption() ?></td>
+			<td<?php echo $avaluo->tipoinmueble->CellAttributes() ?>>
+<span id="el_avaluo_tipoinmueble">
+<span<?php echo $avaluo->tipoinmueble->ViewAttributes() ?>>
+<?php echo $avaluo->tipoinmueble->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>
@@ -49,17 +58,6 @@
 </td>
 		</tr>
 <?php } ?>
-<?php if ($avaluo->id_inspector->Visible) { // id_inspector ?>
-		<tr id="r_id_inspector">
-			<td class="col-sm-3"><?php echo $avaluo->id_inspector->FldCaption() ?></td>
-			<td<?php echo $avaluo->id_inspector->CellAttributes() ?>>
-<span id="el_avaluo_id_inspector">
-<span<?php echo $avaluo->id_inspector->ViewAttributes() ?>>
-<?php echo $avaluo->id_inspector->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
 <?php if ($avaluo->id_cliente->Visible) { // id_cliente ?>
 		<tr id="r_id_cliente">
 			<td class="col-sm-3"><?php echo $avaluo->id_cliente->FldCaption() ?></td>
@@ -67,6 +65,17 @@
 <span id="el_avaluo_id_cliente">
 <span<?php echo $avaluo->id_cliente->ViewAttributes() ?>>
 <?php echo $avaluo->id_cliente->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($avaluo->estado->Visible) { // estado ?>
+		<tr id="r_estado">
+			<td class="col-sm-3"><?php echo $avaluo->estado->FldCaption() ?></td>
+			<td<?php echo $avaluo->estado->CellAttributes() ?>>
+<span id="el_avaluo_estado">
+<span<?php echo $avaluo->estado->ViewAttributes() ?>>
+<?php echo $avaluo->estado->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>
@@ -89,39 +98,6 @@
 <span id="el_avaluo_estadopago">
 <span<?php echo $avaluo->estadopago->ViewAttributes() ?>>
 <?php echo $avaluo->estadopago->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
-		<tr id="r_fecha_avaluo">
-			<td class="col-sm-3"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></td>
-			<td<?php echo $avaluo->fecha_avaluo->CellAttributes() ?>>
-<span id="el_avaluo_fecha_avaluo">
-<span<?php echo $avaluo->fecha_avaluo->ViewAttributes() ?>>
-<?php echo $avaluo->fecha_avaluo->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($avaluo->montoincial->Visible) { // montoincial ?>
-		<tr id="r_montoincial">
-			<td class="col-sm-3"><?php echo $avaluo->montoincial->FldCaption() ?></td>
-			<td<?php echo $avaluo->montoincial->CellAttributes() ?>>
-<span id="el_avaluo_montoincial">
-<span<?php echo $avaluo->montoincial->ViewAttributes() ?>>
-<?php echo $avaluo->montoincial->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($avaluo->id_metodopago->Visible) { // id_metodopago ?>
-		<tr id="r_id_metodopago">
-			<td class="col-sm-3"><?php echo $avaluo->id_metodopago->FldCaption() ?></td>
-			<td<?php echo $avaluo->id_metodopago->CellAttributes() ?>>
-<span id="el_avaluo_id_metodopago">
-<span<?php echo $avaluo->id_metodopago->ViewAttributes() ?>>
-<?php echo $avaluo->id_metodopago->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>

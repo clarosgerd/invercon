@@ -390,7 +390,7 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 		$this->descripcion->SetVisibility();
 		$this->imagen->SetVisibility();
 		$this->avaluo->SetVisibility();
-		$this->created_at->SetVisibility();
+		$this->id_tipodocumento->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -478,8 +478,6 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 	var $StopRec;
 	var $TotalRecs = 0;
 	var $RecRange = 10;
-	var $Pager;
-	var $AutoHidePager = EW_AUTO_HIDE_PAGER;
 	var $RecCnt;
 	var $RecKey = array();
 	var $IsModal = FALSE;
@@ -510,46 +508,17 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 				$this->id->setFormValue($_POST["id"]);
 				$this->RecKey["id"] = $this->id->FormValue;
 			} else {
-				$bLoadCurrentRecord = TRUE;
+				$sReturnUrl = "documentosavaluolist.php"; // Return to list
 			}
 
 			// Get action
 			$this->CurrentAction = "I"; // Display form
 			switch ($this->CurrentAction) {
 				case "I": // Get a record to display
-					$this->StartRec = 1; // Initialize start position
-					if ($this->Recordset = $this->LoadRecordset()) // Load records
-						$this->TotalRecs = $this->Recordset->RecordCount(); // Get record count
-					if ($this->TotalRecs <= 0) { // No record found
-						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
-							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
-						$this->Page_Terminate("documentosavaluolist.php"); // Return to list page
-					} elseif ($bLoadCurrentRecord) { // Load current record position
-						$this->SetupStartRec(); // Set up start record position
-
-						// Point to current record
-						if (intval($this->StartRec) <= intval($this->TotalRecs)) {
-							$bMatchRecord = TRUE;
-							$this->Recordset->Move($this->StartRec-1);
-						}
-					} else { // Match key values
-						while (!$this->Recordset->EOF) {
-							if (strval($this->id->CurrentValue) == strval($this->Recordset->fields('id'))) {
-								$this->setStartRecordNumber($this->StartRec); // Save record position
-								$bMatchRecord = TRUE;
-								break;
-							} else {
-								$this->StartRec++;
-								$this->Recordset->MoveNext();
-							}
-						}
-					}
-					if (!$bMatchRecord) {
+					if (!$this->LoadRow()) { // Load record based on key
 						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
 							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
 						$sReturnUrl = "documentosavaluolist.php"; // No matching record, return to list
-					} else {
-						$this->LoadRowValues($this->Recordset); // Load row values
 					}
 			}
 		} else {
@@ -639,32 +608,6 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 		}
 	}
 
-	// Load recordset
-	function LoadRecordset($offset = -1, $rowcnt = -1) {
-
-		// Load List page SQL
-		$sSql = $this->ListSQL();
-		$conn = &$this->Connection();
-
-		// Load recordset
-		$dbtype = ew_GetConnectionType($this->DBID);
-		if ($this->UseSelectLimit) {
-			$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
-			if ($dbtype == "MSSQL") {
-				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset, array("_hasOrderBy" => trim($this->getOrderBy()) || trim($this->getSessionOrderBy())));
-			} else {
-				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset);
-			}
-			$conn->raiseErrorFn = '';
-		} else {
-			$rs = ew_LoadRecordset($sSql, $conn);
-		}
-
-		// Call Recordset Selected event
-		$this->Recordset_Selected($rs);
-		return $rs;
-	}
-
 	// Load row based on key values
 	function LoadRow() {
 		global $Security, $Language;
@@ -704,8 +647,9 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 		if (is_array($this->imagen->Upload->DbValue) || is_object($this->imagen->Upload->DbValue)) // Byte array
 			$this->imagen->Upload->DbValue = ew_BytesToStr($this->imagen->Upload->DbValue);
 		$this->avaluo->setDbValue($row['avaluo']);
-		$this->created_at->setDbValue($row['created_at']);
 		$this->path_drive->setDbValue($row['path_drive']);
+		$this->id_tipodocumento->setDbValue($row['id_tipodocumento']);
+		$this->created_at->setDbValue($row['created_at']);
 	}
 
 	// Return a row with default values
@@ -715,8 +659,9 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 		$row['descripcion'] = NULL;
 		$row['imagen'] = NULL;
 		$row['avaluo'] = NULL;
-		$row['created_at'] = NULL;
 		$row['path_drive'] = NULL;
+		$row['id_tipodocumento'] = NULL;
+		$row['created_at'] = NULL;
 		return $row;
 	}
 
@@ -729,8 +674,9 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 		$this->descripcion->DbValue = $row['descripcion'];
 		$this->imagen->Upload->DbValue = $row['imagen'];
 		$this->avaluo->DbValue = $row['avaluo'];
-		$this->created_at->DbValue = $row['created_at'];
 		$this->path_drive->DbValue = $row['path_drive'];
+		$this->id_tipodocumento->DbValue = $row['id_tipodocumento'];
+		$this->created_at->DbValue = $row['created_at'];
 	}
 
 	// Render row values based on field settings
@@ -753,8 +699,9 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 		// descripcion
 		// imagen
 		// avaluo
-		// created_at
 		// path_drive
+		// id_tipodocumento
+		// created_at
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -798,10 +745,28 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 		}
 		$this->avaluo->ViewCustomAttributes = "";
 
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
+		// id_tipodocumento
+		if (strval($this->id_tipodocumento->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_tipodocumento->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipodocumento`";
+		$sWhereWrk = "";
+		$this->id_tipodocumento->LookupFilters = array("dx1" => '`nombre`');
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_tipodocumento, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->id_tipodocumento->ViewValue = $this->id_tipodocumento->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_tipodocumento->ViewValue = $this->id_tipodocumento->CurrentValue;
+			}
+		} else {
+			$this->id_tipodocumento->ViewValue = NULL;
+		}
+		$this->id_tipodocumento->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -830,10 +795,10 @@ class cdocumentosavaluo_view extends cdocumentosavaluo {
 			$this->avaluo->HrefValue = "";
 			$this->avaluo->TooltipValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
+			// id_tipodocumento
+			$this->id_tipodocumento->LinkCustomAttributes = "";
+			$this->id_tipodocumento->HrefValue = "";
+			$this->id_tipodocumento->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -1056,6 +1021,8 @@ fdocumentosavaluoview.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDA
 // Dynamic selection lists
 fdocumentosavaluoview.Lists["x_avaluo"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_tipoinmueble","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
 fdocumentosavaluoview.Lists["x_avaluo"].Data = "<?php echo $documentosavaluo_view->avaluo->LookupFilterQuery(FALSE, "view") ?>";
+fdocumentosavaluoview.Lists["x_id_tipodocumento"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipodocumento"};
+fdocumentosavaluoview.Lists["x_id_tipodocumento"].Data = "<?php echo $documentosavaluo_view->id_tipodocumento->LookupFilterQuery(FALSE, "view") ?>";
 
 // Form object for search
 </script>
@@ -1127,43 +1094,18 @@ $documentosavaluo_view->ShowMessage();
 </td>
 	</tr>
 <?php } ?>
-<?php if ($documentosavaluo->created_at->Visible) { // created_at ?>
-	<tr id="r_created_at">
-		<td class="col-sm-3"><span id="elh_documentosavaluo_created_at"><?php echo $documentosavaluo->created_at->FldCaption() ?></span></td>
-		<td data-name="created_at"<?php echo $documentosavaluo->created_at->CellAttributes() ?>>
-<span id="el_documentosavaluo_created_at">
-<span<?php echo $documentosavaluo->created_at->ViewAttributes() ?>>
-<?php echo $documentosavaluo->created_at->ViewValue ?></span>
+<?php if ($documentosavaluo->id_tipodocumento->Visible) { // id_tipodocumento ?>
+	<tr id="r_id_tipodocumento">
+		<td class="col-sm-3"><span id="elh_documentosavaluo_id_tipodocumento"><?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></span></td>
+		<td data-name="id_tipodocumento"<?php echo $documentosavaluo->id_tipodocumento->CellAttributes() ?>>
+<span id="el_documentosavaluo_id_tipodocumento">
+<span<?php echo $documentosavaluo->id_tipodocumento->ViewAttributes() ?>>
+<?php echo $documentosavaluo->id_tipodocumento->ViewValue ?></span>
 </span>
 </td>
 	</tr>
 <?php } ?>
 </table>
-<?php if (!$documentosavaluo_view->IsModal) { ?>
-<?php if (!isset($documentosavaluo_view->Pager)) $documentosavaluo_view->Pager = new cNumericPager($documentosavaluo_view->StartRec, $documentosavaluo_view->DisplayRecs, $documentosavaluo_view->TotalRecs, $documentosavaluo_view->RecRange, $documentosavaluo_view->AutoHidePager) ?>
-<?php if ($documentosavaluo_view->Pager->RecordCount > 0 && $documentosavaluo_view->Pager->Visible) { ?>
-<div class="ewPager">
-<div class="ewNumericPage"><ul class="pagination">
-	<?php if ($documentosavaluo_view->Pager->FirstButton->Enabled) { ?>
-	<li><a href="<?php echo $documentosavaluo_view->PageUrl() ?>start=<?php echo $documentosavaluo_view->Pager->FirstButton->Start ?>"><?php echo $Language->Phrase("PagerFirst") ?></a></li>
-	<?php } ?>
-	<?php if ($documentosavaluo_view->Pager->PrevButton->Enabled) { ?>
-	<li><a href="<?php echo $documentosavaluo_view->PageUrl() ?>start=<?php echo $documentosavaluo_view->Pager->PrevButton->Start ?>"><?php echo $Language->Phrase("PagerPrevious") ?></a></li>
-	<?php } ?>
-	<?php foreach ($documentosavaluo_view->Pager->Items as $PagerItem) { ?>
-		<li<?php if (!$PagerItem->Enabled) { echo " class=\" active\""; } ?>><a href="<?php if ($PagerItem->Enabled) { echo $documentosavaluo_view->PageUrl() . "start=" . $PagerItem->Start; } else { echo "#"; } ?>"><?php echo $PagerItem->Text ?></a></li>
-	<?php } ?>
-	<?php if ($documentosavaluo_view->Pager->NextButton->Enabled) { ?>
-	<li><a href="<?php echo $documentosavaluo_view->PageUrl() ?>start=<?php echo $documentosavaluo_view->Pager->NextButton->Start ?>"><?php echo $Language->Phrase("PagerNext") ?></a></li>
-	<?php } ?>
-	<?php if ($documentosavaluo_view->Pager->LastButton->Enabled) { ?>
-	<li><a href="<?php echo $documentosavaluo_view->PageUrl() ?>start=<?php echo $documentosavaluo_view->Pager->LastButton->Start ?>"><?php echo $Language->Phrase("PagerLast") ?></a></li>
-	<?php } ?>
-</ul></div>
-</div>
-<?php } ?>
-<div class="clearfix"></div>
-<?php } ?>
 </form>
 <script type="text/javascript">
 fdocumentosavaluoview.Init();

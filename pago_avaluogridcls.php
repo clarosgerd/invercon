@@ -494,6 +494,9 @@ class cpago_avaluo_grid extends cpago_avaluo {
 		$this->Command = strtolower(@$_GET["cmd"]);
 		if ($this->IsPageRequest()) { // Validate request
 
+			// Set up records per page
+			$this->SetupDisplayRecs();
+
 			// Handle reset command
 			$this->ResetCmd();
 
@@ -558,6 +561,22 @@ class cpago_avaluo_grid extends cpago_avaluo {
 			}
 		}
 
+		// Load master record
+		if ($this->CurrentMode <> "add" && $this->GetMasterFilter() <> "" && $this->getCurrentMasterTable() == "viewavaluosc") {
+			global $viewavaluosc;
+			$rsmaster = $viewavaluosc->LoadRs($this->DbMasterFilter);
+			$this->MasterRecordExists = ($rsmaster && !$rsmaster->EOF);
+			if (!$this->MasterRecordExists) {
+				$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record found
+				$this->Page_Terminate("viewavaluosclist.php"); // Return to master page
+			} else {
+				$viewavaluosc->LoadListRowValues($rsmaster);
+				$viewavaluosc->RowType = EW_ROWTYPE_MASTER; // Master row
+				$viewavaluosc->RenderListRow();
+				$rsmaster->Close();
+			}
+		}
+
 		// Set up filter
 		if ($this->Command == "json") {
 			$this->UseSessionForListSQL = FALSE; // Do not use session for ListSQL
@@ -576,6 +595,27 @@ class cpago_avaluo_grid extends cpago_avaluo {
 				if ($this->Recordset = $this->LoadRecordset())
 					$this->TotalRecs = $this->Recordset->RecordCount();
 			}
+		}
+	}
+
+	// Set up number of records displayed per page
+	function SetupDisplayRecs() {
+		$sWrk = @$_GET[EW_TABLE_REC_PER_PAGE];
+		if ($sWrk <> "") {
+			if (is_numeric($sWrk)) {
+				$this->DisplayRecs = intval($sWrk);
+			} else {
+				if (strtolower($sWrk) == "all") { // Display all records
+					$this->DisplayRecs = -1;
+				} else {
+					$this->DisplayRecs = 20; // Non-numeric, load default
+				}
+			}
+			$this->setRecordsPerPage($this->DisplayRecs); // Save to Session
+
+			// Reset start position
+			$this->StartRec = 1;
+			$this->setStartRecordNumber($this->StartRec);
 		}
 	}
 
@@ -934,6 +974,7 @@ class cpago_avaluo_grid extends cpago_avaluo {
 				$this->DbMasterFilter = "";
 				$this->DbDetailFilter = "";
 				$this->pago_id->setSessionValue("");
+				$this->avaluo_id->setSessionValue("");
 			}
 
 			// Reset sorting order
@@ -1401,7 +1442,7 @@ class cpago_avaluo_grid extends cpago_avaluo {
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -1487,6 +1528,31 @@ class cpago_avaluo_grid extends cpago_avaluo {
 			// avaluo_id
 			$this->avaluo_id->EditAttrs["class"] = "form-control";
 			$this->avaluo_id->EditCustomAttributes = "";
+			if ($this->avaluo_id->getSessionValue() <> "") {
+				$this->avaluo_id->CurrentValue = $this->avaluo_id->getSessionValue();
+				$this->avaluo_id->OldValue = $this->avaluo_id->CurrentValue;
+			if (strval($this->avaluo_id->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+			$sWhereWrk = "";
+			$this->avaluo_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
+					$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->avaluo_id->ViewValue = $this->avaluo_id->CurrentValue;
+				}
+			} else {
+				$this->avaluo_id->ViewValue = NULL;
+			}
+			$this->avaluo_id->ViewCustomAttributes = "";
+			} else {
 			if (trim(strval($this->avaluo_id->CurrentValue)) == "") {
 				$sFilterWrk = "0=1";
 			} else {
@@ -1501,7 +1567,12 @@ class cpago_avaluo_grid extends cpago_avaluo {
 			$rswrk = Conn()->Execute($sSqlWrk);
 			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
 			if ($rswrk) $rswrk->Close();
+			$rowswrk = count($arwrk);
+			for ($rowcntwrk = 0; $rowcntwrk < $rowswrk; $rowcntwrk++) {
+				$arwrk[$rowcntwrk][1] = ew_FormatNumber($arwrk[$rowcntwrk][1], 0, -2, -2, -2);
+			}
 			$this->avaluo_id->EditValue = $arwrk;
+			}
 
 			// q
 			$this->q->EditAttrs["class"] = "form-control";
@@ -1582,6 +1653,31 @@ class cpago_avaluo_grid extends cpago_avaluo {
 			// avaluo_id
 			$this->avaluo_id->EditAttrs["class"] = "form-control";
 			$this->avaluo_id->EditCustomAttributes = "";
+			if ($this->avaluo_id->getSessionValue() <> "") {
+				$this->avaluo_id->CurrentValue = $this->avaluo_id->getSessionValue();
+				$this->avaluo_id->OldValue = $this->avaluo_id->CurrentValue;
+			if (strval($this->avaluo_id->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+			$sWhereWrk = "";
+			$this->avaluo_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
+					$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->avaluo_id->ViewValue = $this->avaluo_id->CurrentValue;
+				}
+			} else {
+				$this->avaluo_id->ViewValue = NULL;
+			}
+			$this->avaluo_id->ViewCustomAttributes = "";
+			} else {
 			if (trim(strval($this->avaluo_id->CurrentValue)) == "") {
 				$sFilterWrk = "0=1";
 			} else {
@@ -1596,7 +1692,12 @@ class cpago_avaluo_grid extends cpago_avaluo {
 			$rswrk = Conn()->Execute($sSqlWrk);
 			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
 			if ($rswrk) $rswrk->Close();
+			$rowswrk = count($arwrk);
+			for ($rowcntwrk = 0; $rowcntwrk < $rowswrk; $rowcntwrk++) {
+				$arwrk[$rowcntwrk][1] = ew_FormatNumber($arwrk[$rowcntwrk][1], 0, -2, -2, -2);
+			}
 			$this->avaluo_id->EditValue = $arwrk;
+			}
 
 			// q
 			$this->q->EditAttrs["class"] = "form-control";
@@ -1784,6 +1885,28 @@ class cpago_avaluo_grid extends cpago_avaluo {
 				return FALSE;
 			}
 
+			// Check referential integrity for master table 'viewavaluosc'
+			$bValidMasterRecord = TRUE;
+			$sMasterFilter = $this->SqlMasterFilter_viewavaluosc();
+			$KeyValue = isset($rsnew['avaluo_id']) ? $rsnew['avaluo_id'] : $rsold['avaluo_id'];
+			if (strval($KeyValue) <> "") {
+				$sMasterFilter = str_replace("@id@", ew_AdjustSql($KeyValue), $sMasterFilter);
+			} else {
+				$bValidMasterRecord = FALSE;
+			}
+			if ($bValidMasterRecord) {
+				if (!isset($GLOBALS["viewavaluosc"])) $GLOBALS["viewavaluosc"] = new cviewavaluosc();
+				$rsmaster = $GLOBALS["viewavaluosc"]->LoadRs($sMasterFilter);
+				$bValidMasterRecord = ($rsmaster && !$rsmaster->EOF);
+				$rsmaster->Close();
+			}
+			if (!$bValidMasterRecord) {
+				$sRelatedRecordMsg = str_replace("%t", "viewavaluosc", $Language->Phrase("RelatedRecordRequired"));
+				$this->setFailureMessage($sRelatedRecordMsg);
+				$rs->Close();
+				return FALSE;
+			}
+
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
 			if ($bUpdateRow) {
@@ -1824,6 +1947,9 @@ class cpago_avaluo_grid extends cpago_avaluo {
 			if ($this->getCurrentMasterTable() == "pago") {
 				$this->pago_id->CurrentValue = $this->pago_id->getSessionValue();
 			}
+			if ($this->getCurrentMasterTable() == "viewavaluosc") {
+				$this->avaluo_id->CurrentValue = $this->avaluo_id->getSessionValue();
+			}
 
 		// Check referential integrity for master table 'pago'
 		$bValidMasterRecord = TRUE;
@@ -1841,6 +1967,26 @@ class cpago_avaluo_grid extends cpago_avaluo {
 		}
 		if (!$bValidMasterRecord) {
 			$sRelatedRecordMsg = str_replace("%t", "pago", $Language->Phrase("RelatedRecordRequired"));
+			$this->setFailureMessage($sRelatedRecordMsg);
+			return FALSE;
+		}
+
+		// Check referential integrity for master table 'viewavaluosc'
+		$bValidMasterRecord = TRUE;
+		$sMasterFilter = $this->SqlMasterFilter_viewavaluosc();
+		if (strval($this->avaluo_id->CurrentValue) <> "") {
+			$sMasterFilter = str_replace("@id@", ew_AdjustSql($this->avaluo_id->CurrentValue, "DB"), $sMasterFilter);
+		} else {
+			$bValidMasterRecord = FALSE;
+		}
+		if ($bValidMasterRecord) {
+			if (!isset($GLOBALS["viewavaluosc"])) $GLOBALS["viewavaluosc"] = new cviewavaluosc();
+			$rsmaster = $GLOBALS["viewavaluosc"]->LoadRs($sMasterFilter);
+			$bValidMasterRecord = ($rsmaster && !$rsmaster->EOF);
+			$rsmaster->Close();
+		}
+		if (!$bValidMasterRecord) {
+			$sRelatedRecordMsg = str_replace("%t", "viewavaluosc", $Language->Phrase("RelatedRecordRequired"));
 			$this->setFailureMessage($sRelatedRecordMsg);
 			return FALSE;
 		}
@@ -1899,6 +2045,10 @@ class cpago_avaluo_grid extends cpago_avaluo {
 		if ($sMasterTblVar == "pago") {
 			$this->pago_id->Visible = FALSE;
 			if ($GLOBALS["pago"]->EventCancelled) $this->EventCancelled = TRUE;
+		}
+		if ($sMasterTblVar == "viewavaluosc") {
+			$this->avaluo_id->Visible = FALSE;
+			if ($GLOBALS["viewavaluosc"]->EventCancelled) $this->EventCancelled = TRUE;
 		}
 		$this->DbMasterFilter = $this->GetMasterFilter(); // Get master filter
 		$this->DbDetailFilter = $this->GetDetailFilter(); // Get detail filter

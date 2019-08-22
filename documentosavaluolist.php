@@ -402,9 +402,45 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// 
 		// Security = null;
 		// 
-		// Create form object
+		// Get export parameters
 
-		$objForm = new cFormObj();
+		$custom = "";
+		if (@$_GET["export"] <> "") {
+			$this->Export = $_GET["export"];
+			$custom = @$_GET["custom"];
+		} elseif (@$_POST["export"] <> "") {
+			$this->Export = $_POST["export"];
+			$custom = @$_POST["custom"];
+		} elseif (ew_IsPost()) {
+			if (@$_POST["exporttype"] <> "")
+				$this->Export = $_POST["exporttype"];
+			$custom = @$_POST["custom"];
+		} elseif (@$_GET["cmd"] == "json") {
+			$this->Export = $_GET["cmd"];
+		} else {
+			$this->setExportReturnUrl(ew_CurrentUrl());
+		}
+		$gsExportFile = $this->TableVar; // Get export file, used in header
+
+		// Get custom export parameters
+		if ($this->Export <> "" && $custom <> "") {
+			$this->CustomExport = $this->Export;
+			$this->Export = "print";
+		}
+		$gsCustomExport = $this->CustomExport;
+		$gsExport = $this->Export; // Get export parameter, used in header
+
+		// Update Export URLs
+		if (defined("EW_USE_PHPEXCEL"))
+			$this->ExportExcelCustom = FALSE;
+		if ($this->ExportExcelCustom)
+			$this->ExportExcelUrl .= "&amp;custom=1";
+		if (defined("EW_USE_PHPWORD"))
+			$this->ExportWordCustom = FALSE;
+		if ($this->ExportWordCustom)
+			$this->ExportWordUrl .= "&amp;custom=1";
+		if ($this->ExportPdfCustom)
+			$this->ExportPdfUrl .= "&amp;custom=1";
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
 
 		// Get grid add count
@@ -414,12 +450,14 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 
 		// Set up list options
 		$this->SetupListOptions();
+
+		// Setup export options
+		$this->SetupExportOptions();
 		$this->descripcion->SetVisibility();
 		$this->imagen->SetVisibility();
 		$this->avaluo->SetVisibility();
+		$this->id_tipodocumento->SetVisibility();
 		$this->created_at->SetVisibility();
-		if ($this->IsAddOrEdit())
-			$this->created_at->Visible = FALSE;
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -578,51 +616,15 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 			if ($this->ProcessListAction()) // Ajax request
 				$this->Page_Terminate();
 
+			// Set up records per page
+			$this->SetupDisplayRecs();
+
 			// Handle reset command
 			$this->ResetCmd();
 
 			// Set up Breadcrumb
 			if ($this->Export == "")
 				$this->SetupBreadcrumb();
-
-			// Check QueryString parameters
-			if (@$_GET["a"] <> "") {
-				$this->CurrentAction = $_GET["a"];
-
-				// Clear inline mode
-				if ($this->CurrentAction == "cancel")
-					$this->ClearInlineMode();
-
-				// Switch to inline edit mode
-				if ($this->CurrentAction == "edit")
-					$this->InlineEditMode();
-
-				// Switch to grid add mode
-				if ($this->CurrentAction == "gridadd")
-					$this->GridAddMode();
-			} else {
-				if (@$_POST["a_list"] <> "") {
-					$this->CurrentAction = $_POST["a_list"]; // Get action
-
-					// Inline Update
-					if (($this->CurrentAction == "update" || $this->CurrentAction == "overwrite") && @$_SESSION[EW_SESSION_INLINE_MODE] == "edit")
-						$this->InlineUpdate();
-
-					// Grid Insert
-					if ($this->CurrentAction == "gridinsert" && @$_SESSION[EW_SESSION_INLINE_MODE] == "gridadd") {
-						if ($this->ValidateGridForm()) {
-							$bGridInsert = $this->GridInsert();
-						} else {
-							$bGridInsert = FALSE;
-							$this->setFailureMessage($gsFormError);
-						}
-						if (!$bGridInsert) {
-							$this->EventCancelled = TRUE;
-							$this->CurrentAction = "gridadd"; // Stay in Grid Add mode
-						}
-					}
-				}
-			}
 
 			// Hide list options
 			if ($this->Export <> "") {
@@ -647,46 +649,8 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 					$option->HideAllOptions();
 			}
 
-			// Show grid delete link for grid add / grid edit
-			if ($this->AllowAddDeleteRow) {
-				if ($this->CurrentAction == "gridadd" || $this->CurrentAction == "gridedit") {
-					$item = $this->ListOptions->GetItem("griddelete");
-					if ($item) $item->Visible = TRUE;
-				}
-			}
-
-			// Get default search criteria
-			ew_AddFilter($this->DefaultSearchWhere, $this->BasicSearchWhere(TRUE));
-			ew_AddFilter($this->DefaultSearchWhere, $this->AdvancedSearchWhere(TRUE));
-
-			// Get basic search values
-			$this->LoadBasicSearchValues();
-
-			// Get and validate search values for advanced search
-			$this->LoadSearchValues(); // Get search values
-
-			// Process filter list
-			$this->ProcessFilterList();
-			if (!$this->ValidateSearch())
-				$this->setFailureMessage($gsSearchError);
-
-			// Restore search parms from Session if not searching / reset / export
-			if (($this->Export <> "" || $this->Command <> "search" && $this->Command <> "reset" && $this->Command <> "resetall") && $this->Command <> "json" && $this->CheckSearchParms())
-				$this->RestoreSearchParms();
-
-			// Call Recordset SearchValidated event
-			$this->Recordset_SearchValidated();
-
 			// Set up sorting order
 			$this->SetupSortOrder();
-
-			// Get basic search criteria
-			if ($gsSearchError == "")
-				$sSrchBasic = $this->BasicSearchWhere();
-
-			// Get search criteria for advanced search
-			if ($gsSearchError == "")
-				$sSrchAdvanced = $this->AdvancedSearchWhere();
 		}
 
 		// Restore display records
@@ -699,36 +663,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// Load Sorting Order
 		if ($this->Command <> "json")
 			$this->LoadSortOrder();
-
-		// Load search default if no existing search criteria
-		if (!$this->CheckSearchParms()) {
-
-			// Load basic search from default
-			$this->BasicSearch->LoadDefault();
-			if ($this->BasicSearch->Keyword != "")
-				$sSrchBasic = $this->BasicSearchWhere();
-
-			// Load advanced search from default
-			if ($this->LoadAdvancedSearchDefault()) {
-				$sSrchAdvanced = $this->AdvancedSearchWhere();
-			}
-		}
-
-		// Build search criteria
-		ew_AddFilter($this->SearchWhere, $sSrchAdvanced);
-		ew_AddFilter($this->SearchWhere, $sSrchBasic);
-
-		// Call Recordset_Searching event
-		$this->Recordset_Searching($this->SearchWhere);
-
-		// Save search criteria
-		if ($this->Command == "search" && !$this->RestoreSearch) {
-			$this->setSearchWhere($this->SearchWhere); // Save to Session
-			$this->StartRec = 1; // Reset start record counter
-			$this->setStartRecordNumber($this->StartRec);
-		} elseif ($this->Command <> "json") {
-			$this->SearchWhere = $this->getSearchWhere();
-		}
 
 		// Build filter
 		$sFilter = "";
@@ -766,6 +700,13 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 			$this->CurrentFilter = "";
 		}
 
+		// Export data only
+		if ($this->CustomExport == "" && in_array($this->Export, array_keys($EW_EXPORT))) {
+			$this->ExportData();
+			$this->Page_Terminate(); // Terminate response
+			exit();
+		}
+
 		// Load record count first
 		if (!$this->IsAddOrEdit()) {
 			$bSelectLimit = $this->UseSelectLimit;
@@ -781,80 +722,25 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		$this->SetupSearchOptions();
 	}
 
-	// Exit inline mode
-	function ClearInlineMode() {
-		$this->setKey("id", ""); // Clear inline edit key
-		$this->LastAction = $this->CurrentAction; // Save last action
-		$this->CurrentAction = ""; // Clear action
-		$_SESSION[EW_SESSION_INLINE_MODE] = ""; // Clear inline mode
-	}
-
-	// Switch to Grid Add mode
-	function GridAddMode() {
-		$_SESSION[EW_SESSION_INLINE_MODE] = "gridadd"; // Enabled grid add
-	}
-
-	// Switch to Inline Edit mode
-	function InlineEditMode() {
-		global $Security, $Language;
-		if (!$Security->CanEdit())
-			$this->Page_Terminate("login.php"); // Go to login page
-		$bInlineEdit = TRUE;
-		if (isset($_GET["id"])) {
-			$this->id->setQueryStringValue($_GET["id"]);
-		} else {
-			$bInlineEdit = FALSE;
-		}
-		if ($bInlineEdit) {
-			if ($this->LoadRow()) {
-				$this->setKey("id", $this->id->CurrentValue); // Set up inline edit key
-				$_SESSION[EW_SESSION_INLINE_MODE] = "edit"; // Enable inline edit
-			}
-		}
-	}
-
-	// Perform update to Inline Edit record
-	function InlineUpdate() {
-		global $Language, $objForm, $gsFormError;
-		$objForm->Index = 1;
-		$this->LoadFormValues(); // Get form values
-
-		// Validate form
-		$bInlineUpdate = TRUE;
-		if (!$this->ValidateForm()) {
-			$bInlineUpdate = FALSE; // Form error, reset action
-			$this->setFailureMessage($gsFormError);
-		} else {
-			$bInlineUpdate = FALSE;
-			$rowkey = strval($objForm->GetValue($this->FormKeyName));
-			if ($this->SetupKeyValues($rowkey)) { // Set up key values
-				if ($this->CheckInlineEditKey()) { // Check key
-					$this->SendEmail = TRUE; // Send email on update success
-					$bInlineUpdate = $this->EditRow(); // Update record
+	// Set up number of records displayed per page
+	function SetupDisplayRecs() {
+		$sWrk = @$_GET[EW_TABLE_REC_PER_PAGE];
+		if ($sWrk <> "") {
+			if (is_numeric($sWrk)) {
+				$this->DisplayRecs = intval($sWrk);
+			} else {
+				if (strtolower($sWrk) == "all") { // Display all records
+					$this->DisplayRecs = -1;
 				} else {
-					$bInlineUpdate = FALSE;
+					$this->DisplayRecs = 20; // Non-numeric, load default
 				}
 			}
-		}
-		if ($bInlineUpdate) { // Update success
-			if ($this->getSuccessMessage() == "")
-				$this->setSuccessMessage($Language->Phrase("UpdateSuccess")); // Set up success message
-			$this->ClearInlineMode(); // Clear inline edit mode
-		} else {
-			if ($this->getFailureMessage() == "")
-				$this->setFailureMessage($Language->Phrase("UpdateFailed")); // Set update failed message
-			$this->EventCancelled = TRUE; // Cancel event
-			$this->CurrentAction = "edit"; // Stay in edit mode
-		}
-	}
+			$this->setRecordsPerPage($this->DisplayRecs); // Save to Session
 
-	// Check Inline Edit key
-	function CheckInlineEditKey() {
-
-		//CheckInlineEditKey = True
-		if (strval($this->getKey("id")) <> strval($this->id->CurrentValue))
-			return FALSE;
-		return TRUE;
+			// Reset start position
+			$this->StartRec = 1;
+			$this->setStartRecordNumber($this->StartRec);
+		}
 	}
 
 	// Build filter for all keys
@@ -895,506 +781,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		return TRUE;
 	}
 
-	// Perform Grid Add
-	function GridInsert() {
-		global $Language, $objForm, $gsFormError;
-		$rowindex = 1;
-		$bGridInsert = FALSE;
-		$conn = &$this->Connection();
-
-		// Call Grid Inserting event
-		if (!$this->Grid_Inserting()) {
-			if ($this->getFailureMessage() == "") {
-				$this->setFailureMessage($Language->Phrase("GridAddCancelled")); // Set grid add cancelled message
-			}
-			return FALSE;
-		}
-
-		// Begin transaction
-		$conn->BeginTrans();
-
-		// Init key filter
-		$sWrkFilter = "";
-		$addcnt = 0;
-		$sKey = "";
-
-		// Get row count
-		$objForm->Index = -1;
-		$rowcnt = strval($objForm->GetValue($this->FormKeyCountName));
-		if ($rowcnt == "" || !is_numeric($rowcnt))
-			$rowcnt = 0;
-
-		// Insert all rows
-		for ($rowindex = 1; $rowindex <= $rowcnt; $rowindex++) {
-
-			// Load current row values
-			$objForm->Index = $rowindex;
-			$rowaction = strval($objForm->GetValue($this->FormActionName));
-			if ($rowaction <> "" && $rowaction <> "insert")
-				continue; // Skip
-			$this->LoadFormValues(); // Get form values
-			if (!$this->EmptyRow()) {
-				$addcnt++;
-				$this->SendEmail = FALSE; // Do not send email on insert success
-
-				// Validate form
-				if (!$this->ValidateForm()) {
-					$bGridInsert = FALSE; // Form error, reset action
-					$this->setFailureMessage($gsFormError);
-				} else {
-					$bGridInsert = $this->AddRow($this->OldRecordset); // Insert this row
-				}
-				if ($bGridInsert) {
-					if ($sKey <> "") $sKey .= $GLOBALS["EW_COMPOSITE_KEY_SEPARATOR"];
-					$sKey .= $this->id->CurrentValue;
-
-					// Add filter for this record
-					$sFilter = $this->KeyFilter();
-					if ($sWrkFilter <> "") $sWrkFilter .= " OR ";
-					$sWrkFilter .= $sFilter;
-				} else {
-					break;
-				}
-			}
-		}
-		if ($addcnt == 0) { // No record inserted
-			$this->setFailureMessage($Language->Phrase("NoAddRecord"));
-			$bGridInsert = FALSE;
-		}
-		if ($bGridInsert) {
-			$conn->CommitTrans(); // Commit transaction
-
-			// Get new recordset
-			$this->CurrentFilter = $sWrkFilter;
-			$sSql = $this->SQL();
-			if ($rs = $conn->Execute($sSql)) {
-				$rsnew = $rs->GetRows();
-				$rs->Close();
-			}
-
-			// Call Grid_Inserted event
-			$this->Grid_Inserted($rsnew);
-			if ($this->getSuccessMessage() == "")
-				$this->setSuccessMessage($Language->Phrase("InsertSuccess")); // Set up insert success message
-			$this->ClearInlineMode(); // Clear grid add mode
-		} else {
-			$conn->RollbackTrans(); // Rollback transaction
-			if ($this->getFailureMessage() == "") {
-				$this->setFailureMessage($Language->Phrase("InsertFailed")); // Set insert failed message
-			}
-		}
-		return $bGridInsert;
-	}
-
-	// Check if empty row
-	function EmptyRow() {
-		global $objForm;
-		if ($objForm->HasValue("x_descripcion") && $objForm->HasValue("o_descripcion") && $this->descripcion->CurrentValue <> $this->descripcion->OldValue)
-			return FALSE;
-		if (!ew_Empty($this->imagen->Upload->Value))
-			return FALSE;
-		if ($objForm->HasValue("x_avaluo") && $objForm->HasValue("o_avaluo") && $this->avaluo->CurrentValue <> $this->avaluo->OldValue)
-			return FALSE;
-		return TRUE;
-	}
-
-	// Validate grid form
-	function ValidateGridForm() {
-		global $objForm;
-
-		// Get row count
-		$objForm->Index = -1;
-		$rowcnt = strval($objForm->GetValue($this->FormKeyCountName));
-		if ($rowcnt == "" || !is_numeric($rowcnt))
-			$rowcnt = 0;
-
-		// Validate all records
-		for ($rowindex = 1; $rowindex <= $rowcnt; $rowindex++) {
-
-			// Load current row values
-			$objForm->Index = $rowindex;
-			$rowaction = strval($objForm->GetValue($this->FormActionName));
-			if ($rowaction <> "delete" && $rowaction <> "insertdelete") {
-				$this->LoadFormValues(); // Get form values
-				if ($rowaction == "insert" && $this->EmptyRow()) {
-
-					// Ignore
-				} else if (!$this->ValidateForm()) {
-					return FALSE;
-				}
-			}
-		}
-		return TRUE;
-	}
-
-	// Get all form values of the grid
-	function GetGridFormValues() {
-		global $objForm;
-
-		// Get row count
-		$objForm->Index = -1;
-		$rowcnt = strval($objForm->GetValue($this->FormKeyCountName));
-		if ($rowcnt == "" || !is_numeric($rowcnt))
-			$rowcnt = 0;
-		$rows = array();
-
-		// Loop through all records
-		for ($rowindex = 1; $rowindex <= $rowcnt; $rowindex++) {
-
-			// Load current row values
-			$objForm->Index = $rowindex;
-			$rowaction = strval($objForm->GetValue($this->FormActionName));
-			if ($rowaction <> "delete" && $rowaction <> "insertdelete") {
-				$this->LoadFormValues(); // Get form values
-				if ($rowaction == "insert" && $this->EmptyRow()) {
-
-					// Ignore
-				} else {
-					$rows[] = $this->GetFieldValues("FormValue"); // Return row as array
-				}
-			}
-		}
-		return $rows; // Return as array of array
-	}
-
-	// Restore form values for current row
-	function RestoreCurrentRowFormValues($idx) {
-		global $objForm;
-
-		// Get row based on current index
-		$objForm->Index = $idx;
-		$this->LoadFormValues(); // Load form values
-	}
-
-	// Get list of filters
-	function GetFilterList() {
-		global $UserProfile;
-
-		// Initialize
-		$sFilterList = "";
-		$sSavedFilterList = "";
-
-		// Load server side filters
-		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
-			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "fdocumentosavaluolistsrch");
-		$sFilterList = ew_Concat($sFilterList, $this->id->AdvancedSearch->ToJson(), ","); // Field id
-		$sFilterList = ew_Concat($sFilterList, $this->descripcion->AdvancedSearch->ToJson(), ","); // Field descripcion
-		$sFilterList = ew_Concat($sFilterList, $this->avaluo->AdvancedSearch->ToJson(), ","); // Field avaluo
-		$sFilterList = ew_Concat($sFilterList, $this->created_at->AdvancedSearch->ToJson(), ","); // Field created_at
-		if ($this->BasicSearch->Keyword <> "") {
-			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
-			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
-		}
-		$sFilterList = preg_replace('/,$/', "", $sFilterList);
-
-		// Return filter list in json
-		if ($sFilterList <> "")
-			$sFilterList = "\"data\":{" . $sFilterList . "}";
-		if ($sSavedFilterList <> "") {
-			if ($sFilterList <> "")
-				$sFilterList .= ",";
-			$sFilterList .= "\"filters\":" . $sSavedFilterList;
-		}
-		return ($sFilterList <> "") ? "{" . $sFilterList . "}" : "null";
-	}
-
-	// Process filter list
-	function ProcessFilterList() {
-		global $UserProfile;
-		if (@$_POST["ajax"] == "savefilters") { // Save filter request (Ajax)
-			$filters = @$_POST["filters"];
-			$UserProfile->SetSearchFilters(CurrentUserName(), "fdocumentosavaluolistsrch", $filters);
-
-			// Clean output buffer
-			if (!EW_DEBUG_ENABLED && ob_get_length())
-				ob_end_clean();
-			echo ew_ArrayToJson(array(array("success" => TRUE))); // Success
-			$this->Page_Terminate();
-			exit();
-		} elseif (@$_POST["cmd"] == "resetfilter") {
-			$this->RestoreFilterList();
-		}
-	}
-
-	// Restore list of filters
-	function RestoreFilterList() {
-
-		// Return if not reset filter
-		if (@$_POST["cmd"] <> "resetfilter")
-			return FALSE;
-		$filter = json_decode(@$_POST["filter"], TRUE);
-		$this->Command = "search";
-
-		// Field id
-		$this->id->AdvancedSearch->SearchValue = @$filter["x_id"];
-		$this->id->AdvancedSearch->SearchOperator = @$filter["z_id"];
-		$this->id->AdvancedSearch->SearchCondition = @$filter["v_id"];
-		$this->id->AdvancedSearch->SearchValue2 = @$filter["y_id"];
-		$this->id->AdvancedSearch->SearchOperator2 = @$filter["w_id"];
-		$this->id->AdvancedSearch->Save();
-
-		// Field descripcion
-		$this->descripcion->AdvancedSearch->SearchValue = @$filter["x_descripcion"];
-		$this->descripcion->AdvancedSearch->SearchOperator = @$filter["z_descripcion"];
-		$this->descripcion->AdvancedSearch->SearchCondition = @$filter["v_descripcion"];
-		$this->descripcion->AdvancedSearch->SearchValue2 = @$filter["y_descripcion"];
-		$this->descripcion->AdvancedSearch->SearchOperator2 = @$filter["w_descripcion"];
-		$this->descripcion->AdvancedSearch->Save();
-
-		// Field avaluo
-		$this->avaluo->AdvancedSearch->SearchValue = @$filter["x_avaluo"];
-		$this->avaluo->AdvancedSearch->SearchOperator = @$filter["z_avaluo"];
-		$this->avaluo->AdvancedSearch->SearchCondition = @$filter["v_avaluo"];
-		$this->avaluo->AdvancedSearch->SearchValue2 = @$filter["y_avaluo"];
-		$this->avaluo->AdvancedSearch->SearchOperator2 = @$filter["w_avaluo"];
-		$this->avaluo->AdvancedSearch->Save();
-
-		// Field created_at
-		$this->created_at->AdvancedSearch->SearchValue = @$filter["x_created_at"];
-		$this->created_at->AdvancedSearch->SearchOperator = @$filter["z_created_at"];
-		$this->created_at->AdvancedSearch->SearchCondition = @$filter["v_created_at"];
-		$this->created_at->AdvancedSearch->SearchValue2 = @$filter["y_created_at"];
-		$this->created_at->AdvancedSearch->SearchOperator2 = @$filter["w_created_at"];
-		$this->created_at->AdvancedSearch->Save();
-		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
-		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
-	}
-
-	// Advanced search WHERE clause based on QueryString
-	function AdvancedSearchWhere($Default = FALSE) {
-		global $Security;
-		$sWhere = "";
-		if (!$Security->CanSearch()) return "";
-		$this->BuildSearchSql($sWhere, $this->id, $Default, FALSE); // id
-		$this->BuildSearchSql($sWhere, $this->descripcion, $Default, FALSE); // descripcion
-		$this->BuildSearchSql($sWhere, $this->avaluo, $Default, FALSE); // avaluo
-		$this->BuildSearchSql($sWhere, $this->created_at, $Default, FALSE); // created_at
-
-		// Set up search parm
-		if (!$Default && $sWhere <> "" && in_array($this->Command, array("", "reset", "resetall"))) {
-			$this->Command = "search";
-		}
-		if (!$Default && $this->Command == "search") {
-			$this->id->AdvancedSearch->Save(); // id
-			$this->descripcion->AdvancedSearch->Save(); // descripcion
-			$this->avaluo->AdvancedSearch->Save(); // avaluo
-			$this->created_at->AdvancedSearch->Save(); // created_at
-		}
-		return $sWhere;
-	}
-
-	// Build search SQL
-	function BuildSearchSql(&$Where, &$Fld, $Default, $MultiValue) {
-		$FldParm = $Fld->FldParm();
-		$FldVal = ($Default) ? $Fld->AdvancedSearch->SearchValueDefault : $Fld->AdvancedSearch->SearchValue; // @$_GET["x_$FldParm"]
-		$FldOpr = ($Default) ? $Fld->AdvancedSearch->SearchOperatorDefault : $Fld->AdvancedSearch->SearchOperator; // @$_GET["z_$FldParm"]
-		$FldCond = ($Default) ? $Fld->AdvancedSearch->SearchConditionDefault : $Fld->AdvancedSearch->SearchCondition; // @$_GET["v_$FldParm"]
-		$FldVal2 = ($Default) ? $Fld->AdvancedSearch->SearchValue2Default : $Fld->AdvancedSearch->SearchValue2; // @$_GET["y_$FldParm"]
-		$FldOpr2 = ($Default) ? $Fld->AdvancedSearch->SearchOperator2Default : $Fld->AdvancedSearch->SearchOperator2; // @$_GET["w_$FldParm"]
-		$sWrk = "";
-		if (is_array($FldVal)) $FldVal = implode(",", $FldVal);
-		if (is_array($FldVal2)) $FldVal2 = implode(",", $FldVal2);
-		$FldOpr = strtoupper(trim($FldOpr));
-		if ($FldOpr == "") $FldOpr = "=";
-		$FldOpr2 = strtoupper(trim($FldOpr2));
-		if ($FldOpr2 == "") $FldOpr2 = "=";
-		if (EW_SEARCH_MULTI_VALUE_OPTION == 1)
-			$MultiValue = FALSE;
-		if ($MultiValue) {
-			$sWrk1 = ($FldVal <> "") ? ew_GetMultiSearchSql($Fld, $FldOpr, $FldVal, $this->DBID) : ""; // Field value 1
-			$sWrk2 = ($FldVal2 <> "") ? ew_GetMultiSearchSql($Fld, $FldOpr2, $FldVal2, $this->DBID) : ""; // Field value 2
-			$sWrk = $sWrk1; // Build final SQL
-			if ($sWrk2 <> "")
-				$sWrk = ($sWrk <> "") ? "($sWrk) $FldCond ($sWrk2)" : $sWrk2;
-		} else {
-			$FldVal = $this->ConvertSearchValue($Fld, $FldVal);
-			$FldVal2 = $this->ConvertSearchValue($Fld, $FldVal2);
-			$sWrk = ew_GetSearchSql($Fld, $FldVal, $FldOpr, $FldCond, $FldVal2, $FldOpr2, $this->DBID);
-		}
-		ew_AddFilter($Where, $sWrk);
-	}
-
-	// Convert search value
-	function ConvertSearchValue(&$Fld, $FldVal) {
-		if ($FldVal == EW_NULL_VALUE || $FldVal == EW_NOT_NULL_VALUE)
-			return $FldVal;
-		$Value = $FldVal;
-		if ($Fld->FldDataType == EW_DATATYPE_BOOLEAN) {
-			if ($FldVal <> "") $Value = ($FldVal == "1" || strtolower(strval($FldVal)) == "y" || strtolower(strval($FldVal)) == "t") ? $Fld->TrueValue : $Fld->FalseValue;
-		} elseif ($Fld->FldDataType == EW_DATATYPE_DATE || $Fld->FldDataType == EW_DATATYPE_TIME) {
-			if ($FldVal <> "") $Value = ew_UnFormatDateTime($FldVal, $Fld->FldDateTimeFormat);
-		}
-		return $Value;
-	}
-
-	// Return basic search SQL
-	function BasicSearchSQL($arKeywords, $type) {
-		$sWhere = "";
-		$this->BuildBasicSearchSQL($sWhere, $this->descripcion, $arKeywords, $type);
-		return $sWhere;
-	}
-
-	// Build basic search SQL
-	function BuildBasicSearchSQL(&$Where, &$Fld, $arKeywords, $type) {
-		global $EW_BASIC_SEARCH_IGNORE_PATTERN;
-		$sDefCond = ($type == "OR") ? "OR" : "AND";
-		$arSQL = array(); // Array for SQL parts
-		$arCond = array(); // Array for search conditions
-		$cnt = count($arKeywords);
-		$j = 0; // Number of SQL parts
-		for ($i = 0; $i < $cnt; $i++) {
-			$Keyword = $arKeywords[$i];
-			$Keyword = trim($Keyword);
-			if ($EW_BASIC_SEARCH_IGNORE_PATTERN <> "") {
-				$Keyword = preg_replace($EW_BASIC_SEARCH_IGNORE_PATTERN, "\\", $Keyword);
-				$ar = explode("\\", $Keyword);
-			} else {
-				$ar = array($Keyword);
-			}
-			foreach ($ar as $Keyword) {
-				if ($Keyword <> "") {
-					$sWrk = "";
-					if ($Keyword == "OR" && $type == "") {
-						if ($j > 0)
-							$arCond[$j-1] = "OR";
-					} elseif ($Keyword == EW_NULL_VALUE) {
-						$sWrk = $Fld->FldExpression . " IS NULL";
-					} elseif ($Keyword == EW_NOT_NULL_VALUE) {
-						$sWrk = $Fld->FldExpression . " IS NOT NULL";
-					} elseif ($Fld->FldIsVirtual) {
-						$sWrk = $Fld->FldVirtualExpression . ew_Like(ew_QuotedValue("%" . $Keyword . "%", EW_DATATYPE_STRING, $this->DBID), $this->DBID);
-					} elseif ($Fld->FldDataType != EW_DATATYPE_NUMBER || is_numeric($Keyword)) {
-						$sWrk = $Fld->FldBasicSearchExpression . ew_Like(ew_QuotedValue("%" . $Keyword . "%", EW_DATATYPE_STRING, $this->DBID), $this->DBID);
-					}
-					if ($sWrk <> "") {
-						$arSQL[$j] = $sWrk;
-						$arCond[$j] = $sDefCond;
-						$j += 1;
-					}
-				}
-			}
-		}
-		$cnt = count($arSQL);
-		$bQuoted = FALSE;
-		$sSql = "";
-		if ($cnt > 0) {
-			for ($i = 0; $i < $cnt-1; $i++) {
-				if ($arCond[$i] == "OR") {
-					if (!$bQuoted) $sSql .= "(";
-					$bQuoted = TRUE;
-				}
-				$sSql .= $arSQL[$i];
-				if ($bQuoted && $arCond[$i] <> "OR") {
-					$sSql .= ")";
-					$bQuoted = FALSE;
-				}
-				$sSql .= " " . $arCond[$i] . " ";
-			}
-			$sSql .= $arSQL[$cnt-1];
-			if ($bQuoted)
-				$sSql .= ")";
-		}
-		if ($sSql <> "") {
-			if ($Where <> "") $Where .= " OR ";
-			$Where .= "(" . $sSql . ")";
-		}
-	}
-
-	// Return basic search WHERE clause based on search keyword and type
-	function BasicSearchWhere($Default = FALSE) {
-		global $Security;
-		$sSearchStr = "";
-		if (!$Security->CanSearch()) return "";
-		$sSearchKeyword = ($Default) ? $this->BasicSearch->KeywordDefault : $this->BasicSearch->Keyword;
-		$sSearchType = ($Default) ? $this->BasicSearch->TypeDefault : $this->BasicSearch->Type;
-
-		// Get search SQL
-		if ($sSearchKeyword <> "") {
-			$ar = $this->BasicSearch->KeywordList($Default);
-
-			// Search keyword in any fields
-			if (($sSearchType == "OR" || $sSearchType == "AND") && $this->BasicSearch->BasicSearchAnyFields) {
-				foreach ($ar as $sKeyword) {
-					if ($sKeyword <> "") {
-						if ($sSearchStr <> "") $sSearchStr .= " " . $sSearchType . " ";
-						$sSearchStr .= "(" . $this->BasicSearchSQL(array($sKeyword), $sSearchType) . ")";
-					}
-				}
-			} else {
-				$sSearchStr = $this->BasicSearchSQL($ar, $sSearchType);
-			}
-			if (!$Default && in_array($this->Command, array("", "reset", "resetall"))) $this->Command = "search";
-		}
-		if (!$Default && $this->Command == "search") {
-			$this->BasicSearch->setKeyword($sSearchKeyword);
-			$this->BasicSearch->setType($sSearchType);
-		}
-		return $sSearchStr;
-	}
-
-	// Check if search parm exists
-	function CheckSearchParms() {
-
-		// Check basic search
-		if ($this->BasicSearch->IssetSession())
-			return TRUE;
-		if ($this->id->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->descripcion->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->avaluo->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->created_at->AdvancedSearch->IssetSession())
-			return TRUE;
-		return FALSE;
-	}
-
-	// Clear all search parameters
-	function ResetSearchParms() {
-
-		// Clear search WHERE clause
-		$this->SearchWhere = "";
-		$this->setSearchWhere($this->SearchWhere);
-
-		// Clear basic search parameters
-		$this->ResetBasicSearchParms();
-
-		// Clear advanced search parameters
-		$this->ResetAdvancedSearchParms();
-	}
-
-	// Load advanced search default values
-	function LoadAdvancedSearchDefault() {
-		return FALSE;
-	}
-
-	// Clear all basic search parameters
-	function ResetBasicSearchParms() {
-		$this->BasicSearch->UnsetSession();
-	}
-
-	// Clear all advanced search parameters
-	function ResetAdvancedSearchParms() {
-		$this->id->AdvancedSearch->UnsetSession();
-		$this->descripcion->AdvancedSearch->UnsetSession();
-		$this->avaluo->AdvancedSearch->UnsetSession();
-		$this->created_at->AdvancedSearch->UnsetSession();
-	}
-
-	// Restore all search parameters
-	function RestoreSearchParms() {
-		$this->RestoreSearch = TRUE;
-
-		// Restore basic search values
-		$this->BasicSearch->Load();
-
-		// Restore advanced search values
-		$this->id->AdvancedSearch->Load();
-		$this->descripcion->AdvancedSearch->Load();
-		$this->avaluo->AdvancedSearch->Load();
-		$this->created_at->AdvancedSearch->Load();
-	}
-
 	// Set up sort parameters
 	function SetupSortOrder() {
 
@@ -1404,6 +790,7 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 			$this->CurrentOrderType = @$_GET["ordertype"];
 			$this->UpdateSort($this->descripcion); // descripcion
 			$this->UpdateSort($this->avaluo); // avaluo
+			$this->UpdateSort($this->id_tipodocumento); // id_tipodocumento
 			$this->UpdateSort($this->created_at); // created_at
 			$this->setStartRecordNumber(1); // Reset start position
 		}
@@ -1429,10 +816,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// Check if reset command
 		if (substr($this->Command,0,5) == "reset") {
 
-			// Reset search criteria
-			if ($this->Command == "reset" || $this->Command == "resetall")
-				$this->ResetSearchParms();
-
 			// Reset master/detail keys
 			if ($this->Command == "resetall") {
 				$this->setCurrentMasterTable(""); // Clear master table
@@ -1447,6 +830,7 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 				$this->setSessionOrderBy($sOrderBy);
 				$this->descripcion->setSort("");
 				$this->avaluo->setSort("");
+				$this->id_tipodocumento->setSort("");
 				$this->created_at->setSort("");
 			}
 
@@ -1459,14 +843,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 	// Set up list options
 	function SetupListOptions() {
 		global $Security, $Language;
-
-		// "griddelete"
-		if ($this->AllowAddDeleteRow) {
-			$item = &$this->ListOptions->Add("griddelete");
-			$item->CssClass = "text-nowrap";
-			$item->OnLeft = TRUE;
-			$item->Visible = FALSE; // Default hidden
-		}
 
 		// Add group option item
 		$item = &$this->ListOptions->Add($this->ListOptions->GroupOptionName);
@@ -1496,7 +872,7 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 
 		// "checkbox"
 		$item = &$this->ListOptions->Add("checkbox");
-		$item->Visible = FALSE;
+		$item->Visible = $Security->CanEdit();
 		$item->OnLeft = TRUE;
 		$item->Header = "<input type=\"checkbox\" name=\"key\" id=\"key\" onclick=\"ew_SelectAllKey(this);\">";
 		$item->MoveTo(0);
@@ -1527,56 +903,14 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// Call ListOptions_Rendering event
 		$this->ListOptions_Rendering();
 
-		// Set up row action and key
-		if (is_numeric($this->RowIndex) && $this->CurrentMode <> "view") {
-			$objForm->Index = $this->RowIndex;
-			$ActionName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormActionName);
-			$OldKeyName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormOldKeyName);
-			$KeyName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormKeyName);
-			$BlankRowName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormBlankRowName);
-			if ($this->RowAction <> "")
-				$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $ActionName . "\" id=\"" . $ActionName . "\" value=\"" . $this->RowAction . "\">";
-			if ($this->RowAction == "delete") {
-				$rowkey = $objForm->GetValue($this->FormKeyName);
-				$this->SetupKeyValues($rowkey);
-			}
-			if ($this->RowAction == "insert" && $this->CurrentAction == "F" && $this->EmptyRow())
-				$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $BlankRowName . "\" id=\"" . $BlankRowName . "\" value=\"1\">";
-		}
-
-		// "delete"
-		if ($this->AllowAddDeleteRow) {
-			if ($this->CurrentAction == "gridadd" || $this->CurrentAction == "gridedit") {
-				$option = &$this->ListOptions;
-				$option->UseButtonGroup = TRUE; // Use button group for grid delete button
-				$option->UseImageAndText = TRUE; // Use image and text for grid delete button
-				$oListOpt = &$option->Items["griddelete"];
-				if (is_numeric($this->RowIndex) && ($this->RowAction == "" || $this->RowAction == "edit")) { // Do not allow delete existing record
-					$oListOpt->Body = "&nbsp;";
-				} else {
-					$oListOpt->Body = "<a class=\"ewGridLink ewGridDelete\" title=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" onclick=\"return ew_DeleteGridRow(this, " . $this->RowIndex . ");\">" . $Language->Phrase("DeleteLink") . "</a>";
-				}
-			}
-		}
-
-		// "edit"
-		$oListOpt = &$this->ListOptions->Items["edit"];
-		if ($this->CurrentAction == "edit" && $this->RowType == EW_ROWTYPE_EDIT) { // Inline-Edit
-			$this->ListOptions->CustomItem = "edit"; // Show edit column only
-			$cancelurl = $this->AddMasterUrl($this->PageUrl() . "a=cancel");
-				$oListOpt->Body = "<div" . (($oListOpt->OnLeft) ? " style=\"text-align: right\"" : "") . ">" .
-					"<a class=\"ewGridLink ewInlineUpdate\" title=\"" . ew_HtmlTitle($Language->Phrase("UpdateLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("UpdateLink")) . "\" href=\"\" onclick=\"return ewForms(this).Submit('" . ew_UrlAddHash($this->PageName(), "r" . $this->RowCnt . "_" . $this->TableVar) . "');\">" . $Language->Phrase("UpdateLink") . "</a>&nbsp;" .
-					"<a class=\"ewGridLink ewInlineCancel\" title=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" href=\"" . $cancelurl . "\">" . $Language->Phrase("CancelLink") . "</a>" .
-					"<input type=\"hidden\" name=\"a_list\" id=\"a_list\" value=\"update\"></div>";
-			$oListOpt->Body .= "<input type=\"hidden\" name=\"k" . $this->RowIndex . "_key\" id=\"k" . $this->RowIndex . "_key\" value=\"" . ew_HtmlEncode($this->id->CurrentValue) . "\">";
-			return;
-		}
-
 		// "view"
 		$oListOpt = &$this->ListOptions->Items["view"];
 		$viewcaption = ew_HtmlTitle($Language->Phrase("ViewLink"));
 		if ($Security->CanView()) {
-			$oListOpt->Body = "<a class=\"ewRowLink ewView\" title=\"" . $viewcaption . "\" data-caption=\"" . $viewcaption . "\" href=\"" . ew_HtmlEncode($this->ViewUrl) . "\">" . $Language->Phrase("ViewLink") . "</a>";
+			if (ew_IsMobile())
+				$oListOpt->Body = "<a class=\"ewRowLink ewView\" title=\"" . $viewcaption . "\" data-caption=\"" . $viewcaption . "\" href=\"" . ew_HtmlEncode($this->ViewUrl) . "\">" . $Language->Phrase("ViewLink") . "</a>";
+			else
+				$oListOpt->Body = "<a class=\"ewRowLink ewView\" title=\"" . $viewcaption . "\" data-table=\"documentosavaluo\" data-caption=\"" . $viewcaption . "\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,url:'" . ew_HtmlEncode($this->ViewUrl) . "',btn:null});\">" . $Language->Phrase("ViewLink") . "</a>";
 		} else {
 			$oListOpt->Body = "";
 		}
@@ -1585,8 +919,10 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		$oListOpt = &$this->ListOptions->Items["edit"];
 		$editcaption = ew_HtmlTitle($Language->Phrase("EditLink"));
 		if ($Security->CanEdit()) {
-			$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
-			$oListOpt->Body .= "<a class=\"ewRowLink ewInlineEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" href=\"" . ew_HtmlEncode(ew_UrlAddHash($this->InlineEditUrl, "r" . $this->RowCnt . "_" . $this->TableVar)) . "\">" . $Language->Phrase("InlineEditLink") . "</a>";
+			if (ew_IsMobile())
+				$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . $editcaption . "\" data-caption=\"" . $editcaption . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
+			else
+				$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . $editcaption . "\" data-table=\"documentosavaluo\" data-caption=\"" . $editcaption . "\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'SaveBtn',url:'" . ew_HtmlEncode($this->EditUrl) . "'});\">" . $Language->Phrase("EditLink") . "</a>";
 		} else {
 			$oListOpt->Body = "";
 		}
@@ -1638,12 +974,17 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// Add
 		$item = &$option->Add("add");
 		$addcaption = ew_HtmlTitle($Language->Phrase("AddLink"));
-		$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . ew_HtmlEncode($this->AddUrl) . "\">" . $Language->Phrase("AddLink") . "</a>";
+		if (ew_IsMobile())
+			$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . ew_HtmlEncode($this->AddUrl) . "\">" . $Language->Phrase("AddLink") . "</a>";
+		else
+			$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-table=\"documentosavaluo\" data-caption=\"" . $addcaption . "\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'AddBtn',url:'" . ew_HtmlEncode($this->AddUrl) . "'});\">" . $Language->Phrase("AddLink") . "</a>";
 		$item->Visible = ($this->AddUrl <> "" && $Security->CanAdd());
-		$item = &$option->Add("gridadd");
-		$item->Body = "<a class=\"ewAddEdit ewGridAdd\" title=\"" . ew_HtmlTitle($Language->Phrase("GridAddLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("GridAddLink")) . "\" href=\"" . ew_HtmlEncode($this->GridAddUrl) . "\">" . $Language->Phrase("GridAddLink") . "</a>";
-		$item->Visible = ($this->GridAddUrl <> "" && $Security->CanAdd());
 		$option = $options["action"];
+
+		// Add multi update
+		$item = &$option->Add("multiupdate");
+		$item->Body = "<a class=\"ewAction ewMultiUpdate\" title=\"" . ew_HtmlTitle($Language->Phrase("UpdateSelectedLink")) . "\" data-table=\"documentosavaluo\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("UpdateSelectedLink")) . "\" href=\"\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'UpdateBtn',f:document.fdocumentosavaluolist,url:'" . $this->MultiUpdateUrl . "'});return false;\">" . $Language->Phrase("UpdateSelectedLink") . "</a>";
+		$item->Visible = ($Security->CanEdit());
 
 		// Set up options default
 		foreach ($options as &$option) {
@@ -1662,10 +1003,10 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// Filter button
 		$item = &$this->FilterOptions->Add("savecurrentfilter");
 		$item->Body = "<a class=\"ewSaveFilter\" data-form=\"fdocumentosavaluolistsrch\" href=\"#\">" . $Language->Phrase("SaveCurrentFilter") . "</a>";
-		$item->Visible = TRUE;
+		$item->Visible = FALSE;
 		$item = &$this->FilterOptions->Add("deletefilter");
 		$item->Body = "<a class=\"ewDeleteFilter\" data-form=\"fdocumentosavaluolistsrch\" href=\"#\">" . $Language->Phrase("DeleteFilter") . "</a>";
-		$item->Visible = TRUE;
+		$item->Visible = FALSE;
 		$this->FilterOptions->UseDropDownButton = TRUE;
 		$this->FilterOptions->UseButtonGroup = !$this->FilterOptions->UseDropDownButton;
 		$this->FilterOptions->DropDownButtonPhrase = $Language->Phrase("Filters");
@@ -1680,7 +1021,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 	function RenderOtherOptions() {
 		global $Language, $Security;
 		$options = &$this->OtherOptions;
-		if ($this->CurrentAction <> "gridadd" && $this->CurrentAction <> "gridedit") { // Not grid add/edit mode
 			$option = &$options["action"];
 
 			// Set up list action buttons
@@ -1702,36 +1042,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 				$option = &$options["action"];
 				$option->HideAllOptions();
 			}
-		} else { // Grid add/edit mode
-
-			// Hide all options first
-			foreach ($options as &$option)
-				$option->HideAllOptions();
-			if ($this->CurrentAction == "gridadd") {
-				if ($this->AllowAddDeleteRow) {
-
-					// Add add blank row
-					$option = &$options["addedit"];
-					$option->UseDropDownButton = FALSE;
-					$option->UseImageAndText = TRUE;
-					$item = &$option->Add("addblankrow");
-					$item->Body = "<a class=\"ewAddEdit ewAddBlankRow\" title=\"" . ew_HtmlTitle($Language->Phrase("AddBlankRow")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("AddBlankRow")) . "\" href=\"javascript:void(0);\" onclick=\"ew_AddGridRow(this);\">" . $Language->Phrase("AddBlankRow") . "</a>";
-					$item->Visible = $Security->CanAdd();
-				}
-				$option = &$options["action"];
-				$option->UseDropDownButton = FALSE;
-				$option->UseImageAndText = TRUE;
-
-				// Add grid insert
-				$item = &$option->Add("gridinsert");
-				$item->Body = "<a class=\"ewAction ewGridInsert\" title=\"" . ew_HtmlTitle($Language->Phrase("GridInsertLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("GridInsertLink")) . "\" href=\"\" onclick=\"return ewForms(this).Submit('" . $this->PageName() . "');\">" . $Language->Phrase("GridInsertLink") . "</a>";
-
-				// Add grid cancel
-				$item = &$option->Add("gridcancel");
-				$cancelurl = $this->AddMasterUrl($this->PageUrl() . "a=cancel");
-				$item->Body = "<a class=\"ewAction ewGridCancel\" title=\"" . ew_HtmlTitle($Language->Phrase("GridCancelLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("GridCancelLink")) . "\" href=\"" . $cancelurl . "\">" . $Language->Phrase("GridCancelLink") . "</a>";
-			}
-		}
 	}
 
 	// Process list action
@@ -1820,17 +1130,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		$this->SearchOptions->Tag = "div";
 		$this->SearchOptions->TagClassName = "ewSearchOption";
 
-		// Search button
-		$item = &$this->SearchOptions->Add("searchtoggle");
-		$SearchToggleClass = ($this->SearchWhere <> "") ? " active" : " active";
-		$item->Body = "<button type=\"button\" class=\"btn btn-default ewSearchToggle" . $SearchToggleClass . "\" title=\"" . $Language->Phrase("SearchPanel") . "\" data-caption=\"" . $Language->Phrase("SearchPanel") . "\" data-toggle=\"button\" data-form=\"fdocumentosavaluolistsrch\">" . $Language->Phrase("SearchLink") . "</button>";
-		$item->Visible = TRUE;
-
-		// Show all button
-		$item = &$this->SearchOptions->Add("showall");
-		$item->Body = "<a class=\"btn btn-default ewShowAll\" title=\"" . $Language->Phrase("ShowAll") . "\" data-caption=\"" . $Language->Phrase("ShowAll") . "\" href=\"" . $this->PageUrl() . "cmd=reset\">" . $Language->Phrase("ShowAllBtn") . "</a>";
-		$item->Visible = ($this->SearchWhere <> $this->DefaultSearchWhere && $this->SearchWhere <> "0=101");
-
 		// Button group for search
 		$this->SearchOptions->UseDropDownButton = FALSE;
 		$this->SearchOptions->UseImageAndText = TRUE;
@@ -1894,99 +1193,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 			$this->StartRec = intval(($this->StartRec-1)/$this->DisplayRecs)*$this->DisplayRecs+1; // Point to page boundary
 			$this->setStartRecordNumber($this->StartRec);
 		}
-	}
-
-	// Get upload files
-	function GetUploadFiles() {
-		global $objForm, $Language;
-
-		// Get upload data
-		$this->imagen->Upload->Index = $objForm->Index;
-		$this->imagen->Upload->UploadFile();
-	}
-
-	// Load default values
-	function LoadDefaultValues() {
-		$this->id->CurrentValue = NULL;
-		$this->id->OldValue = $this->id->CurrentValue;
-		$this->descripcion->CurrentValue = NULL;
-		$this->descripcion->OldValue = $this->descripcion->CurrentValue;
-		$this->imagen->Upload->DbValue = NULL;
-		$this->imagen->OldValue = $this->imagen->Upload->DbValue;
-		$this->avaluo->CurrentValue = NULL;
-		$this->avaluo->OldValue = $this->avaluo->CurrentValue;
-		$this->created_at->CurrentValue = NULL;
-		$this->created_at->OldValue = $this->created_at->CurrentValue;
-		$this->path_drive->CurrentValue = NULL;
-		$this->path_drive->OldValue = $this->path_drive->CurrentValue;
-	}
-
-	// Load basic search values
-	function LoadBasicSearchValues() {
-		$this->BasicSearch->Keyword = @$_GET[EW_TABLE_BASIC_SEARCH];
-		if ($this->BasicSearch->Keyword <> "" && $this->Command == "") $this->Command = "search";
-		$this->BasicSearch->Type = @$_GET[EW_TABLE_BASIC_SEARCH_TYPE];
-	}
-
-	// Load search values for validation
-	function LoadSearchValues() {
-		global $objForm;
-
-		// Load search values
-		// id
-
-		$this->id->AdvancedSearch->SearchValue = @$_GET["x_id"];
-		if ($this->id->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->id->AdvancedSearch->SearchOperator = @$_GET["z_id"];
-
-		// descripcion
-		$this->descripcion->AdvancedSearch->SearchValue = @$_GET["x_descripcion"];
-		if ($this->descripcion->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->descripcion->AdvancedSearch->SearchOperator = @$_GET["z_descripcion"];
-
-		// avaluo
-		$this->avaluo->AdvancedSearch->SearchValue = @$_GET["x_avaluo"];
-		if ($this->avaluo->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->avaluo->AdvancedSearch->SearchOperator = @$_GET["z_avaluo"];
-
-		// created_at
-		$this->created_at->AdvancedSearch->SearchValue = @$_GET["x_created_at"];
-		if ($this->created_at->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->created_at->AdvancedSearch->SearchOperator = @$_GET["z_created_at"];
-	}
-
-	// Load form values
-	function LoadFormValues() {
-
-		// Load from form
-		global $objForm;
-		$this->GetUploadFiles(); // Get upload files
-		if (!$this->descripcion->FldIsDetailKey) {
-			$this->descripcion->setFormValue($objForm->GetValue("x_descripcion"));
-		}
-		$this->descripcion->setOldValue($objForm->GetValue("o_descripcion"));
-		if (!$this->avaluo->FldIsDetailKey) {
-			$this->avaluo->setFormValue($objForm->GetValue("x_avaluo"));
-		}
-		$this->avaluo->setOldValue($objForm->GetValue("o_avaluo"));
-		if (!$this->created_at->FldIsDetailKey) {
-			$this->created_at->setFormValue($objForm->GetValue("x_created_at"));
-			$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
-		}
-		$this->created_at->setOldValue($objForm->GetValue("o_created_at"));
-		if (!$this->id->FldIsDetailKey && $this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
-			$this->id->setFormValue($objForm->GetValue("x_id"));
-	}
-
-	// Restore form values
-	function RestoreFormValues() {
-		global $objForm;
-		if ($this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
-			$this->id->CurrentValue = $this->id->FormValue;
-		$this->descripcion->CurrentValue = $this->descripcion->FormValue;
-		$this->avaluo->CurrentValue = $this->avaluo->FormValue;
-		$this->created_at->CurrentValue = $this->created_at->FormValue;
-		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
 	}
 
 	// Load recordset
@@ -2054,20 +1260,21 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		if (is_array($this->imagen->Upload->DbValue) || is_object($this->imagen->Upload->DbValue)) // Byte array
 			$this->imagen->Upload->DbValue = ew_BytesToStr($this->imagen->Upload->DbValue);
 		$this->avaluo->setDbValue($row['avaluo']);
-		$this->created_at->setDbValue($row['created_at']);
 		$this->path_drive->setDbValue($row['path_drive']);
+		$this->id_tipodocumento->setDbValue($row['id_tipodocumento']);
+		$this->created_at->setDbValue($row['created_at']);
 	}
 
 	// Return a row with default values
 	function NewRow() {
-		$this->LoadDefaultValues();
 		$row = array();
-		$row['id'] = $this->id->CurrentValue;
-		$row['descripcion'] = $this->descripcion->CurrentValue;
-		$row['imagen'] = $this->imagen->Upload->DbValue;
-		$row['avaluo'] = $this->avaluo->CurrentValue;
-		$row['created_at'] = $this->created_at->CurrentValue;
-		$row['path_drive'] = $this->path_drive->CurrentValue;
+		$row['id'] = NULL;
+		$row['descripcion'] = NULL;
+		$row['imagen'] = NULL;
+		$row['avaluo'] = NULL;
+		$row['path_drive'] = NULL;
+		$row['id_tipodocumento'] = NULL;
+		$row['created_at'] = NULL;
 		return $row;
 	}
 
@@ -2080,8 +1287,9 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		$this->descripcion->DbValue = $row['descripcion'];
 		$this->imagen->Upload->DbValue = $row['imagen'];
 		$this->avaluo->DbValue = $row['avaluo'];
-		$this->created_at->DbValue = $row['created_at'];
 		$this->path_drive->DbValue = $row['path_drive'];
+		$this->id_tipodocumento->DbValue = $row['id_tipodocumento'];
+		$this->created_at->DbValue = $row['created_at'];
 	}
 
 	// Load old record
@@ -2126,10 +1334,14 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// descripcion
 		// imagen
 		// avaluo
-		// created_at
 		// path_drive
 
 		$this->path_drive->CellCssStyle = "white-space: nowrap;";
+
+		// id_tipodocumento
+		// created_at
+
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// descripcion
@@ -2168,6 +1380,29 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		}
 		$this->avaluo->ViewCustomAttributes = "";
 
+		// id_tipodocumento
+		if (strval($this->id_tipodocumento->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_tipodocumento->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipodocumento`";
+		$sWhereWrk = "";
+		$this->id_tipodocumento->LookupFilters = array("dx1" => '`nombre`');
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_tipodocumento, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->id_tipodocumento->ViewValue = $this->id_tipodocumento->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_tipodocumento->ViewValue = $this->id_tipodocumento->CurrentValue;
+			}
+		} else {
+			$this->id_tipodocumento->ViewValue = NULL;
+		}
+		$this->id_tipodocumento->ViewCustomAttributes = "";
+
 		// created_at
 		$this->created_at->ViewValue = $this->created_at->CurrentValue;
 		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
@@ -2195,538 +1430,301 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 			$this->avaluo->HrefValue = "";
 			$this->avaluo->TooltipValue = "";
 
+			// id_tipodocumento
+			$this->id_tipodocumento->LinkCustomAttributes = "";
+			$this->id_tipodocumento->HrefValue = "";
+			$this->id_tipodocumento->TooltipValue = "";
+
 			// created_at
 			$this->created_at->LinkCustomAttributes = "";
 			$this->created_at->HrefValue = "";
 			$this->created_at->TooltipValue = "";
-		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
-
-			// descripcion
-			$this->descripcion->EditAttrs["class"] = "form-control";
-			$this->descripcion->EditCustomAttributes = "";
-			$this->descripcion->EditValue = ew_HtmlEncode($this->descripcion->CurrentValue);
-			$this->descripcion->PlaceHolder = ew_RemoveHtml($this->descripcion->FldTitle());
-
-			// imagen
-			$this->imagen->EditAttrs["class"] = "form-control";
-			$this->imagen->EditCustomAttributes = "";
-			if (!ew_Empty($this->imagen->Upload->DbValue)) {
-				$this->imagen->EditValue = "documentosavaluo_imagen_bv.php?" . "id=" . $this->id->CurrentValue;
-				$this->imagen->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->imagen->Upload->DbValue, 0, 11)));
-			} else {
-				$this->imagen->EditValue = "";
-			}
-			if (is_numeric($this->RowIndex) && !$this->EventCancelled) ew_RenderUploadField($this->imagen, $this->RowIndex);
-
-			// avaluo
-			$this->avaluo->EditAttrs["class"] = "form-control";
-			$this->avaluo->EditCustomAttributes = "";
-			if ($this->avaluo->getSessionValue() <> "") {
-				$this->avaluo->CurrentValue = $this->avaluo->getSessionValue();
-				$this->avaluo->OldValue = $this->avaluo->CurrentValue;
-			if (strval($this->avaluo->CurrentValue) <> "") {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `id`, `tipoinmueble` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-			$sWhereWrk = "";
-			$this->avaluo->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->avaluo, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-				$rswrk = Conn()->Execute($sSqlWrk);
-				if ($rswrk && !$rswrk->EOF) { // Lookup values found
-					$arwrk = array();
-					$arwrk[1] = $rswrk->fields('DispFld');
-					$this->avaluo->ViewValue = $this->avaluo->DisplayValue($arwrk);
-					$rswrk->Close();
-				} else {
-					$this->avaluo->ViewValue = $this->avaluo->CurrentValue;
-				}
-			} else {
-				$this->avaluo->ViewValue = NULL;
-			}
-			$this->avaluo->ViewCustomAttributes = "";
-			} else {
-			if (trim(strval($this->avaluo->CurrentValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `tipoinmueble` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `avaluo`";
-			$sWhereWrk = "";
-			$this->avaluo->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->avaluo, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->avaluo->EditValue = $arwrk;
-			}
-
-			// created_at
-			// Add refer script
-			// descripcion
-
-			$this->descripcion->LinkCustomAttributes = "";
-			$this->descripcion->HrefValue = "";
-
-			// imagen
-			$this->imagen->LinkCustomAttributes = "";
-			if (!empty($this->imagen->Upload->DbValue)) {
-				$this->imagen->HrefValue = "documentosavaluo_imagen_bv.php?id=" . $this->id->CurrentValue;
-				$this->imagen->LinkAttrs["target"] = "_blank";
-				if ($this->Export <> "") $this->imagen->HrefValue = ew_FullUrl($this->imagen->HrefValue, "href");
-			} else {
-				$this->imagen->HrefValue = "";
-			}
-			$this->imagen->HrefValue2 = "documentosavaluo_imagen_bv.php?id=" . $this->id->CurrentValue;
-
-			// avaluo
-			$this->avaluo->LinkCustomAttributes = "";
-			$this->avaluo->HrefValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
-
-			// descripcion
-			$this->descripcion->EditAttrs["class"] = "form-control";
-			$this->descripcion->EditCustomAttributes = "";
-			$this->descripcion->EditValue = ew_HtmlEncode($this->descripcion->CurrentValue);
-			$this->descripcion->PlaceHolder = ew_RemoveHtml($this->descripcion->FldTitle());
-
-			// imagen
-			$this->imagen->EditAttrs["class"] = "form-control";
-			$this->imagen->EditCustomAttributes = "";
-			if (!ew_Empty($this->imagen->Upload->DbValue)) {
-				$this->imagen->EditValue = "documentosavaluo_imagen_bv.php?" . "id=" . $this->id->CurrentValue;
-				$this->imagen->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->imagen->Upload->DbValue, 0, 11)));
-			} else {
-				$this->imagen->EditValue = "";
-			}
-			if (is_numeric($this->RowIndex) && !$this->EventCancelled) ew_RenderUploadField($this->imagen, $this->RowIndex);
-
-			// avaluo
-			$this->avaluo->EditAttrs["class"] = "form-control";
-			$this->avaluo->EditCustomAttributes = "";
-			if ($this->avaluo->getSessionValue() <> "") {
-				$this->avaluo->CurrentValue = $this->avaluo->getSessionValue();
-				$this->avaluo->OldValue = $this->avaluo->CurrentValue;
-			if (strval($this->avaluo->CurrentValue) <> "") {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `id`, `tipoinmueble` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-			$sWhereWrk = "";
-			$this->avaluo->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->avaluo, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-				$rswrk = Conn()->Execute($sSqlWrk);
-				if ($rswrk && !$rswrk->EOF) { // Lookup values found
-					$arwrk = array();
-					$arwrk[1] = $rswrk->fields('DispFld');
-					$this->avaluo->ViewValue = $this->avaluo->DisplayValue($arwrk);
-					$rswrk->Close();
-				} else {
-					$this->avaluo->ViewValue = $this->avaluo->CurrentValue;
-				}
-			} else {
-				$this->avaluo->ViewValue = NULL;
-			}
-			$this->avaluo->ViewCustomAttributes = "";
-			} else {
-			if (trim(strval($this->avaluo->CurrentValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `tipoinmueble` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `avaluo`";
-			$sWhereWrk = "";
-			$this->avaluo->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->avaluo, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->avaluo->EditValue = $arwrk;
-			}
-
-			// created_at
-			// Edit refer script
-			// descripcion
-
-			$this->descripcion->LinkCustomAttributes = "";
-			$this->descripcion->HrefValue = "";
-
-			// imagen
-			$this->imagen->LinkCustomAttributes = "";
-			if (!empty($this->imagen->Upload->DbValue)) {
-				$this->imagen->HrefValue = "documentosavaluo_imagen_bv.php?id=" . $this->id->CurrentValue;
-				$this->imagen->LinkAttrs["target"] = "_blank";
-				if ($this->Export <> "") $this->imagen->HrefValue = ew_FullUrl($this->imagen->HrefValue, "href");
-			} else {
-				$this->imagen->HrefValue = "";
-			}
-			$this->imagen->HrefValue2 = "documentosavaluo_imagen_bv.php?id=" . $this->id->CurrentValue;
-
-			// avaluo
-			$this->avaluo->LinkCustomAttributes = "";
-			$this->avaluo->HrefValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-		} elseif ($this->RowType == EW_ROWTYPE_SEARCH) { // Search row
-
-			// descripcion
-			$this->descripcion->EditAttrs["class"] = "form-control";
-			$this->descripcion->EditCustomAttributes = "";
-			$this->descripcion->EditValue = ew_HtmlEncode($this->descripcion->AdvancedSearch->SearchValue);
-			$this->descripcion->PlaceHolder = ew_RemoveHtml($this->descripcion->FldTitle());
-
-			// imagen
-			$this->imagen->EditAttrs["class"] = "form-control";
-			$this->imagen->EditCustomAttributes = "";
-			if (!ew_Empty($this->imagen->Upload->DbValue)) {
-				$this->imagen->EditValue = "documentosavaluo_imagen_bv.php?" . "id=" . $this->id->CurrentValue;
-				$this->imagen->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->imagen->Upload->DbValue, 0, 11)));
-			} else {
-				$this->imagen->EditValue = "";
-			}
-
-			// avaluo
-			$this->avaluo->EditAttrs["class"] = "form-control";
-			$this->avaluo->EditCustomAttributes = "";
-
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime(ew_UnFormatDateTime($this->created_at->AdvancedSearch->SearchValue, 0), 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldTitle());
 		}
-		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
-			$this->SetupFieldTitles();
 
 		// Call Row Rendered event
 		if ($this->RowType <> EW_ROWTYPE_AGGREGATEINIT)
 			$this->Row_Rendered();
 	}
 
-	// Validate search
-	function ValidateSearch() {
-		global $gsSearchError;
+	// Set up export options
+	function SetupExportOptions() {
+		global $Language;
 
-		// Initialize
-		$gsSearchError = "";
+		// Printer friendly
+		$item = &$this->ExportOptions->Add("print");
+		$item->Body = "<a href=\"" . $this->ExportPrintUrl . "\" class=\"ewExportLink ewPrint\" title=\"" . ew_HtmlEncode($Language->Phrase("PrinterFriendlyText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("PrinterFriendlyText")) . "\">" . $Language->Phrase("PrinterFriendly") . "</a>";
+		$item->Visible = TRUE;
 
-		// Check if validation required
-		if (!EW_SERVER_VALIDATE)
-			return TRUE;
+		// Export to Excel
+		$item = &$this->ExportOptions->Add("excel");
+		$item->Body = "<a href=\"" . $this->ExportExcelUrl . "\" class=\"ewExportLink ewExcel\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToExcelText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToExcelText")) . "\">" . $Language->Phrase("ExportToExcel") . "</a>";
+		$item->Visible = TRUE;
 
-		// Return validate result
-		$ValidateSearch = ($gsSearchError == "");
+		// Export to Word
+		$item = &$this->ExportOptions->Add("word");
+		$item->Body = "<a href=\"" . $this->ExportWordUrl . "\" class=\"ewExportLink ewWord\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToWordText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToWordText")) . "\">" . $Language->Phrase("ExportToWord") . "</a>";
+		$item->Visible = TRUE;
 
-		// Call Form_CustomValidate event
-		$sFormCustomError = "";
-		$ValidateSearch = $ValidateSearch && $this->Form_CustomValidate($sFormCustomError);
-		if ($sFormCustomError <> "") {
-			ew_AddMessage($gsSearchError, $sFormCustomError);
-		}
-		return $ValidateSearch;
+		// Export to Html
+		$item = &$this->ExportOptions->Add("html");
+		$item->Body = "<a href=\"" . $this->ExportHtmlUrl . "\" class=\"ewExportLink ewHtml\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToHtmlText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToHtmlText")) . "\">" . $Language->Phrase("ExportToHtml") . "</a>";
+		$item->Visible = FALSE;
+
+		// Export to Xml
+		$item = &$this->ExportOptions->Add("xml");
+		$item->Body = "<a href=\"" . $this->ExportXmlUrl . "\" class=\"ewExportLink ewXml\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToXmlText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToXmlText")) . "\">" . $Language->Phrase("ExportToXml") . "</a>";
+		$item->Visible = FALSE;
+
+		// Export to Csv
+		$item = &$this->ExportOptions->Add("csv");
+		$item->Body = "<a href=\"" . $this->ExportCsvUrl . "\" class=\"ewExportLink ewCsv\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToCsvText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToCsvText")) . "\">" . $Language->Phrase("ExportToCsv") . "</a>";
+		$item->Visible = FALSE;
+
+		// Export to Pdf
+		$item = &$this->ExportOptions->Add("pdf");
+		$item->Body = "<a href=\"" . $this->ExportPdfUrl . "\" class=\"ewExportLink ewPdf\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToPDFText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToPDFText")) . "\">" . $Language->Phrase("ExportToPDF") . "</a>";
+		$item->Visible = FALSE;
+
+		// Export to Email
+		$item = &$this->ExportOptions->Add("email");
+		$url = "";
+		$item->Body = "<button id=\"emf_documentosavaluo\" class=\"ewExportLink ewEmail\" title=\"" . $Language->Phrase("ExportToEmailText") . "\" data-caption=\"" . $Language->Phrase("ExportToEmailText") . "\" onclick=\"ew_EmailDialogShow({lnk:'emf_documentosavaluo',hdr:ewLanguage.Phrase('ExportToEmailText'),f:document.fdocumentosavaluolist,sel:false" . $url . "});\">" . $Language->Phrase("ExportToEmail") . "</button>";
+		$item->Visible = TRUE;
+
+		// Drop down button for export
+		$this->ExportOptions->UseButtonGroup = TRUE;
+		$this->ExportOptions->UseImageAndText = TRUE;
+		$this->ExportOptions->UseDropDownButton = TRUE;
+		if ($this->ExportOptions->UseButtonGroup && ew_IsMobile())
+			$this->ExportOptions->UseDropDownButton = TRUE;
+		$this->ExportOptions->DropDownButtonPhrase = $Language->Phrase("ButtonExport");
+
+		// Add group option item
+		$item = &$this->ExportOptions->Add($this->ExportOptions->GroupOptionName);
+		$item->Body = "";
+		$item->Visible = FALSE;
 	}
 
-	// Validate form
-	function ValidateForm() {
-		global $Language, $gsFormError;
+	// Export data in HTML/CSV/Word/Excel/XML/Email/PDF format
+	function ExportData() {
+		$utf8 = (strtolower(EW_CHARSET) == "utf-8");
+		$bSelectLimit = $this->UseSelectLimit;
 
-		// Initialize form error message
-		$gsFormError = "";
-
-		// Check if validation required
-		if (!EW_SERVER_VALIDATE)
-			return ($gsFormError == "");
-		if (!$this->descripcion->FldIsDetailKey && !is_null($this->descripcion->FormValue) && $this->descripcion->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->descripcion->FldCaption(), $this->descripcion->ReqErrMsg));
+		// Load recordset
+		if ($bSelectLimit) {
+			$this->TotalRecs = $this->ListRecordCount();
+		} else {
+			if (!$this->Recordset)
+				$this->Recordset = $this->LoadRecordset();
+			$rs = &$this->Recordset;
+			if ($rs)
+				$this->TotalRecs = $rs->RecordCount();
 		}
+		$this->StartRec = 1;
 
-		// Return validate result
-		$ValidateForm = ($gsFormError == "");
+		// Export all
+		if ($this->ExportAll) {
+			set_time_limit(EW_EXPORT_ALL_TIME_LIMIT);
+			$this->DisplayRecs = $this->TotalRecs;
+			$this->StopRec = $this->TotalRecs;
+		} else { // Export one page only
+			$this->SetupStartRec(); // Set up start record position
 
-		// Call Form_CustomValidate event
-		$sFormCustomError = "";
-		$ValidateForm = $ValidateForm && $this->Form_CustomValidate($sFormCustomError);
-		if ($sFormCustomError <> "") {
-			ew_AddMessage($gsFormError, $sFormCustomError);
-		}
-		return $ValidateForm;
-	}
-
-	//
-	// Delete records based on current filter
-	//
-	function DeleteRows() {
-		global $Language, $Security;
-		if (!$Security->CanDelete()) {
-			$this->setFailureMessage($Language->Phrase("NoDeletePermission")); // No delete permission
-			return FALSE;
-		}
-		$DeleteRows = TRUE;
-		$sSql = $this->SQL();
-		$conn = &$this->Connection();
-		$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
-		$rs = $conn->Execute($sSql);
-		$conn->raiseErrorFn = '';
-		if ($rs === FALSE) {
-			return FALSE;
-		} elseif ($rs->EOF) {
-			$this->setFailureMessage($Language->Phrase("NoRecord")); // No record found
-			$rs->Close();
-			return FALSE;
-		}
-		$rows = ($rs) ? $rs->GetRows() : array();
-
-		// Clone old rows
-		$rsold = $rows;
-		if ($rs)
-			$rs->Close();
-
-		// Call row deleting event
-		if ($DeleteRows) {
-			foreach ($rsold as $row) {
-				$DeleteRows = $this->Row_Deleting($row);
-				if (!$DeleteRows) break;
-			}
-		}
-		if ($DeleteRows) {
-			$sKey = "";
-			foreach ($rsold as $row) {
-				$sThisKey = "";
-				if ($sThisKey <> "") $sThisKey .= $GLOBALS["EW_COMPOSITE_KEY_SEPARATOR"];
-				$sThisKey .= $row['id'];
-				$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
-				$DeleteRows = $this->Delete($row); // Delete
-				$conn->raiseErrorFn = '';
-				if ($DeleteRows === FALSE)
-					break;
-				if ($sKey <> "") $sKey .= ", ";
-				$sKey .= $sThisKey;
-			}
-		}
-		if (!$DeleteRows) {
-
-			// Set up error message
-			if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
-
-				// Use the message, do nothing
-			} elseif ($this->CancelMessage <> "") {
-				$this->setFailureMessage($this->CancelMessage);
-				$this->CancelMessage = "";
+			// Set the last record to display
+			if ($this->DisplayRecs <= 0) {
+				$this->StopRec = $this->TotalRecs;
 			} else {
-				$this->setFailureMessage($Language->Phrase("DeleteCancelled"));
+				$this->StopRec = $this->StartRec + $this->DisplayRecs - 1;
 			}
 		}
-		if ($DeleteRows) {
-		} else {
+		if ($bSelectLimit)
+			$rs = $this->LoadRecordset($this->StartRec-1, $this->DisplayRecs <= 0 ? $this->TotalRecs : $this->DisplayRecs);
+		if (!$rs) {
+			header("Content-Type:"); // Remove header
+			header("Content-Disposition:");
+			$this->ShowMessage();
+			return;
 		}
-
-		// Call Row Deleted event
-		if ($DeleteRows) {
-			foreach ($rsold as $row) {
-				$this->Row_Deleted($row);
-			}
-		}
-		return $DeleteRows;
-	}
-
-	// Update record based on key values
-	function EditRow() {
-		global $Security, $Language;
-		$sFilter = $this->KeyFilter();
-		$sFilter = $this->ApplyUserIDFilters($sFilter);
-		$conn = &$this->Connection();
-		$this->CurrentFilter = $sFilter;
-		$sSql = $this->SQL();
-		$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
-		$rs = $conn->Execute($sSql);
-		$conn->raiseErrorFn = '';
-		if ($rs === FALSE)
-			return FALSE;
-		if ($rs->EOF) {
-			$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
-			$EditRow = FALSE; // Update Failed
+		$this->ExportDoc = ew_ExportDocument($this, "h");
+		$Doc = &$this->ExportDoc;
+		if ($bSelectLimit) {
+			$this->StartRec = 1;
+			$this->StopRec = $this->DisplayRecs <= 0 ? $this->TotalRecs : $this->DisplayRecs;
 		} else {
 
-			// Save old values
-			$rsold = &$rs->fields;
-			$this->LoadDbValues($rsold);
-			$rsnew = array();
+			//$this->StartRec = $this->StartRec;
+			//$this->StopRec = $this->StopRec;
 
-			// descripcion
-			$this->descripcion->SetDbValueDef($rsnew, $this->descripcion->CurrentValue, "", $this->descripcion->ReadOnly);
+		}
 
-			// imagen
-			if ($this->imagen->Visible && !$this->imagen->ReadOnly && !$this->imagen->Upload->KeepFile) {
-				if (is_null($this->imagen->Upload->Value)) {
-					$rsnew['imagen'] = NULL;
-				} else {
-					$rsnew['imagen'] = $this->imagen->Upload->Value;
+		// Call Page Exporting server event
+		$this->ExportDoc->ExportCustom = !$this->Page_Exporting();
+		$ParentTable = "";
+
+		// Export master record
+		if (EW_EXPORT_MASTER_RECORD && $this->GetMasterFilter() <> "" && $this->getCurrentMasterTable() == "avaluo") {
+			global $avaluo;
+			if (!isset($avaluo)) $avaluo = new cavaluo;
+			$rsmaster = $avaluo->LoadRs($this->DbMasterFilter); // Load master record
+			if ($rsmaster && !$rsmaster->EOF) {
+				$ExportStyle = $Doc->Style;
+				$Doc->SetStyle("v"); // Change to vertical
+				if ($this->Export <> "csv" || EW_EXPORT_MASTER_RECORD_FOR_CSV) {
+					$Doc->Table = &$avaluo;
+					$avaluo->ExportDocument($Doc, $rsmaster, 1, 1);
+					$Doc->ExportEmptyRow();
+					$Doc->Table = &$this;
 				}
-			}
-
-			// avaluo
-			$this->avaluo->SetDbValueDef($rsnew, $this->avaluo->CurrentValue, NULL, $this->avaluo->ReadOnly);
-
-			// created_at
-			$this->created_at->SetDbValueDef($rsnew, ew_CurrentDateTime(), ew_CurrentDate());
-			$rsnew['created_at'] = &$this->created_at->DbValue;
-
-			// Check referential integrity for master table 'avaluo'
-			$bValidMasterRecord = TRUE;
-			$sMasterFilter = $this->SqlMasterFilter_avaluo();
-			$KeyValue = isset($rsnew['avaluo']) ? $rsnew['avaluo'] : $rsold['avaluo'];
-			if (strval($KeyValue) <> "") {
-				$sMasterFilter = str_replace("@id@", ew_AdjustSql($KeyValue), $sMasterFilter);
-			} else {
-				$bValidMasterRecord = FALSE;
-			}
-			if ($bValidMasterRecord) {
-				if (!isset($GLOBALS["avaluo"])) $GLOBALS["avaluo"] = new cavaluo();
-				$rsmaster = $GLOBALS["avaluo"]->LoadRs($sMasterFilter);
-				$bValidMasterRecord = ($rsmaster && !$rsmaster->EOF);
+				$Doc->SetStyle($ExportStyle); // Restore
 				$rsmaster->Close();
 			}
-			if (!$bValidMasterRecord) {
-				$sRelatedRecordMsg = str_replace("%t", "avaluo", $Language->Phrase("RelatedRecordRequired"));
-				$this->setFailureMessage($sRelatedRecordMsg);
-				$rs->Close();
-				return FALSE;
-			}
-
-			// Call Row Updating event
-			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
-			if ($bUpdateRow) {
-				$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
-				if (count($rsnew) > 0)
-					$EditRow = $this->Update($rsnew, "", $rsold);
-				else
-					$EditRow = TRUE; // No field to update
-				$conn->raiseErrorFn = '';
-				if ($EditRow) {
-				}
-			} else {
-				if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
-
-					// Use the message, do nothing
-				} elseif ($this->CancelMessage <> "") {
-					$this->setFailureMessage($this->CancelMessage);
-					$this->CancelMessage = "";
-				} else {
-					$this->setFailureMessage($Language->Phrase("UpdateCancelled"));
-				}
-				$EditRow = FALSE;
-			}
 		}
+		$sHeader = $this->PageHeader;
+		$this->Page_DataRendering($sHeader);
+		$Doc->Text .= $sHeader;
+		$this->ExportDocument($Doc, $rs, $this->StartRec, $this->StopRec, "");
+		$sFooter = $this->PageFooter;
+		$this->Page_DataRendered($sFooter);
+		$Doc->Text .= $sFooter;
 
-		// Call Row_Updated event
-		if ($EditRow)
-			$this->Row_Updated($rsold, $rsnew);
+		// Close recordset
 		$rs->Close();
 
-		// imagen
-		ew_CleanUploadTempPath($this->imagen, $this->imagen->Upload->Index);
-		return $EditRow;
+		// Call Page Exported server event
+		$this->Page_Exported();
+
+		// Export header and footer
+		$Doc->ExportHeaderAndFooter();
+
+		// Clean output buffer
+		if (!EW_DEBUG_ENABLED && ob_get_length())
+			ob_end_clean();
+
+		// Write debug message if enabled
+		if (EW_DEBUG_ENABLED && $this->Export <> "pdf")
+			echo ew_DebugMsg();
+
+		// Output data
+		if ($this->Export == "email") {
+			echo $this->ExportEmail($Doc->Text);
+		} else {
+			$Doc->Export();
+		}
 	}
 
-	// Add record
-	function AddRow($rsold = NULL) {
-		global $Language, $Security;
+	// Export email
+	function ExportEmail($EmailContent) {
+		global $gTmpImages, $Language;
+		$sSender = @$_POST["sender"];
+		$sRecipient = @$_POST["recipient"];
+		$sCc = @$_POST["cc"];
+		$sBcc = @$_POST["bcc"];
 
-		// Check referential integrity for master table 'avaluo'
-		$bValidMasterRecord = TRUE;
-		$sMasterFilter = $this->SqlMasterFilter_avaluo();
-		if (strval($this->avaluo->CurrentValue) <> "") {
-			$sMasterFilter = str_replace("@id@", ew_AdjustSql($this->avaluo->CurrentValue, "DB"), $sMasterFilter);
+		// Subject
+		$sSubject = @$_POST["subject"];
+		$sEmailSubject = $sSubject;
+
+		// Message
+		$sContent = @$_POST["message"];
+		$sEmailMessage = $sContent;
+
+		// Check sender
+		if ($sSender == "") {
+			return "<p class=\"text-danger\">" . $Language->Phrase("EnterSenderEmail") . "</p>";
+		}
+		if (!ew_CheckEmail($sSender)) {
+			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperSenderEmail") . "</p>";
+		}
+
+		// Check recipient
+		if (!ew_CheckEmailList($sRecipient, EW_MAX_EMAIL_RECIPIENT)) {
+			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperRecipientEmail") . "</p>";
+		}
+
+		// Check cc
+		if (!ew_CheckEmailList($sCc, EW_MAX_EMAIL_RECIPIENT)) {
+			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperCcEmail") . "</p>";
+		}
+
+		// Check bcc
+		if (!ew_CheckEmailList($sBcc, EW_MAX_EMAIL_RECIPIENT)) {
+			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperBccEmail") . "</p>";
+		}
+
+		// Check email sent count
+		if (!isset($_SESSION[EW_EXPORT_EMAIL_COUNTER]))
+			$_SESSION[EW_EXPORT_EMAIL_COUNTER] = 0;
+		if (intval($_SESSION[EW_EXPORT_EMAIL_COUNTER]) > EW_MAX_EMAIL_SENT_COUNT) {
+			return "<p class=\"text-danger\">" . $Language->Phrase("ExceedMaxEmailExport") . "</p>";
+		}
+
+		// Send email
+		$Email = new cEmail();
+		$Email->Sender = $sSender; // Sender
+		$Email->Recipient = $sRecipient; // Recipient
+		$Email->Cc = $sCc; // Cc
+		$Email->Bcc = $sBcc; // Bcc
+		$Email->Subject = $sEmailSubject; // Subject
+		$Email->Format = "html";
+		if ($sEmailMessage <> "")
+			$sEmailMessage = ew_RemoveXSS($sEmailMessage) . "<br><br>";
+		foreach ($gTmpImages as $tmpimage)
+			$Email->AddEmbeddedImage($tmpimage);
+		$Email->Content = $sEmailMessage . ew_CleanEmailContent($EmailContent); // Content
+		$EventArgs = array();
+		if ($this->Recordset) {
+			$this->RecCnt = $this->StartRec - 1;
+			$this->Recordset->MoveFirst();
+			if ($this->StartRec > 1)
+				$this->Recordset->Move($this->StartRec - 1);
+			$EventArgs["rs"] = &$this->Recordset;
+		}
+		$bEmailSent = FALSE;
+		if ($this->Email_Sending($Email, $EventArgs))
+			$bEmailSent = $Email->Send();
+
+		// Check email sent status
+		if ($bEmailSent) {
+
+			// Update email sent count
+			$_SESSION[EW_EXPORT_EMAIL_COUNTER]++;
+
+			// Sent email success
+			return "<p class=\"text-success\">" . $Language->Phrase("SendEmailSuccess") . "</p>"; // Set up success message
 		} else {
-			$bValidMasterRecord = FALSE;
+
+			// Sent email failure
+			return "<p class=\"text-danger\">" . $Email->SendErrDescription . "</p>";
 		}
-		if ($bValidMasterRecord) {
-			if (!isset($GLOBALS["avaluo"])) $GLOBALS["avaluo"] = new cavaluo();
-			$rsmaster = $GLOBALS["avaluo"]->LoadRs($sMasterFilter);
-			$bValidMasterRecord = ($rsmaster && !$rsmaster->EOF);
-			$rsmaster->Close();
-		}
-		if (!$bValidMasterRecord) {
-			$sRelatedRecordMsg = str_replace("%t", "avaluo", $Language->Phrase("RelatedRecordRequired"));
-			$this->setFailureMessage($sRelatedRecordMsg);
-			return FALSE;
-		}
-		$conn = &$this->Connection();
-
-		// Load db values from rsold
-		$this->LoadDbValues($rsold);
-		if ($rsold) {
-		}
-		$rsnew = array();
-
-		// descripcion
-		$this->descripcion->SetDbValueDef($rsnew, $this->descripcion->CurrentValue, "", FALSE);
-
-		// imagen
-		if ($this->imagen->Visible && !$this->imagen->Upload->KeepFile) {
-			if (is_null($this->imagen->Upload->Value)) {
-				$rsnew['imagen'] = NULL;
-			} else {
-				$rsnew['imagen'] = $this->imagen->Upload->Value;
-			}
-		}
-
-		// avaluo
-		$this->avaluo->SetDbValueDef($rsnew, $this->avaluo->CurrentValue, NULL, FALSE);
-
-		// created_at
-		$this->created_at->SetDbValueDef($rsnew, ew_CurrentDateTime(), ew_CurrentDate());
-		$rsnew['created_at'] = &$this->created_at->DbValue;
-
-		// Call Row Inserting event
-		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
-		$bInsertRow = $this->Row_Inserting($rs, $rsnew);
-		if ($bInsertRow) {
-			$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
-			$AddRow = $this->Insert($rsnew);
-			$conn->raiseErrorFn = '';
-			if ($AddRow) {
-			}
-		} else {
-			if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
-
-				// Use the message, do nothing
-			} elseif ($this->CancelMessage <> "") {
-				$this->setFailureMessage($this->CancelMessage);
-				$this->CancelMessage = "";
-			} else {
-				$this->setFailureMessage($Language->Phrase("InsertCancelled"));
-			}
-			$AddRow = FALSE;
-		}
-		if ($AddRow) {
-
-			// Call Row Inserted event
-			$rs = ($rsold == NULL) ? NULL : $rsold->fields;
-			$this->Row_Inserted($rs, $rsnew);
-		}
-
-		// imagen
-		ew_CleanUploadTempPath($this->imagen, $this->imagen->Upload->Index);
-		return $AddRow;
 	}
 
-	// Load advanced search
-	function LoadAdvancedSearch() {
-		$this->id->AdvancedSearch->Load();
-		$this->descripcion->AdvancedSearch->Load();
-		$this->avaluo->AdvancedSearch->Load();
-		$this->created_at->AdvancedSearch->Load();
+	// Export QueryString
+	function ExportQueryString() {
+
+		// Initialize
+		$sQry = "export=html";
+
+		// Build QueryString for search
+		// Build QueryString for pager
+
+		$sQry .= "&" . EW_TABLE_REC_PER_PAGE . "=" . urlencode($this->getRecordsPerPage()) . "&" . EW_TABLE_START_REC . "=" . urlencode($this->getStartRecordNumber());
+		return $sQry;
+	}
+
+	// Add search QueryString
+	function AddSearchQueryString(&$Qry, &$Fld) {
+		$FldSearchValue = $Fld->AdvancedSearch->getValue("x");
+		$FldParm = substr($Fld->FldVar,2);
+		if (strval($FldSearchValue) <> "") {
+			$Qry .= "&x_" . $FldParm . "=" . urlencode($FldSearchValue) .
+				"&z_" . $FldParm . "=" . urlencode($Fld->AdvancedSearch->getValue("z"));
+		}
+		$FldSearchValue2 = $Fld->AdvancedSearch->getValue("y");
+		if (strval($FldSearchValue2) <> "") {
+			$Qry .= "&v_" . $FldParm . "=" . urlencode($Fld->AdvancedSearch->getValue("v")) .
+				"&y_" . $FldParm . "=" . urlencode($FldSearchValue2) .
+				"&w_" . $FldParm . "=" . urlencode($Fld->AdvancedSearch->getValue("w"));
+		}
 	}
 
 	// Set up master/detail based on QueryString
@@ -2810,24 +1808,7 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 	function SetupLookupFilters($fld, $pageId = null) {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
-		if ($pageId == "list") {
-			switch ($fld->FldVar) {
-		case "x_avaluo":
-			$sSqlWrk = "";
-				$sSqlWrk = "SELECT `id` AS `LinkFld`, `tipoinmueble` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$fld->LookupFilters = array();
-			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
-			$sSqlWrk = "";
-				$this->Lookup_Selecting($this->avaluo, $sWhereWrk); // Call Lookup Selecting
-				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			if ($sSqlWrk <> "")
-				$fld->LookupFilters["s"] .= $sSqlWrk;
-			break;
-			}
-		} elseif ($pageId == "extbs") {
-			switch ($fld->FldVar) {
-			}
+		switch ($fld->FldVar) {
 		}
 	}
 
@@ -2835,12 +1816,7 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 	function SetupAutoSuggestFilters($fld, $pageId = null) {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
-		if ($pageId == "list") {
-			switch ($fld->FldVar) {
-			}
-		} elseif ($pageId == "extbs") {
-			switch ($fld->FldVar) {
-			}
+		switch ($fld->FldVar) {
 		}
 	}
 
@@ -2992,55 +1968,13 @@ Page_Rendering();
 $documentosavaluo_list->Page_Render();
 ?>
 <?php include_once "header.php" ?>
+<?php if ($documentosavaluo->Export == "") { ?>
 <script type="text/javascript">
 
 // Form object
 var CurrentPageID = EW_PAGE_ID = "list";
 var CurrentForm = fdocumentosavaluolist = new ew_Form("fdocumentosavaluolist", "list");
 fdocumentosavaluolist.FormKeyCountName = '<?php echo $documentosavaluo_list->FormKeyCountName ?>';
-
-// Validate form
-fdocumentosavaluolist.Validate = function() {
-	if (!this.ValidateRequired)
-		return true; // Ignore validation
-	var $ = jQuery, fobj = this.GetForm(), $fobj = $(fobj);
-	if ($fobj.find("#a_confirm").val() == "F")
-		return true;
-	var elm, felm, uelm, addcnt = 0;
-	var $k = $fobj.find("#" + this.FormKeyCountName); // Get key_count
-	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
-	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
-	var gridinsert = $fobj.find("#a_list").val() == "gridinsert";
-	for (var i = startcnt; i <= rowcnt; i++) {
-		var infix = ($k[0]) ? String(i) : "";
-		$fobj.data("rowindex", infix);
-		var checkrow = (gridinsert) ? !this.EmptyRow(infix) : true;
-		if (checkrow) {
-			addcnt++;
-			elm = this.GetElements("x" + infix + "_descripcion");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $documentosavaluo->descripcion->FldCaption(), $documentosavaluo->descripcion->ReqErrMsg)) ?>");
-
-			// Fire Form_CustomValidate event
-			if (!this.Form_CustomValidate(fobj))
-				return false;
-		} // End Grid Add checking
-	}
-	if (gridinsert && addcnt == 0) { // No row added
-		ew_Alert(ewLanguage.Phrase("NoAddRecord"));
-		return false;
-	}
-	return true;
-}
-
-// Check empty row
-fdocumentosavaluolist.EmptyRow = function(infix) {
-	var fobj = this.Form;
-	if (ew_ValueChanged(fobj, infix, "descripcion", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "imagen", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "avaluo", false)) return false;
-	return true;
-}
 
 // Form_CustomValidate event
 fdocumentosavaluolist.Form_CustomValidate = 
@@ -3056,52 +1990,24 @@ fdocumentosavaluolist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDA
 // Dynamic selection lists
 fdocumentosavaluolist.Lists["x_avaluo"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_tipoinmueble","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
 fdocumentosavaluolist.Lists["x_avaluo"].Data = "<?php echo $documentosavaluo_list->avaluo->LookupFilterQuery(FALSE, "list") ?>";
+fdocumentosavaluolist.Lists["x_id_tipodocumento"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipodocumento"};
+fdocumentosavaluolist.Lists["x_id_tipodocumento"].Data = "<?php echo $documentosavaluo_list->id_tipodocumento->LookupFilterQuery(FALSE, "list") ?>";
 
 // Form object for search
-var CurrentSearchForm = fdocumentosavaluolistsrch = new ew_Form("fdocumentosavaluolistsrch");
-
-// Validate function for search
-fdocumentosavaluolistsrch.Validate = function(fobj) {
-	if (!this.ValidateRequired)
-		return true; // Ignore validation
-	fobj = fobj || this.Form;
-	var infix = "";
-
-	// Fire Form_CustomValidate event
-	if (!this.Form_CustomValidate(fobj))
-		return false;
-	return true;
-}
-
-// Form_CustomValidate event
-fdocumentosavaluolistsrch.Form_CustomValidate = 
- function(fobj) { // DO NOT CHANGE THIS LINE!
-
- 	// Your custom validation code here, return false if invalid.
- 	return true;
- }
-
-// Use JavaScript validation or not
-fdocumentosavaluolistsrch.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
-
-// Dynamic selection lists
 </script>
 <script type="text/javascript">
 
 // Write your client script here, no need to add script tags.
 </script>
+<?php } ?>
+<?php if ($documentosavaluo->Export == "") { ?>
 <div class="ewToolbar">
 <?php if ($documentosavaluo_list->TotalRecs > 0 && $documentosavaluo_list->ExportOptions->Visible()) { ?>
 <?php $documentosavaluo_list->ExportOptions->Render("body") ?>
 <?php } ?>
-<?php if ($documentosavaluo_list->SearchOptions->Visible()) { ?>
-<?php $documentosavaluo_list->SearchOptions->Render("body") ?>
-<?php } ?>
-<?php if ($documentosavaluo_list->FilterOptions->Visible()) { ?>
-<?php $documentosavaluo_list->FilterOptions->Render("body") ?>
-<?php } ?>
 <div class="clearfix"></div>
 </div>
+<?php } ?>
 <?php if (($documentosavaluo->Export == "") || (EW_EXPORT_MASTER_RECORD && $documentosavaluo->Export == "print")) { ?>
 <?php
 if ($documentosavaluo_list->DbMasterFilter <> "" && $documentosavaluo->getCurrentMasterTable() == "avaluo") {
@@ -3114,13 +2020,6 @@ if ($documentosavaluo_list->DbMasterFilter <> "" && $documentosavaluo->getCurren
 ?>
 <?php } ?>
 <?php
-if ($documentosavaluo->CurrentAction == "gridadd") {
-	$documentosavaluo->CurrentFilter = "0=1";
-	$documentosavaluo_list->StartRec = 1;
-	$documentosavaluo_list->DisplayRecs = $documentosavaluo->GridAddRowCount;
-	$documentosavaluo_list->TotalRecs = $documentosavaluo_list->DisplayRecs;
-	$documentosavaluo_list->StopRec = $documentosavaluo_list->DisplayRecs;
-} else {
 	$bSelectLimit = $documentosavaluo_list->UseSelectLimit;
 	if ($bSelectLimit) {
 		if ($documentosavaluo_list->TotalRecs <= 0)
@@ -3146,60 +2045,8 @@ if ($documentosavaluo->CurrentAction == "gridadd") {
 		else
 			$documentosavaluo_list->setWarningMessage($Language->Phrase("NoRecord"));
 	}
-}
 $documentosavaluo_list->RenderOtherOptions();
 ?>
-<?php if ($Security->CanSearch()) { ?>
-<?php if ($documentosavaluo->Export == "" && $documentosavaluo->CurrentAction == "") { ?>
-<form name="fdocumentosavaluolistsrch" id="fdocumentosavaluolistsrch" class="form-inline ewForm ewExtSearchForm" action="<?php echo ew_CurrentPage() ?>">
-<?php $SearchPanelClass = ($documentosavaluo_list->SearchWhere <> "") ? " in" : " in"; ?>
-<div id="fdocumentosavaluolistsrch_SearchPanel" class="ewSearchPanel collapse<?php echo $SearchPanelClass ?>">
-<input type="hidden" name="cmd" value="search">
-<input type="hidden" name="t" value="documentosavaluo">
-	<div class="ewBasicSearch">
-<?php
-if ($gsSearchError == "")
-	$documentosavaluo_list->LoadAdvancedSearch(); // Load advanced search
-
-// Render for search
-$documentosavaluo->RowType = EW_ROWTYPE_SEARCH;
-
-// Render row
-$documentosavaluo->ResetAttrs();
-$documentosavaluo_list->RenderRow();
-?>
-<div id="xsr_1" class="ewRow">
-<?php if ($documentosavaluo->descripcion->Visible) { // descripcion ?>
-	<div id="xsc_descripcion" class="ewCell form-group">
-		<label for="x_descripcion" class="ewSearchCaption ewLabel"><?php echo $documentosavaluo->descripcion->FldCaption() ?></label>
-		<span class="ewSearchOperator"><?php echo $Language->Phrase("LIKE") ?><input type="hidden" name="z_descripcion" id="z_descripcion" value="LIKE"></span>
-		<span class="ewSearchField">
-<textarea data-table="documentosavaluo" data-field="x_descripcion" name="x_descripcion" id="x_descripcion" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($documentosavaluo->descripcion->getPlaceHolder()) ?>"<?php echo $documentosavaluo->descripcion->EditAttributes() ?>><?php echo $documentosavaluo->descripcion->EditValue ?></textarea>
-</span>
-	</div>
-<?php } ?>
-</div>
-<div id="xsr_2" class="ewRow">
-	<div class="ewQuickSearch input-group">
-	<input type="text" name="<?php echo EW_TABLE_BASIC_SEARCH ?>" id="<?php echo EW_TABLE_BASIC_SEARCH ?>" class="form-control" value="<?php echo ew_HtmlEncode($documentosavaluo_list->BasicSearch->getKeyword()) ?>">
-	<input type="hidden" name="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" id="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" value="<?php echo ew_HtmlEncode($documentosavaluo_list->BasicSearch->getType()) ?>">
-	<div class="input-group-btn">
-		<button type="button" data-toggle="dropdown" class="btn btn-default"><span id="searchtype"><?php echo $documentosavaluo_list->BasicSearch->getTypeNameShort() ?></span><span class="caret"></span></button>
-		<ul class="dropdown-menu pull-right" role="menu">
-			<li<?php if ($documentosavaluo_list->BasicSearch->getType() == "") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this)"><?php echo $Language->Phrase("QuickSearchAuto") ?></a></li>
-			<li<?php if ($documentosavaluo_list->BasicSearch->getType() == "=") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'=')"><?php echo $Language->Phrase("QuickSearchExact") ?></a></li>
-			<li<?php if ($documentosavaluo_list->BasicSearch->getType() == "AND") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'AND')"><?php echo $Language->Phrase("QuickSearchAll") ?></a></li>
-			<li<?php if ($documentosavaluo_list->BasicSearch->getType() == "OR") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'OR')"><?php echo $Language->Phrase("QuickSearchAny") ?></a></li>
-		</ul>
-	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("SearchBtn") ?></button>
-	</div>
-	</div>
-</div>
-	</div>
-</div>
-</form>
-<?php } ?>
-<?php } ?>
 <?php $documentosavaluo_list->ShowPageHeader(); ?>
 <?php
 $documentosavaluo_list->ShowMessage();
@@ -3236,7 +2083,7 @@ $documentosavaluo_list->ListOptions->Render("header", "left");
 		<th data-name="descripcion" class="<?php echo $documentosavaluo->descripcion->HeaderCellClass() ?>"><div id="elh_documentosavaluo_descripcion" class="documentosavaluo_descripcion"><div class="ewTableHeaderCaption"><?php echo $documentosavaluo->descripcion->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="descripcion" class="<?php echo $documentosavaluo->descripcion->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $documentosavaluo->SortUrl($documentosavaluo->descripcion) ?>',1);"><div id="elh_documentosavaluo_descripcion" class="documentosavaluo_descripcion">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $documentosavaluo->descripcion->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($documentosavaluo->descripcion->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($documentosavaluo->descripcion->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $documentosavaluo->descripcion->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($documentosavaluo->descripcion->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($documentosavaluo->descripcion->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -3258,12 +2105,21 @@ $documentosavaluo_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($documentosavaluo->id_tipodocumento->Visible) { // id_tipodocumento ?>
+	<?php if ($documentosavaluo->SortUrl($documentosavaluo->id_tipodocumento) == "") { ?>
+		<th data-name="id_tipodocumento" class="<?php echo $documentosavaluo->id_tipodocumento->HeaderCellClass() ?>"><div id="elh_documentosavaluo_id_tipodocumento" class="documentosavaluo_id_tipodocumento"><div class="ewTableHeaderCaption"><?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="id_tipodocumento" class="<?php echo $documentosavaluo->id_tipodocumento->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $documentosavaluo->SortUrl($documentosavaluo->id_tipodocumento) ?>',1);"><div id="elh_documentosavaluo_id_tipodocumento" class="documentosavaluo_id_tipodocumento">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($documentosavaluo->id_tipodocumento->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($documentosavaluo->id_tipodocumento->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php if ($documentosavaluo->created_at->Visible) { // created_at ?>
 	<?php if ($documentosavaluo->SortUrl($documentosavaluo->created_at) == "") { ?>
-		<th data-name="created_at" class="<?php echo $documentosavaluo->created_at->HeaderCellClass() ?>"><div id="elh_documentosavaluo_created_at" class="documentosavaluo_created_at"><div class="ewTableHeaderCaption"><?php echo $documentosavaluo->created_at->FldCaption() ?></div></div></th>
+		<th data-name="created_at" class="<?php echo $documentosavaluo->created_at->HeaderCellClass() ?>"><div id="elh_documentosavaluo_created_at" class="documentosavaluo_created_at"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $documentosavaluo->created_at->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="created_at" class="<?php echo $documentosavaluo->created_at->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $documentosavaluo->SortUrl($documentosavaluo->created_at) ?>',1);"><div id="elh_documentosavaluo_created_at" class="documentosavaluo_created_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $documentosavaluo->created_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($documentosavaluo->created_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($documentosavaluo->created_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $documentosavaluo->created_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($documentosavaluo->created_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($documentosavaluo->created_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -3286,15 +2142,6 @@ if ($documentosavaluo->ExportAll && $documentosavaluo->Export <> "") {
 	else
 		$documentosavaluo_list->StopRec = $documentosavaluo_list->TotalRecs;
 }
-
-// Restore number of post back records
-if ($objForm) {
-	$objForm->Index = -1;
-	if ($objForm->HasValue($documentosavaluo_list->FormKeyCountName) && ($documentosavaluo->CurrentAction == "gridadd" || $documentosavaluo->CurrentAction == "gridedit" || $documentosavaluo->CurrentAction == "F")) {
-		$documentosavaluo_list->KeyCount = $objForm->GetValue($documentosavaluo_list->FormKeyCountName);
-		$documentosavaluo_list->StopRec = $documentosavaluo_list->StartRec + $documentosavaluo_list->KeyCount - 1;
-	}
-}
 $documentosavaluo_list->RecCnt = $documentosavaluo_list->StartRec - 1;
 if ($documentosavaluo_list->Recordset && !$documentosavaluo_list->Recordset->EOF) {
 	$documentosavaluo_list->Recordset->MoveFirst();
@@ -3309,25 +2156,10 @@ if ($documentosavaluo_list->Recordset && !$documentosavaluo_list->Recordset->EOF
 $documentosavaluo->RowType = EW_ROWTYPE_AGGREGATEINIT;
 $documentosavaluo->ResetAttrs();
 $documentosavaluo_list->RenderRow();
-$documentosavaluo_list->EditRowCnt = 0;
-if ($documentosavaluo->CurrentAction == "edit")
-	$documentosavaluo_list->RowIndex = 1;
-if ($documentosavaluo->CurrentAction == "gridadd")
-	$documentosavaluo_list->RowIndex = 0;
 while ($documentosavaluo_list->RecCnt < $documentosavaluo_list->StopRec) {
 	$documentosavaluo_list->RecCnt++;
 	if (intval($documentosavaluo_list->RecCnt) >= intval($documentosavaluo_list->StartRec)) {
 		$documentosavaluo_list->RowCnt++;
-		if ($documentosavaluo->CurrentAction == "gridadd" || $documentosavaluo->CurrentAction == "gridedit" || $documentosavaluo->CurrentAction == "F") {
-			$documentosavaluo_list->RowIndex++;
-			$objForm->Index = $documentosavaluo_list->RowIndex;
-			if ($objForm->HasValue($documentosavaluo_list->FormActionName))
-				$documentosavaluo_list->RowAction = strval($objForm->GetValue($documentosavaluo_list->FormActionName));
-			elseif ($documentosavaluo->CurrentAction == "gridadd")
-				$documentosavaluo_list->RowAction = "insert";
-			else
-				$documentosavaluo_list->RowAction = "";
-		}
 
 		// Set up key count
 		$documentosavaluo_list->KeyCount = $documentosavaluo_list->RowIndex;
@@ -3336,26 +2168,10 @@ while ($documentosavaluo_list->RecCnt < $documentosavaluo_list->StopRec) {
 		$documentosavaluo->ResetAttrs();
 		$documentosavaluo->CssClass = "";
 		if ($documentosavaluo->CurrentAction == "gridadd") {
-			$documentosavaluo_list->LoadRowValues(); // Load default values
 		} else {
 			$documentosavaluo_list->LoadRowValues($documentosavaluo_list->Recordset); // Load row values
 		}
 		$documentosavaluo->RowType = EW_ROWTYPE_VIEW; // Render view
-		if ($documentosavaluo->CurrentAction == "gridadd") // Grid add
-			$documentosavaluo->RowType = EW_ROWTYPE_ADD; // Render add
-		if ($documentosavaluo->CurrentAction == "gridadd" && $documentosavaluo->EventCancelled && !$objForm->HasValue("k_blankrow")) // Insert failed
-			$documentosavaluo_list->RestoreCurrentRowFormValues($documentosavaluo_list->RowIndex); // Restore form values
-		if ($documentosavaluo->CurrentAction == "edit") {
-			if ($documentosavaluo_list->CheckInlineEditKey() && $documentosavaluo_list->EditRowCnt == 0) { // Inline edit
-				$documentosavaluo->RowType = EW_ROWTYPE_EDIT; // Render edit
-			}
-		}
-		if ($documentosavaluo->CurrentAction == "edit" && $documentosavaluo->RowType == EW_ROWTYPE_EDIT && $documentosavaluo->EventCancelled) { // Update failed
-			$objForm->Index = 1;
-			$documentosavaluo_list->RestoreFormValues(); // Restore form values
-		}
-		if ($documentosavaluo->RowType == EW_ROWTYPE_EDIT) // Edit row
-			$documentosavaluo_list->EditRowCnt++;
 
 		// Set up row id / data-rowindex
 		$documentosavaluo->RowAttrs = array_merge($documentosavaluo->RowAttrs, array('data-rowindex'=>$documentosavaluo_list->RowCnt, 'id'=>'r' . $documentosavaluo_list->RowCnt . '_documentosavaluo', 'data-rowtype'=>$documentosavaluo->RowType));
@@ -3365,9 +2181,6 @@ while ($documentosavaluo_list->RecCnt < $documentosavaluo_list->StopRec) {
 
 		// Render list options
 		$documentosavaluo_list->RenderListOptions();
-
-		// Skip delete row / empty row for confirm page
-		if ($documentosavaluo_list->RowAction <> "delete" && $documentosavaluo_list->RowAction <> "insertdelete" && !($documentosavaluo_list->RowAction == "insert" && $documentosavaluo->CurrentAction == "F" && $documentosavaluo_list->EmptyRow())) {
 ?>
 	<tr<?php echo $documentosavaluo->RowAttributes() ?>>
 <?php
@@ -3377,134 +2190,43 @@ $documentosavaluo_list->ListOptions->Render("body", "left", $documentosavaluo_li
 ?>
 	<?php if ($documentosavaluo->descripcion->Visible) { // descripcion ?>
 		<td data-name="descripcion"<?php echo $documentosavaluo->descripcion->CellAttributes() ?>>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_descripcion" class="form-group documentosavaluo_descripcion">
-<textarea data-table="documentosavaluo" data-field="x_descripcion" name="x<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" id="x<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($documentosavaluo->descripcion->getPlaceHolder()) ?>"<?php echo $documentosavaluo->descripcion->EditAttributes() ?>><?php echo $documentosavaluo->descripcion->EditValue ?></textarea>
-</span>
-<input type="hidden" data-table="documentosavaluo" data-field="x_descripcion" name="o<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" id="o<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" value="<?php echo ew_HtmlEncode($documentosavaluo->descripcion->OldValue) ?>">
-<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_descripcion" class="form-group documentosavaluo_descripcion">
-<textarea data-table="documentosavaluo" data-field="x_descripcion" name="x<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" id="x<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($documentosavaluo->descripcion->getPlaceHolder()) ?>"<?php echo $documentosavaluo->descripcion->EditAttributes() ?>><?php echo $documentosavaluo->descripcion->EditValue ?></textarea>
-</span>
-<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_descripcion" class="documentosavaluo_descripcion">
 <span<?php echo $documentosavaluo->descripcion->ViewAttributes() ?>>
 <?php echo $documentosavaluo->descripcion->ListViewValue() ?></span>
 </span>
-<?php } ?>
 </td>
 	<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<input type="hidden" data-table="documentosavaluo" data-field="x_id" name="x<?php echo $documentosavaluo_list->RowIndex ?>_id" id="x<?php echo $documentosavaluo_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($documentosavaluo->id->CurrentValue) ?>">
-<input type="hidden" data-table="documentosavaluo" data-field="x_id" name="o<?php echo $documentosavaluo_list->RowIndex ?>_id" id="o<?php echo $documentosavaluo_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($documentosavaluo->id->OldValue) ?>">
-<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_EDIT || $documentosavaluo->CurrentMode == "edit") { ?>
-<input type="hidden" data-table="documentosavaluo" data-field="x_id" name="x<?php echo $documentosavaluo_list->RowIndex ?>_id" id="x<?php echo $documentosavaluo_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($documentosavaluo->id->CurrentValue) ?>">
-<?php } ?>
 	<?php if ($documentosavaluo->imagen->Visible) { // imagen ?>
 		<td data-name="imagen"<?php echo $documentosavaluo->imagen->CellAttributes() ?>>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_imagen" class="form-group documentosavaluo_imagen">
-<div id="fd_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen">
-<span title="<?php echo $documentosavaluo->imagen->FldTitle() ? $documentosavaluo->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($documentosavaluo->imagen->ReadOnly || $documentosavaluo->imagen->Disabled) echo " hide"; ?>" data-trigger="hover">
-	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
-	<input type="file" title=" " data-table="documentosavaluo" data-field="x_imagen" name="x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id="x<?php echo $documentosavaluo_list->RowIndex ?>_imagen"<?php echo $documentosavaluo->imagen->EditAttributes() ?>>
-</span>
-<input type="hidden" name="fn_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fn_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->Upload->FileName ?>">
-<input type="hidden" name="fa_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fa_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="0">
-<input type="hidden" name="fs_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fs_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="0">
-<input type="hidden" name="fx_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fx_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
-<input type="hidden" name="fm_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fm_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
-</div>
-<table id="ft_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
-</span>
-<input type="hidden" data-table="documentosavaluo" data-field="x_imagen" name="o<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id="o<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo ew_HtmlEncode($documentosavaluo->imagen->OldValue) ?>">
-<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_imagen" class="form-group documentosavaluo_imagen">
-<div id="fd_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen">
-<span title="<?php echo $documentosavaluo->imagen->FldTitle() ? $documentosavaluo->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($documentosavaluo->imagen->ReadOnly || $documentosavaluo->imagen->Disabled) echo " hide"; ?>" data-trigger="hover">
-	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
-	<input type="file" title=" " data-table="documentosavaluo" data-field="x_imagen" name="x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id="x<?php echo $documentosavaluo_list->RowIndex ?>_imagen"<?php echo $documentosavaluo->imagen->EditAttributes() ?>>
-</span>
-<input type="hidden" name="fn_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fn_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->Upload->FileName ?>">
-<?php if (@$_POST["fa_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen"] == "0") { ?>
-<input type="hidden" name="fa_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fa_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="0">
-<?php } else { ?>
-<input type="hidden" name="fa_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fa_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="1">
-<?php } ?>
-<input type="hidden" name="fs_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fs_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="0">
-<input type="hidden" name="fx_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fx_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
-<input type="hidden" name="fm_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fm_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
-</div>
-<table id="ft_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
-</span>
-<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_imagen" class="documentosavaluo_imagen">
 <span<?php echo $documentosavaluo->imagen->ViewAttributes() ?>>
 <?php echo ew_GetFileViewTag($documentosavaluo->imagen, $documentosavaluo->imagen->ListViewValue()) ?>
 </span>
 </span>
-<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($documentosavaluo->avaluo->Visible) { // avaluo ?>
 		<td data-name="avaluo"<?php echo $documentosavaluo->avaluo->CellAttributes() ?>>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<?php if ($documentosavaluo->avaluo->getSessionValue() <> "") { ?>
-<span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_avaluo" class="form-group documentosavaluo_avaluo">
-<span<?php echo $documentosavaluo->avaluo->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $documentosavaluo->avaluo->ViewValue ?></p></span>
-</span>
-<input type="hidden" id="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" name="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" value="<?php echo ew_HtmlEncode($documentosavaluo->avaluo->CurrentValue) ?>">
-<?php } else { ?>
-<span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_avaluo" class="form-group documentosavaluo_avaluo">
-<select data-table="documentosavaluo" data-field="x_avaluo" data-value-separator="<?php echo $documentosavaluo->avaluo->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" name="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo"<?php echo $documentosavaluo->avaluo->EditAttributes() ?>>
-<?php echo $documentosavaluo->avaluo->SelectOptionListHtml("x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo") ?>
-</select>
-</span>
-<?php } ?>
-<input type="hidden" data-table="documentosavaluo" data-field="x_avaluo" name="o<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" id="o<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" value="<?php echo ew_HtmlEncode($documentosavaluo->avaluo->OldValue) ?>">
-<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<?php if ($documentosavaluo->avaluo->getSessionValue() <> "") { ?>
-<span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_avaluo" class="form-group documentosavaluo_avaluo">
-<span<?php echo $documentosavaluo->avaluo->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $documentosavaluo->avaluo->ViewValue ?></p></span>
-</span>
-<input type="hidden" id="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" name="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" value="<?php echo ew_HtmlEncode($documentosavaluo->avaluo->CurrentValue) ?>">
-<?php } else { ?>
-<span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_avaluo" class="form-group documentosavaluo_avaluo">
-<select data-table="documentosavaluo" data-field="x_avaluo" data-value-separator="<?php echo $documentosavaluo->avaluo->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" name="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo"<?php echo $documentosavaluo->avaluo->EditAttributes() ?>>
-<?php echo $documentosavaluo->avaluo->SelectOptionListHtml("x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo") ?>
-</select>
-</span>
-<?php } ?>
-<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_avaluo" class="documentosavaluo_avaluo">
 <span<?php echo $documentosavaluo->avaluo->ViewAttributes() ?>>
 <?php echo $documentosavaluo->avaluo->ListViewValue() ?></span>
 </span>
-<?php } ?>
+</td>
+	<?php } ?>
+	<?php if ($documentosavaluo->id_tipodocumento->Visible) { // id_tipodocumento ?>
+		<td data-name="id_tipodocumento"<?php echo $documentosavaluo->id_tipodocumento->CellAttributes() ?>>
+<span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_id_tipodocumento" class="documentosavaluo_id_tipodocumento">
+<span<?php echo $documentosavaluo->id_tipodocumento->ViewAttributes() ?>>
+<?php echo $documentosavaluo->id_tipodocumento->ListViewValue() ?></span>
+</span>
 </td>
 	<?php } ?>
 	<?php if ($documentosavaluo->created_at->Visible) { // created_at ?>
 		<td data-name="created_at"<?php echo $documentosavaluo->created_at->CellAttributes() ?>>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<input type="hidden" data-table="documentosavaluo" data-field="x_created_at" name="o<?php echo $documentosavaluo_list->RowIndex ?>_created_at" id="o<?php echo $documentosavaluo_list->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($documentosavaluo->created_at->OldValue) ?>">
-<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<?php } ?>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $documentosavaluo_list->RowCnt ?>_documentosavaluo_created_at" class="documentosavaluo_created_at">
 <span<?php echo $documentosavaluo->created_at->ViewAttributes() ?>>
 <?php echo $documentosavaluo->created_at->ListViewValue() ?></span>
 </span>
-<?php } ?>
 </td>
 	<?php } ?>
 <?php
@@ -3513,114 +2235,14 @@ $documentosavaluo_list->ListOptions->Render("body", "left", $documentosavaluo_li
 $documentosavaluo_list->ListOptions->Render("body", "right", $documentosavaluo_list->RowCnt);
 ?>
 	</tr>
-<?php if ($documentosavaluo->RowType == EW_ROWTYPE_ADD || $documentosavaluo->RowType == EW_ROWTYPE_EDIT) { ?>
-<script type="text/javascript">
-fdocumentosavaluolist.UpdateOpts(<?php echo $documentosavaluo_list->RowIndex ?>);
-</script>
-<?php } ?>
 <?php
 	}
-	} // End delete row checking
 	if ($documentosavaluo->CurrentAction <> "gridadd")
-		if (!$documentosavaluo_list->Recordset->EOF) $documentosavaluo_list->Recordset->MoveNext();
-}
-?>
-<?php
-	if ($documentosavaluo->CurrentAction == "gridadd" || $documentosavaluo->CurrentAction == "gridedit") {
-		$documentosavaluo_list->RowIndex = '$rowindex$';
-		$documentosavaluo_list->LoadRowValues();
-
-		// Set row properties
-		$documentosavaluo->ResetAttrs();
-		$documentosavaluo->RowAttrs = array_merge($documentosavaluo->RowAttrs, array('data-rowindex'=>$documentosavaluo_list->RowIndex, 'id'=>'r0_documentosavaluo', 'data-rowtype'=>EW_ROWTYPE_ADD));
-		ew_AppendClass($documentosavaluo->RowAttrs["class"], "ewTemplate");
-		$documentosavaluo->RowType = EW_ROWTYPE_ADD;
-
-		// Render row
-		$documentosavaluo_list->RenderRow();
-
-		// Render list options
-		$documentosavaluo_list->RenderListOptions();
-		$documentosavaluo_list->StartRowCnt = 0;
-?>
-	<tr<?php echo $documentosavaluo->RowAttributes() ?>>
-<?php
-
-// Render list options (body, left)
-$documentosavaluo_list->ListOptions->Render("body", "left", $documentosavaluo_list->RowIndex);
-?>
-	<?php if ($documentosavaluo->descripcion->Visible) { // descripcion ?>
-		<td data-name="descripcion">
-<span id="el$rowindex$_documentosavaluo_descripcion" class="form-group documentosavaluo_descripcion">
-<textarea data-table="documentosavaluo" data-field="x_descripcion" name="x<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" id="x<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($documentosavaluo->descripcion->getPlaceHolder()) ?>"<?php echo $documentosavaluo->descripcion->EditAttributes() ?>><?php echo $documentosavaluo->descripcion->EditValue ?></textarea>
-</span>
-<input type="hidden" data-table="documentosavaluo" data-field="x_descripcion" name="o<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" id="o<?php echo $documentosavaluo_list->RowIndex ?>_descripcion" value="<?php echo ew_HtmlEncode($documentosavaluo->descripcion->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($documentosavaluo->imagen->Visible) { // imagen ?>
-		<td data-name="imagen">
-<span id="el$rowindex$_documentosavaluo_imagen" class="form-group documentosavaluo_imagen">
-<div id="fd_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen">
-<span title="<?php echo $documentosavaluo->imagen->FldTitle() ? $documentosavaluo->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($documentosavaluo->imagen->ReadOnly || $documentosavaluo->imagen->Disabled) echo " hide"; ?>" data-trigger="hover">
-	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
-	<input type="file" title=" " data-table="documentosavaluo" data-field="x_imagen" name="x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id="x<?php echo $documentosavaluo_list->RowIndex ?>_imagen"<?php echo $documentosavaluo->imagen->EditAttributes() ?>>
-</span>
-<input type="hidden" name="fn_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fn_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->Upload->FileName ?>">
-<input type="hidden" name="fa_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fa_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="0">
-<input type="hidden" name="fs_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fs_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="0">
-<input type="hidden" name="fx_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fx_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
-<input type="hidden" name="fm_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id= "fm_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
-</div>
-<table id="ft_x<?php echo $documentosavaluo_list->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
-</span>
-<input type="hidden" data-table="documentosavaluo" data-field="x_imagen" name="o<?php echo $documentosavaluo_list->RowIndex ?>_imagen" id="o<?php echo $documentosavaluo_list->RowIndex ?>_imagen" value="<?php echo ew_HtmlEncode($documentosavaluo->imagen->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($documentosavaluo->avaluo->Visible) { // avaluo ?>
-		<td data-name="avaluo">
-<?php if ($documentosavaluo->avaluo->getSessionValue() <> "") { ?>
-<span id="el$rowindex$_documentosavaluo_avaluo" class="form-group documentosavaluo_avaluo">
-<span<?php echo $documentosavaluo->avaluo->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $documentosavaluo->avaluo->ViewValue ?></p></span>
-</span>
-<input type="hidden" id="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" name="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" value="<?php echo ew_HtmlEncode($documentosavaluo->avaluo->CurrentValue) ?>">
-<?php } else { ?>
-<span id="el$rowindex$_documentosavaluo_avaluo" class="form-group documentosavaluo_avaluo">
-<select data-table="documentosavaluo" data-field="x_avaluo" data-value-separator="<?php echo $documentosavaluo->avaluo->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" name="x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo"<?php echo $documentosavaluo->avaluo->EditAttributes() ?>>
-<?php echo $documentosavaluo->avaluo->SelectOptionListHtml("x<?php echo $documentosavaluo_list->RowIndex ?>_avaluo") ?>
-</select>
-</span>
-<?php } ?>
-<input type="hidden" data-table="documentosavaluo" data-field="x_avaluo" name="o<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" id="o<?php echo $documentosavaluo_list->RowIndex ?>_avaluo" value="<?php echo ew_HtmlEncode($documentosavaluo->avaluo->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($documentosavaluo->created_at->Visible) { // created_at ?>
-		<td data-name="created_at">
-<input type="hidden" data-table="documentosavaluo" data-field="x_created_at" name="o<?php echo $documentosavaluo_list->RowIndex ?>_created_at" id="o<?php echo $documentosavaluo_list->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($documentosavaluo->created_at->OldValue) ?>">
-</td>
-	<?php } ?>
-<?php
-
-// Render list options (body, right)
-$documentosavaluo_list->ListOptions->Render("body", "right", $documentosavaluo_list->RowIndex);
-?>
-<script type="text/javascript">
-fdocumentosavaluolist.UpdateOpts(<?php echo $documentosavaluo_list->RowIndex ?>);
-</script>
-	</tr>
-<?php
+		$documentosavaluo_list->Recordset->MoveNext();
 }
 ?>
 </tbody>
 </table>
-<?php } ?>
-<?php if ($documentosavaluo->CurrentAction == "gridadd") { ?>
-<input type="hidden" name="a_list" id="a_list" value="gridinsert">
-<input type="hidden" name="<?php echo $documentosavaluo_list->FormKeyCountName ?>" id="<?php echo $documentosavaluo_list->FormKeyCountName ?>" value="<?php echo $documentosavaluo_list->KeyCount ?>">
-<?php echo $documentosavaluo_list->MultiSelectKey ?>
-<?php } ?>
-<?php if ($documentosavaluo->CurrentAction == "edit") { ?>
-<input type="hidden" name="<?php echo $documentosavaluo_list->FormKeyCountName ?>" id="<?php echo $documentosavaluo_list->FormKeyCountName ?>" value="<?php echo $documentosavaluo_list->KeyCount ?>">
 <?php } ?>
 <?php if ($documentosavaluo->CurrentAction == "") { ?>
 <input type="hidden" name="a_list" id="a_list" value="">
@@ -3633,6 +2255,7 @@ fdocumentosavaluolist.UpdateOpts(<?php echo $documentosavaluo_list->RowIndex ?>)
 if ($documentosavaluo_list->Recordset)
 	$documentosavaluo_list->Recordset->Close();
 ?>
+<?php if ($documentosavaluo->Export == "") { ?>
 <div class="box-footer ewGridLowerPanel">
 <?php if ($documentosavaluo->CurrentAction <> "gridadd" && $documentosavaluo->CurrentAction <> "gridedit") { ?>
 <form name="ewPagerForm" class="ewForm form-inline ewPagerForm" action="<?php echo ew_CurrentPage() ?>">
@@ -3663,6 +2286,17 @@ if ($documentosavaluo_list->Recordset)
 	<span><?php echo $Language->Phrase("Record") ?>&nbsp;<?php echo $documentosavaluo_list->Pager->FromIndex ?>&nbsp;<?php echo $Language->Phrase("To") ?>&nbsp;<?php echo $documentosavaluo_list->Pager->ToIndex ?>&nbsp;<?php echo $Language->Phrase("Of") ?>&nbsp;<?php echo $documentosavaluo_list->Pager->RecordCount ?></span>
 </div>
 <?php } ?>
+<?php if ($documentosavaluo_list->TotalRecs > 0 && (!$documentosavaluo_list->AutoHidePageSizeSelector || $documentosavaluo_list->Pager->Visible)) { ?>
+<div class="ewPager">
+<input type="hidden" name="t" value="documentosavaluo">
+<select name="<?php echo EW_TABLE_REC_PER_PAGE ?>" class="form-control input-sm ewTooltip" title="<?php echo $Language->Phrase("RecordsPerPage") ?>" onchange="this.form.submit();">
+<option value="10"<?php if ($documentosavaluo_list->DisplayRecs == 10) { ?> selected<?php } ?>>10</option>
+<option value="20"<?php if ($documentosavaluo_list->DisplayRecs == 20) { ?> selected<?php } ?>>20</option>
+<option value="50"<?php if ($documentosavaluo_list->DisplayRecs == 50) { ?> selected<?php } ?>>50</option>
+<option value="ALL"<?php if ($documentosavaluo->getRecordsPerPage() == -1) { ?> selected<?php } ?>><?php echo $Language->Phrase("AllRecords") ?></option>
+</select>
+</div>
+<?php } ?>
 </form>
 <?php } ?>
 <div class="ewListOtherOptions">
@@ -3673,6 +2307,7 @@ if ($documentosavaluo_list->Recordset)
 </div>
 <div class="clearfix"></div>
 </div>
+<?php } ?>
 </div>
 <?php } ?>
 <?php if ($documentosavaluo_list->TotalRecs == 0 && $documentosavaluo->CurrentAction == "") { // Show other options ?>
@@ -3686,22 +2321,24 @@ if ($documentosavaluo_list->Recordset)
 </div>
 <div class="clearfix"></div>
 <?php } ?>
+<?php if ($documentosavaluo->Export == "") { ?>
 <script type="text/javascript">
-fdocumentosavaluolistsrch.FilterList = <?php echo $documentosavaluo_list->GetFilterList() ?>;
-fdocumentosavaluolistsrch.Init();
 fdocumentosavaluolist.Init();
 </script>
+<?php } ?>
 <?php
 $documentosavaluo_list->ShowPageFooter();
 if (EW_DEBUG_ENABLED)
 	echo ew_DebugMsg();
 ?>
+<?php if ($documentosavaluo->Export == "") { ?>
 <script type="text/javascript">
 
 // Write your table-specific startup script here
 // document.write("page loaded");
 
 </script>
+<?php } ?>
 <?php include_once "footer.php" ?>
 <?php
 $documentosavaluo_list->Page_Terminate();

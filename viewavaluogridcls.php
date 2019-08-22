@@ -497,6 +497,9 @@ class cviewavaluo_grid extends cviewavaluo {
 		$this->Command = strtolower(@$_GET["cmd"]);
 		if ($this->IsPageRequest()) { // Validate request
 
+			// Set up records per page
+			$this->SetupDisplayRecs();
+
 			// Handle reset command
 			$this->ResetCmd();
 
@@ -579,6 +582,27 @@ class cviewavaluo_grid extends cviewavaluo {
 				if ($this->Recordset = $this->LoadRecordset())
 					$this->TotalRecs = $this->Recordset->RecordCount();
 			}
+		}
+	}
+
+	// Set up number of records displayed per page
+	function SetupDisplayRecs() {
+		$sWrk = @$_GET[EW_TABLE_REC_PER_PAGE];
+		if ($sWrk <> "") {
+			if (is_numeric($sWrk)) {
+				$this->DisplayRecs = intval($sWrk);
+			} else {
+				if (strtolower($sWrk) == "all") { // Display all records
+					$this->DisplayRecs = -1;
+				} else {
+					$this->DisplayRecs = 20; // Non-numeric, load default
+				}
+			}
+			$this->setRecordsPerPage($this->DisplayRecs); // Save to Session
+
+			// Reset start position
+			$this->StartRec = 1;
+			$this->setStartRecordNumber($this->StartRec);
 		}
 	}
 
@@ -2214,7 +2238,7 @@ class cviewavaluo_grid extends cviewavaluo {
 		$this->estado->SetDbValueDef($rsnew, $this->estado->CurrentValue, NULL, strval($this->estado->CurrentValue) == "");
 
 		// estadopago
-		$this->estadopago->SetDbValueDef($rsnew, $this->estadopago->CurrentValue, NULL, FALSE);
+		$this->estadopago->SetDbValueDef($rsnew, $this->estadopago->CurrentValue, NULL, strval($this->estadopago->CurrentValue) == "");
 
 		// fecha_avaluo
 		$this->fecha_avaluo->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 0), NULL, FALSE);

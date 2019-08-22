@@ -45,6 +45,12 @@ fdocumentosavaluogrid.Validate = function() {
 			elm = this.GetElements("x" + infix + "_descripcion");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $documentosavaluo->descripcion->FldCaption(), $documentosavaluo->descripcion->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_created_at");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $documentosavaluo->created_at->FldCaption(), $documentosavaluo->created_at->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_created_at");
+			if (elm && !ew_CheckDateDef(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($documentosavaluo->created_at->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -60,6 +66,8 @@ fdocumentosavaluogrid.EmptyRow = function(infix) {
 	if (ew_ValueChanged(fobj, infix, "descripcion", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "imagen", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "avaluo", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "id_tipodocumento", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "created_at", false)) return false;
 	return true;
 }
 
@@ -77,6 +85,8 @@ fdocumentosavaluogrid.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDA
 // Dynamic selection lists
 fdocumentosavaluogrid.Lists["x_avaluo"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_tipoinmueble","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
 fdocumentosavaluogrid.Lists["x_avaluo"].Data = "<?php echo $documentosavaluo_grid->avaluo->LookupFilterQuery(FALSE, "grid") ?>";
+fdocumentosavaluogrid.Lists["x_id_tipodocumento"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipodocumento"};
+fdocumentosavaluogrid.Lists["x_id_tipodocumento"].Data = "<?php echo $documentosavaluo_grid->id_tipodocumento->LookupFilterQuery(FALSE, "grid") ?>";
 
 // Form object for search
 </script>
@@ -176,12 +186,21 @@ $documentosavaluo_grid->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($documentosavaluo->id_tipodocumento->Visible) { // id_tipodocumento ?>
+	<?php if ($documentosavaluo->SortUrl($documentosavaluo->id_tipodocumento) == "") { ?>
+		<th data-name="id_tipodocumento" class="<?php echo $documentosavaluo->id_tipodocumento->HeaderCellClass() ?>"><div id="elh_documentosavaluo_id_tipodocumento" class="documentosavaluo_id_tipodocumento"><div class="ewTableHeaderCaption"><?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="id_tipodocumento" class="<?php echo $documentosavaluo->id_tipodocumento->HeaderCellClass() ?>"><div><div id="elh_documentosavaluo_id_tipodocumento" class="documentosavaluo_id_tipodocumento">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($documentosavaluo->id_tipodocumento->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($documentosavaluo->id_tipodocumento->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php if ($documentosavaluo->created_at->Visible) { // created_at ?>
 	<?php if ($documentosavaluo->SortUrl($documentosavaluo->created_at) == "") { ?>
-		<th data-name="created_at" class="<?php echo $documentosavaluo->created_at->HeaderCellClass() ?>"><div id="elh_documentosavaluo_created_at" class="documentosavaluo_created_at"><div class="ewTableHeaderCaption"><?php echo $documentosavaluo->created_at->FldCaption() ?></div></div></th>
+		<th data-name="created_at" class="<?php echo $documentosavaluo->created_at->HeaderCellClass() ?>"><div id="elh_documentosavaluo_created_at" class="documentosavaluo_created_at"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $documentosavaluo->created_at->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="created_at" class="<?php echo $documentosavaluo->created_at->HeaderCellClass() ?>"><div><div id="elh_documentosavaluo_created_at" class="documentosavaluo_created_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $documentosavaluo->created_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($documentosavaluo->created_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($documentosavaluo->created_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $documentosavaluo->created_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($documentosavaluo->created_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($documentosavaluo->created_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -344,7 +363,9 @@ $documentosavaluo_grid->ListOptions->Render("body", "left", $documentosavaluo_gr
 <input type="hidden" name="fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluogrid", "x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen");</script>
+<?php } ?>
 </span>
 <input type="hidden" data-table="documentosavaluo" data-field="x_imagen" name="o<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id="o<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo ew_HtmlEncode($documentosavaluo->imagen->OldValue) ?>">
 <?php } elseif ($documentosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -370,7 +391,9 @@ $documentosavaluo_grid->ListOptions->Render("body", "left", $documentosavaluo_gr
 <input type="hidden" name="fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluogrid", "x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen");</script>
+<?php } ?>
 </span>
 <?php } ?>
 </td>
@@ -423,12 +446,60 @@ $documentosavaluo_grid->ListOptions->Render("body", "left", $documentosavaluo_gr
 <?php } ?>
 </td>
 	<?php } ?>
+	<?php if ($documentosavaluo->id_tipodocumento->Visible) { // id_tipodocumento ?>
+		<td data-name="id_tipodocumento"<?php echo $documentosavaluo->id_tipodocumento->CellAttributes() ?>>
+<?php if ($documentosavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $documentosavaluo_grid->RowCnt ?>_documentosavaluo_id_tipodocumento" class="form-group documentosavaluo_id_tipodocumento">
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento"><?php echo (strval($documentosavaluo->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $documentosavaluo->id_tipodocumento->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($documentosavaluo->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($documentosavaluo->id_tipodocumento->ReadOnly || $documentosavaluo->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $documentosavaluo->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo $documentosavaluo->id_tipodocumento->CurrentValue ?>"<?php echo $documentosavaluo->id_tipodocumento->EditAttributes() ?>>
+<?php if (AllowAdd(CurrentProjectID() . "tipodocumento") && !$documentosavaluo->id_tipodocumento->ReadOnly) { ?>
+<button type="button" title="<?php echo ew_HtmlTitle($Language->Phrase("AddLink")) . "&nbsp;" . $documentosavaluo->id_tipodocumento->FldCaption() ?>" onclick="ew_AddOptDialogShow({lnk:this,el:'x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento',url:'tipodocumentoaddopt.php'});" class="ewAddOptBtn btn btn-default btn-sm" id="aol_x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento"><span class="glyphicon glyphicon-plus ewIcon"></span><span class="hide"><?php echo $Language->Phrase("AddLink") ?>&nbsp;<?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></span></button>
+<?php } ?>
+</span>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" name="o<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="o<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo ew_HtmlEncode($documentosavaluo->id_tipodocumento->OldValue) ?>">
+<?php } ?>
+<?php if ($documentosavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $documentosavaluo_grid->RowCnt ?>_documentosavaluo_id_tipodocumento" class="form-group documentosavaluo_id_tipodocumento">
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento"><?php echo (strval($documentosavaluo->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $documentosavaluo->id_tipodocumento->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($documentosavaluo->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($documentosavaluo->id_tipodocumento->ReadOnly || $documentosavaluo->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $documentosavaluo->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo $documentosavaluo->id_tipodocumento->CurrentValue ?>"<?php echo $documentosavaluo->id_tipodocumento->EditAttributes() ?>>
+<?php if (AllowAdd(CurrentProjectID() . "tipodocumento") && !$documentosavaluo->id_tipodocumento->ReadOnly) { ?>
+<button type="button" title="<?php echo ew_HtmlTitle($Language->Phrase("AddLink")) . "&nbsp;" . $documentosavaluo->id_tipodocumento->FldCaption() ?>" onclick="ew_AddOptDialogShow({lnk:this,el:'x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento',url:'tipodocumentoaddopt.php'});" class="ewAddOptBtn btn btn-default btn-sm" id="aol_x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento"><span class="glyphicon glyphicon-plus ewIcon"></span><span class="hide"><?php echo $Language->Phrase("AddLink") ?>&nbsp;<?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></span></button>
+<?php } ?>
+</span>
+<?php } ?>
+<?php if ($documentosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $documentosavaluo_grid->RowCnt ?>_documentosavaluo_id_tipodocumento" class="documentosavaluo_id_tipodocumento">
+<span<?php echo $documentosavaluo->id_tipodocumento->ViewAttributes() ?>>
+<?php echo $documentosavaluo->id_tipodocumento->ListViewValue() ?></span>
+</span>
+<?php if ($documentosavaluo->CurrentAction <> "F") { ?>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" name="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo ew_HtmlEncode($documentosavaluo->id_tipodocumento->FormValue) ?>">
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" name="o<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="o<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo ew_HtmlEncode($documentosavaluo->id_tipodocumento->OldValue) ?>">
+<?php } else { ?>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" name="fdocumentosavaluogrid$x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="fdocumentosavaluogrid$x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo ew_HtmlEncode($documentosavaluo->id_tipodocumento->FormValue) ?>">
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" name="fdocumentosavaluogrid$o<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="fdocumentosavaluogrid$o<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo ew_HtmlEncode($documentosavaluo->id_tipodocumento->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+	<?php } ?>
 	<?php if ($documentosavaluo->created_at->Visible) { // created_at ?>
 		<td data-name="created_at"<?php echo $documentosavaluo->created_at->CellAttributes() ?>>
 <?php if ($documentosavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $documentosavaluo_grid->RowCnt ?>_documentosavaluo_created_at" class="form-group documentosavaluo_created_at">
+<input type="text" data-table="documentosavaluo" data-field="x_created_at" name="x<?php echo $documentosavaluo_grid->RowIndex ?>_created_at" id="x<?php echo $documentosavaluo_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($documentosavaluo->created_at->getPlaceHolder()) ?>" value="<?php echo $documentosavaluo->created_at->EditValue ?>"<?php echo $documentosavaluo->created_at->EditAttributes() ?>>
+</span>
 <input type="hidden" data-table="documentosavaluo" data-field="x_created_at" name="o<?php echo $documentosavaluo_grid->RowIndex ?>_created_at" id="o<?php echo $documentosavaluo_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($documentosavaluo->created_at->OldValue) ?>">
 <?php } ?>
 <?php if ($documentosavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $documentosavaluo_grid->RowCnt ?>_documentosavaluo_created_at" class="form-group documentosavaluo_created_at">
+<input type="text" data-table="documentosavaluo" data-field="x_created_at" name="x<?php echo $documentosavaluo_grid->RowIndex ?>_created_at" id="x<?php echo $documentosavaluo_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($documentosavaluo->created_at->getPlaceHolder()) ?>" value="<?php echo $documentosavaluo->created_at->EditValue ?>"<?php echo $documentosavaluo->created_at->EditAttributes() ?>>
+</span>
 <?php } ?>
 <?php if ($documentosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $documentosavaluo_grid->RowCnt ?>_documentosavaluo_created_at" class="documentosavaluo_created_at">
@@ -517,7 +588,9 @@ $documentosavaluo_grid->ListOptions->Render("body", "left", $documentosavaluo_gr
 <input type="hidden" name="fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluogrid", "x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen");</script>
+<?php } ?>
 </span>
 <input type="hidden" data-table="documentosavaluo" data-field="x_imagen" name="o<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id="o<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo ew_HtmlEncode($documentosavaluo->imagen->OldValue) ?>">
 </td>
@@ -548,9 +621,35 @@ $documentosavaluo_grid->ListOptions->Render("body", "left", $documentosavaluo_gr
 <input type="hidden" data-table="documentosavaluo" data-field="x_avaluo" name="o<?php echo $documentosavaluo_grid->RowIndex ?>_avaluo" id="o<?php echo $documentosavaluo_grid->RowIndex ?>_avaluo" value="<?php echo ew_HtmlEncode($documentosavaluo->avaluo->OldValue) ?>">
 </td>
 	<?php } ?>
+	<?php if ($documentosavaluo->id_tipodocumento->Visible) { // id_tipodocumento ?>
+		<td data-name="id_tipodocumento">
+<?php if ($documentosavaluo->CurrentAction <> "F") { ?>
+<span id="el$rowindex$_documentosavaluo_id_tipodocumento" class="form-group documentosavaluo_id_tipodocumento">
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento"><?php echo (strval($documentosavaluo->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $documentosavaluo->id_tipodocumento->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($documentosavaluo->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($documentosavaluo->id_tipodocumento->ReadOnly || $documentosavaluo->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $documentosavaluo->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo $documentosavaluo->id_tipodocumento->CurrentValue ?>"<?php echo $documentosavaluo->id_tipodocumento->EditAttributes() ?>>
+<?php if (AllowAdd(CurrentProjectID() . "tipodocumento") && !$documentosavaluo->id_tipodocumento->ReadOnly) { ?>
+<button type="button" title="<?php echo ew_HtmlTitle($Language->Phrase("AddLink")) . "&nbsp;" . $documentosavaluo->id_tipodocumento->FldCaption() ?>" onclick="ew_AddOptDialogShow({lnk:this,el:'x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento',url:'tipodocumentoaddopt.php'});" class="ewAddOptBtn btn btn-default btn-sm" id="aol_x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento"><span class="glyphicon glyphicon-plus ewIcon"></span><span class="hide"><?php echo $Language->Phrase("AddLink") ?>&nbsp;<?php echo $documentosavaluo->id_tipodocumento->FldCaption() ?></span></button>
+<?php } ?>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_documentosavaluo_id_tipodocumento" class="form-group documentosavaluo_id_tipodocumento">
+<span<?php echo $documentosavaluo->id_tipodocumento->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $documentosavaluo->id_tipodocumento->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" name="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="x<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo ew_HtmlEncode($documentosavaluo->id_tipodocumento->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="documentosavaluo" data-field="x_id_tipodocumento" name="o<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" id="o<?php echo $documentosavaluo_grid->RowIndex ?>_id_tipodocumento" value="<?php echo ew_HtmlEncode($documentosavaluo->id_tipodocumento->OldValue) ?>">
+</td>
+	<?php } ?>
 	<?php if ($documentosavaluo->created_at->Visible) { // created_at ?>
 		<td data-name="created_at">
 <?php if ($documentosavaluo->CurrentAction <> "F") { ?>
+<span id="el$rowindex$_documentosavaluo_created_at" class="form-group documentosavaluo_created_at">
+<input type="text" data-table="documentosavaluo" data-field="x_created_at" name="x<?php echo $documentosavaluo_grid->RowIndex ?>_created_at" id="x<?php echo $documentosavaluo_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($documentosavaluo->created_at->getPlaceHolder()) ?>" value="<?php echo $documentosavaluo->created_at->EditValue ?>"<?php echo $documentosavaluo->created_at->EditAttributes() ?>>
+</span>
 <?php } else { ?>
 <span id="el$rowindex$_documentosavaluo_created_at" class="form-group documentosavaluo_created_at">
 <span<?php echo $documentosavaluo->created_at->ViewAttributes() ?>>

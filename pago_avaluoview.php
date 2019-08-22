@@ -8,6 +8,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "pago_avaluoinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
 <?php include_once "pagoinfo.php" ?>
+<?php include_once "viewavaluoscinfo.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -307,6 +308,9 @@ class cpago_avaluo_view extends cpago_avaluo {
 		// Table object (pago)
 		if (!isset($GLOBALS['pago'])) $GLOBALS['pago'] = new cpago();
 
+		// Table object (viewavaluosc)
+		if (!isset($GLOBALS['viewavaluosc'])) $GLOBALS['viewavaluosc'] = new cviewavaluosc();
+
 		// Page ID
 		if (!defined("EW_PAGE_ID"))
 			define("EW_PAGE_ID", 'view', TRUE);
@@ -477,8 +481,6 @@ class cpago_avaluo_view extends cpago_avaluo {
 	var $StopRec;
 	var $TotalRecs = 0;
 	var $RecRange = 10;
-	var $Pager;
-	var $AutoHidePager = EW_AUTO_HIDE_PAGER;
 	var $RecCnt;
 	var $RecKey = array();
 	var $IsModal = FALSE;
@@ -509,46 +511,17 @@ class cpago_avaluo_view extends cpago_avaluo {
 				$this->id->setFormValue($_POST["id"]);
 				$this->RecKey["id"] = $this->id->FormValue;
 			} else {
-				$bLoadCurrentRecord = TRUE;
+				$sReturnUrl = "pago_avaluolist.php"; // Return to list
 			}
 
 			// Get action
 			$this->CurrentAction = "I"; // Display form
 			switch ($this->CurrentAction) {
 				case "I": // Get a record to display
-					$this->StartRec = 1; // Initialize start position
-					if ($this->Recordset = $this->LoadRecordset()) // Load records
-						$this->TotalRecs = $this->Recordset->RecordCount(); // Get record count
-					if ($this->TotalRecs <= 0) { // No record found
-						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
-							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
-						$this->Page_Terminate("pago_avaluolist.php"); // Return to list page
-					} elseif ($bLoadCurrentRecord) { // Load current record position
-						$this->SetupStartRec(); // Set up start record position
-
-						// Point to current record
-						if (intval($this->StartRec) <= intval($this->TotalRecs)) {
-							$bMatchRecord = TRUE;
-							$this->Recordset->Move($this->StartRec-1);
-						}
-					} else { // Match key values
-						while (!$this->Recordset->EOF) {
-							if (strval($this->id->CurrentValue) == strval($this->Recordset->fields('id'))) {
-								$this->setStartRecordNumber($this->StartRec); // Save record position
-								$bMatchRecord = TRUE;
-								break;
-							} else {
-								$this->StartRec++;
-								$this->Recordset->MoveNext();
-							}
-						}
-					}
-					if (!$bMatchRecord) {
+					if (!$this->LoadRow()) { // Load record based on key
 						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
 							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
 						$sReturnUrl = "pago_avaluolist.php"; // No matching record, return to list
-					} else {
-						$this->LoadRowValues($this->Recordset); // Load row values
 					}
 			}
 		} else {
@@ -653,32 +626,6 @@ class cpago_avaluo_view extends cpago_avaluo {
 			$this->StartRec = intval(($this->StartRec-1)/$this->DisplayRecs)*$this->DisplayRecs+1; // Point to page boundary
 			$this->setStartRecordNumber($this->StartRec);
 		}
-	}
-
-	// Load recordset
-	function LoadRecordset($offset = -1, $rowcnt = -1) {
-
-		// Load List page SQL
-		$sSql = $this->ListSQL();
-		$conn = &$this->Connection();
-
-		// Load recordset
-		$dbtype = ew_GetConnectionType($this->DBID);
-		if ($this->UseSelectLimit) {
-			$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
-			if ($dbtype == "MSSQL") {
-				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset, array("_hasOrderBy" => trim($this->getOrderBy()) || trim($this->getSessionOrderBy())));
-			} else {
-				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset);
-			}
-			$conn->raiseErrorFn = '';
-		} else {
-			$rs = ew_LoadRecordset($sSql, $conn);
-		}
-
-		// Call Recordset Selected event
-		$this->Recordset_Selected($rs);
-		return $rs;
 	}
 
 	// Load row based on key values
@@ -803,7 +750,7 @@ class cpago_avaluo_view extends cpago_avaluo {
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -867,6 +814,17 @@ class cpago_avaluo_view extends cpago_avaluo {
 					$bValidMaster = FALSE;
 				}
 			}
+			if ($sMasterTblVar == "viewavaluosc") {
+				$bValidMaster = TRUE;
+				if (@$_GET["fk_id"] <> "") {
+					$GLOBALS["viewavaluosc"]->id->setQueryStringValue($_GET["fk_id"]);
+					$this->avaluo_id->setQueryStringValue($GLOBALS["viewavaluosc"]->id->QueryStringValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->QueryStringValue);
+					if (!is_numeric($GLOBALS["viewavaluosc"]->id->QueryStringValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
 		} elseif (isset($_POST[EW_TABLE_SHOW_MASTER])) {
 			$sMasterTblVar = $_POST[EW_TABLE_SHOW_MASTER];
 			if ($sMasterTblVar == "") {
@@ -881,6 +839,17 @@ class cpago_avaluo_view extends cpago_avaluo {
 					$this->pago_id->setFormValue($GLOBALS["pago"]->id->FormValue);
 					$this->pago_id->setSessionValue($this->pago_id->FormValue);
 					if (!is_numeric($GLOBALS["pago"]->id->FormValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
+			if ($sMasterTblVar == "viewavaluosc") {
+				$bValidMaster = TRUE;
+				if (@$_POST["fk_id"] <> "") {
+					$GLOBALS["viewavaluosc"]->id->setFormValue($_POST["fk_id"]);
+					$this->avaluo_id->setFormValue($GLOBALS["viewavaluosc"]->id->FormValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->FormValue);
+					if (!is_numeric($GLOBALS["viewavaluosc"]->id->FormValue)) $bValidMaster = FALSE;
 				} else {
 					$bValidMaster = FALSE;
 				}
@@ -901,6 +870,9 @@ class cpago_avaluo_view extends cpago_avaluo {
 			// Clear previous master key from Session
 			if ($sMasterTblVar <> "pago") {
 				if ($this->pago_id->CurrentValue == "") $this->pago_id->setSessionValue("");
+			}
+			if ($sMasterTblVar <> "viewavaluosc") {
+				if ($this->avaluo_id->CurrentValue == "") $this->avaluo_id->setSessionValue("");
 			}
 		}
 		$this->DbMasterFilter = $this->GetMasterFilter(); // Get master filter
@@ -1132,31 +1104,6 @@ $pago_avaluo_view->ShowMessage();
 	</tr>
 <?php } ?>
 </table>
-<?php if (!$pago_avaluo_view->IsModal) { ?>
-<?php if (!isset($pago_avaluo_view->Pager)) $pago_avaluo_view->Pager = new cNumericPager($pago_avaluo_view->StartRec, $pago_avaluo_view->DisplayRecs, $pago_avaluo_view->TotalRecs, $pago_avaluo_view->RecRange, $pago_avaluo_view->AutoHidePager) ?>
-<?php if ($pago_avaluo_view->Pager->RecordCount > 0 && $pago_avaluo_view->Pager->Visible) { ?>
-<div class="ewPager">
-<div class="ewNumericPage"><ul class="pagination">
-	<?php if ($pago_avaluo_view->Pager->FirstButton->Enabled) { ?>
-	<li><a href="<?php echo $pago_avaluo_view->PageUrl() ?>start=<?php echo $pago_avaluo_view->Pager->FirstButton->Start ?>"><?php echo $Language->Phrase("PagerFirst") ?></a></li>
-	<?php } ?>
-	<?php if ($pago_avaluo_view->Pager->PrevButton->Enabled) { ?>
-	<li><a href="<?php echo $pago_avaluo_view->PageUrl() ?>start=<?php echo $pago_avaluo_view->Pager->PrevButton->Start ?>"><?php echo $Language->Phrase("PagerPrevious") ?></a></li>
-	<?php } ?>
-	<?php foreach ($pago_avaluo_view->Pager->Items as $PagerItem) { ?>
-		<li<?php if (!$PagerItem->Enabled) { echo " class=\" active\""; } ?>><a href="<?php if ($PagerItem->Enabled) { echo $pago_avaluo_view->PageUrl() . "start=" . $PagerItem->Start; } else { echo "#"; } ?>"><?php echo $PagerItem->Text ?></a></li>
-	<?php } ?>
-	<?php if ($pago_avaluo_view->Pager->NextButton->Enabled) { ?>
-	<li><a href="<?php echo $pago_avaluo_view->PageUrl() ?>start=<?php echo $pago_avaluo_view->Pager->NextButton->Start ?>"><?php echo $Language->Phrase("PagerNext") ?></a></li>
-	<?php } ?>
-	<?php if ($pago_avaluo_view->Pager->LastButton->Enabled) { ?>
-	<li><a href="<?php echo $pago_avaluo_view->PageUrl() ?>start=<?php echo $pago_avaluo_view->Pager->LastButton->Start ?>"><?php echo $Language->Phrase("PagerLast") ?></a></li>
-	<?php } ?>
-</ul></div>
-</div>
-<?php } ?>
-<div class="clearfix"></div>
-<?php } ?>
 </form>
 <script type="text/javascript">
 fpago_avaluoview.Init();

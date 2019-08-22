@@ -369,6 +369,14 @@ class cdefault {
 			$this->Page_Terminate("viewsolicitudlist.php");
 		if ($Security->AllowList(CurrentProjectID() . 'core.php'))
 			$this->Page_Terminate("core.php");
+		if ($Security->AllowList(CurrentProjectID() . 'tipodocumento'))
+			$this->Page_Terminate("tipodocumentolist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewavaluosc'))
+			$this->Page_Terminate("viewavaluosclist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'getApiRestWordPress.php'))
+			$this->Page_Terminate("getApiRestWordPress.php");
+		if ($Security->AllowList(CurrentProjectID() . 'offline_messages'))
+			$this->Page_Terminate("offline_messageslist.php");
 		if ($Security->IsLoggedIn()) {
 			$this->setFailureMessage(ew_DeniedMsg() . "<br><br><a href=\"logout.php\">" . $Language->Phrase("BackToLogin") . "</a>");
 		} else {

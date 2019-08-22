@@ -3462,7 +3462,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_inmueble02" id= "fx_x_imagen_inmueble02" value="<?php echo $viewsolicitud->imagen_inmueble02->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_inmueble02" id= "fm_x_imagen_inmueble02" value="<?php echo $viewsolicitud->imagen_inmueble02->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_inmueble02" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_inmueble02" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_inmueble02->ReadOnly && !$viewsolicitud->imagen_inmueble02->Disabled && @$viewsolicitud->imagen_inmueble02->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_inmueble02->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_inmueble02");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_inmueble02->CustomMsg ?></div></div>
 	</div>
@@ -3482,7 +3484,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_inmueble02" id= "fx_x_imagen_inmueble02" value="<?php echo $viewsolicitud->imagen_inmueble02->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_inmueble02" id= "fm_x_imagen_inmueble02" value="<?php echo $viewsolicitud->imagen_inmueble02->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_inmueble02" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_inmueble02" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_inmueble02->ReadOnly && !$viewsolicitud->imagen_inmueble02->Disabled && @$viewsolicitud->imagen_inmueble02->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_inmueble02->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_inmueble02");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_inmueble02->CustomMsg ?></td>
 	</tr>
@@ -3505,7 +3509,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_inmueble03" id= "fx_x_imagen_inmueble03" value="<?php echo $viewsolicitud->imagen_inmueble03->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_inmueble03" id= "fm_x_imagen_inmueble03" value="<?php echo $viewsolicitud->imagen_inmueble03->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_inmueble03" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_inmueble03" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_inmueble03->ReadOnly && !$viewsolicitud->imagen_inmueble03->Disabled && @$viewsolicitud->imagen_inmueble03->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_inmueble03->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_inmueble03");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_inmueble03->CustomMsg ?></div></div>
 	</div>
@@ -3525,7 +3531,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_inmueble03" id= "fx_x_imagen_inmueble03" value="<?php echo $viewsolicitud->imagen_inmueble03->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_inmueble03" id= "fm_x_imagen_inmueble03" value="<?php echo $viewsolicitud->imagen_inmueble03->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_inmueble03" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_inmueble03" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_inmueble03->ReadOnly && !$viewsolicitud->imagen_inmueble03->Disabled && @$viewsolicitud->imagen_inmueble03->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_inmueble03->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_inmueble03");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_inmueble03->CustomMsg ?></td>
 	</tr>
@@ -3548,7 +3556,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_inmueble04" id= "fx_x_imagen_inmueble04" value="<?php echo $viewsolicitud->imagen_inmueble04->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_inmueble04" id= "fm_x_imagen_inmueble04" value="<?php echo $viewsolicitud->imagen_inmueble04->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_inmueble04" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_inmueble04" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_inmueble04->ReadOnly && !$viewsolicitud->imagen_inmueble04->Disabled && @$viewsolicitud->imagen_inmueble04->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_inmueble04->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_inmueble04");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_inmueble04->CustomMsg ?></div></div>
 	</div>
@@ -3568,7 +3578,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_inmueble04" id= "fx_x_imagen_inmueble04" value="<?php echo $viewsolicitud->imagen_inmueble04->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_inmueble04" id= "fm_x_imagen_inmueble04" value="<?php echo $viewsolicitud->imagen_inmueble04->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_inmueble04" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_inmueble04" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_inmueble04->ReadOnly && !$viewsolicitud->imagen_inmueble04->Disabled && @$viewsolicitud->imagen_inmueble04->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_inmueble04->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_inmueble04");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_inmueble04->CustomMsg ?></td>
 	</tr>
@@ -3591,7 +3603,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_inmueble05" id= "fx_x_imagen_inmueble05" value="<?php echo $viewsolicitud->imagen_inmueble05->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_inmueble05" id= "fm_x_imagen_inmueble05" value="<?php echo $viewsolicitud->imagen_inmueble05->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_inmueble05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_inmueble05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_inmueble05->ReadOnly && !$viewsolicitud->imagen_inmueble05->Disabled && @$viewsolicitud->imagen_inmueble05->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_inmueble05->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_inmueble05");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_inmueble05->CustomMsg ?></div></div>
 	</div>
@@ -3611,7 +3625,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_inmueble05" id= "fx_x_imagen_inmueble05" value="<?php echo $viewsolicitud->imagen_inmueble05->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_inmueble05" id= "fm_x_imagen_inmueble05" value="<?php echo $viewsolicitud->imagen_inmueble05->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_inmueble05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_inmueble05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_inmueble05->ReadOnly && !$viewsolicitud->imagen_inmueble05->Disabled && @$viewsolicitud->imagen_inmueble05->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_inmueble05->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_inmueble05");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_inmueble05->CustomMsg ?></td>
 	</tr>
@@ -3717,7 +3733,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_vehiculo05" id= "fx_x_imagen_vehiculo05" value="<?php echo $viewsolicitud->imagen_vehiculo05->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_vehiculo05" id= "fm_x_imagen_vehiculo05" value="<?php echo $viewsolicitud->imagen_vehiculo05->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_vehiculo05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_vehiculo05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_vehiculo05->ReadOnly && !$viewsolicitud->imagen_vehiculo05->Disabled && @$viewsolicitud->imagen_vehiculo05->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_vehiculo05->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_vehiculo05");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_vehiculo05->CustomMsg ?></div></div>
 	</div>
@@ -3737,7 +3755,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_vehiculo05" id= "fx_x_imagen_vehiculo05" value="<?php echo $viewsolicitud->imagen_vehiculo05->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_vehiculo05" id= "fm_x_imagen_vehiculo05" value="<?php echo $viewsolicitud->imagen_vehiculo05->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_vehiculo05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_vehiculo05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_vehiculo05->ReadOnly && !$viewsolicitud->imagen_vehiculo05->Disabled && @$viewsolicitud->imagen_vehiculo05->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_vehiculo05->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_vehiculo05");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_vehiculo05->CustomMsg ?></td>
 	</tr>
@@ -3760,7 +3780,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_vehiculo06" id= "fx_x_imagen_vehiculo06" value="<?php echo $viewsolicitud->imagen_vehiculo06->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_vehiculo06" id= "fm_x_imagen_vehiculo06" value="<?php echo $viewsolicitud->imagen_vehiculo06->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_vehiculo06" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_vehiculo06" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_vehiculo06->ReadOnly && !$viewsolicitud->imagen_vehiculo06->Disabled && @$viewsolicitud->imagen_vehiculo06->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_vehiculo06->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_vehiculo06");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_vehiculo06->CustomMsg ?></div></div>
 	</div>
@@ -3780,7 +3802,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_vehiculo06" id= "fx_x_imagen_vehiculo06" value="<?php echo $viewsolicitud->imagen_vehiculo06->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_vehiculo06" id= "fm_x_imagen_vehiculo06" value="<?php echo $viewsolicitud->imagen_vehiculo06->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_vehiculo06" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_vehiculo06" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_vehiculo06->ReadOnly && !$viewsolicitud->imagen_vehiculo06->Disabled && @$viewsolicitud->imagen_vehiculo06->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_vehiculo06->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_vehiculo06");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_vehiculo06->CustomMsg ?></td>
 	</tr>
@@ -3803,7 +3827,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_vehiculo07" id= "fx_x_imagen_vehiculo07" value="<?php echo $viewsolicitud->imagen_vehiculo07->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_vehiculo07" id= "fm_x_imagen_vehiculo07" value="<?php echo $viewsolicitud->imagen_vehiculo07->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_vehiculo07" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_vehiculo07" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_vehiculo07->ReadOnly && !$viewsolicitud->imagen_vehiculo07->Disabled && @$viewsolicitud->imagen_vehiculo07->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_vehiculo07->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_vehiculo07");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_vehiculo07->CustomMsg ?></div></div>
 	</div>
@@ -3823,7 +3849,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_vehiculo07" id= "fx_x_imagen_vehiculo07" value="<?php echo $viewsolicitud->imagen_vehiculo07->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_vehiculo07" id= "fm_x_imagen_vehiculo07" value="<?php echo $viewsolicitud->imagen_vehiculo07->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_vehiculo07" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_vehiculo07" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_vehiculo07->ReadOnly && !$viewsolicitud->imagen_vehiculo07->Disabled && @$viewsolicitud->imagen_vehiculo07->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_vehiculo07->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_vehiculo07");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_vehiculo07->CustomMsg ?></td>
 	</tr>
@@ -3937,7 +3965,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_maquinaria05" id= "fx_x_imagen_maquinaria05" value="<?php echo $viewsolicitud->imagen_maquinaria05->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_maquinaria05" id= "fm_x_imagen_maquinaria05" value="<?php echo $viewsolicitud->imagen_maquinaria05->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_maquinaria05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_maquinaria05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_maquinaria05->ReadOnly && !$viewsolicitud->imagen_maquinaria05->Disabled && @$viewsolicitud->imagen_maquinaria05->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_maquinaria05->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_maquinaria05");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_maquinaria05->CustomMsg ?></div></div>
 	</div>
@@ -3957,7 +3987,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_maquinaria05" id= "fx_x_imagen_maquinaria05" value="<?php echo $viewsolicitud->imagen_maquinaria05->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_maquinaria05" id= "fm_x_imagen_maquinaria05" value="<?php echo $viewsolicitud->imagen_maquinaria05->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_maquinaria05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_maquinaria05" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_maquinaria05->ReadOnly && !$viewsolicitud->imagen_maquinaria05->Disabled && @$viewsolicitud->imagen_maquinaria05->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_maquinaria05->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_maquinaria05");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_maquinaria05->CustomMsg ?></td>
 	</tr>
@@ -3980,7 +4012,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_maquinaria06" id= "fx_x_imagen_maquinaria06" value="<?php echo $viewsolicitud->imagen_maquinaria06->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_maquinaria06" id= "fm_x_imagen_maquinaria06" value="<?php echo $viewsolicitud->imagen_maquinaria06->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_maquinaria06" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_maquinaria06" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_maquinaria06->ReadOnly && !$viewsolicitud->imagen_maquinaria06->Disabled && @$viewsolicitud->imagen_maquinaria06->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_maquinaria06->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_maquinaria06");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_maquinaria06->CustomMsg ?></div></div>
 	</div>
@@ -4000,7 +4034,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_maquinaria06" id= "fx_x_imagen_maquinaria06" value="<?php echo $viewsolicitud->imagen_maquinaria06->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_maquinaria06" id= "fm_x_imagen_maquinaria06" value="<?php echo $viewsolicitud->imagen_maquinaria06->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_maquinaria06" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_maquinaria06" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_maquinaria06->ReadOnly && !$viewsolicitud->imagen_maquinaria06->Disabled && @$viewsolicitud->imagen_maquinaria06->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_maquinaria06->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_maquinaria06");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_maquinaria06->CustomMsg ?></td>
 	</tr>
@@ -4023,7 +4059,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_maquinaria07" id= "fx_x_imagen_maquinaria07" value="<?php echo $viewsolicitud->imagen_maquinaria07->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_maquinaria07" id= "fm_x_imagen_maquinaria07" value="<?php echo $viewsolicitud->imagen_maquinaria07->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_maquinaria07" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_maquinaria07" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_maquinaria07->ReadOnly && !$viewsolicitud->imagen_maquinaria07->Disabled && @$viewsolicitud->imagen_maquinaria07->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_maquinaria07->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_maquinaria07");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_maquinaria07->CustomMsg ?></div></div>
 	</div>
@@ -4043,7 +4081,9 @@ $viewsolicitud_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen_maquinaria07" id= "fx_x_imagen_maquinaria07" value="<?php echo $viewsolicitud->imagen_maquinaria07->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen_maquinaria07" id= "fm_x_imagen_maquinaria07" value="<?php echo $viewsolicitud->imagen_maquinaria07->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen_maquinaria07" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_imagen_maquinaria07" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$viewsolicitud->imagen_maquinaria07->ReadOnly && !$viewsolicitud->imagen_maquinaria07->Disabled && @$viewsolicitud->imagen_maquinaria07->EditAttrs["readonly"] == "" && @$viewsolicitud->imagen_maquinaria07->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fviewsolicitudadd", "x_imagen_maquinaria07");</script>
+<?php } ?>
 </span>
 <?php echo $viewsolicitud->imagen_maquinaria07->CustomMsg ?></td>
 	</tr>

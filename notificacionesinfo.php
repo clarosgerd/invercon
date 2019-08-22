@@ -15,6 +15,7 @@ class cnotificaciones extends cTable {
 	var $estado;
 	var $fecha;
 	var $fechaleido;
+	var $desde;
 
 	//
 	// Table class constructor
@@ -92,6 +93,11 @@ class cnotificaciones extends cTable {
 		$this->fechaleido->Sortable = FALSE; // Allow sort
 		$this->fechaleido->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['fechaleido'] = &$this->fechaleido;
+
+		// desde
+		$this->desde = new cField('notificaciones', 'notificaciones', 'x_desde', 'desde', '`desde`', '`desde`', 200, -1, FALSE, '`desde`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->desde->Sortable = TRUE; // Allow sort
+		$this->fields['desde'] = &$this->desde;
 	}
 
 	// Field Visibility
@@ -627,6 +633,7 @@ class cnotificaciones extends cTable {
 		$this->estado->setDbValue($rs->fields('estado'));
 		$this->fecha->setDbValue($rs->fields('fecha'));
 		$this->fechaleido->setDbValue($rs->fields('fechaleido'));
+		$this->desde->setDbValue($rs->fields('desde'));
 	}
 
 	// Render list row values
@@ -652,7 +659,9 @@ class cnotificaciones extends cTable {
 		// fechaleido
 		$this->fechaleido->CellCssStyle = "white-space: nowrap;";
 
+		// desde
 		// id
+
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
@@ -685,6 +694,10 @@ class cnotificaciones extends cTable {
 		$this->fechaleido->ViewValue = $this->fechaleido->CurrentValue;
 		$this->fechaleido->ViewValue = ew_FormatDateTime($this->fechaleido->ViewValue, 0);
 		$this->fechaleido->ViewCustomAttributes = "";
+
+		// desde
+		$this->desde->ViewValue = $this->desde->CurrentValue;
+		$this->desde->ViewCustomAttributes = "";
 
 		// id
 		$this->id->LinkCustomAttributes = "";
@@ -725,6 +738,11 @@ class cnotificaciones extends cTable {
 		$this->fechaleido->LinkCustomAttributes = "";
 		$this->fechaleido->HrefValue = "";
 		$this->fechaleido->TooltipValue = "";
+
+		// desde
+		$this->desde->LinkCustomAttributes = "";
+		$this->desde->HrefValue = "";
+		$this->desde->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -788,6 +806,12 @@ class cnotificaciones extends cTable {
 		$this->fechaleido->EditValue = ew_FormatDateTime($this->fechaleido->CurrentValue, 8);
 		$this->fechaleido->PlaceHolder = ew_RemoveHtml($this->fechaleido->FldTitle());
 
+		// desde
+		$this->desde->EditAttrs["class"] = "form-control";
+		$this->desde->EditCustomAttributes = "";
+		$this->desde->EditValue = $this->desde->CurrentValue;
+		$this->desde->PlaceHolder = ew_RemoveHtml($this->desde->FldTitle());
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 	}
@@ -820,9 +844,11 @@ class cnotificaciones extends cTable {
 					if ($this->creadopor->Exportable) $Doc->ExportCaption($this->creadopor);
 					if ($this->recibidopor->Exportable) $Doc->ExportCaption($this->recibidopor);
 					if ($this->leido->Exportable) $Doc->ExportCaption($this->leido);
+					if ($this->desde->Exportable) $Doc->ExportCaption($this->desde);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->leido->Exportable) $Doc->ExportCaption($this->leido);
+					if ($this->desde->Exportable) $Doc->ExportCaption($this->desde);
 				}
 				$Doc->EndExportRow();
 			}
@@ -859,9 +885,11 @@ class cnotificaciones extends cTable {
 						if ($this->creadopor->Exportable) $Doc->ExportField($this->creadopor);
 						if ($this->recibidopor->Exportable) $Doc->ExportField($this->recibidopor);
 						if ($this->leido->Exportable) $Doc->ExportField($this->leido);
+						if ($this->desde->Exportable) $Doc->ExportField($this->desde);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->leido->Exportable) $Doc->ExportField($this->leido);
+						if ($this->desde->Exportable) $Doc->ExportField($this->desde);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

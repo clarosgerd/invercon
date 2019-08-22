@@ -61,6 +61,7 @@ if (!isset($Language)) {
 ?>
 <script type="text/javascript" src="<?php echo $jsfile ?>"></script>
 <?php } ?>
+<script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/ewcheckfileupload.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo $EW_RELATIVE_PATH ?>phpcss/bootstrap-datetimepicker.css">
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/ewdatetimepicker.js"></script>
@@ -92,6 +93,7 @@ var EW_LOOKUP_FILE_NAME = "ewlookup14.php"; // Lookup file name
 var EW_LOOKUP_FILTER_VALUE_SEPARATOR = "<?php echo EW_LOOKUP_FILTER_VALUE_SEPARATOR ?>"; // Lookup filter value separator
 var EW_MODAL_LOOKUP_FILE_NAME = "ewmodallookup14.php"; // Modal lookup file name
 var EW_AUTO_SUGGEST_MAX_ENTRIES = <?php echo EW_AUTO_SUGGEST_MAX_ENTRIES ?>; // Auto-Suggest max entries
+var EW_MAX_EMAIL_RECIPIENT = <?php echo EW_MAX_EMAIL_RECIPIENT ?>;
 var EW_DISABLE_BUTTON_ON_SUBMIT = false;
 var EW_IMAGE_FOLDER = "phpimages/"; // Image folder
 var EW_UPLOAD_URL = "<?php echo EW_UPLOAD_URL ?>"; // Upload URL

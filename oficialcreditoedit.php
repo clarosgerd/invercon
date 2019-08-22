@@ -2048,7 +2048,9 @@ $oficialcredito_edit->ShowMessage();
 <input type="hidden" name="fx_x_avatar" id= "fx_x_avatar" value="<?php echo $oficialcredito->avatar->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_avatar" id= "fm_x_avatar" value="<?php echo $oficialcredito->avatar->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_avatar" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_avatar" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$oficialcredito->avatar->ReadOnly && !$oficialcredito->avatar->Disabled && @$oficialcredito->avatar->EditAttrs["readonly"] == "" && @$oficialcredito->avatar->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("foficialcreditoedit", "x_avatar");</script>
+<?php } ?>
 </span>
 <?php echo $oficialcredito->avatar->CustomMsg ?></div></div>
 	</div>
@@ -2072,7 +2074,9 @@ $oficialcredito_edit->ShowMessage();
 <input type="hidden" name="fx_x_avatar" id= "fx_x_avatar" value="<?php echo $oficialcredito->avatar->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_avatar" id= "fm_x_avatar" value="<?php echo $oficialcredito->avatar->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_avatar" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_avatar" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$oficialcredito->avatar->ReadOnly && !$oficialcredito->avatar->Disabled && @$oficialcredito->avatar->EditAttrs["readonly"] == "" && @$oficialcredito->avatar->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("foficialcreditoedit", "x_avatar");</script>
+<?php } ?>
 </span>
 <?php echo $oficialcredito->avatar->CustomMsg ?></td>
 	</tr>

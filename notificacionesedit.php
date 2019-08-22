@@ -332,6 +332,7 @@ class cnotificaciones_edit extends cnotificaciones {
 		$this->creadopor->SetVisibility();
 		$this->recibidopor->SetVisibility();
 		$this->leido->SetVisibility();
+		$this->desde->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -582,6 +583,9 @@ class cnotificaciones_edit extends cnotificaciones {
 		if (!$this->leido->FldIsDetailKey) {
 			$this->leido->setFormValue($objForm->GetValue("x_leido"));
 		}
+		if (!$this->desde->FldIsDetailKey) {
+			$this->desde->setFormValue($objForm->GetValue("x_desde"));
+		}
 	}
 
 	// Restore form values
@@ -592,6 +596,7 @@ class cnotificaciones_edit extends cnotificaciones {
 		$this->creadopor->CurrentValue = $this->creadopor->FormValue;
 		$this->recibidopor->CurrentValue = $this->recibidopor->FormValue;
 		$this->leido->CurrentValue = $this->leido->FormValue;
+		$this->desde->CurrentValue = $this->desde->FormValue;
 	}
 
 	// Load row based on key values
@@ -635,6 +640,7 @@ class cnotificaciones_edit extends cnotificaciones {
 		$this->estado->setDbValue($row['estado']);
 		$this->fecha->setDbValue($row['fecha']);
 		$this->fechaleido->setDbValue($row['fechaleido']);
+		$this->desde->setDbValue($row['desde']);
 	}
 
 	// Return a row with default values
@@ -648,6 +654,7 @@ class cnotificaciones_edit extends cnotificaciones {
 		$row['estado'] = NULL;
 		$row['fecha'] = NULL;
 		$row['fechaleido'] = NULL;
+		$row['desde'] = NULL;
 		return $row;
 	}
 
@@ -664,6 +671,7 @@ class cnotificaciones_edit extends cnotificaciones {
 		$this->estado->DbValue = $row['estado'];
 		$this->fecha->DbValue = $row['fecha'];
 		$this->fechaleido->DbValue = $row['fechaleido'];
+		$this->desde->DbValue = $row['desde'];
 	}
 
 	// Load old record
@@ -706,6 +714,7 @@ class cnotificaciones_edit extends cnotificaciones {
 		// estado
 		// fecha
 		// fechaleido
+		// desde
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -728,6 +737,10 @@ class cnotificaciones_edit extends cnotificaciones {
 		// leido
 		$this->leido->ViewValue = $this->leido->CurrentValue;
 		$this->leido->ViewCustomAttributes = "";
+
+		// desde
+		$this->desde->ViewValue = $this->desde->CurrentValue;
+		$this->desde->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -753,6 +766,11 @@ class cnotificaciones_edit extends cnotificaciones {
 			$this->leido->LinkCustomAttributes = "";
 			$this->leido->HrefValue = "";
 			$this->leido->TooltipValue = "";
+
+			// desde
+			$this->desde->LinkCustomAttributes = "";
+			$this->desde->HrefValue = "";
+			$this->desde->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// id
@@ -785,6 +803,12 @@ class cnotificaciones_edit extends cnotificaciones {
 			$this->leido->EditValue = ew_HtmlEncode($this->leido->CurrentValue);
 			$this->leido->PlaceHolder = ew_RemoveHtml($this->leido->FldTitle());
 
+			// desde
+			$this->desde->EditAttrs["class"] = "form-control";
+			$this->desde->EditCustomAttributes = "";
+			$this->desde->EditValue = ew_HtmlEncode($this->desde->CurrentValue);
+			$this->desde->PlaceHolder = ew_RemoveHtml($this->desde->FldTitle());
+
 			// Edit refer script
 			// id
 
@@ -806,6 +830,10 @@ class cnotificaciones_edit extends cnotificaciones {
 			// leido
 			$this->leido->LinkCustomAttributes = "";
 			$this->leido->HrefValue = "";
+
+			// desde
+			$this->desde->LinkCustomAttributes = "";
+			$this->desde->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -884,6 +912,9 @@ class cnotificaciones_edit extends cnotificaciones {
 
 			// leido
 			$this->leido->SetDbValueDef($rsnew, $this->leido->CurrentValue, 0, $this->leido->ReadOnly);
+
+			// desde
+			$this->desde->SetDbValueDef($rsnew, $this->desde->CurrentValue, NULL, $this->desde->ReadOnly);
 
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
@@ -1224,6 +1255,27 @@ $notificaciones_edit->ShowMessage();
 <input type="text" data-table="notificaciones" data-field="x_leido" name="x_leido" id="x_leido" size="30" placeholder="<?php echo ew_HtmlEncode($notificaciones->leido->getPlaceHolder()) ?>" value="<?php echo $notificaciones->leido->EditValue ?>"<?php echo $notificaciones->leido->EditAttributes() ?>>
 </span>
 <?php echo $notificaciones->leido->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($notificaciones->desde->Visible) { // desde ?>
+<?php if ($notificaciones_edit->IsMobileOrModal) { ?>
+	<div id="r_desde" class="form-group">
+		<label id="elh_notificaciones_desde" for="x_desde" class="<?php echo $notificaciones_edit->LeftColumnClass ?>"><?php echo $notificaciones->desde->FldCaption() ?></label>
+		<div class="<?php echo $notificaciones_edit->RightColumnClass ?>"><div<?php echo $notificaciones->desde->CellAttributes() ?>>
+<span id="el_notificaciones_desde">
+<input type="text" data-table="notificaciones" data-field="x_desde" name="x_desde" id="x_desde" size="30" maxlength="20" placeholder="<?php echo ew_HtmlEncode($notificaciones->desde->getPlaceHolder()) ?>" value="<?php echo $notificaciones->desde->EditValue ?>"<?php echo $notificaciones->desde->EditAttributes() ?>>
+</span>
+<?php echo $notificaciones->desde->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_desde">
+		<td class="col-sm-3"><span id="elh_notificaciones_desde"><?php echo $notificaciones->desde->FldCaption() ?></span></td>
+		<td<?php echo $notificaciones->desde->CellAttributes() ?>>
+<span id="el_notificaciones_desde">
+<input type="text" data-table="notificaciones" data-field="x_desde" name="x_desde" id="x_desde" size="30" maxlength="20" placeholder="<?php echo ew_HtmlEncode($notificaciones->desde->getPlaceHolder()) ?>" value="<?php echo $notificaciones->desde->EditValue ?>"<?php echo $notificaciones->desde->EditAttributes() ?>>
+</span>
+<?php echo $notificaciones->desde->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>

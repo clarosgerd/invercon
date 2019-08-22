@@ -42,18 +42,12 @@ favaluogrid.Validate = function() {
 		var checkrow = (gridinsert) ? !this.EmptyRow(infix) : true;
 		if (checkrow) {
 			addcnt++;
+			elm = this.GetElements("x" + infix + "_codigoavaluo");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->codigoavaluo->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_id_solicitud");
 			if (elm && !ew_CheckInteger(elm.value))
 				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->id_solicitud->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_fecha_avaluo");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $avaluo->fecha_avaluo->FldCaption(), $avaluo->fecha_avaluo->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_fecha_avaluo");
-			if (elm && !ew_CheckUSDate(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->fecha_avaluo->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_montoincial");
-			if (elm && !ew_CheckNumber(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->montoincial->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -67,15 +61,13 @@ favaluogrid.Validate = function() {
 favaluogrid.EmptyRow = function(infix) {
 	var fobj = this.Form;
 	if (ew_ValueChanged(fobj, infix, "codigoavaluo", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "tipoinmueble", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "id_solicitud", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "id_oficialcredito", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "id_inspector", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "id_cliente", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "estado", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "estadointerno", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "estadopago", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "fecha_avaluo", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "montoincial", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "id_metodopago", false)) return false;
 	return true;
 }
 
@@ -91,21 +83,21 @@ favaluogrid.Form_CustomValidate =
 favaluogrid.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
+favaluogrid.Lists["x_tipoinmueble"] = {"LinkField":"x_nombre","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
+favaluogrid.Lists["x_tipoinmueble"].Data = "<?php echo $avaluo_grid->tipoinmueble->LookupFilterQuery(FALSE, "grid") ?>";
 favaluogrid.Lists["x_id_solicitud"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"solicitud"};
 favaluogrid.Lists["x_id_solicitud"].Data = "<?php echo $avaluo_grid->id_solicitud->LookupFilterQuery(FALSE, "grid") ?>";
 favaluogrid.AutoSuggests["x_id_solicitud"] = <?php echo json_encode(array("data" => "ajax=autosuggest&" . $avaluo_grid->id_solicitud->LookupFilterQuery(TRUE, "grid"))) ?>;
 favaluogrid.Lists["x_id_oficialcredito"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","x_apellido","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"oficialcredito"};
 favaluogrid.Lists["x_id_oficialcredito"].Data = "<?php echo $avaluo_grid->id_oficialcredito->LookupFilterQuery(FALSE, "grid") ?>";
-favaluogrid.Lists["x_id_inspector"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_apellido","x_nombre","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"inspector"};
-favaluogrid.Lists["x_id_inspector"].Data = "<?php echo $avaluo_grid->id_inspector->LookupFilterQuery(FALSE, "grid") ?>";
 favaluogrid.Lists["x_id_cliente"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"cliente"};
 favaluogrid.Lists["x_id_cliente"].Data = "<?php echo $avaluo_grid->id_cliente->LookupFilterQuery(FALSE, "grid") ?>";
+favaluogrid.Lists["x_estado"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estado"};
+favaluogrid.Lists["x_estado"].Data = "<?php echo $avaluo_grid->estado->LookupFilterQuery(FALSE, "grid") ?>";
 favaluogrid.Lists["x_estadointerno"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadointerno"};
 favaluogrid.Lists["x_estadointerno"].Data = "<?php echo $avaluo_grid->estadointerno->LookupFilterQuery(FALSE, "grid") ?>";
 favaluogrid.Lists["x_estadopago"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadopago"};
 favaluogrid.Lists["x_estadopago"].Data = "<?php echo $avaluo_grid->estadopago->LookupFilterQuery(FALSE, "grid") ?>";
-favaluogrid.Lists["x_id_metodopago"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_short_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"metodopago"};
-favaluogrid.Lists["x_id_metodopago"].Data = "<?php echo $avaluo_grid->id_metodopago->LookupFilterQuery(FALSE, "grid") ?>";
 
 // Form object for search
 </script>
@@ -187,6 +179,15 @@ $avaluo_grid->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($avaluo->tipoinmueble->Visible) { // tipoinmueble ?>
+	<?php if ($avaluo->SortUrl($avaluo->tipoinmueble) == "") { ?>
+		<th data-name="tipoinmueble" class="<?php echo $avaluo->tipoinmueble->HeaderCellClass() ?>"><div id="elh_avaluo_tipoinmueble" class="avaluo_tipoinmueble"><div class="ewTableHeaderCaption"><?php echo $avaluo->tipoinmueble->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="tipoinmueble" class="<?php echo $avaluo->tipoinmueble->HeaderCellClass() ?>"><div><div id="elh_avaluo_tipoinmueble" class="avaluo_tipoinmueble">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->tipoinmueble->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->tipoinmueble->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->tipoinmueble->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php if ($avaluo->id_solicitud->Visible) { // id_solicitud ?>
 	<?php if ($avaluo->SortUrl($avaluo->id_solicitud) == "") { ?>
 		<th data-name="id_solicitud" class="<?php echo $avaluo->id_solicitud->HeaderCellClass() ?>"><div id="elh_avaluo_id_solicitud" class="avaluo_id_solicitud"><div class="ewTableHeaderCaption"><?php echo $avaluo->id_solicitud->FldCaption() ?></div></div></th>
@@ -205,21 +206,21 @@ $avaluo_grid->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($avaluo->id_inspector->Visible) { // id_inspector ?>
-	<?php if ($avaluo->SortUrl($avaluo->id_inspector) == "") { ?>
-		<th data-name="id_inspector" class="<?php echo $avaluo->id_inspector->HeaderCellClass() ?>"><div id="elh_avaluo_id_inspector" class="avaluo_id_inspector"><div class="ewTableHeaderCaption"><?php echo $avaluo->id_inspector->FldCaption() ?></div></div></th>
+<?php if ($avaluo->id_cliente->Visible) { // id_cliente ?>
+	<?php if ($avaluo->SortUrl($avaluo->id_cliente) == "") { ?>
+		<th data-name="id_cliente" class="<?php echo $avaluo->id_cliente->HeaderCellClass() ?>"><div id="elh_avaluo_id_cliente" class="avaluo_id_cliente"><div class="ewTableHeaderCaption"><?php echo $avaluo->id_cliente->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_inspector" class="<?php echo $avaluo->id_inspector->HeaderCellClass() ?>"><div><div id="elh_avaluo_id_inspector" class="avaluo_id_inspector">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->id_inspector->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->id_inspector->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->id_inspector->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="id_cliente" class="<?php echo $avaluo->id_cliente->HeaderCellClass() ?>"><div><div id="elh_avaluo_id_cliente" class="avaluo_id_cliente">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->id_cliente->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->id_cliente->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->id_cliente->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($avaluo->id_cliente->Visible) { // id_cliente ?>
-	<?php if ($avaluo->SortUrl($avaluo->id_cliente) == "") { ?>
-		<th data-name="id_cliente" class="<?php echo $avaluo->id_cliente->HeaderCellClass() ?>"><div id="elh_avaluo_id_cliente" class="avaluo_id_cliente"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $avaluo->id_cliente->FldCaption() ?></div></div></th>
+<?php if ($avaluo->estado->Visible) { // estado ?>
+	<?php if ($avaluo->SortUrl($avaluo->estado) == "") { ?>
+		<th data-name="estado" class="<?php echo $avaluo->estado->HeaderCellClass() ?>"><div id="elh_avaluo_estado" class="avaluo_estado"><div class="ewTableHeaderCaption"><?php echo $avaluo->estado->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_cliente" class="<?php echo $avaluo->id_cliente->HeaderCellClass() ?>"><div><div id="elh_avaluo_id_cliente" class="avaluo_id_cliente">
-			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $avaluo->id_cliente->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->id_cliente->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->id_cliente->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="estado" class="<?php echo $avaluo->estado->HeaderCellClass() ?>"><div><div id="elh_avaluo_estado" class="avaluo_estado">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->estado->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->estado->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->estado->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -238,33 +239,6 @@ $avaluo_grid->ListOptions->Render("header", "left");
 	<?php } else { ?>
 		<th data-name="estadopago" class="<?php echo $avaluo->estadopago->HeaderCellClass() ?>"><div><div id="elh_avaluo_estadopago" class="avaluo_estadopago">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->estadopago->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->estadopago->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->estadopago->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
-	<?php if ($avaluo->SortUrl($avaluo->fecha_avaluo) == "") { ?>
-		<th data-name="fecha_avaluo" class="<?php echo $avaluo->fecha_avaluo->HeaderCellClass() ?>"><div id="elh_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo"><div class="ewTableHeaderCaption"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="fecha_avaluo" class="<?php echo $avaluo->fecha_avaluo->HeaderCellClass() ?>"><div><div id="elh_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->fecha_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->fecha_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($avaluo->montoincial->Visible) { // montoincial ?>
-	<?php if ($avaluo->SortUrl($avaluo->montoincial) == "") { ?>
-		<th data-name="montoincial" class="<?php echo $avaluo->montoincial->HeaderCellClass() ?>"><div id="elh_avaluo_montoincial" class="avaluo_montoincial"><div class="ewTableHeaderCaption"><?php echo $avaluo->montoincial->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="montoincial" class="<?php echo $avaluo->montoincial->HeaderCellClass() ?>"><div><div id="elh_avaluo_montoincial" class="avaluo_montoincial">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->montoincial->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->montoincial->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->montoincial->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($avaluo->id_metodopago->Visible) { // id_metodopago ?>
-	<?php if ($avaluo->SortUrl($avaluo->id_metodopago) == "") { ?>
-		<th data-name="id_metodopago" class="<?php echo $avaluo->id_metodopago->HeaderCellClass() ?>"><div id="elh_avaluo_id_metodopago" class="avaluo_id_metodopago"><div class="ewTableHeaderCaption"><?php echo $avaluo->id_metodopago->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id_metodopago" class="<?php echo $avaluo->id_metodopago->HeaderCellClass() ?>"><div><div id="elh_avaluo_id_metodopago" class="avaluo_id_metodopago">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->id_metodopago->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->id_metodopago->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->id_metodopago->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -412,6 +386,38 @@ $avaluo_grid->ListOptions->Render("body", "left", $avaluo_grid->RowCnt);
 <?php if ($avaluo->RowType == EW_ROWTYPE_EDIT || $avaluo->CurrentMode == "edit") { ?>
 <input type="hidden" data-table="avaluo" data-field="x_id" name="x<?php echo $avaluo_grid->RowIndex ?>_id" id="x<?php echo $avaluo_grid->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($avaluo->id->CurrentValue) ?>">
 <?php } ?>
+	<?php if ($avaluo->tipoinmueble->Visible) { // tipoinmueble ?>
+		<td data-name="tipoinmueble"<?php echo $avaluo->tipoinmueble->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_tipoinmueble" class="form-group avaluo_tipoinmueble">
+<select data-table="avaluo" data-field="x_tipoinmueble" data-value-separator="<?php echo $avaluo->tipoinmueble->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" name="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble"<?php echo $avaluo->tipoinmueble->EditAttributes() ?>>
+<?php echo $avaluo->tipoinmueble->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble") ?>
+</select>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_tipoinmueble" name="o<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" id="o<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($avaluo->tipoinmueble->OldValue) ?>">
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_tipoinmueble" class="form-group avaluo_tipoinmueble">
+<select data-table="avaluo" data-field="x_tipoinmueble" data-value-separator="<?php echo $avaluo->tipoinmueble->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" name="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble"<?php echo $avaluo->tipoinmueble->EditAttributes() ?>>
+<?php echo $avaluo->tipoinmueble->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble") ?>
+</select>
+</span>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_tipoinmueble" class="avaluo_tipoinmueble">
+<span<?php echo $avaluo->tipoinmueble->ViewAttributes() ?>>
+<?php echo $avaluo->tipoinmueble->ListViewValue() ?></span>
+</span>
+<?php if ($avaluo->CurrentAction <> "F") { ?>
+<input type="hidden" data-table="avaluo" data-field="x_tipoinmueble" name="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" id="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($avaluo->tipoinmueble->FormValue) ?>">
+<input type="hidden" data-table="avaluo" data-field="x_tipoinmueble" name="o<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" id="o<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($avaluo->tipoinmueble->OldValue) ?>">
+<?php } else { ?>
+<input type="hidden" data-table="avaluo" data-field="x_tipoinmueble" name="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" id="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($avaluo->tipoinmueble->FormValue) ?>">
+<input type="hidden" data-table="avaluo" data-field="x_tipoinmueble" name="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" id="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($avaluo->tipoinmueble->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+	<?php } ?>
 	<?php if ($avaluo->id_solicitud->Visible) { // id_solicitud ?>
 		<td data-name="id_solicitud"<?php echo $avaluo->id_solicitud->CellAttributes() ?>>
 <?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
@@ -516,42 +522,6 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($avaluo->id_inspector->Visible) { // id_inspector ?>
-		<td data-name="id_inspector"<?php echo $avaluo->id_inspector->CellAttributes() ?>>
-<?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_id_inspector" class="form-group avaluo_id_inspector">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $avaluo_grid->RowIndex ?>_id_inspector"><?php echo (strval($avaluo->id_inspector->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_inspector->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->id_inspector->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $avaluo_grid->RowIndex ?>_id_inspector',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->id_inspector->ReadOnly || $avaluo->id_inspector->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->id_inspector->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo $avaluo->id_inspector->CurrentValue ?>"<?php echo $avaluo->id_inspector->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" name="o<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="o<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo ew_HtmlEncode($avaluo->id_inspector->OldValue) ?>">
-<?php } ?>
-<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_id_inspector" class="form-group avaluo_id_inspector">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $avaluo_grid->RowIndex ?>_id_inspector"><?php echo (strval($avaluo->id_inspector->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_inspector->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->id_inspector->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $avaluo_grid->RowIndex ?>_id_inspector',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->id_inspector->ReadOnly || $avaluo->id_inspector->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->id_inspector->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo $avaluo->id_inspector->CurrentValue ?>"<?php echo $avaluo->id_inspector->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_id_inspector" class="avaluo_id_inspector">
-<span<?php echo $avaluo->id_inspector->ViewAttributes() ?>>
-<?php echo $avaluo->id_inspector->ListViewValue() ?></span>
-</span>
-<?php if ($avaluo->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" name="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo ew_HtmlEncode($avaluo->id_inspector->FormValue) ?>">
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" name="o<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="o<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo ew_HtmlEncode($avaluo->id_inspector->OldValue) ?>">
-<?php } else { ?>
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" name="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo ew_HtmlEncode($avaluo->id_inspector->FormValue) ?>">
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" name="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo ew_HtmlEncode($avaluo->id_inspector->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-	<?php } ?>
 	<?php if ($avaluo->id_cliente->Visible) { // id_cliente ?>
 		<td data-name="id_cliente"<?php echo $avaluo->id_cliente->CellAttributes() ?>>
 <?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
@@ -584,22 +554,58 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 <?php } ?>
 </td>
 	<?php } ?>
+	<?php if ($avaluo->estado->Visible) { // estado ?>
+		<td data-name="estado"<?php echo $avaluo->estado->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_estado" class="form-group avaluo_estado">
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $avaluo_grid->RowIndex ?>_estado"><?php echo (strval($avaluo->estado->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->estado->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->estado->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $avaluo_grid->RowIndex ?>_estado',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->estado->ReadOnly || $avaluo->estado->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="avaluo" data-field="x_estado" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->estado->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_grid->RowIndex ?>_estado" id="x<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo $avaluo->estado->CurrentValue ?>"<?php echo $avaluo->estado->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_estado" name="o<?php echo $avaluo_grid->RowIndex ?>_estado" id="o<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($avaluo->estado->OldValue) ?>">
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_estado" class="form-group avaluo_estado">
+<span<?php echo $avaluo->estado->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->estado->EditValue ?></p></span>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_estado" name="x<?php echo $avaluo_grid->RowIndex ?>_estado" id="x<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($avaluo->estado->CurrentValue) ?>">
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_estado" class="avaluo_estado">
+<span<?php echo $avaluo->estado->ViewAttributes() ?>>
+<?php echo $avaluo->estado->ListViewValue() ?></span>
+</span>
+<?php if ($avaluo->CurrentAction <> "F") { ?>
+<input type="hidden" data-table="avaluo" data-field="x_estado" name="x<?php echo $avaluo_grid->RowIndex ?>_estado" id="x<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($avaluo->estado->FormValue) ?>">
+<input type="hidden" data-table="avaluo" data-field="x_estado" name="o<?php echo $avaluo_grid->RowIndex ?>_estado" id="o<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($avaluo->estado->OldValue) ?>">
+<?php } else { ?>
+<input type="hidden" data-table="avaluo" data-field="x_estado" name="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_estado" id="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($avaluo->estado->FormValue) ?>">
+<input type="hidden" data-table="avaluo" data-field="x_estado" name="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_estado" id="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($avaluo->estado->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+	<?php } ?>
 	<?php if ($avaluo->estadointerno->Visible) { // estadointerno ?>
 		<td data-name="estadointerno"<?php echo $avaluo->estadointerno->CellAttributes() ?>>
 <?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_estadointerno" class="form-group avaluo_estadointerno">
-<select data-table="avaluo" data-field="x_estadointerno" data-value-separator="<?php echo $avaluo->estadointerno->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno" name="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno"<?php echo $avaluo->estadointerno->EditAttributes() ?>>
-<?php echo $avaluo->estadointerno->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_estadointerno") ?>
-</select>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $avaluo_grid->RowIndex ?>_estadointerno"><?php echo (strval($avaluo->estadointerno->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->estadointerno->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->estadointerno->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $avaluo_grid->RowIndex ?>_estadointerno',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->estadointerno->ReadOnly || $avaluo->estadointerno->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="avaluo" data-field="x_estadointerno" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->estadointerno->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno" id="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno" value="<?php echo $avaluo->estadointerno->CurrentValue ?>"<?php echo $avaluo->estadointerno->EditAttributes() ?>>
 </span>
 <input type="hidden" data-table="avaluo" data-field="x_estadointerno" name="o<?php echo $avaluo_grid->RowIndex ?>_estadointerno" id="o<?php echo $avaluo_grid->RowIndex ?>_estadointerno" value="<?php echo ew_HtmlEncode($avaluo->estadointerno->OldValue) ?>">
 <?php } ?>
 <?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_estadointerno" class="form-group avaluo_estadointerno">
-<select data-table="avaluo" data-field="x_estadointerno" data-value-separator="<?php echo $avaluo->estadointerno->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno" name="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno"<?php echo $avaluo->estadointerno->EditAttributes() ?>>
-<?php echo $avaluo->estadointerno->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_estadointerno") ?>
-</select>
+<span<?php echo $avaluo->estadointerno->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->estadointerno->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="avaluo" data-field="x_estadointerno" name="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno" id="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno" value="<?php echo ew_HtmlEncode($avaluo->estadointerno->CurrentValue) ?>">
 <?php } ?>
 <?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_estadointerno" class="avaluo_estadointerno">
@@ -620,18 +626,20 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 		<td data-name="estadopago"<?php echo $avaluo->estadopago->CellAttributes() ?>>
 <?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_estadopago" class="form-group avaluo_estadopago">
-<select data-table="avaluo" data-field="x_estadopago" data-value-separator="<?php echo $avaluo->estadopago->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" name="x<?php echo $avaluo_grid->RowIndex ?>_estadopago"<?php echo $avaluo->estadopago->EditAttributes() ?>>
-<?php echo $avaluo->estadopago->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_estadopago") ?>
-</select>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $avaluo_grid->RowIndex ?>_estadopago"><?php echo (strval($avaluo->estadopago->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->estadopago->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->estadopago->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $avaluo_grid->RowIndex ?>_estadopago',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->estadopago->ReadOnly || $avaluo->estadopago->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="avaluo" data-field="x_estadopago" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->estadopago->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo $avaluo->estadopago->CurrentValue ?>"<?php echo $avaluo->estadopago->EditAttributes() ?>>
 </span>
 <input type="hidden" data-table="avaluo" data-field="x_estadopago" name="o<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="o<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($avaluo->estadopago->OldValue) ?>">
 <?php } ?>
 <?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_estadopago" class="form-group avaluo_estadopago">
-<select data-table="avaluo" data-field="x_estadopago" data-value-separator="<?php echo $avaluo->estadopago->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" name="x<?php echo $avaluo_grid->RowIndex ?>_estadopago"<?php echo $avaluo->estadopago->EditAttributes() ?>>
-<?php echo $avaluo->estadopago->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_estadopago") ?>
-</select>
+<span<?php echo $avaluo->estadopago->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->estadopago->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="avaluo" data-field="x_estadopago" name="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($avaluo->estadopago->CurrentValue) ?>">
 <?php } ?>
 <?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_estadopago" class="avaluo_estadopago">
@@ -644,104 +652,6 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 <?php } else { ?>
 <input type="hidden" data-table="avaluo" data-field="x_estadopago" name="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($avaluo->estadopago->FormValue) ?>">
 <input type="hidden" data-table="avaluo" data-field="x_estadopago" name="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($avaluo->estadopago->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-	<?php } ?>
-	<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
-		<td data-name="fecha_avaluo"<?php echo $avaluo->fecha_avaluo->CellAttributes() ?>>
-<?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_fecha_avaluo" class="form-group avaluo_fecha_avaluo">
-<input type="text" data-table="avaluo" data-field="x_fecha_avaluo" data-format="10" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->fecha_avaluo->EditValue ?>"<?php echo $avaluo->fecha_avaluo->EditAttributes() ?>>
-<?php if (!$avaluo->fecha_avaluo->ReadOnly && !$avaluo->fecha_avaluo->Disabled && !isset($avaluo->fecha_avaluo->EditAttrs["readonly"]) && !isset($avaluo->fecha_avaluo->EditAttrs["disabled"])) { ?>
-<script type="text/javascript">
-ew_CreateDateTimePicker("favaluogrid", "x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
-</script>
-<?php } ?>
-</span>
-<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->OldValue) ?>">
-<?php } ?>
-<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_fecha_avaluo" class="form-group avaluo_fecha_avaluo">
-<input type="text" data-table="avaluo" data-field="x_fecha_avaluo" data-format="10" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->fecha_avaluo->EditValue ?>"<?php echo $avaluo->fecha_avaluo->EditAttributes() ?>>
-<?php if (!$avaluo->fecha_avaluo->ReadOnly && !$avaluo->fecha_avaluo->Disabled && !isset($avaluo->fecha_avaluo->EditAttrs["readonly"]) && !isset($avaluo->fecha_avaluo->EditAttrs["disabled"])) { ?>
-<script type="text/javascript">
-ew_CreateDateTimePicker("favaluogrid", "x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
-</script>
-<?php } ?>
-</span>
-<?php } ?>
-<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo">
-<span<?php echo $avaluo->fecha_avaluo->ViewAttributes() ?>>
-<?php echo $avaluo->fecha_avaluo->ListViewValue() ?></span>
-</span>
-<?php if ($avaluo->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->FormValue) ?>">
-<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->OldValue) ?>">
-<?php } else { ?>
-<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->FormValue) ?>">
-<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-	<?php } ?>
-	<?php if ($avaluo->montoincial->Visible) { // montoincial ?>
-		<td data-name="montoincial"<?php echo $avaluo->montoincial->CellAttributes() ?>>
-<?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_montoincial" class="form-group avaluo_montoincial">
-<input type="text" data-table="avaluo" data-field="x_montoincial" name="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" size="30" placeholder="<?php echo ew_HtmlEncode($avaluo->montoincial->getPlaceHolder()) ?>" value="<?php echo $avaluo->montoincial->EditValue ?>"<?php echo $avaluo->montoincial->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="avaluo" data-field="x_montoincial" name="o<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="o<?php echo $avaluo_grid->RowIndex ?>_montoincial" value="<?php echo ew_HtmlEncode($avaluo->montoincial->OldValue) ?>">
-<?php } ?>
-<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_montoincial" class="form-group avaluo_montoincial">
-<input type="text" data-table="avaluo" data-field="x_montoincial" name="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" size="30" placeholder="<?php echo ew_HtmlEncode($avaluo->montoincial->getPlaceHolder()) ?>" value="<?php echo $avaluo->montoincial->EditValue ?>"<?php echo $avaluo->montoincial->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_montoincial" class="avaluo_montoincial">
-<span<?php echo $avaluo->montoincial->ViewAttributes() ?>>
-<?php echo $avaluo->montoincial->ListViewValue() ?></span>
-</span>
-<?php if ($avaluo->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="avaluo" data-field="x_montoincial" name="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" value="<?php echo ew_HtmlEncode($avaluo->montoincial->FormValue) ?>">
-<input type="hidden" data-table="avaluo" data-field="x_montoincial" name="o<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="o<?php echo $avaluo_grid->RowIndex ?>_montoincial" value="<?php echo ew_HtmlEncode($avaluo->montoincial->OldValue) ?>">
-<?php } else { ?>
-<input type="hidden" data-table="avaluo" data-field="x_montoincial" name="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_montoincial" value="<?php echo ew_HtmlEncode($avaluo->montoincial->FormValue) ?>">
-<input type="hidden" data-table="avaluo" data-field="x_montoincial" name="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_montoincial" value="<?php echo ew_HtmlEncode($avaluo->montoincial->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-	<?php } ?>
-	<?php if ($avaluo->id_metodopago->Visible) { // id_metodopago ?>
-		<td data-name="id_metodopago"<?php echo $avaluo->id_metodopago->CellAttributes() ?>>
-<?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_id_metodopago" class="form-group avaluo_id_metodopago">
-<select data-table="avaluo" data-field="x_id_metodopago" data-value-separator="<?php echo $avaluo->id_metodopago->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" name="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago"<?php echo $avaluo->id_metodopago->EditAttributes() ?>>
-<?php echo $avaluo->id_metodopago->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago") ?>
-</select>
-</span>
-<input type="hidden" data-table="avaluo" data-field="x_id_metodopago" name="o<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" id="o<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($avaluo->id_metodopago->OldValue) ?>">
-<?php } ?>
-<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_id_metodopago" class="form-group avaluo_id_metodopago">
-<select data-table="avaluo" data-field="x_id_metodopago" data-value-separator="<?php echo $avaluo->id_metodopago->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" name="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago"<?php echo $avaluo->id_metodopago->EditAttributes() ?>>
-<?php echo $avaluo->id_metodopago->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago") ?>
-</select>
-</span>
-<?php } ?>
-<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_id_metodopago" class="avaluo_id_metodopago">
-<span<?php echo $avaluo->id_metodopago->ViewAttributes() ?>>
-<?php echo $avaluo->id_metodopago->ListViewValue() ?></span>
-</span>
-<?php if ($avaluo->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="avaluo" data-field="x_id_metodopago" name="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" id="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($avaluo->id_metodopago->FormValue) ?>">
-<input type="hidden" data-table="avaluo" data-field="x_id_metodopago" name="o<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" id="o<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($avaluo->id_metodopago->OldValue) ?>">
-<?php } else { ?>
-<input type="hidden" data-table="avaluo" data-field="x_id_metodopago" name="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" id="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($avaluo->id_metodopago->FormValue) ?>">
-<input type="hidden" data-table="avaluo" data-field="x_id_metodopago" name="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" id="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($avaluo->id_metodopago->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>
@@ -804,6 +714,24 @@ $avaluo_grid->ListOptions->Render("body", "left", $avaluo_grid->RowIndex);
 <input type="hidden" data-table="avaluo" data-field="x_codigoavaluo" name="o<?php echo $avaluo_grid->RowIndex ?>_codigoavaluo" id="o<?php echo $avaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($avaluo->codigoavaluo->OldValue) ?>">
 </td>
 	<?php } ?>
+	<?php if ($avaluo->tipoinmueble->Visible) { // tipoinmueble ?>
+		<td data-name="tipoinmueble">
+<?php if ($avaluo->CurrentAction <> "F") { ?>
+<span id="el$rowindex$_avaluo_tipoinmueble" class="form-group avaluo_tipoinmueble">
+<select data-table="avaluo" data-field="x_tipoinmueble" data-value-separator="<?php echo $avaluo->tipoinmueble->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" name="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble"<?php echo $avaluo->tipoinmueble->EditAttributes() ?>>
+<?php echo $avaluo->tipoinmueble->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble") ?>
+</select>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_avaluo_tipoinmueble" class="form-group avaluo_tipoinmueble">
+<span<?php echo $avaluo->tipoinmueble->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->tipoinmueble->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_tipoinmueble" name="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" id="x<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($avaluo->tipoinmueble->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="avaluo" data-field="x_tipoinmueble" name="o<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" id="o<?php echo $avaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($avaluo->tipoinmueble->OldValue) ?>">
+</td>
+	<?php } ?>
 	<?php if ($avaluo->id_solicitud->Visible) { // id_solicitud ?>
 		<td data-name="id_solicitud">
 <?php if ($avaluo->CurrentAction <> "F") { ?>
@@ -860,26 +788,6 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 <input type="hidden" data-table="avaluo" data-field="x_id_oficialcredito" name="o<?php echo $avaluo_grid->RowIndex ?>_id_oficialcredito" id="o<?php echo $avaluo_grid->RowIndex ?>_id_oficialcredito" value="<?php echo ew_HtmlEncode($avaluo->id_oficialcredito->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($avaluo->id_inspector->Visible) { // id_inspector ?>
-		<td data-name="id_inspector">
-<?php if ($avaluo->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_avaluo_id_inspector" class="form-group avaluo_id_inspector">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $avaluo_grid->RowIndex ?>_id_inspector"><?php echo (strval($avaluo->id_inspector->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_inspector->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->id_inspector->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $avaluo_grid->RowIndex ?>_id_inspector',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->id_inspector->ReadOnly || $avaluo->id_inspector->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->id_inspector->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo $avaluo->id_inspector->CurrentValue ?>"<?php echo $avaluo->id_inspector->EditAttributes() ?>>
-</span>
-<?php } else { ?>
-<span id="el$rowindex$_avaluo_id_inspector" class="form-group avaluo_id_inspector">
-<span<?php echo $avaluo->id_inspector->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $avaluo->id_inspector->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" name="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="x<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo ew_HtmlEncode($avaluo->id_inspector->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="avaluo" data-field="x_id_inspector" name="o<?php echo $avaluo_grid->RowIndex ?>_id_inspector" id="o<?php echo $avaluo_grid->RowIndex ?>_id_inspector" value="<?php echo ew_HtmlEncode($avaluo->id_inspector->OldValue) ?>">
-</td>
-	<?php } ?>
 	<?php if ($avaluo->id_cliente->Visible) { // id_cliente ?>
 		<td data-name="id_cliente">
 <?php if ($avaluo->CurrentAction <> "F") { ?>
@@ -898,13 +806,35 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 <input type="hidden" data-table="avaluo" data-field="x_id_cliente" name="o<?php echo $avaluo_grid->RowIndex ?>_id_cliente" id="o<?php echo $avaluo_grid->RowIndex ?>_id_cliente" value="<?php echo ew_HtmlEncode($avaluo->id_cliente->OldValue) ?>">
 </td>
 	<?php } ?>
+	<?php if ($avaluo->estado->Visible) { // estado ?>
+		<td data-name="estado">
+<?php if ($avaluo->CurrentAction <> "F") { ?>
+<span id="el$rowindex$_avaluo_estado" class="form-group avaluo_estado">
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $avaluo_grid->RowIndex ?>_estado"><?php echo (strval($avaluo->estado->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->estado->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->estado->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $avaluo_grid->RowIndex ?>_estado',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->estado->ReadOnly || $avaluo->estado->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="avaluo" data-field="x_estado" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->estado->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_grid->RowIndex ?>_estado" id="x<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo $avaluo->estado->CurrentValue ?>"<?php echo $avaluo->estado->EditAttributes() ?>>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_avaluo_estado" class="form-group avaluo_estado">
+<span<?php echo $avaluo->estado->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->estado->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_estado" name="x<?php echo $avaluo_grid->RowIndex ?>_estado" id="x<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($avaluo->estado->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="avaluo" data-field="x_estado" name="o<?php echo $avaluo_grid->RowIndex ?>_estado" id="o<?php echo $avaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($avaluo->estado->OldValue) ?>">
+</td>
+	<?php } ?>
 	<?php if ($avaluo->estadointerno->Visible) { // estadointerno ?>
 		<td data-name="estadointerno">
 <?php if ($avaluo->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_avaluo_estadointerno" class="form-group avaluo_estadointerno">
-<select data-table="avaluo" data-field="x_estadointerno" data-value-separator="<?php echo $avaluo->estadointerno->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno" name="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno"<?php echo $avaluo->estadointerno->EditAttributes() ?>>
-<?php echo $avaluo->estadointerno->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_estadointerno") ?>
-</select>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $avaluo_grid->RowIndex ?>_estadointerno"><?php echo (strval($avaluo->estadointerno->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->estadointerno->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->estadointerno->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $avaluo_grid->RowIndex ?>_estadointerno',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->estadointerno->ReadOnly || $avaluo->estadointerno->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="avaluo" data-field="x_estadointerno" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->estadointerno->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno" id="x<?php echo $avaluo_grid->RowIndex ?>_estadointerno" value="<?php echo $avaluo->estadointerno->CurrentValue ?>"<?php echo $avaluo->estadointerno->EditAttributes() ?>>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_avaluo_estadointerno" class="form-group avaluo_estadointerno">
@@ -920,9 +850,11 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 		<td data-name="estadopago">
 <?php if ($avaluo->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_avaluo_estadopago" class="form-group avaluo_estadopago">
-<select data-table="avaluo" data-field="x_estadopago" data-value-separator="<?php echo $avaluo->estadopago->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" name="x<?php echo $avaluo_grid->RowIndex ?>_estadopago"<?php echo $avaluo->estadopago->EditAttributes() ?>>
-<?php echo $avaluo->estadopago->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_estadopago") ?>
-</select>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $avaluo_grid->RowIndex ?>_estadopago"><?php echo (strval($avaluo->estadopago->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->estadopago->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->estadopago->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $avaluo_grid->RowIndex ?>_estadopago',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->estadopago->ReadOnly || $avaluo->estadopago->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="avaluo" data-field="x_estadopago" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->estadopago->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo $avaluo->estadopago->CurrentValue ?>"<?php echo $avaluo->estadopago->EditAttributes() ?>>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_avaluo_estadopago" class="form-group avaluo_estadopago">
@@ -932,61 +864,6 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 <input type="hidden" data-table="avaluo" data-field="x_estadopago" name="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($avaluo->estadopago->FormValue) ?>">
 <?php } ?>
 <input type="hidden" data-table="avaluo" data-field="x_estadopago" name="o<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="o<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($avaluo->estadopago->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
-		<td data-name="fecha_avaluo">
-<?php if ($avaluo->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_avaluo_fecha_avaluo" class="form-group avaluo_fecha_avaluo">
-<input type="text" data-table="avaluo" data-field="x_fecha_avaluo" data-format="10" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->fecha_avaluo->EditValue ?>"<?php echo $avaluo->fecha_avaluo->EditAttributes() ?>>
-<?php if (!$avaluo->fecha_avaluo->ReadOnly && !$avaluo->fecha_avaluo->Disabled && !isset($avaluo->fecha_avaluo->EditAttrs["readonly"]) && !isset($avaluo->fecha_avaluo->EditAttrs["disabled"])) { ?>
-<script type="text/javascript">
-ew_CreateDateTimePicker("favaluogrid", "x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
-</script>
-<?php } ?>
-</span>
-<?php } else { ?>
-<span id="el$rowindex$_avaluo_fecha_avaluo" class="form-group avaluo_fecha_avaluo">
-<span<?php echo $avaluo->fecha_avaluo->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $avaluo->fecha_avaluo->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($avaluo->montoincial->Visible) { // montoincial ?>
-		<td data-name="montoincial">
-<?php if ($avaluo->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_avaluo_montoincial" class="form-group avaluo_montoincial">
-<input type="text" data-table="avaluo" data-field="x_montoincial" name="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" size="30" placeholder="<?php echo ew_HtmlEncode($avaluo->montoincial->getPlaceHolder()) ?>" value="<?php echo $avaluo->montoincial->EditValue ?>"<?php echo $avaluo->montoincial->EditAttributes() ?>>
-</span>
-<?php } else { ?>
-<span id="el$rowindex$_avaluo_montoincial" class="form-group avaluo_montoincial">
-<span<?php echo $avaluo->montoincial->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $avaluo->montoincial->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="avaluo" data-field="x_montoincial" name="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="x<?php echo $avaluo_grid->RowIndex ?>_montoincial" value="<?php echo ew_HtmlEncode($avaluo->montoincial->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="avaluo" data-field="x_montoincial" name="o<?php echo $avaluo_grid->RowIndex ?>_montoincial" id="o<?php echo $avaluo_grid->RowIndex ?>_montoincial" value="<?php echo ew_HtmlEncode($avaluo->montoincial->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($avaluo->id_metodopago->Visible) { // id_metodopago ?>
-		<td data-name="id_metodopago">
-<?php if ($avaluo->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_avaluo_id_metodopago" class="form-group avaluo_id_metodopago">
-<select data-table="avaluo" data-field="x_id_metodopago" data-value-separator="<?php echo $avaluo->id_metodopago->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" name="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago"<?php echo $avaluo->id_metodopago->EditAttributes() ?>>
-<?php echo $avaluo->id_metodopago->SelectOptionListHtml("x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago") ?>
-</select>
-</span>
-<?php } else { ?>
-<span id="el$rowindex$_avaluo_id_metodopago" class="form-group avaluo_id_metodopago">
-<span<?php echo $avaluo->id_metodopago->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $avaluo->id_metodopago->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="avaluo" data-field="x_id_metodopago" name="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" id="x<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($avaluo->id_metodopago->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="avaluo" data-field="x_id_metodopago" name="o<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" id="o<?php echo $avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($avaluo->id_metodopago->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php

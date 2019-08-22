@@ -467,8 +467,6 @@ class ctipoinmueble_view extends ctipoinmueble {
 	var $StopRec;
 	var $TotalRecs = 0;
 	var $RecRange = 10;
-	var $Pager;
-	var $AutoHidePager = EW_AUTO_HIDE_PAGER;
 	var $RecCnt;
 	var $RecKey = array();
 	var $IsModal = FALSE;
@@ -496,46 +494,17 @@ class ctipoinmueble_view extends ctipoinmueble {
 				$this->id_tipoinmueble->setFormValue($_POST["id_tipoinmueble"]);
 				$this->RecKey["id_tipoinmueble"] = $this->id_tipoinmueble->FormValue;
 			} else {
-				$bLoadCurrentRecord = TRUE;
+				$sReturnUrl = "tipoinmueblelist.php"; // Return to list
 			}
 
 			// Get action
 			$this->CurrentAction = "I"; // Display form
 			switch ($this->CurrentAction) {
 				case "I": // Get a record to display
-					$this->StartRec = 1; // Initialize start position
-					if ($this->Recordset = $this->LoadRecordset()) // Load records
-						$this->TotalRecs = $this->Recordset->RecordCount(); // Get record count
-					if ($this->TotalRecs <= 0) { // No record found
-						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
-							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
-						$this->Page_Terminate("tipoinmueblelist.php"); // Return to list page
-					} elseif ($bLoadCurrentRecord) { // Load current record position
-						$this->SetupStartRec(); // Set up start record position
-
-						// Point to current record
-						if (intval($this->StartRec) <= intval($this->TotalRecs)) {
-							$bMatchRecord = TRUE;
-							$this->Recordset->Move($this->StartRec-1);
-						}
-					} else { // Match key values
-						while (!$this->Recordset->EOF) {
-							if (strval($this->id_tipoinmueble->CurrentValue) == strval($this->Recordset->fields('id_tipoinmueble'))) {
-								$this->setStartRecordNumber($this->StartRec); // Save record position
-								$bMatchRecord = TRUE;
-								break;
-							} else {
-								$this->StartRec++;
-								$this->Recordset->MoveNext();
-							}
-						}
-					}
-					if (!$bMatchRecord) {
+					if (!$this->LoadRow()) { // Load record based on key
 						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
 							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
 						$sReturnUrl = "tipoinmueblelist.php"; // No matching record, return to list
-					} else {
-						$this->LoadRowValues($this->Recordset); // Load row values
 					}
 			}
 		} else {
@@ -623,32 +592,6 @@ class ctipoinmueble_view extends ctipoinmueble {
 			$this->StartRec = intval(($this->StartRec-1)/$this->DisplayRecs)*$this->DisplayRecs+1; // Point to page boundary
 			$this->setStartRecordNumber($this->StartRec);
 		}
-	}
-
-	// Load recordset
-	function LoadRecordset($offset = -1, $rowcnt = -1) {
-
-		// Load List page SQL
-		$sSql = $this->ListSQL();
-		$conn = &$this->Connection();
-
-		// Load recordset
-		$dbtype = ew_GetConnectionType($this->DBID);
-		if ($this->UseSelectLimit) {
-			$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
-			if ($dbtype == "MSSQL") {
-				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset, array("_hasOrderBy" => trim($this->getOrderBy()) || trim($this->getSessionOrderBy())));
-			} else {
-				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset);
-			}
-			$conn->raiseErrorFn = '';
-		} else {
-			$rs = ew_LoadRecordset($sSql, $conn);
-		}
-
-		// Call Recordset Selected event
-		$this->Recordset_Selected($rs);
-		return $rs;
 	}
 
 	// Load row based on key values
@@ -929,31 +872,6 @@ $tipoinmueble_view->ShowMessage();
 <input type="hidden" name="modal" value="<?php echo intval($tipoinmueble_view->IsModal) ?>">
 <table class="table table-striped table-bordered table-hover table-condensed ewViewTable">
 </table>
-<?php if (!$tipoinmueble_view->IsModal) { ?>
-<?php if (!isset($tipoinmueble_view->Pager)) $tipoinmueble_view->Pager = new cNumericPager($tipoinmueble_view->StartRec, $tipoinmueble_view->DisplayRecs, $tipoinmueble_view->TotalRecs, $tipoinmueble_view->RecRange, $tipoinmueble_view->AutoHidePager) ?>
-<?php if ($tipoinmueble_view->Pager->RecordCount > 0 && $tipoinmueble_view->Pager->Visible) { ?>
-<div class="ewPager">
-<div class="ewNumericPage"><ul class="pagination">
-	<?php if ($tipoinmueble_view->Pager->FirstButton->Enabled) { ?>
-	<li><a href="<?php echo $tipoinmueble_view->PageUrl() ?>start=<?php echo $tipoinmueble_view->Pager->FirstButton->Start ?>"><?php echo $Language->Phrase("PagerFirst") ?></a></li>
-	<?php } ?>
-	<?php if ($tipoinmueble_view->Pager->PrevButton->Enabled) { ?>
-	<li><a href="<?php echo $tipoinmueble_view->PageUrl() ?>start=<?php echo $tipoinmueble_view->Pager->PrevButton->Start ?>"><?php echo $Language->Phrase("PagerPrevious") ?></a></li>
-	<?php } ?>
-	<?php foreach ($tipoinmueble_view->Pager->Items as $PagerItem) { ?>
-		<li<?php if (!$PagerItem->Enabled) { echo " class=\" active\""; } ?>><a href="<?php if ($PagerItem->Enabled) { echo $tipoinmueble_view->PageUrl() . "start=" . $PagerItem->Start; } else { echo "#"; } ?>"><?php echo $PagerItem->Text ?></a></li>
-	<?php } ?>
-	<?php if ($tipoinmueble_view->Pager->NextButton->Enabled) { ?>
-	<li><a href="<?php echo $tipoinmueble_view->PageUrl() ?>start=<?php echo $tipoinmueble_view->Pager->NextButton->Start ?>"><?php echo $Language->Phrase("PagerNext") ?></a></li>
-	<?php } ?>
-	<?php if ($tipoinmueble_view->Pager->LastButton->Enabled) { ?>
-	<li><a href="<?php echo $tipoinmueble_view->PageUrl() ?>start=<?php echo $tipoinmueble_view->Pager->LastButton->Start ?>"><?php echo $Language->Phrase("PagerLast") ?></a></li>
-	<?php } ?>
-</ul></div>
-</div>
-<?php } ?>
-<div class="clearfix"></div>
-<?php } ?>
 </form>
 <script type="text/javascript">
 ftipoinmuebleview.Init();

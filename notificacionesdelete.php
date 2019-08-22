@@ -327,6 +327,7 @@ class cnotificaciones_delete extends cnotificaciones {
 		$this->creadopor->SetVisibility();
 		$this->recibidopor->SetVisibility();
 		$this->leido->SetVisibility();
+		$this->desde->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -514,6 +515,7 @@ class cnotificaciones_delete extends cnotificaciones {
 		$this->estado->setDbValue($row['estado']);
 		$this->fecha->setDbValue($row['fecha']);
 		$this->fechaleido->setDbValue($row['fechaleido']);
+		$this->desde->setDbValue($row['desde']);
 	}
 
 	// Return a row with default values
@@ -527,6 +529,7 @@ class cnotificaciones_delete extends cnotificaciones {
 		$row['estado'] = NULL;
 		$row['fecha'] = NULL;
 		$row['fechaleido'] = NULL;
+		$row['desde'] = NULL;
 		return $row;
 	}
 
@@ -543,6 +546,7 @@ class cnotificaciones_delete extends cnotificaciones {
 		$this->estado->DbValue = $row['estado'];
 		$this->fecha->DbValue = $row['fecha'];
 		$this->fechaleido->DbValue = $row['fechaleido'];
+		$this->desde->DbValue = $row['desde'];
 	}
 
 	// Render row values based on field settings
@@ -569,6 +573,8 @@ class cnotificaciones_delete extends cnotificaciones {
 
 		// fechaleido
 		$this->fechaleido->CellCssStyle = "white-space: nowrap;";
+
+		// desde
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -590,6 +596,10 @@ class cnotificaciones_delete extends cnotificaciones {
 		// leido
 		$this->leido->ViewValue = $this->leido->CurrentValue;
 		$this->leido->ViewCustomAttributes = "";
+
+		// desde
+		$this->desde->ViewValue = $this->desde->CurrentValue;
+		$this->desde->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -615,6 +625,11 @@ class cnotificaciones_delete extends cnotificaciones {
 			$this->leido->LinkCustomAttributes = "";
 			$this->leido->HrefValue = "";
 			$this->leido->TooltipValue = "";
+
+			// desde
+			$this->desde->LinkCustomAttributes = "";
+			$this->desde->HrefValue = "";
+			$this->desde->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -867,6 +882,9 @@ $notificaciones_delete->ShowMessage();
 <?php if ($notificaciones->leido->Visible) { // leido ?>
 		<th class="<?php echo $notificaciones->leido->HeaderCellClass() ?>"><span id="elh_notificaciones_leido" class="notificaciones_leido"><?php echo $notificaciones->leido->FldCaption() ?></span></th>
 <?php } ?>
+<?php if ($notificaciones->desde->Visible) { // desde ?>
+		<th class="<?php echo $notificaciones->desde->HeaderCellClass() ?>"><span id="elh_notificaciones_desde" class="notificaciones_desde"><?php echo $notificaciones->desde->FldCaption() ?></span></th>
+<?php } ?>
 	</tr>
 	</thead>
 	<tbody>
@@ -925,6 +943,14 @@ while (!$notificaciones_delete->Recordset->EOF) {
 <span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_leido" class="notificaciones_leido">
 <span<?php echo $notificaciones->leido->ViewAttributes() ?>>
 <?php echo $notificaciones->leido->ListViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($notificaciones->desde->Visible) { // desde ?>
+		<td<?php echo $notificaciones->desde->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_desde" class="notificaciones_desde">
+<span<?php echo $notificaciones->desde->ViewAttributes() ?>>
+<?php echo $notificaciones->desde->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

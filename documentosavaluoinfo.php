@@ -11,8 +11,9 @@ class cdocumentosavaluo extends cTable {
 	var $descripcion;
 	var $imagen;
 	var $avaluo;
-	var $created_at;
 	var $path_drive;
+	var $id_tipodocumento;
+	var $created_at;
 
 	//
 	// Table class constructor
@@ -70,16 +71,24 @@ class cdocumentosavaluo extends cTable {
 		$this->avaluo->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['avaluo'] = &$this->avaluo;
 
-		// created_at
-		$this->created_at = new cField('documentosavaluo', 'documentosavaluo', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->created_at->Sortable = TRUE; // Allow sort
-		$this->created_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
-		$this->fields['created_at'] = &$this->created_at;
-
 		// path_drive
 		$this->path_drive = new cField('documentosavaluo', 'documentosavaluo', 'x_path_drive', 'path_drive', '`path_drive`', '`path_drive`', 200, -1, FALSE, '`path_drive`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->path_drive->Sortable = FALSE; // Allow sort
 		$this->fields['path_drive'] = &$this->path_drive;
+
+		// id_tipodocumento
+		$this->id_tipodocumento = new cField('documentosavaluo', 'documentosavaluo', 'x_id_tipodocumento', 'id_tipodocumento', '`id_tipodocumento`', '`id_tipodocumento`', 3, -1, FALSE, '`id_tipodocumento`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->id_tipodocumento->Sortable = TRUE; // Allow sort
+		$this->id_tipodocumento->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->id_tipodocumento->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
+		$this->id_tipodocumento->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['id_tipodocumento'] = &$this->id_tipodocumento;
+
+		// created_at
+		$this->created_at = new cField('documentosavaluo', 'documentosavaluo', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->created_at->Sortable = FALSE; // Allow sort
+		$this->created_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
+		$this->fields['created_at'] = &$this->created_at;
 	}
 
 	// Field Visibility
@@ -662,8 +671,9 @@ class cdocumentosavaluo extends cTable {
 		$this->descripcion->setDbValue($rs->fields('descripcion'));
 		$this->imagen->Upload->DbValue = $rs->fields('imagen');
 		$this->avaluo->setDbValue($rs->fields('avaluo'));
-		$this->created_at->setDbValue($rs->fields('created_at'));
 		$this->path_drive->setDbValue($rs->fields('path_drive'));
+		$this->id_tipodocumento->setDbValue($rs->fields('id_tipodocumento'));
+		$this->created_at->setDbValue($rs->fields('created_at'));
 	}
 
 	// Render list row values
@@ -678,10 +688,14 @@ class cdocumentosavaluo extends cTable {
 		// descripcion
 		// imagen
 		// avaluo
-		// created_at
 		// path_drive
 
 		$this->path_drive->CellCssStyle = "white-space: nowrap;";
+
+		// id_tipodocumento
+		// created_at
+
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
 
 		// id
 		$this->id->ViewValue = $this->id->CurrentValue;
@@ -723,14 +737,37 @@ class cdocumentosavaluo extends cTable {
 		}
 		$this->avaluo->ViewCustomAttributes = "";
 
+		// path_drive
+		$this->path_drive->ViewValue = $this->path_drive->CurrentValue;
+		$this->path_drive->ViewCustomAttributes = "";
+
+		// id_tipodocumento
+		if (strval($this->id_tipodocumento->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_tipodocumento->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipodocumento`";
+		$sWhereWrk = "";
+		$this->id_tipodocumento->LookupFilters = array("dx1" => '`nombre`');
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_tipodocumento, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->id_tipodocumento->ViewValue = $this->id_tipodocumento->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_tipodocumento->ViewValue = $this->id_tipodocumento->CurrentValue;
+			}
+		} else {
+			$this->id_tipodocumento->ViewValue = NULL;
+		}
+		$this->id_tipodocumento->ViewCustomAttributes = "";
+
 		// created_at
 		$this->created_at->ViewValue = $this->created_at->CurrentValue;
 		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
 		$this->created_at->ViewCustomAttributes = "";
-
-		// path_drive
-		$this->path_drive->ViewValue = $this->path_drive->CurrentValue;
-		$this->path_drive->ViewCustomAttributes = "";
 
 		// id
 		$this->id->LinkCustomAttributes = "";
@@ -759,15 +796,20 @@ class cdocumentosavaluo extends cTable {
 		$this->avaluo->HrefValue = "";
 		$this->avaluo->TooltipValue = "";
 
-		// created_at
-		$this->created_at->LinkCustomAttributes = "";
-		$this->created_at->HrefValue = "";
-		$this->created_at->TooltipValue = "";
-
 		// path_drive
 		$this->path_drive->LinkCustomAttributes = "";
 		$this->path_drive->HrefValue = "";
 		$this->path_drive->TooltipValue = "";
+
+		// id_tipodocumento
+		$this->id_tipodocumento->LinkCustomAttributes = "";
+		$this->id_tipodocumento->HrefValue = "";
+		$this->id_tipodocumento->TooltipValue = "";
+
+		// created_at
+		$this->created_at->LinkCustomAttributes = "";
+		$this->created_at->HrefValue = "";
+		$this->created_at->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -834,13 +876,21 @@ class cdocumentosavaluo extends cTable {
 		} else {
 		}
 
-		// created_at
 		// path_drive
-
 		$this->path_drive->EditAttrs["class"] = "form-control";
 		$this->path_drive->EditCustomAttributes = "";
 		$this->path_drive->EditValue = $this->path_drive->CurrentValue;
 		$this->path_drive->PlaceHolder = ew_RemoveHtml($this->path_drive->FldTitle());
+
+		// id_tipodocumento
+		$this->id_tipodocumento->EditAttrs["class"] = "form-control";
+		$this->id_tipodocumento->EditCustomAttributes = "";
+
+		// created_at
+		$this->created_at->EditAttrs["class"] = "form-control";
+		$this->created_at->EditCustomAttributes = "";
+		$this->created_at->EditValue = ew_FormatDateTime($this->created_at->CurrentValue, 8);
+		$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldTitle());
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -873,10 +923,10 @@ class cdocumentosavaluo extends cTable {
 					if ($this->descripcion->Exportable) $Doc->ExportCaption($this->descripcion);
 					if ($this->imagen->Exportable) $Doc->ExportCaption($this->imagen);
 					if ($this->avaluo->Exportable) $Doc->ExportCaption($this->avaluo);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
+					if ($this->id_tipodocumento->Exportable) $Doc->ExportCaption($this->id_tipodocumento);
 				} else {
 					if ($this->avaluo->Exportable) $Doc->ExportCaption($this->avaluo);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
+					if ($this->id_tipodocumento->Exportable) $Doc->ExportCaption($this->id_tipodocumento);
 				}
 				$Doc->EndExportRow();
 			}
@@ -912,10 +962,10 @@ class cdocumentosavaluo extends cTable {
 						if ($this->descripcion->Exportable) $Doc->ExportField($this->descripcion);
 						if ($this->imagen->Exportable) $Doc->ExportField($this->imagen);
 						if ($this->avaluo->Exportable) $Doc->ExportField($this->avaluo);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
+						if ($this->id_tipodocumento->Exportable) $Doc->ExportField($this->id_tipodocumento);
 					} else {
 						if ($this->avaluo->Exportable) $Doc->ExportField($this->avaluo);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
+						if ($this->id_tipodocumento->Exportable) $Doc->ExportField($this->id_tipodocumento);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

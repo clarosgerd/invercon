@@ -130,6 +130,12 @@ class cpago_avaluo extends cTable {
 			else
 				return "";
 		}
+		if ($this->getCurrentMasterTable() == "viewavaluosc") {
+			if ($this->avaluo_id->getSessionValue() <> "")
+				$sMasterFilter .= "`id`=" . ew_QuotedValue($this->avaluo_id->getSessionValue(), EW_DATATYPE_NUMBER, "DB");
+			else
+				return "";
+		}
 		return $sMasterFilter;
 	}
 
@@ -144,6 +150,12 @@ class cpago_avaluo extends cTable {
 			else
 				return "";
 		}
+		if ($this->getCurrentMasterTable() == "viewavaluosc") {
+			if ($this->avaluo_id->getSessionValue() <> "")
+				$sDetailFilter .= "`avaluo_id`=" . ew_QuotedValue($this->avaluo_id->getSessionValue(), EW_DATATYPE_NUMBER, "DB");
+			else
+				return "";
+		}
 		return $sDetailFilter;
 	}
 
@@ -155,6 +167,16 @@ class cpago_avaluo extends cTable {
 	// Detail filter
 	function SqlDetailFilter_pago() {
 		return "`pago_id`=@pago_id@";
+	}
+
+	// Master filter
+	function SqlMasterFilter_viewavaluosc() {
+		return "`id`=@id@";
+	}
+
+	// Detail filter
+	function SqlDetailFilter_viewavaluosc() {
+		return "`avaluo_id`=@avaluo_id@";
 	}
 
 	// Table level SQL
@@ -553,6 +575,10 @@ class cpago_avaluo extends cTable {
 			$url .= (strpos($url, "?") !== FALSE ? "&" : "?") . EW_TABLE_SHOW_MASTER . "=" . $this->getCurrentMasterTable();
 			$url .= "&fk_id=" . urlencode($this->pago_id->CurrentValue);
 		}
+		if ($this->getCurrentMasterTable() == "viewavaluosc" && strpos($url, EW_TABLE_SHOW_MASTER . "=") === FALSE) {
+			$url .= (strpos($url, "?") !== FALSE ? "&" : "?") . EW_TABLE_SHOW_MASTER . "=" . $this->getCurrentMasterTable();
+			$url .= "&fk_id=" . urlencode($this->avaluo_id->CurrentValue);
+		}
 		return $url;
 	}
 
@@ -707,7 +733,7 @@ class cpago_avaluo extends cTable {
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -794,6 +820,31 @@ class cpago_avaluo extends cTable {
 		// avaluo_id
 		$this->avaluo_id->EditAttrs["class"] = "form-control";
 		$this->avaluo_id->EditCustomAttributes = "";
+		if ($this->avaluo_id->getSessionValue() <> "") {
+			$this->avaluo_id->CurrentValue = $this->avaluo_id->getSessionValue();
+		if (strval($this->avaluo_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+		$sWhereWrk = "";
+		$this->avaluo_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
+				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->avaluo_id->ViewValue = $this->avaluo_id->CurrentValue;
+			}
+		} else {
+			$this->avaluo_id->ViewValue = NULL;
+		}
+		$this->avaluo_id->ViewCustomAttributes = "";
+		} else {
+		}
 
 		// q
 		$this->q->EditAttrs["class"] = "form-control";

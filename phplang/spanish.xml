@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2019/8/20" version="14.0.0" id="es" name="Spanish" desc="Spanish" author="Diego Mendoza diego.mdza@gmail.com">
+<ew-language date="2019/8/22" version="14.0.0" id="es" name="Spanish" desc="Spanish" author="Diego Mendoza diego.mdza@gmail.com">
   <!-- 
 *** Important Notes:
 1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -616,6 +616,33 @@
   <project>
     <phrase id="bodytitle" value="Invercon" />
     <phrase id="footertext" value="&amp;copy;2019 Invercon. All rights reserved." />
+    <menu id="105">
+      <phrase id="menutext" value="GESTION DE AVALUO" />
+    </menu>
+    <menu id="61">
+      <phrase id="menutext" value="AVALUOS" />
+    </menu>
+    <menu id="150">
+      <phrase id="menutext" value="GESTION CLIENTE" />
+    </menu>
+    <menu id="23">
+      <phrase id="menutext" value="CLIENTE" />
+    </menu>
+    <menu id="194">
+      <phrase id="menutext" value="GESTIO USUARIOS" />
+    </menu>
+    <menu id="38">
+      <phrase id="menutext" value="INSPECTOR" />
+    </menu>
+    <menu id="39">
+      <phrase id="menutext" value="OFICIAL CREDITO" />
+    </menu>
+    <menu id="40">
+      <phrase id="menutext" value="SUPERVISOR" />
+    </menu>
+    <menu id="9">
+      <phrase id="menutext" value="ASESOR FINANCIERO" />
+    </menu>
     <menu id="59">
       <phrase id="menutext" value="core" />
     </menu>
@@ -629,7 +656,7 @@
       <phrase id="menutext" value="PAGO" />
     </menu>
     <menu id="56">
-      <phrase id="menutext" value="pago avaluo" />
+      <phrase id="menutext" value="PAGO AVALUO" />
     </menu>
     <menu id="49">
       <phrase id="menutext" value="especial" />
@@ -646,8 +673,17 @@
     <menu id="53">
       <phrase id="menutext" value="vehiculo" />
     </menu>
+    <menu id="256">
+      <phrase id="menutext" value="GESTION MENSAJES" />
+    </menu>
     <menu id="54">
       <phrase id="menutext" value="EMAILNOTIFICACIONES" />
+    </menu>
+    <menu id="43">
+      <phrase id="menutext" value="NOTIFICACIONES" />
+    </menu>
+    <menu id="239">
+      <phrase id="menutext" value="MENSAJES CHAT" />
     </menu>
     <menu id="48">
       <phrase id="menutext" value="CALENDARIO RESERVACION" />
@@ -658,26 +694,8 @@
     <menu id="42">
       <phrase id="menutext" value="audittrail" />
     </menu>
-    <menu id="43">
-      <phrase id="menutext" value="NOTIFICACIONES" />
-    </menu>
     <menu id="45">
       <phrase id="menutext" value="corenotificacion" />
-    </menu>
-    <menu id="38">
-      <phrase id="menutext" value="INSPECTOR" />
-    </menu>
-    <menu id="39">
-      <phrase id="menutext" value="OFICIAL CREDITO" />
-    </menu>
-    <menu id="40">
-      <phrase id="menutext" value="SUPERVISOR" />
-    </menu>
-    <menu id="9">
-      <phrase id="menutext" value="ASESOR FINANCIERO" />
-    </menu>
-    <menu id="23">
-      <phrase id="menutext" value="CLIENTE" />
     </menu>
     <menu id="21">
       <phrase id="menutext" value="CALENDARIO RESERVACION" />
@@ -692,16 +710,19 @@
       <phrase id="menutext" value="avaluocore" />
     </menu>
     <menu id="27">
-      <phrase id="menutext" value="documentosavaluo" />
-    </menu>
-    <menu id="10">
-      <phrase id="menutext" value="AVALUO" />
+      <phrase id="menutext" value="ADJUNTOS" />
     </menu>
     <menu id="6">
       <phrase id="menutext" value="SOLICITUD PAGINA" />
     </menu>
+    <menu id="237">
+      <phrase id="menutext" value="GESTION SOLICITUD" />
+    </menu>
     <menu id="3">
       <phrase id="menutext" value="SOLICITUD" />
+    </menu>
+    <menu id="10">
+      <phrase id="menutext" value="SOLICITUD DETALLE" />
     </menu>
     <menu id="20">
       <phrase id="menutext" value="ADMINISTRACION" />
@@ -741,6 +762,12 @@
     </menu>
     <menu id="47">
       <phrase id="menutext" value="ROLES" />
+    </menu>
+    <menu id="60">
+      <phrase id="menutext" value="TIPO DOCUMENTO" />
+    </menu>
+    <menu id="238">
+      <phrase id="menutext" value="getApiRestWordPress" />
     </menu>
     <table id="departamento">
       <phrase id="tblcaption" value="DEPARTAMENTO" />
@@ -1105,7 +1132,7 @@
       </field>
     </table>
     <table id="avaluo">
-      <phrase id="tblcaption" value="AVALUO" />
+      <phrase id="tblcaption" value="SOLICITUD DETALLE" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
@@ -1131,14 +1158,14 @@
         <phrase id="fldtagvalue2" value="1" />
         <phrase id="fldtagcaption2" value="ACTIVO" />
       </field>
-      <field id="estado">
-        <phrase id="fldcaption" value="ESTADO" />
-      </field>
       <field id="created_at">
         <phrase id="fldcaption" value="CREADO" />
       </field>
       <field id="id_cliente">
         <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
       </field>
       <field id="estadointerno">
         <phrase id="fldcaption" value="ESTADO INTERNO" />
@@ -1232,7 +1259,7 @@
       </field>
     </table>
     <table id="documentosavaluo">
-      <phrase id="tblcaption" value="documentosavaluo" />
+      <phrase id="tblcaption" value="ADJUNTOS" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
@@ -1243,13 +1270,16 @@
         <phrase id="fldcaption" value="DOCUMENTO" />
       </field>
       <field id="avaluo">
-        <phrase id="fldcaption" value="AVALUO" />
-      </field>
-      <field id="created_at">
-        <phrase id="fldcaption" value="created at" />
+        <phrase id="fldcaption" value="TIPO AVALUO" />
       </field>
       <field id="path_drive">
-        <phrase id="fldcaption" value="path drive" />
+        <phrase id="fldcaption" value="DRIVE" />
+      </field>
+      <field id="id_tipodocumento">
+        <phrase id="fldcaption" value="TIPO DOCUMENTO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
       </field>
     </table>
     <table id="datossolicitud">
@@ -1643,6 +1673,9 @@
       <field id="fechaleido">
         <phrase id="fldcaption" value="FECHA LEIDO" />
       </field>
+      <field id="desde">
+        <phrase id="fldcaption" value="desde" />
+      </field>
     </table>
     <table id="corenotificacion_php">
       <phrase id="tblcaption" value="corenotificacion" />
@@ -1969,7 +2002,7 @@
       </field>
     </table>
     <table id="pago">
-      <phrase id="tblcaption" value="pago" />
+      <phrase id="tblcaption" value="PAGO" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
@@ -1998,7 +2031,7 @@
       </field>
     </table>
     <table id="pago_avaluo">
-      <phrase id="tblcaption" value="pago avaluo" />
+      <phrase id="tblcaption" value="PAGO AVALUO" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
@@ -2260,6 +2293,112 @@
     </table>
     <table id="core_php">
       <phrase id="tblcaption" value="core" />
+    </table>
+    <table id="tipodocumento">
+      <phrase id="tblcaption" value="tipodocumento" />
+      <field id="id">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="nombre">
+        <phrase id="fldcaption" value="NOMBRE" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+    </table>
+    <table id="viewavaluosc">
+      <phrase id="tblcaption" value="AVALUO" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO INMUEBLE" />
+      </field>
+      <field id="codigoavaluo">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="SOLICITUD" />
+      </field>
+      <field id="id_oficialcredito">
+        <phrase id="fldcaption" value="OFICIAL CREDITO" />
+      </field>
+      <field id="id_inspector">
+        <phrase id="fldcaption" value="INSPECTOR" />
+      </field>
+      <field id="id_cliente">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="estadointerno">
+        <phrase id="fldcaption" value="ESTADO INTERNO" />
+      </field>
+      <field id="estadopago">
+        <phrase id="fldcaption" value="ESTADO PAGO" />
+      </field>
+      <field id="fecha_avaluo">
+        <phrase id="fldcaption" value="FECHA AVALUO" />
+      </field>
+      <field id="montoincial">
+        <phrase id="fldcaption" value="MONTO INCIAL" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO PAGO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+    </table>
+    <table id="getapirestwordpress_php">
+      <phrase id="tblcaption" value="getApiRestWordPress" />
+    </table>
+    <table id="offline_messages">
+      <phrase id="tblcaption" value="offline messages" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="timestamp">
+        <phrase id="fldcaption" value="timestamp" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="name" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="email" />
+      </field>
+      <field id="message">
+        <phrase id="fldcaption" value="message" />
+      </field>
+      <field id="ip">
+        <phrase id="fldcaption" value="ip" />
+      </field>
+      <field id="user_agent">
+        <phrase id="fldcaption" value="user agent" />
+      </field>
     </table>
   </project>
 </ew-language>

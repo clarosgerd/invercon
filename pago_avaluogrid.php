@@ -374,19 +374,35 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowCnt
 	<?php if ($pago_avaluo->avaluo_id->Visible) { // avaluo_id ?>
 		<td data-name="avaluo_id"<?php echo $pago_avaluo->avaluo_id->CellAttributes() ?>>
 <?php if ($pago_avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<?php if ($pago_avaluo->avaluo_id->getSessionValue() <> "") { ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
+<span<?php echo $pago_avaluo->avaluo_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago_avaluo->avaluo_id->ViewValue ?></p></span>
+</span>
+<input type="hidden" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->CurrentValue) ?>">
+<?php } else { ?>
 <span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
 <select data-table="pago_avaluo" data-field="x_avaluo_id" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
 <?php echo $pago_avaluo->avaluo_id->SelectOptionListHtml("x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id") ?>
 </select>
 </span>
+<?php } ?>
 <input type="hidden" data-table="pago_avaluo" data-field="x_avaluo_id" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->OldValue) ?>">
 <?php } ?>
 <?php if ($pago_avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<?php if ($pago_avaluo->avaluo_id->getSessionValue() <> "") { ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
+<span<?php echo $pago_avaluo->avaluo_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago_avaluo->avaluo_id->ViewValue ?></p></span>
+</span>
+<input type="hidden" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->CurrentValue) ?>">
+<?php } else { ?>
 <span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
 <select data-table="pago_avaluo" data-field="x_avaluo_id" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
 <?php echo $pago_avaluo->avaluo_id->SelectOptionListHtml("x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id") ?>
 </select>
 </span>
+<?php } ?>
 <?php } ?>
 <?php if ($pago_avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_avaluo_id" class="pago_avaluo_avaluo_id">
@@ -515,11 +531,19 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowInd
 	<?php if ($pago_avaluo->avaluo_id->Visible) { // avaluo_id ?>
 		<td data-name="avaluo_id">
 <?php if ($pago_avaluo->CurrentAction <> "F") { ?>
+<?php if ($pago_avaluo->avaluo_id->getSessionValue() <> "") { ?>
+<span id="el$rowindex$_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
+<span<?php echo $pago_avaluo->avaluo_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago_avaluo->avaluo_id->ViewValue ?></p></span>
+</span>
+<input type="hidden" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->CurrentValue) ?>">
+<?php } else { ?>
 <span id="el$rowindex$_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
 <select data-table="pago_avaluo" data-field="x_avaluo_id" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
 <?php echo $pago_avaluo->avaluo_id->SelectOptionListHtml("x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id") ?>
 </select>
 </span>
+<?php } ?>
 <?php } else { ?>
 <span id="el$rowindex$_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
 <span<?php echo $pago_avaluo->avaluo_id->ViewAttributes() ?>>

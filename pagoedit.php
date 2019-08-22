@@ -1709,7 +1709,9 @@ $pago_edit->ShowMessage();
 <input type="hidden" name="fx_x_documento_pago" id= "fx_x_documento_pago" value="<?php echo $pago->documento_pago->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_documento_pago" id= "fm_x_documento_pago" value="<?php echo $pago->documento_pago->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$pago->documento_pago->ReadOnly && !$pago->documento_pago->Disabled && @$pago->documento_pago->EditAttrs["readonly"] == "" && @$pago->documento_pago->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fpagoedit", "x_documento_pago");</script>
+<?php } ?>
 </span>
 <?php echo $pago->documento_pago->CustomMsg ?></div></div>
 	</div>
@@ -1733,7 +1735,9 @@ $pago_edit->ShowMessage();
 <input type="hidden" name="fx_x_documento_pago" id= "fx_x_documento_pago" value="<?php echo $pago->documento_pago->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_documento_pago" id= "fm_x_documento_pago" value="<?php echo $pago->documento_pago->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$pago->documento_pago->ReadOnly && !$pago->documento_pago->Disabled && @$pago->documento_pago->EditAttrs["readonly"] == "" && @$pago->documento_pago->EditAttrs["disabled"] == "") { ?>
+<script type="text/javascript">ew_CheckFileUpload("fpagoedit", "x_documento_pago");</script>
+<?php } ?>
 </span>
 <?php echo $pago->documento_pago->CustomMsg ?></td>
 	</tr>

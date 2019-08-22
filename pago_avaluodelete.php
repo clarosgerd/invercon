@@ -8,6 +8,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "pago_avaluoinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
 <?php include_once "pagoinfo.php" ?>
+<?php include_once "viewavaluoscinfo.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -262,6 +263,9 @@ class cpago_avaluo_delete extends cpago_avaluo {
 
 		// Table object (pago)
 		if (!isset($GLOBALS['pago'])) $GLOBALS['pago'] = new cpago();
+
+		// Table object (viewavaluosc)
+		if (!isset($GLOBALS['viewavaluosc'])) $GLOBALS['viewavaluosc'] = new cviewavaluosc();
 
 		// Page ID
 		if (!defined("EW_PAGE_ID"))
@@ -595,7 +599,7 @@ class cpago_avaluo_delete extends cpago_avaluo {
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -739,6 +743,17 @@ class cpago_avaluo_delete extends cpago_avaluo {
 					$bValidMaster = FALSE;
 				}
 			}
+			if ($sMasterTblVar == "viewavaluosc") {
+				$bValidMaster = TRUE;
+				if (@$_GET["fk_id"] <> "") {
+					$GLOBALS["viewavaluosc"]->id->setQueryStringValue($_GET["fk_id"]);
+					$this->avaluo_id->setQueryStringValue($GLOBALS["viewavaluosc"]->id->QueryStringValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->QueryStringValue);
+					if (!is_numeric($GLOBALS["viewavaluosc"]->id->QueryStringValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
 		} elseif (isset($_POST[EW_TABLE_SHOW_MASTER])) {
 			$sMasterTblVar = $_POST[EW_TABLE_SHOW_MASTER];
 			if ($sMasterTblVar == "") {
@@ -753,6 +768,17 @@ class cpago_avaluo_delete extends cpago_avaluo {
 					$this->pago_id->setFormValue($GLOBALS["pago"]->id->FormValue);
 					$this->pago_id->setSessionValue($this->pago_id->FormValue);
 					if (!is_numeric($GLOBALS["pago"]->id->FormValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
+			if ($sMasterTblVar == "viewavaluosc") {
+				$bValidMaster = TRUE;
+				if (@$_POST["fk_id"] <> "") {
+					$GLOBALS["viewavaluosc"]->id->setFormValue($_POST["fk_id"]);
+					$this->avaluo_id->setFormValue($GLOBALS["viewavaluosc"]->id->FormValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->FormValue);
+					if (!is_numeric($GLOBALS["viewavaluosc"]->id->FormValue)) $bValidMaster = FALSE;
 				} else {
 					$bValidMaster = FALSE;
 				}
@@ -772,6 +798,9 @@ class cpago_avaluo_delete extends cpago_avaluo {
 			// Clear previous master key from Session
 			if ($sMasterTblVar <> "pago") {
 				if ($this->pago_id->CurrentValue == "") $this->pago_id->setSessionValue("");
+			}
+			if ($sMasterTblVar <> "viewavaluosc") {
+				if ($this->avaluo_id->CurrentValue == "") $this->avaluo_id->setSessionValue("");
 			}
 		}
 		$this->DbMasterFilter = $this->GetMasterFilter(); // Get master filter
