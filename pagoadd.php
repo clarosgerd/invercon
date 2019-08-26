@@ -332,8 +332,6 @@ class cpago_add extends cpago {
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
 		$this->code->SetVisibility();
 		$this->cliente_id->SetVisibility();
-		$this->status_id->SetVisibility();
-		$this->created_at->SetVisibility();
 		$this->metodopago_id->SetVisibility();
 		$this->documento_pago->SetVisibility();
 
@@ -552,7 +550,11 @@ class cpago_add extends cpago {
 		$this->SetupBreadcrumb();
 
 		// Render row based on row type
-		$this->RowType = EW_ROWTYPE_ADD; // Render add type
+		if ($this->CurrentAction == "F") { // Confirm page
+			$this->RowType = EW_ROWTYPE_VIEW; // Render view type
+		} else {
+			$this->RowType = EW_ROWTYPE_ADD; // Render add type
+		}
 
 		// Render row
 		$this->ResetAttrs();
@@ -600,13 +602,6 @@ class cpago_add extends cpago {
 		if (!$this->cliente_id->FldIsDetailKey) {
 			$this->cliente_id->setFormValue($objForm->GetValue("x_cliente_id"));
 		}
-		if (!$this->status_id->FldIsDetailKey) {
-			$this->status_id->setFormValue($objForm->GetValue("x_status_id"));
-		}
-		if (!$this->created_at->FldIsDetailKey) {
-			$this->created_at->setFormValue($objForm->GetValue("x_created_at"));
-			$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
-		}
 		if (!$this->metodopago_id->FldIsDetailKey) {
 			$this->metodopago_id->setFormValue($objForm->GetValue("x_metodopago_id"));
 		}
@@ -617,10 +612,8 @@ class cpago_add extends cpago {
 		global $objForm;
 		$this->code->CurrentValue = $this->code->FormValue;
 		$this->cliente_id->CurrentValue = $this->cliente_id->FormValue;
-		$this->status_id->CurrentValue = $this->status_id->FormValue;
-		$this->created_at->CurrentValue = $this->created_at->FormValue;
-		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
 		$this->metodopago_id->CurrentValue = $this->metodopago_id->FormValue;
+		$this->ResetDetailParms();
 	}
 
 	// Load row based on key values
@@ -806,7 +799,7 @@ class cpago_add extends cpago {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->metodopago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
 		$sWhereWrk = "";
-		$this->metodopago_id->LookupFilters = array();
+		$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -842,16 +835,6 @@ class cpago_add extends cpago {
 			$this->cliente_id->LinkCustomAttributes = "";
 			$this->cliente_id->HrefValue = "";
 			$this->cliente_id->TooltipValue = "";
-
-			// status_id
-			$this->status_id->LinkCustomAttributes = "";
-			$this->status_id->HrefValue = "";
-			$this->status_id->TooltipValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
 
 			// metodopago_id
 			$this->metodopago_id->LinkCustomAttributes = "";
@@ -929,28 +912,7 @@ class cpago_add extends cpago {
 			$this->cliente_id->EditValue = $arwrk;
 			}
 
-			// status_id
-			$this->status_id->EditCustomAttributes = "";
-			if (trim(strval($this->status_id->CurrentValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->status_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-			$sWhereWrk = "";
-			$this->status_id->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->status_id, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->status_id->EditValue = $arwrk;
-
-			// created_at
 			// metodopago_id
-
-			$this->metodopago_id->EditAttrs["class"] = "form-control";
 			$this->metodopago_id->EditCustomAttributes = "";
 			if (trim(strval($this->metodopago_id->CurrentValue)) == "") {
 				$sFilterWrk = "0=1";
@@ -959,11 +921,18 @@ class cpago_add extends cpago {
 			}
 			$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
 			$sWhereWrk = "";
-			$this->metodopago_id->LookupFilters = array();
+			$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+				$this->metodopago_id->ViewValue = $this->metodopago_id->DisplayValue($arwrk);
+			} else {
+				$this->metodopago_id->ViewValue = $Language->Phrase("PleaseSelect");
+			}
 			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
 			if ($rswrk) $rswrk->Close();
 			$this->metodopago_id->EditValue = $arwrk;
@@ -988,14 +957,6 @@ class cpago_add extends cpago {
 			// cliente_id
 			$this->cliente_id->LinkCustomAttributes = "";
 			$this->cliente_id->HrefValue = "";
-
-			// status_id
-			$this->status_id->LinkCustomAttributes = "";
-			$this->status_id->HrefValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
 
 			// metodopago_id
 			$this->metodopago_id->LinkCustomAttributes = "";
@@ -1090,13 +1051,6 @@ class cpago_add extends cpago {
 
 		// cliente_id
 		$this->cliente_id->SetDbValueDef($rsnew, $this->cliente_id->CurrentValue, NULL, FALSE);
-
-		// status_id
-		$this->status_id->SetDbValueDef($rsnew, $this->status_id->CurrentValue, NULL, FALSE);
-
-		// created_at
-		$this->created_at->SetDbValueDef($rsnew, ew_CurrentDateTime(), NULL);
-		$rsnew['created_at'] = &$this->created_at->DbValue;
 
 		// metodopago_id
 		$this->metodopago_id->SetDbValueDef($rsnew, $this->metodopago_id->CurrentValue, NULL, FALSE);
@@ -1248,7 +1202,12 @@ class cpago_add extends cpago {
 						$GLOBALS["pago_avaluo_grid"]->CurrentMode = "copy";
 					else
 						$GLOBALS["pago_avaluo_grid"]->CurrentMode = "add";
-					$GLOBALS["pago_avaluo_grid"]->CurrentAction = "gridadd";
+					if ($this->CurrentAction == "F")
+						$GLOBALS["pago_avaluo_grid"]->CurrentAction = "F";
+					else
+						$GLOBALS["pago_avaluo_grid"]->CurrentAction = "gridadd";
+					if ($this->CurrentAction == "X")
+						$GLOBALS["pago_avaluo_grid"]->EventCancelled = TRUE;
 
 					// Save current master table to detail table
 					$GLOBALS["pago_avaluo_grid"]->setCurrentMasterTable($this->TableVar);
@@ -1256,6 +1215,28 @@ class cpago_add extends cpago {
 					$GLOBALS["pago_avaluo_grid"]->pago_id->FldIsDetailKey = TRUE;
 					$GLOBALS["pago_avaluo_grid"]->pago_id->CurrentValue = $this->id->CurrentValue;
 					$GLOBALS["pago_avaluo_grid"]->pago_id->setSessionValue($GLOBALS["pago_avaluo_grid"]->pago_id->CurrentValue);
+				}
+			}
+		}
+	}
+
+	// Reset detail parms
+	function ResetDetailParms() {
+
+		// Get the keys for master table
+		if (isset($_GET[EW_TABLE_SHOW_DETAIL])) {
+			$sDetailTblVar = $_GET[EW_TABLE_SHOW_DETAIL];
+			$this->setCurrentDetailTable($sDetailTblVar);
+		} else {
+			$sDetailTblVar = $this->getCurrentDetailTable();
+		}
+		if ($sDetailTblVar <> "") {
+			$DetailTblVar = explode(",", $sDetailTblVar);
+			if (in_array("pago_avaluo", $DetailTblVar)) {
+				if (!isset($GLOBALS["pago_avaluo_grid"]))
+					$GLOBALS["pago_avaluo_grid"] = new cpago_avaluo_grid;
+				if ($GLOBALS["pago_avaluo_grid"]->DetailAdd) {
+					$GLOBALS["pago_avaluo_grid"]->CurrentAction = "gridadd";
 				}
 			}
 		}
@@ -1288,23 +1269,11 @@ class cpago_add extends cpago {
 			if ($sSqlWrk <> "")
 				$fld->LookupFilters["s"] .= $sSqlWrk;
 			break;
-		case "x_status_id":
-			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
-			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
-			$sSqlWrk = "";
-			$this->Lookup_Selecting($this->status_id, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			if ($sSqlWrk <> "")
-				$fld->LookupFilters["s"] .= $sSqlWrk;
-			break;
 		case "x_metodopago_id":
 			$sSqlWrk = "";
 			$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			$sWhereWrk = "{filter}";
+			$fld->LookupFilters = array("dx1" => '`short_name`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
@@ -1462,8 +1431,6 @@ fpagoadd.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 // Dynamic selection lists
 fpagoadd.Lists["x_cliente_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"cliente"};
 fpagoadd.Lists["x_cliente_id"].Data = "<?php echo $pago_add->cliente_id->LookupFilterQuery(FALSE, "add") ?>";
-fpagoadd.Lists["x_status_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadopago"};
-fpagoadd.Lists["x_status_id"].Data = "<?php echo $pago_add->status_id->LookupFilterQuery(FALSE, "add") ?>";
 fpagoadd.Lists["x_metodopago_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_short_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"metodopago"};
 fpagoadd.Lists["x_metodopago_id"].Data = "<?php echo $pago_add->metodopago_id->LookupFilterQuery(FALSE, "add") ?>";
 
@@ -1482,7 +1449,12 @@ $pago_add->ShowMessage();
 <input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $pago_add->Token ?>">
 <?php } ?>
 <input type="hidden" name="t" value="pago">
+<?php if ($pago->CurrentAction == "F") { // Confirm page ?>
 <input type="hidden" name="a_add" id="a_add" value="A">
+<input type="hidden" name="a_confirm" id="a_confirm" value="F">
+<?php } else { ?>
+<input type="hidden" name="a_add" id="a_add" value="F">
+<?php } ?>
 <input type="hidden" name="modal" value="<?php echo intval($pago_add->IsModal) ?>">
 <?php if ($pago->getCurrentMasterTable() == "cliente") { ?>
 <input type="hidden" name="<?php echo EW_TABLE_SHOW_MASTER ?>" value="cliente">
@@ -1501,18 +1473,34 @@ $pago_add->ShowMessage();
 	<div id="r_code" class="form-group">
 		<label id="elh_pago_code" for="x_code" class="<?php echo $pago_add->LeftColumnClass ?>"><?php echo $pago->code->FldCaption() ?></label>
 		<div class="<?php echo $pago_add->RightColumnClass ?>"><div<?php echo $pago->code->CellAttributes() ?>>
+<?php if ($pago->CurrentAction <> "F") { ?>
 <span id="el_pago_code">
 <input type="text" data-table="pago" data-field="x_code" name="x_code" id="x_code" size="30" maxlength="20" placeholder="<?php echo ew_HtmlEncode($pago->code->getPlaceHolder()) ?>" value="<?php echo $pago->code->EditValue ?>"<?php echo $pago->code->EditAttributes() ?>>
 </span>
+<?php } else { ?>
+<span id="el_pago_code">
+<span<?php echo $pago->code->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago->code->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="pago" data-field="x_code" name="x_code" id="x_code" value="<?php echo ew_HtmlEncode($pago->code->FormValue) ?>">
+<?php } ?>
 <?php echo $pago->code->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_code">
 		<td class="col-sm-3"><span id="elh_pago_code"><?php echo $pago->code->FldCaption() ?></span></td>
 		<td<?php echo $pago->code->CellAttributes() ?>>
+<?php if ($pago->CurrentAction <> "F") { ?>
 <span id="el_pago_code">
 <input type="text" data-table="pago" data-field="x_code" name="x_code" id="x_code" size="30" maxlength="20" placeholder="<?php echo ew_HtmlEncode($pago->code->getPlaceHolder()) ?>" value="<?php echo $pago->code->EditValue ?>"<?php echo $pago->code->EditAttributes() ?>>
 </span>
+<?php } else { ?>
+<span id="el_pago_code">
+<span<?php echo $pago->code->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago->code->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="pago" data-field="x_code" name="x_code" id="x_code" value="<?php echo ew_HtmlEncode($pago->code->FormValue) ?>">
+<?php } ?>
 <?php echo $pago->code->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1522,6 +1510,7 @@ $pago_add->ShowMessage();
 	<div id="r_cliente_id" class="form-group">
 		<label id="elh_pago_cliente_id" for="x_cliente_id" class="<?php echo $pago_add->LeftColumnClass ?>"><?php echo $pago->cliente_id->FldCaption() ?></label>
 		<div class="<?php echo $pago_add->RightColumnClass ?>"><div<?php echo $pago->cliente_id->CellAttributes() ?>>
+<?php if ($pago->CurrentAction <> "F") { ?>
 <?php if ($pago->cliente_id->getSessionValue() <> "") { ?>
 <span id="el_pago_cliente_id">
 <span<?php echo $pago->cliente_id->ViewAttributes() ?>>
@@ -1539,6 +1528,13 @@ $pago_add->ShowMessage();
 <button type="button" title="<?php echo ew_HtmlTitle($Language->Phrase("AddLink")) . "&nbsp;" . $pago->cliente_id->FldCaption() ?>" onclick="ew_AddOptDialogShow({lnk:this,el:'x_cliente_id',url:'clienteaddopt.php'});" class="ewAddOptBtn btn btn-default btn-sm" id="aol_x_cliente_id"><span class="glyphicon glyphicon-plus ewIcon"></span><span class="hide"><?php echo $Language->Phrase("AddLink") ?>&nbsp;<?php echo $pago->cliente_id->FldCaption() ?></span></button>
 <?php } ?>
 </span>
+<?php } ?>
+<?php } else { ?>
+<span id="el_pago_cliente_id">
+<span<?php echo $pago->cliente_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago->cliente_id->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="pago" data-field="x_cliente_id" name="x_cliente_id" id="x_cliente_id" value="<?php echo ew_HtmlEncode($pago->cliente_id->FormValue) ?>">
 <?php } ?>
 <?php echo $pago->cliente_id->CustomMsg ?></div></div>
 	</div>
@@ -1546,6 +1542,7 @@ $pago_add->ShowMessage();
 	<tr id="r_cliente_id">
 		<td class="col-sm-3"><span id="elh_pago_cliente_id"><?php echo $pago->cliente_id->FldCaption() ?></span></td>
 		<td<?php echo $pago->cliente_id->CellAttributes() ?>>
+<?php if ($pago->CurrentAction <> "F") { ?>
 <?php if ($pago->cliente_id->getSessionValue() <> "") { ?>
 <span id="el_pago_cliente_id">
 <span<?php echo $pago->cliente_id->ViewAttributes() ?>>
@@ -1564,34 +1561,14 @@ $pago_add->ShowMessage();
 <?php } ?>
 </span>
 <?php } ?>
-<?php echo $pago->cliente_id->CustomMsg ?></td>
-	</tr>
-<?php } ?>
-<?php } ?>
-<?php if ($pago->status_id->Visible) { // status_id ?>
-<?php if ($pago_add->IsMobileOrModal) { ?>
-	<div id="r_status_id" class="form-group">
-		<label id="elh_pago_status_id" class="<?php echo $pago_add->LeftColumnClass ?>"><?php echo $pago->status_id->FldCaption() ?></label>
-		<div class="<?php echo $pago_add->RightColumnClass ?>"><div<?php echo $pago->status_id->CellAttributes() ?>>
-<span id="el_pago_status_id">
-<div id="tp_x_status_id" class="ewTemplate"><input type="radio" data-table="pago" data-field="x_status_id" data-value-separator="<?php echo $pago->status_id->DisplayValueSeparatorAttribute() ?>" name="x_status_id" id="x_status_id" value="{value}"<?php echo $pago->status_id->EditAttributes() ?>></div>
-<div id="dsl_x_status_id" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $pago->status_id->RadioButtonListHtml(FALSE, "x_status_id") ?>
-</div></div>
-</span>
-<?php echo $pago->status_id->CustomMsg ?></div></div>
-	</div>
 <?php } else { ?>
-	<tr id="r_status_id">
-		<td class="col-sm-3"><span id="elh_pago_status_id"><?php echo $pago->status_id->FldCaption() ?></span></td>
-		<td<?php echo $pago->status_id->CellAttributes() ?>>
-<span id="el_pago_status_id">
-<div id="tp_x_status_id" class="ewTemplate"><input type="radio" data-table="pago" data-field="x_status_id" data-value-separator="<?php echo $pago->status_id->DisplayValueSeparatorAttribute() ?>" name="x_status_id" id="x_status_id" value="{value}"<?php echo $pago->status_id->EditAttributes() ?>></div>
-<div id="dsl_x_status_id" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $pago->status_id->RadioButtonListHtml(FALSE, "x_status_id") ?>
-</div></div>
+<span id="el_pago_cliente_id">
+<span<?php echo $pago->cliente_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago->cliente_id->ViewValue ?></p></span>
 </span>
-<?php echo $pago->status_id->CustomMsg ?></td>
+<input type="hidden" data-table="pago" data-field="x_cliente_id" name="x_cliente_id" id="x_cliente_id" value="<?php echo ew_HtmlEncode($pago->cliente_id->FormValue) ?>">
+<?php } ?>
+<?php echo $pago->cliente_id->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>
@@ -1600,22 +1577,42 @@ $pago_add->ShowMessage();
 	<div id="r_metodopago_id" class="form-group">
 		<label id="elh_pago_metodopago_id" for="x_metodopago_id" class="<?php echo $pago_add->LeftColumnClass ?>"><?php echo $pago->metodopago_id->FldCaption() ?></label>
 		<div class="<?php echo $pago_add->RightColumnClass ?>"><div<?php echo $pago->metodopago_id->CellAttributes() ?>>
+<?php if ($pago->CurrentAction <> "F") { ?>
 <span id="el_pago_metodopago_id">
-<select data-table="pago" data-field="x_metodopago_id" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" id="x_metodopago_id" name="x_metodopago_id"<?php echo $pago->metodopago_id->EditAttributes() ?>>
-<?php echo $pago->metodopago_id->SelectOptionListHtml("x_metodopago_id") ?>
-</select>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
 </span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->metodopago_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_metodopago_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->metodopago_id->ReadOnly || $pago->metodopago_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="pago" data-field="x_metodopago_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" name="x_metodopago_id" id="x_metodopago_id" value="<?php echo $pago->metodopago_id->CurrentValue ?>"<?php echo $pago->metodopago_id->EditAttributes() ?>>
+</span>
+<?php } else { ?>
+<span id="el_pago_metodopago_id">
+<span<?php echo $pago->metodopago_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago->metodopago_id->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="pago" data-field="x_metodopago_id" name="x_metodopago_id" id="x_metodopago_id" value="<?php echo ew_HtmlEncode($pago->metodopago_id->FormValue) ?>">
+<?php } ?>
 <?php echo $pago->metodopago_id->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_metodopago_id">
 		<td class="col-sm-3"><span id="elh_pago_metodopago_id"><?php echo $pago->metodopago_id->FldCaption() ?></span></td>
 		<td<?php echo $pago->metodopago_id->CellAttributes() ?>>
+<?php if ($pago->CurrentAction <> "F") { ?>
 <span id="el_pago_metodopago_id">
-<select data-table="pago" data-field="x_metodopago_id" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" id="x_metodopago_id" name="x_metodopago_id"<?php echo $pago->metodopago_id->EditAttributes() ?>>
-<?php echo $pago->metodopago_id->SelectOptionListHtml("x_metodopago_id") ?>
-</select>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
 </span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->metodopago_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_metodopago_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->metodopago_id->ReadOnly || $pago->metodopago_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="pago" data-field="x_metodopago_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" name="x_metodopago_id" id="x_metodopago_id" value="<?php echo $pago->metodopago_id->CurrentValue ?>"<?php echo $pago->metodopago_id->EditAttributes() ?>>
+</span>
+<?php } else { ?>
+<span id="el_pago_metodopago_id">
+<span<?php echo $pago->metodopago_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago->metodopago_id->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="pago" data-field="x_metodopago_id" name="x_metodopago_id" id="x_metodopago_id" value="<?php echo ew_HtmlEncode($pago->metodopago_id->FormValue) ?>">
+<?php } ?>
 <?php echo $pago->metodopago_id->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1637,9 +1634,7 @@ $pago_add->ShowMessage();
 <input type="hidden" name="fx_x_documento_pago" id= "fx_x_documento_pago" value="<?php echo $pago->documento_pago->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_documento_pago" id= "fm_x_documento_pago" value="<?php echo $pago->documento_pago->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$pago->documento_pago->ReadOnly && !$pago->documento_pago->Disabled && @$pago->documento_pago->EditAttrs["readonly"] == "" && @$pago->documento_pago->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fpagoadd", "x_documento_pago");</script>
-<?php } ?>
+<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php echo $pago->documento_pago->CustomMsg ?></div></div>
 	</div>
@@ -1659,9 +1654,7 @@ $pago_add->ShowMessage();
 <input type="hidden" name="fx_x_documento_pago" id= "fx_x_documento_pago" value="<?php echo $pago->documento_pago->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_documento_pago" id= "fm_x_documento_pago" value="<?php echo $pago->documento_pago->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$pago->documento_pago->ReadOnly && !$pago->documento_pago->Disabled && @$pago->documento_pago->EditAttrs["readonly"] == "" && @$pago->documento_pago->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fpagoadd", "x_documento_pago");</script>
-<?php } ?>
+<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php echo $pago->documento_pago->CustomMsg ?></td>
 	</tr>
@@ -1683,8 +1676,13 @@ $pago_add->ShowMessage();
 <?php if (!$pago_add->IsModal) { ?>
 <div class="form-group"><!-- buttons .form-group -->
 	<div class="<?php echo $pago_add->OffsetColumnClass ?>"><!-- buttons offset -->
-<button class="btn btn-primary ewButton" name="btnAction" id="btnAction" type="submit"><?php echo $Language->Phrase("AddBtn") ?></button>
+<?php if ($pago->CurrentAction <> "F") { // Confirm page ?>
+<button class="btn btn-primary ewButton" name="btnAction" id="btnAction" type="submit" onclick="this.form.a_add.value='F';"><?php echo $Language->Phrase("AddBtn") ?></button>
 <button class="btn btn-default ewButton" name="btnCancel" id="btnCancel" type="button" data-href="<?php echo $pago_add->getReturnUrl() ?>"><?php echo $Language->Phrase("CancelBtn") ?></button>
+<?php } else { ?>
+<button class="btn btn-primary ewButton" name="btnAction" id="btnAction" type="submit"><?php echo $Language->Phrase("ConfirmBtn") ?></button>
+<button class="btn btn-default ewButton" name="btnCancel" id="btnCancel" type="submit" onclick="this.form.a_add.value='X';"><?php echo $Language->Phrase("CancelBtn") ?></button>
+<?php } ?>
 	</div><!-- /buttons offset -->
 </div><!-- /buttons .form-group -->
 <?php } ?>

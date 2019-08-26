@@ -363,9 +363,7 @@ $documentosavaluo_grid->ListOptions->Render("body", "left", $documentosavaluo_gr
 <input type="hidden" name="fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluogrid", "x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen");</script>
-<?php } ?>
+<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <input type="hidden" data-table="documentosavaluo" data-field="x_imagen" name="o<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id="o<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo ew_HtmlEncode($documentosavaluo->imagen->OldValue) ?>">
 <?php } elseif ($documentosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -391,9 +389,7 @@ $documentosavaluo_grid->ListOptions->Render("body", "left", $documentosavaluo_gr
 <input type="hidden" name="fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluogrid", "x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen");</script>
-<?php } ?>
+<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php } ?>
 </td>
@@ -588,9 +584,7 @@ $documentosavaluo_grid->ListOptions->Render("body", "left", $documentosavaluo_gr
 <input type="hidden" name="fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fx_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id= "fm_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluogrid", "x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen");</script>
-<?php } ?>
+<table id="ft_x<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <input type="hidden" data-table="documentosavaluo" data-field="x_imagen" name="o<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" id="o<?php echo $documentosavaluo_grid->RowIndex ?>_imagen" value="<?php echo ew_HtmlEncode($documentosavaluo->imagen->OldValue) ?>">
 </td>

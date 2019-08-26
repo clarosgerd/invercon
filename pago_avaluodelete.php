@@ -469,7 +469,7 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		if ($this->UseSelectLimit) {
 			$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
 			if ($dbtype == "MSSQL") {
-				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset, array("_hasOrderBy" => trim($this->getOrderBy()) || trim($this->getSessionOrderBy())));
+				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset, array("_hasOrderBy" => trim($this->getOrderBy()) || trim($this->getSessionOrderByList())));
 			} else {
 				$rs = $conn->SelectLimit($sSql, $rowcnt, $offset);
 			}
@@ -519,6 +519,11 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		$this->id->setDbValue($row['id']);
 		$this->pago_id->setDbValue($row['pago_id']);
 		$this->avaluo_id->setDbValue($row['avaluo_id']);
+		if (array_key_exists('EV__avaluo_id', $rs->fields)) {
+			$this->avaluo_id->VirtualValue = $rs->fields('EV__avaluo_id'); // Set up virtual field value
+		} else {
+			$this->avaluo_id->VirtualValue = ""; // Clear value
+		}
 		$this->q->setDbValue($row['q']);
 	}
 
@@ -567,7 +572,7 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		// pago_id
 		if (strval($this->pago_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->pago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `code` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
 		$sWhereWrk = "";
 		$this->pago_id->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -588,18 +593,24 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		$this->pago_id->ViewCustomAttributes = "";
 
 		// avaluo_id
+		if ($this->avaluo_id->VirtualValue <> "") {
+			$this->avaluo_id->ViewValue = $this->avaluo_id->VirtualValue;
+		} else {
 		if (strval($this->avaluo_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `codigoavaluo` AS `Disp2Fld`, `id_oficialcredito` AS `Disp3Fld`, `tipoinmueble` AS `Disp4Fld` FROM `avaluo`";
 		$sWhereWrk = "";
-		$this->avaluo_id->LookupFilters = array();
+		$this->avaluo_id->LookupFilters = array("dx1" => '`id`', "dx2" => '`codigoavaluo`', "dx3" => '`id_oficialcredito`', "dx4" => '`tipoinmueble`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = ew_FormatNumber($rswrk->fields('Disp2Fld'), 0, 0, 0, 0);
+				$arwrk[3] = $rswrk->fields('Disp3Fld');
+				$arwrk[4] = $rswrk->fields('Disp4Fld');
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -607,6 +618,7 @@ class cpago_avaluo_delete extends cpago_avaluo {
 			}
 		} else {
 			$this->avaluo_id->ViewValue = NULL;
+		}
 		}
 		$this->avaluo_id->ViewCustomAttributes = "";
 
@@ -931,9 +943,9 @@ fpago_avaluodelete.Form_CustomValidate =
 fpago_avaluodelete.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-fpago_avaluodelete.Lists["x_pago_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_code","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"pago"};
+fpago_avaluodelete.Lists["x_pago_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"pago"};
 fpago_avaluodelete.Lists["x_pago_id"].Data = "<?php echo $pago_avaluo_delete->pago_id->LookupFilterQuery(FALSE, "delete") ?>";
-fpago_avaluodelete.Lists["x_avaluo_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_codigoavaluo","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
+fpago_avaluodelete.Lists["x_avaluo_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","x_codigoavaluo","x_id_oficialcredito","x_tipoinmueble"],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
 fpago_avaluodelete.Lists["x_avaluo_id"].Data = "<?php echo $pago_avaluo_delete->avaluo_id->LookupFilterQuery(FALSE, "delete") ?>";
 
 // Form object for search

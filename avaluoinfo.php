@@ -33,6 +33,7 @@ class cavaluo extends cTable {
 	var $CreatedBy;
 	var $ModifiedBy;
 	var $DeletedBy;
+	var $id_sucursal;
 
 	//
 	// Table class constructor
@@ -200,6 +201,12 @@ class cavaluo extends cTable {
 		$this->DeletedBy = new cField('avaluo', 'avaluo', 'x_DeletedBy', 'DeletedBy', '`DeletedBy`', '`DeletedBy`', 200, -1, FALSE, '`DeletedBy`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->DeletedBy->Sortable = FALSE; // Allow sort
 		$this->fields['DeletedBy'] = &$this->DeletedBy;
+
+		// id_sucursal
+		$this->id_sucursal = new cField('avaluo', 'avaluo', 'x_id_sucursal', 'id_sucursal', '`id_sucursal`', '`id_sucursal`', 3, -1, FALSE, '`id_sucursal`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'HIDDEN');
+		$this->id_sucursal->Sortable = TRUE; // Allow sort
+		$this->id_sucursal->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['id_sucursal'] = &$this->id_sucursal;
 	}
 
 	// Field Visibility
@@ -973,6 +980,7 @@ class cavaluo extends cTable {
 		$this->CreatedBy->setDbValue($rs->fields('CreatedBy'));
 		$this->ModifiedBy->setDbValue($rs->fields('ModifiedBy'));
 		$this->DeletedBy->setDbValue($rs->fields('DeletedBy'));
+		$this->id_sucursal->setDbValue($rs->fields('id_sucursal'));
 	}
 
 	// Render list row values
@@ -1021,13 +1029,16 @@ class cavaluo extends cTable {
 		// DeletedBy
 		$this->DeletedBy->CellCssStyle = "white-space: nowrap;";
 
+		// id_sucursal
 		// id
+
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
 		// codigoavaluo
 		$this->codigoavaluo->ViewValue = $this->codigoavaluo->CurrentValue;
-		$this->codigoavaluo->ViewValue = ew_FormatNumber($this->codigoavaluo->ViewValue, 0, -2, -2, -2);
+		$this->codigoavaluo->ViewValue = ew_FormatNumber($this->codigoavaluo->ViewValue, 0, 0, 0, 0);
+		$this->codigoavaluo->CssStyle = "font-weight: bold;font-style: italic;";
 		$this->codigoavaluo->ViewCustomAttributes = "";
 
 		// tipoinmueble
@@ -1295,6 +1306,10 @@ class cavaluo extends cTable {
 		$this->DeletedBy->ViewValue = $this->DeletedBy->CurrentValue;
 		$this->DeletedBy->ViewCustomAttributes = "";
 
+		// id_sucursal
+		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
+		$this->id_sucursal->ViewCustomAttributes = "";
+
 		// id
 		$this->id->LinkCustomAttributes = "";
 		$this->id->HrefValue = "";
@@ -1394,6 +1409,11 @@ class cavaluo extends cTable {
 		$this->DeletedBy->LinkCustomAttributes = "";
 		$this->DeletedBy->HrefValue = "";
 		$this->DeletedBy->TooltipValue = "";
+
+		// id_sucursal
+		$this->id_sucursal->LinkCustomAttributes = "";
+		$this->id_sucursal->HrefValue = "";
+		$this->id_sucursal->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -1599,6 +1619,10 @@ class cavaluo extends cTable {
 		$this->DeletedBy->EditValue = $this->DeletedBy->CurrentValue;
 		$this->DeletedBy->PlaceHolder = ew_RemoveHtml($this->DeletedBy->FldTitle());
 
+		// id_sucursal
+		$this->id_sucursal->EditAttrs["class"] = "form-control";
+		$this->id_sucursal->EditCustomAttributes = "";
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 	}
@@ -1633,12 +1657,14 @@ class cavaluo extends cTable {
 					if ($this->estado->Exportable) $Doc->ExportCaption($this->estado);
 					if ($this->estadointerno->Exportable) $Doc->ExportCaption($this->estadointerno);
 					if ($this->estadopago->Exportable) $Doc->ExportCaption($this->estadopago);
+					if ($this->id_sucursal->Exportable) $Doc->ExportCaption($this->id_sucursal);
 				} else {
 					if ($this->id_solicitud->Exportable) $Doc->ExportCaption($this->id_solicitud);
 					if ($this->id_oficialcredito->Exportable) $Doc->ExportCaption($this->id_oficialcredito);
 					if ($this->is_active->Exportable) $Doc->ExportCaption($this->is_active);
 					if ($this->estado->Exportable) $Doc->ExportCaption($this->estado);
 					if ($this->estadointerno->Exportable) $Doc->ExportCaption($this->estadointerno);
+					if ($this->id_sucursal->Exportable) $Doc->ExportCaption($this->id_sucursal);
 				}
 				$Doc->EndExportRow();
 			}
@@ -1677,12 +1703,14 @@ class cavaluo extends cTable {
 						if ($this->estado->Exportable) $Doc->ExportField($this->estado);
 						if ($this->estadointerno->Exportable) $Doc->ExportField($this->estadointerno);
 						if ($this->estadopago->Exportable) $Doc->ExportField($this->estadopago);
+						if ($this->id_sucursal->Exportable) $Doc->ExportField($this->id_sucursal);
 					} else {
 						if ($this->id_solicitud->Exportable) $Doc->ExportField($this->id_solicitud);
 						if ($this->id_oficialcredito->Exportable) $Doc->ExportField($this->id_oficialcredito);
 						if ($this->is_active->Exportable) $Doc->ExportField($this->is_active);
 						if ($this->estado->Exportable) $Doc->ExportField($this->estado);
 						if ($this->estadointerno->Exportable) $Doc->ExportField($this->estadointerno);
+						if ($this->id_sucursal->Exportable) $Doc->ExportField($this->id_sucursal);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}
@@ -1845,37 +1873,6 @@ class cavaluo extends cTable {
 				ew_WriteAuditTrail("log", $dt, $id, $curUser, "D", $table, $fldname, $key, $oldvalue, "");
 			}
 		}
-	}
-
-	// Send email after update success
-	function SendEmailOnEdit(&$rsold, &$rsnew) {
-		global $Language;
-		$sTable = 'avaluo';
-		$sSubject = $sTable . " ". $Language->Phrase("RecordUpdated");
-		$sAction = $Language->Phrase("ActionUpdated");
-
-		// Get key value
-		$sKey = "";
-		if ($sKey <> "") $sKey .= $GLOBALS["EW_COMPOSITE_KEY_SEPARATOR"];
-		$sKey .= $rsold['id'];
-		$Email = new cEmail();
-		$Email->Load(EW_EMAIL_NOTIFY_TEMPLATE);
-		$Email->ReplaceSender(EW_SENDER_EMAIL); // Replace Sender
-		$Email->ReplaceRecipient(EW_RECIPIENT_EMAIL); // Replace Recipient
-		$Email->ReplaceSubject($sSubject); // Replace Subject
-		$Email->ReplaceContent("<!--table-->", $sTable);
-		$Email->ReplaceContent("<!--key-->", $sKey);
-		$Email->ReplaceContent("<!--action-->", $sAction);
-		$Args = array();
-		$Args["rsold"] = &$rsold;
-		$Args["rsnew"] = &$rsnew;
-		$bEmailSent = FALSE;
-		if ($this->Email_Sending($Email, $Args))
-			$bEmailSent = $Email->Send();
-
-		// Send email failed
-		if (!$bEmailSent)
-			$this->setFailureMessage($Email->SendErrDescription);
 	}
 
 	// Table level events
@@ -2079,6 +2076,35 @@ class cavaluo extends cTable {
 		// Enter your code here
 		// To cancel, set return value to FALSE
 
+		if ($rsold['estado']==1)
+			{
+					$rsnew['estado']=2;
+					$rsnew['estadointerno']=2;
+				$Email = new cEmail;
+				$Email->Sender=$_SESSION["emailnotificaciones"];
+				$Email->AddRecipient($rsnew["id_oficialcredito"]);
+				$Email->Cc=$rsnew["id_inspector"];
+				$Email->Bcc=$rsnew["id_oficialcredito"];
+				$Email->Subject = "Nueva Solicitud de Avaluo";
+				$Email->Content = "teste";
+				$Email->Recipient = $rsnew["id_inspector"];
+				$bEmailSent = $Email->Send();
+				$bEmailSent->
+
+				//var_dump($bEmailSent);
+				//exit;
+
+				$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`, `fecharecibido`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_inspector"]."', NULL, NULL, '', '0', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+				$sql_new_notificacion = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`, `fechaleido`) VALUES ('', '" . $_SESSION["usr"] . "', '" . $rsnew["id_inspector"] . "', '0', '0', NOW(), NOW())";
+				$MyResult = ew_Execute($sql_new);
+				$MyResult1 = ew_Execute($sql_new_notificacion);
+				$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`, `fecharecibido`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_oficialcredito"]."', NULL, NULL, '', '0', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+				$MyResult2 = ew_Execute($sql_new);
+			}
+			if ($rsold['estadointerno']==2)
+			{
+				$this->setFailureMessage("El Avaluo ya no puede ser actualizado porque esta en progreso");
+			}
 		return TRUE;
 	}
 
@@ -2086,6 +2112,8 @@ class cavaluo extends cTable {
 	function Row_Updated($rsold, &$rsnew) {
 
 		//echo "Row Updated";
+		//$rsnew
+
 	}
 
 	// Row Update Conflict event

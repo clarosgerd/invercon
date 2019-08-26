@@ -451,6 +451,9 @@ class coffline_messages_list extends coffline_messages {
 		$this->SetupExportOptions();
 		$this->id->SetVisibility();
 		$this->timestamp->SetVisibility();
+		$this->name->SetVisibility();
+		$this->_email->SetVisibility();
+		$this->message->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -639,8 +642,28 @@ class coffline_messages_list extends coffline_messages {
 					$option->HideAllOptions();
 			}
 
+			// Get default search criteria
+			ew_AddFilter($this->DefaultSearchWhere, $this->BasicSearchWhere(TRUE));
+
+			// Get basic search values
+			$this->LoadBasicSearchValues();
+
+			// Process filter list
+			$this->ProcessFilterList();
+
+			// Restore search parms from Session if not searching / reset / export
+			if (($this->Export <> "" || $this->Command <> "search" && $this->Command <> "reset" && $this->Command <> "resetall") && $this->Command <> "json" && $this->CheckSearchParms())
+				$this->RestoreSearchParms();
+
+			// Call Recordset SearchValidated event
+			$this->Recordset_SearchValidated();
+
 			// Set up sorting order
 			$this->SetupSortOrder();
+
+			// Get basic search criteria
+			if ($gsSearchError == "")
+				$sSrchBasic = $this->BasicSearchWhere();
 		}
 
 		// Restore display records
@@ -653,6 +676,31 @@ class coffline_messages_list extends coffline_messages {
 		// Load Sorting Order
 		if ($this->Command <> "json")
 			$this->LoadSortOrder();
+
+		// Load search default if no existing search criteria
+		if (!$this->CheckSearchParms()) {
+
+			// Load basic search from default
+			$this->BasicSearch->LoadDefault();
+			if ($this->BasicSearch->Keyword != "")
+				$sSrchBasic = $this->BasicSearchWhere();
+		}
+
+		// Build search criteria
+		ew_AddFilter($this->SearchWhere, $sSrchAdvanced);
+		ew_AddFilter($this->SearchWhere, $sSrchBasic);
+
+		// Call Recordset_Searching event
+		$this->Recordset_Searching($this->SearchWhere);
+
+		// Save search criteria
+		if ($this->Command == "search" && !$this->RestoreSearch) {
+			$this->setSearchWhere($this->SearchWhere); // Save to Session
+			$this->StartRec = 1; // Reset start record counter
+			$this->setStartRecordNumber($this->StartRec);
+		} elseif ($this->Command <> "json") {
+			$this->SearchWhere = $this->getSearchWhere();
+		}
 
 		// Build filter
 		$sFilter = "";
@@ -751,6 +799,274 @@ class coffline_messages_list extends coffline_messages {
 		return TRUE;
 	}
 
+	// Get list of filters
+	function GetFilterList() {
+		global $UserProfile;
+
+		// Initialize
+		$sFilterList = "";
+		$sSavedFilterList = "";
+
+		// Load server side filters
+		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
+			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "foffline_messageslistsrch");
+		$sFilterList = ew_Concat($sFilterList, $this->id->AdvancedSearch->ToJson(), ","); // Field id
+		$sFilterList = ew_Concat($sFilterList, $this->timestamp->AdvancedSearch->ToJson(), ","); // Field timestamp
+		$sFilterList = ew_Concat($sFilterList, $this->name->AdvancedSearch->ToJson(), ","); // Field name
+		$sFilterList = ew_Concat($sFilterList, $this->_email->AdvancedSearch->ToJson(), ","); // Field email
+		$sFilterList = ew_Concat($sFilterList, $this->message->AdvancedSearch->ToJson(), ","); // Field message
+		$sFilterList = ew_Concat($sFilterList, $this->ip->AdvancedSearch->ToJson(), ","); // Field ip
+		$sFilterList = ew_Concat($sFilterList, $this->user_agent->AdvancedSearch->ToJson(), ","); // Field user_agent
+		if ($this->BasicSearch->Keyword <> "") {
+			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
+			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
+		}
+		$sFilterList = preg_replace('/,$/', "", $sFilterList);
+
+		// Return filter list in json
+		if ($sFilterList <> "")
+			$sFilterList = "\"data\":{" . $sFilterList . "}";
+		if ($sSavedFilterList <> "") {
+			if ($sFilterList <> "")
+				$sFilterList .= ",";
+			$sFilterList .= "\"filters\":" . $sSavedFilterList;
+		}
+		return ($sFilterList <> "") ? "{" . $sFilterList . "}" : "null";
+	}
+
+	// Process filter list
+	function ProcessFilterList() {
+		global $UserProfile;
+		if (@$_POST["ajax"] == "savefilters") { // Save filter request (Ajax)
+			$filters = @$_POST["filters"];
+			$UserProfile->SetSearchFilters(CurrentUserName(), "foffline_messageslistsrch", $filters);
+
+			// Clean output buffer
+			if (!EW_DEBUG_ENABLED && ob_get_length())
+				ob_end_clean();
+			echo ew_ArrayToJson(array(array("success" => TRUE))); // Success
+			$this->Page_Terminate();
+			exit();
+		} elseif (@$_POST["cmd"] == "resetfilter") {
+			$this->RestoreFilterList();
+		}
+	}
+
+	// Restore list of filters
+	function RestoreFilterList() {
+
+		// Return if not reset filter
+		if (@$_POST["cmd"] <> "resetfilter")
+			return FALSE;
+		$filter = json_decode(@$_POST["filter"], TRUE);
+		$this->Command = "search";
+
+		// Field id
+		$this->id->AdvancedSearch->SearchValue = @$filter["x_id"];
+		$this->id->AdvancedSearch->SearchOperator = @$filter["z_id"];
+		$this->id->AdvancedSearch->SearchCondition = @$filter["v_id"];
+		$this->id->AdvancedSearch->SearchValue2 = @$filter["y_id"];
+		$this->id->AdvancedSearch->SearchOperator2 = @$filter["w_id"];
+		$this->id->AdvancedSearch->Save();
+
+		// Field timestamp
+		$this->timestamp->AdvancedSearch->SearchValue = @$filter["x_timestamp"];
+		$this->timestamp->AdvancedSearch->SearchOperator = @$filter["z_timestamp"];
+		$this->timestamp->AdvancedSearch->SearchCondition = @$filter["v_timestamp"];
+		$this->timestamp->AdvancedSearch->SearchValue2 = @$filter["y_timestamp"];
+		$this->timestamp->AdvancedSearch->SearchOperator2 = @$filter["w_timestamp"];
+		$this->timestamp->AdvancedSearch->Save();
+
+		// Field name
+		$this->name->AdvancedSearch->SearchValue = @$filter["x_name"];
+		$this->name->AdvancedSearch->SearchOperator = @$filter["z_name"];
+		$this->name->AdvancedSearch->SearchCondition = @$filter["v_name"];
+		$this->name->AdvancedSearch->SearchValue2 = @$filter["y_name"];
+		$this->name->AdvancedSearch->SearchOperator2 = @$filter["w_name"];
+		$this->name->AdvancedSearch->Save();
+
+		// Field email
+		$this->_email->AdvancedSearch->SearchValue = @$filter["x__email"];
+		$this->_email->AdvancedSearch->SearchOperator = @$filter["z__email"];
+		$this->_email->AdvancedSearch->SearchCondition = @$filter["v__email"];
+		$this->_email->AdvancedSearch->SearchValue2 = @$filter["y__email"];
+		$this->_email->AdvancedSearch->SearchOperator2 = @$filter["w__email"];
+		$this->_email->AdvancedSearch->Save();
+
+		// Field message
+		$this->message->AdvancedSearch->SearchValue = @$filter["x_message"];
+		$this->message->AdvancedSearch->SearchOperator = @$filter["z_message"];
+		$this->message->AdvancedSearch->SearchCondition = @$filter["v_message"];
+		$this->message->AdvancedSearch->SearchValue2 = @$filter["y_message"];
+		$this->message->AdvancedSearch->SearchOperator2 = @$filter["w_message"];
+		$this->message->AdvancedSearch->Save();
+
+		// Field ip
+		$this->ip->AdvancedSearch->SearchValue = @$filter["x_ip"];
+		$this->ip->AdvancedSearch->SearchOperator = @$filter["z_ip"];
+		$this->ip->AdvancedSearch->SearchCondition = @$filter["v_ip"];
+		$this->ip->AdvancedSearch->SearchValue2 = @$filter["y_ip"];
+		$this->ip->AdvancedSearch->SearchOperator2 = @$filter["w_ip"];
+		$this->ip->AdvancedSearch->Save();
+
+		// Field user_agent
+		$this->user_agent->AdvancedSearch->SearchValue = @$filter["x_user_agent"];
+		$this->user_agent->AdvancedSearch->SearchOperator = @$filter["z_user_agent"];
+		$this->user_agent->AdvancedSearch->SearchCondition = @$filter["v_user_agent"];
+		$this->user_agent->AdvancedSearch->SearchValue2 = @$filter["y_user_agent"];
+		$this->user_agent->AdvancedSearch->SearchOperator2 = @$filter["w_user_agent"];
+		$this->user_agent->AdvancedSearch->Save();
+		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
+		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
+	}
+
+	// Return basic search SQL
+	function BasicSearchSQL($arKeywords, $type) {
+		$sWhere = "";
+		$this->BuildBasicSearchSQL($sWhere, $this->name, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->_email, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->message, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->ip, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->user_agent, $arKeywords, $type);
+		return $sWhere;
+	}
+
+	// Build basic search SQL
+	function BuildBasicSearchSQL(&$Where, &$Fld, $arKeywords, $type) {
+		global $EW_BASIC_SEARCH_IGNORE_PATTERN;
+		$sDefCond = ($type == "OR") ? "OR" : "AND";
+		$arSQL = array(); // Array for SQL parts
+		$arCond = array(); // Array for search conditions
+		$cnt = count($arKeywords);
+		$j = 0; // Number of SQL parts
+		for ($i = 0; $i < $cnt; $i++) {
+			$Keyword = $arKeywords[$i];
+			$Keyword = trim($Keyword);
+			if ($EW_BASIC_SEARCH_IGNORE_PATTERN <> "") {
+				$Keyword = preg_replace($EW_BASIC_SEARCH_IGNORE_PATTERN, "\\", $Keyword);
+				$ar = explode("\\", $Keyword);
+			} else {
+				$ar = array($Keyword);
+			}
+			foreach ($ar as $Keyword) {
+				if ($Keyword <> "") {
+					$sWrk = "";
+					if ($Keyword == "OR" && $type == "") {
+						if ($j > 0)
+							$arCond[$j-1] = "OR";
+					} elseif ($Keyword == EW_NULL_VALUE) {
+						$sWrk = $Fld->FldExpression . " IS NULL";
+					} elseif ($Keyword == EW_NOT_NULL_VALUE) {
+						$sWrk = $Fld->FldExpression . " IS NOT NULL";
+					} elseif ($Fld->FldIsVirtual) {
+						$sWrk = $Fld->FldVirtualExpression . ew_Like(ew_QuotedValue("%" . $Keyword . "%", EW_DATATYPE_STRING, $this->DBID), $this->DBID);
+					} elseif ($Fld->FldDataType != EW_DATATYPE_NUMBER || is_numeric($Keyword)) {
+						$sWrk = $Fld->FldBasicSearchExpression . ew_Like(ew_QuotedValue("%" . $Keyword . "%", EW_DATATYPE_STRING, $this->DBID), $this->DBID);
+					}
+					if ($sWrk <> "") {
+						$arSQL[$j] = $sWrk;
+						$arCond[$j] = $sDefCond;
+						$j += 1;
+					}
+				}
+			}
+		}
+		$cnt = count($arSQL);
+		$bQuoted = FALSE;
+		$sSql = "";
+		if ($cnt > 0) {
+			for ($i = 0; $i < $cnt-1; $i++) {
+				if ($arCond[$i] == "OR") {
+					if (!$bQuoted) $sSql .= "(";
+					$bQuoted = TRUE;
+				}
+				$sSql .= $arSQL[$i];
+				if ($bQuoted && $arCond[$i] <> "OR") {
+					$sSql .= ")";
+					$bQuoted = FALSE;
+				}
+				$sSql .= " " . $arCond[$i] . " ";
+			}
+			$sSql .= $arSQL[$cnt-1];
+			if ($bQuoted)
+				$sSql .= ")";
+		}
+		if ($sSql <> "") {
+			if ($Where <> "") $Where .= " OR ";
+			$Where .= "(" . $sSql . ")";
+		}
+	}
+
+	// Return basic search WHERE clause based on search keyword and type
+	function BasicSearchWhere($Default = FALSE) {
+		global $Security;
+		$sSearchStr = "";
+		if (!$Security->CanSearch()) return "";
+		$sSearchKeyword = ($Default) ? $this->BasicSearch->KeywordDefault : $this->BasicSearch->Keyword;
+		$sSearchType = ($Default) ? $this->BasicSearch->TypeDefault : $this->BasicSearch->Type;
+
+		// Get search SQL
+		if ($sSearchKeyword <> "") {
+			$ar = $this->BasicSearch->KeywordList($Default);
+
+			// Search keyword in any fields
+			if (($sSearchType == "OR" || $sSearchType == "AND") && $this->BasicSearch->BasicSearchAnyFields) {
+				foreach ($ar as $sKeyword) {
+					if ($sKeyword <> "") {
+						if ($sSearchStr <> "") $sSearchStr .= " " . $sSearchType . " ";
+						$sSearchStr .= "(" . $this->BasicSearchSQL(array($sKeyword), $sSearchType) . ")";
+					}
+				}
+			} else {
+				$sSearchStr = $this->BasicSearchSQL($ar, $sSearchType);
+			}
+			if (!$Default && in_array($this->Command, array("", "reset", "resetall"))) $this->Command = "search";
+		}
+		if (!$Default && $this->Command == "search") {
+			$this->BasicSearch->setKeyword($sSearchKeyword);
+			$this->BasicSearch->setType($sSearchType);
+		}
+		return $sSearchStr;
+	}
+
+	// Check if search parm exists
+	function CheckSearchParms() {
+
+		// Check basic search
+		if ($this->BasicSearch->IssetSession())
+			return TRUE;
+		return FALSE;
+	}
+
+	// Clear all search parameters
+	function ResetSearchParms() {
+
+		// Clear search WHERE clause
+		$this->SearchWhere = "";
+		$this->setSearchWhere($this->SearchWhere);
+
+		// Clear basic search parameters
+		$this->ResetBasicSearchParms();
+	}
+
+	// Load advanced search default values
+	function LoadAdvancedSearchDefault() {
+		return FALSE;
+	}
+
+	// Clear all basic search parameters
+	function ResetBasicSearchParms() {
+		$this->BasicSearch->UnsetSession();
+	}
+
+	// Restore all search parameters
+	function RestoreSearchParms() {
+		$this->RestoreSearch = TRUE;
+
+		// Restore basic search values
+		$this->BasicSearch->Load();
+	}
+
 	// Set up sort parameters
 	function SetupSortOrder() {
 
@@ -760,6 +1076,9 @@ class coffline_messages_list extends coffline_messages {
 			$this->CurrentOrderType = @$_GET["ordertype"];
 			$this->UpdateSort($this->id); // id
 			$this->UpdateSort($this->timestamp); // timestamp
+			$this->UpdateSort($this->name); // name
+			$this->UpdateSort($this->_email); // email
+			$this->UpdateSort($this->message); // message
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -784,12 +1103,19 @@ class coffline_messages_list extends coffline_messages {
 		// Check if reset command
 		if (substr($this->Command,0,5) == "reset") {
 
+			// Reset search criteria
+			if ($this->Command == "reset" || $this->Command == "resetall")
+				$this->ResetSearchParms();
+
 			// Reset sorting order
 			if ($this->Command == "resetsort") {
 				$sOrderBy = "";
 				$this->setSessionOrderBy($sOrderBy);
 				$this->id->setSort("");
 				$this->timestamp->setSort("");
+				$this->name->setSort("");
+				$this->_email->setSort("");
+				$this->message->setSort("");
 			}
 
 			// Reset start position
@@ -812,24 +1138,6 @@ class coffline_messages_list extends coffline_messages {
 		$item = &$this->ListOptions->Add("view");
 		$item->CssClass = "text-nowrap";
 		$item->Visible = $Security->CanView();
-		$item->OnLeft = TRUE;
-
-		// "edit"
-		$item = &$this->ListOptions->Add("edit");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->CanEdit();
-		$item->OnLeft = TRUE;
-
-		// "copy"
-		$item = &$this->ListOptions->Add("copy");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->CanAdd();
-		$item->OnLeft = TRUE;
-
-		// "delete"
-		$item = &$this->ListOptions->Add("delete");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->CanDelete();
 		$item->OnLeft = TRUE;
 
 		// List actions
@@ -882,31 +1190,6 @@ class coffline_messages_list extends coffline_messages {
 			$oListOpt->Body = "";
 		}
 
-		// "edit"
-		$oListOpt = &$this->ListOptions->Items["edit"];
-		$editcaption = ew_HtmlTitle($Language->Phrase("EditLink"));
-		if ($Security->CanEdit()) {
-			$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
-		} else {
-			$oListOpt->Body = "";
-		}
-
-		// "copy"
-		$oListOpt = &$this->ListOptions->Items["copy"];
-		$copycaption = ew_HtmlTitle($Language->Phrase("CopyLink"));
-		if ($Security->CanAdd()) {
-			$oListOpt->Body = "<a class=\"ewRowLink ewCopy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . ew_HtmlEncode($this->CopyUrl) . "\">" . $Language->Phrase("CopyLink") . "</a>";
-		} else {
-			$oListOpt->Body = "";
-		}
-
-		// "delete"
-		$oListOpt = &$this->ListOptions->Items["delete"];
-		if ($Security->CanDelete())
-			$oListOpt->Body = "<a class=\"ewRowLink ewDelete\"" . "" . " title=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" href=\"" . ew_HtmlEncode($this->DeleteUrl) . "\">" . $Language->Phrase("DeleteLink") . "</a>";
-		else
-			$oListOpt->Body = "";
-
 		// Set up list action buttons
 		$oListOpt = &$this->ListOptions->GetItem("listactions");
 		if ($oListOpt && $this->Export == "" && $this->CurrentAction == "") {
@@ -949,13 +1232,6 @@ class coffline_messages_list extends coffline_messages {
 	function SetupOtherOptions() {
 		global $Language, $Security;
 		$options = &$this->OtherOptions;
-		$option = $options["addedit"];
-
-		// Add
-		$item = &$option->Add("add");
-		$addcaption = ew_HtmlTitle($Language->Phrase("AddLink"));
-		$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . ew_HtmlEncode($this->AddUrl) . "\">" . $Language->Phrase("AddLink") . "</a>";
-		$item->Visible = ($this->AddUrl <> "" && $Security->CanAdd());
 		$option = $options["action"];
 
 		// Set up options default
@@ -975,10 +1251,10 @@ class coffline_messages_list extends coffline_messages {
 		// Filter button
 		$item = &$this->FilterOptions->Add("savecurrentfilter");
 		$item->Body = "<a class=\"ewSaveFilter\" data-form=\"foffline_messageslistsrch\" href=\"#\">" . $Language->Phrase("SaveCurrentFilter") . "</a>";
-		$item->Visible = FALSE;
+		$item->Visible = TRUE;
 		$item = &$this->FilterOptions->Add("deletefilter");
 		$item->Body = "<a class=\"ewDeleteFilter\" data-form=\"foffline_messageslistsrch\" href=\"#\">" . $Language->Phrase("DeleteFilter") . "</a>";
-		$item->Visible = FALSE;
+		$item->Visible = TRUE;
 		$this->FilterOptions->UseDropDownButton = TRUE;
 		$this->FilterOptions->UseButtonGroup = !$this->FilterOptions->UseDropDownButton;
 		$this->FilterOptions->DropDownButtonPhrase = $Language->Phrase("Filters");
@@ -1102,6 +1378,17 @@ class coffline_messages_list extends coffline_messages {
 		$this->SearchOptions->Tag = "div";
 		$this->SearchOptions->TagClassName = "ewSearchOption";
 
+		// Search button
+		$item = &$this->SearchOptions->Add("searchtoggle");
+		$SearchToggleClass = ($this->SearchWhere <> "") ? " active" : " active";
+		$item->Body = "<button type=\"button\" class=\"btn btn-default ewSearchToggle" . $SearchToggleClass . "\" title=\"" . $Language->Phrase("SearchPanel") . "\" data-caption=\"" . $Language->Phrase("SearchPanel") . "\" data-toggle=\"button\" data-form=\"foffline_messageslistsrch\">" . $Language->Phrase("SearchLink") . "</button>";
+		$item->Visible = TRUE;
+
+		// Show all button
+		$item = &$this->SearchOptions->Add("showall");
+		$item->Body = "<a class=\"btn btn-default ewShowAll\" title=\"" . $Language->Phrase("ShowAll") . "\" data-caption=\"" . $Language->Phrase("ShowAll") . "\" href=\"" . $this->PageUrl() . "cmd=reset\">" . $Language->Phrase("ShowAllBtn") . "</a>";
+		$item->Visible = ($this->SearchWhere <> $this->DefaultSearchWhere && $this->SearchWhere <> "0=101");
+
 		// Button group for search
 		$this->SearchOptions->UseDropDownButton = FALSE;
 		$this->SearchOptions->UseImageAndText = TRUE;
@@ -1165,6 +1452,13 @@ class coffline_messages_list extends coffline_messages {
 			$this->StartRec = intval(($this->StartRec-1)/$this->DisplayRecs)*$this->DisplayRecs+1; // Point to page boundary
 			$this->setStartRecordNumber($this->StartRec);
 		}
+	}
+
+	// Load basic search values
+	function LoadBasicSearchValues() {
+		$this->BasicSearch->Keyword = @$_GET[EW_TABLE_BASIC_SEARCH];
+		if ($this->BasicSearch->Keyword <> "" && $this->Command == "") $this->Command = "search";
+		$this->BasicSearch->Type = @$_GET[EW_TABLE_BASIC_SEARCH_TYPE];
 	}
 
 	// Load recordset
@@ -1319,6 +1613,18 @@ class coffline_messages_list extends coffline_messages {
 		$this->timestamp->ViewValue = ew_FormatDateTime($this->timestamp->ViewValue, 0);
 		$this->timestamp->ViewCustomAttributes = "";
 
+		// name
+		$this->name->ViewValue = $this->name->CurrentValue;
+		$this->name->ViewCustomAttributes = "";
+
+		// email
+		$this->_email->ViewValue = $this->_email->CurrentValue;
+		$this->_email->ViewCustomAttributes = "";
+
+		// message
+		$this->message->ViewValue = $this->message->CurrentValue;
+		$this->message->ViewCustomAttributes = "";
+
 			// id
 			$this->id->LinkCustomAttributes = "";
 			$this->id->HrefValue = "";
@@ -1328,6 +1634,21 @@ class coffline_messages_list extends coffline_messages {
 			$this->timestamp->LinkCustomAttributes = "";
 			$this->timestamp->HrefValue = "";
 			$this->timestamp->TooltipValue = "";
+
+			// name
+			$this->name->LinkCustomAttributes = "";
+			$this->name->HrefValue = "";
+			$this->name->TooltipValue = "";
+
+			// email
+			$this->_email->LinkCustomAttributes = "";
+			$this->_email->HrefValue = "";
+			$this->_email->TooltipValue = "";
+
+			// message
+			$this->message->LinkCustomAttributes = "";
+			$this->message->HrefValue = "";
+			$this->message->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -1575,8 +1896,11 @@ class coffline_messages_list extends coffline_messages {
 		$sQry = "export=html";
 
 		// Build QueryString for search
-		// Build QueryString for pager
+		if ($this->BasicSearch->getKeyword() <> "") {
+			$sQry .= "&" . EW_TABLE_BASIC_SEARCH . "=" . urlencode($this->BasicSearch->getKeyword()) . "&" . EW_TABLE_BASIC_SEARCH_TYPE . "=" . urlencode($this->BasicSearch->getType());
+		}
 
+		// Build QueryString for pager
 		$sQry .= "&" . EW_TABLE_REC_PER_PAGE . "=" . urlencode($this->getRecordsPerPage()) . "&" . EW_TABLE_START_REC . "=" . urlencode($this->getStartRecordNumber());
 		return $sQry;
 	}
@@ -1792,6 +2116,7 @@ foffline_messageslist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDA
 // Dynamic selection lists
 // Form object for search
 
+var CurrentSearchForm = foffline_messageslistsrch = new ew_Form("foffline_messageslistsrch");
 </script>
 <script type="text/javascript">
 
@@ -1802,6 +2127,12 @@ foffline_messageslist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDA
 <div class="ewToolbar">
 <?php if ($offline_messages_list->TotalRecs > 0 && $offline_messages_list->ExportOptions->Visible()) { ?>
 <?php $offline_messages_list->ExportOptions->Render("body") ?>
+<?php } ?>
+<?php if ($offline_messages_list->SearchOptions->Visible()) { ?>
+<?php $offline_messages_list->SearchOptions->Render("body") ?>
+<?php } ?>
+<?php if ($offline_messages_list->FilterOptions->Visible()) { ?>
+<?php $offline_messages_list->FilterOptions->Render("body") ?>
 <?php } ?>
 <div class="clearfix"></div>
 </div>
@@ -1834,6 +2165,35 @@ foffline_messageslist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDA
 	}
 $offline_messages_list->RenderOtherOptions();
 ?>
+<?php if ($Security->CanSearch()) { ?>
+<?php if ($offline_messages->Export == "" && $offline_messages->CurrentAction == "") { ?>
+<form name="foffline_messageslistsrch" id="foffline_messageslistsrch" class="form-inline ewForm ewExtSearchForm" action="<?php echo ew_CurrentPage() ?>">
+<?php $SearchPanelClass = ($offline_messages_list->SearchWhere <> "") ? " in" : " in"; ?>
+<div id="foffline_messageslistsrch_SearchPanel" class="ewSearchPanel collapse<?php echo $SearchPanelClass ?>">
+<input type="hidden" name="cmd" value="search">
+<input type="hidden" name="t" value="offline_messages">
+	<div class="ewBasicSearch">
+<div id="xsr_1" class="ewRow">
+	<div class="ewQuickSearch input-group">
+	<input type="text" name="<?php echo EW_TABLE_BASIC_SEARCH ?>" id="<?php echo EW_TABLE_BASIC_SEARCH ?>" class="form-control" value="<?php echo ew_HtmlEncode($offline_messages_list->BasicSearch->getKeyword()) ?>">
+	<input type="hidden" name="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" id="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" value="<?php echo ew_HtmlEncode($offline_messages_list->BasicSearch->getType()) ?>">
+	<div class="input-group-btn">
+		<button type="button" data-toggle="dropdown" class="btn btn-default"><span id="searchtype"><?php echo $offline_messages_list->BasicSearch->getTypeNameShort() ?></span><span class="caret"></span></button>
+		<ul class="dropdown-menu pull-right" role="menu">
+			<li<?php if ($offline_messages_list->BasicSearch->getType() == "") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this)"><?php echo $Language->Phrase("QuickSearchAuto") ?></a></li>
+			<li<?php if ($offline_messages_list->BasicSearch->getType() == "=") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'=')"><?php echo $Language->Phrase("QuickSearchExact") ?></a></li>
+			<li<?php if ($offline_messages_list->BasicSearch->getType() == "AND") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'AND')"><?php echo $Language->Phrase("QuickSearchAll") ?></a></li>
+			<li<?php if ($offline_messages_list->BasicSearch->getType() == "OR") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'OR')"><?php echo $Language->Phrase("QuickSearchAny") ?></a></li>
+		</ul>
+	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("SearchBtn") ?></button>
+	</div>
+	</div>
+</div>
+	</div>
+</div>
+</form>
+<?php } ?>
+<?php } ?>
 <?php $offline_messages_list->ShowPageHeader(); ?>
 <?php
 $offline_messages_list->ShowMessage();
@@ -1876,6 +2236,33 @@ $offline_messages_list->ListOptions->Render("header", "left");
 	<?php } else { ?>
 		<th data-name="timestamp" class="<?php echo $offline_messages->timestamp->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $offline_messages->SortUrl($offline_messages->timestamp) ?>',1);"><div id="elh_offline_messages_timestamp" class="offline_messages_timestamp">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $offline_messages->timestamp->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($offline_messages->timestamp->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($offline_messages->timestamp->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($offline_messages->name->Visible) { // name ?>
+	<?php if ($offline_messages->SortUrl($offline_messages->name) == "") { ?>
+		<th data-name="name" class="<?php echo $offline_messages->name->HeaderCellClass() ?>"><div id="elh_offline_messages_name" class="offline_messages_name"><div class="ewTableHeaderCaption"><?php echo $offline_messages->name->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="name" class="<?php echo $offline_messages->name->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $offline_messages->SortUrl($offline_messages->name) ?>',1);"><div id="elh_offline_messages_name" class="offline_messages_name">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $offline_messages->name->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($offline_messages->name->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($offline_messages->name->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($offline_messages->_email->Visible) { // email ?>
+	<?php if ($offline_messages->SortUrl($offline_messages->_email) == "") { ?>
+		<th data-name="_email" class="<?php echo $offline_messages->_email->HeaderCellClass() ?>"><div id="elh_offline_messages__email" class="offline_messages__email"><div class="ewTableHeaderCaption"><?php echo $offline_messages->_email->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="_email" class="<?php echo $offline_messages->_email->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $offline_messages->SortUrl($offline_messages->_email) ?>',1);"><div id="elh_offline_messages__email" class="offline_messages__email">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $offline_messages->_email->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($offline_messages->_email->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($offline_messages->_email->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($offline_messages->message->Visible) { // message ?>
+	<?php if ($offline_messages->SortUrl($offline_messages->message) == "") { ?>
+		<th data-name="message" class="<?php echo $offline_messages->message->HeaderCellClass() ?>"><div id="elh_offline_messages_message" class="offline_messages_message"><div class="ewTableHeaderCaption"><?php echo $offline_messages->message->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="message" class="<?php echo $offline_messages->message->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $offline_messages->SortUrl($offline_messages->message) ?>',1);"><div id="elh_offline_messages_message" class="offline_messages_message">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $offline_messages->message->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($offline_messages->message->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($offline_messages->message->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -1957,6 +2344,30 @@ $offline_messages_list->ListOptions->Render("body", "left", $offline_messages_li
 <span id="el<?php echo $offline_messages_list->RowCnt ?>_offline_messages_timestamp" class="offline_messages_timestamp">
 <span<?php echo $offline_messages->timestamp->ViewAttributes() ?>>
 <?php echo $offline_messages->timestamp->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($offline_messages->name->Visible) { // name ?>
+		<td data-name="name"<?php echo $offline_messages->name->CellAttributes() ?>>
+<span id="el<?php echo $offline_messages_list->RowCnt ?>_offline_messages_name" class="offline_messages_name">
+<span<?php echo $offline_messages->name->ViewAttributes() ?>>
+<?php echo $offline_messages->name->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($offline_messages->_email->Visible) { // email ?>
+		<td data-name="_email"<?php echo $offline_messages->_email->CellAttributes() ?>>
+<span id="el<?php echo $offline_messages_list->RowCnt ?>_offline_messages__email" class="offline_messages__email">
+<span<?php echo $offline_messages->_email->ViewAttributes() ?>>
+<?php echo $offline_messages->_email->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($offline_messages->message->Visible) { // message ?>
+		<td data-name="message"<?php echo $offline_messages->message->CellAttributes() ?>>
+<span id="el<?php echo $offline_messages_list->RowCnt ?>_offline_messages_message" class="offline_messages_message">
+<span<?php echo $offline_messages->message->ViewAttributes() ?>>
+<?php echo $offline_messages->message->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
@@ -2054,6 +2465,8 @@ if ($offline_messages_list->Recordset)
 <?php } ?>
 <?php if ($offline_messages->Export == "") { ?>
 <script type="text/javascript">
+foffline_messageslistsrch.FilterList = <?php echo $offline_messages_list->GetFilterList() ?>;
+foffline_messageslistsrch.Init();
 foffline_messageslist.Init();
 </script>
 <?php } ?>

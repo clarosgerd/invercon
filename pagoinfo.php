@@ -73,8 +73,10 @@ class cpago extends cTable {
 		$this->fields['cliente_id'] = &$this->cliente_id;
 
 		// status_id
-		$this->status_id = new cField('pago', 'pago', 'x_status_id', 'status_id', '`status_id`', '`status_id`', 3, -1, FALSE, '`status_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
+		$this->status_id = new cField('pago', 'pago', 'x_status_id', 'status_id', '`status_id`', '`status_id`', 3, -1, FALSE, '`status_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->status_id->Sortable = TRUE; // Allow sort
+		$this->status_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->status_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->status_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['status_id'] = &$this->status_id;
 
@@ -857,7 +859,7 @@ class cpago extends cTable {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->metodopago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
 		$sWhereWrk = "";
-		$this->metodopago_id->LookupFilters = array();
+		$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -994,6 +996,7 @@ class cpago extends cTable {
 		}
 
 		// status_id
+		$this->status_id->EditAttrs["class"] = "form-control";
 		$this->status_id->EditCustomAttributes = "";
 
 		// created_at
@@ -1042,8 +1045,6 @@ class cpago extends cTable {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->code->Exportable) $Doc->ExportCaption($this->code);
 					if ($this->cliente_id->Exportable) $Doc->ExportCaption($this->cliente_id);
-					if ($this->status_id->Exportable) $Doc->ExportCaption($this->status_id);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
 					if ($this->metodopago_id->Exportable) $Doc->ExportCaption($this->metodopago_id);
 					if ($this->documento_pago->Exportable) $Doc->ExportCaption($this->documento_pago);
 				} else {
@@ -1087,8 +1088,6 @@ class cpago extends cTable {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->code->Exportable) $Doc->ExportField($this->code);
 						if ($this->cliente_id->Exportable) $Doc->ExportField($this->cliente_id);
-						if ($this->status_id->Exportable) $Doc->ExportField($this->status_id);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
 						if ($this->metodopago_id->Exportable) $Doc->ExportField($this->metodopago_id);
 						if ($this->documento_pago->Exportable) $Doc->ExportField($this->documento_pago);
 					} else {

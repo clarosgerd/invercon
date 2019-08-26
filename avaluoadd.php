@@ -336,6 +336,7 @@ class cavaluo_add extends cavaluo {
 
 		$objForm = new cFormObj();
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
+		$this->tipoinmueble->SetVisibility();
 		$this->id_solicitud->SetVisibility();
 		$this->id_oficialcredito->SetVisibility();
 
@@ -606,6 +607,8 @@ class cavaluo_add extends cavaluo {
 		$this->ModifiedBy->OldValue = $this->ModifiedBy->CurrentValue;
 		$this->DeletedBy->CurrentValue = NULL;
 		$this->DeletedBy->OldValue = $this->DeletedBy->CurrentValue;
+		$this->id_sucursal->CurrentValue = NULL;
+		$this->id_sucursal->OldValue = $this->id_sucursal->CurrentValue;
 	}
 
 	// Load form values
@@ -613,6 +616,9 @@ class cavaluo_add extends cavaluo {
 
 		// Load from form
 		global $objForm;
+		if (!$this->tipoinmueble->FldIsDetailKey) {
+			$this->tipoinmueble->setFormValue($objForm->GetValue("x_tipoinmueble"));
+		}
 		if (!$this->id_solicitud->FldIsDetailKey) {
 			$this->id_solicitud->setFormValue($objForm->GetValue("x_id_solicitud"));
 		}
@@ -624,6 +630,7 @@ class cavaluo_add extends cavaluo {
 	// Restore form values
 	function RestoreFormValues() {
 		global $objForm;
+		$this->tipoinmueble->CurrentValue = $this->tipoinmueble->FormValue;
 		$this->id_solicitud->CurrentValue = $this->id_solicitud->FormValue;
 		$this->id_oficialcredito->CurrentValue = $this->id_oficialcredito->FormValue;
 	}
@@ -691,6 +698,7 @@ class cavaluo_add extends cavaluo {
 		$this->CreatedBy->setDbValue($row['CreatedBy']);
 		$this->ModifiedBy->setDbValue($row['ModifiedBy']);
 		$this->DeletedBy->setDbValue($row['DeletedBy']);
+		$this->id_sucursal->setDbValue($row['id_sucursal']);
 	}
 
 	// Return a row with default values
@@ -717,6 +725,7 @@ class cavaluo_add extends cavaluo {
 		$row['CreatedBy'] = $this->CreatedBy->CurrentValue;
 		$row['ModifiedBy'] = $this->ModifiedBy->CurrentValue;
 		$row['DeletedBy'] = $this->DeletedBy->CurrentValue;
+		$row['id_sucursal'] = $this->id_sucursal->CurrentValue;
 		return $row;
 	}
 
@@ -745,6 +754,7 @@ class cavaluo_add extends cavaluo {
 		$this->CreatedBy->DbValue = $row['CreatedBy'];
 		$this->ModifiedBy->DbValue = $row['ModifiedBy'];
 		$this->DeletedBy->DbValue = $row['DeletedBy'];
+		$this->id_sucursal->DbValue = $row['id_sucursal'];
 	}
 
 	// Load old record
@@ -799,8 +809,32 @@ class cavaluo_add extends cavaluo {
 		// CreatedBy
 		// ModifiedBy
 		// DeletedBy
+		// id_sucursal
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
+
+		// tipoinmueble
+		if (strval($this->tipoinmueble->CurrentValue) <> "") {
+			$sFilterWrk = "`nombre`" . ew_SearchString("=", $this->tipoinmueble->CurrentValue, EW_DATATYPE_STRING, "");
+		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipoinmueble->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->tipoinmueble, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->tipoinmueble->ViewValue = $this->tipoinmueble->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->tipoinmueble->ViewValue = $this->tipoinmueble->CurrentValue;
+			}
+		} else {
+			$this->tipoinmueble->ViewValue = NULL;
+		}
+		$this->tipoinmueble->ViewCustomAttributes = "";
 
 		// id_solicitud
 		$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
@@ -909,6 +943,15 @@ class cavaluo_add extends cavaluo {
 		}
 		$this->estadointerno->ViewCustomAttributes = "";
 
+		// id_sucursal
+		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
+		$this->id_sucursal->ViewCustomAttributes = "";
+
+			// tipoinmueble
+			$this->tipoinmueble->LinkCustomAttributes = "";
+			$this->tipoinmueble->HrefValue = "";
+			$this->tipoinmueble->TooltipValue = "";
+
 			// id_solicitud
 			$this->id_solicitud->LinkCustomAttributes = "";
 			$this->id_solicitud->HrefValue = "";
@@ -919,6 +962,25 @@ class cavaluo_add extends cavaluo {
 			$this->id_oficialcredito->HrefValue = "";
 			$this->id_oficialcredito->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
+
+			// tipoinmueble
+			$this->tipoinmueble->EditAttrs["class"] = "form-control";
+			$this->tipoinmueble->EditCustomAttributes = "";
+			if (trim(strval($this->tipoinmueble->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`nombre`" . ew_SearchString("=", $this->tipoinmueble->CurrentValue, EW_DATATYPE_STRING, "");
+			}
+			$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+			$sWhereWrk = "";
+			$this->tipoinmueble->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->tipoinmueble, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->tipoinmueble->EditValue = $arwrk;
 
 			// id_solicitud
 			$this->id_solicitud->EditAttrs["class"] = "form-control";
@@ -1001,8 +1063,12 @@ class cavaluo_add extends cavaluo {
 			$this->id_oficialcredito->EditValue = $arwrk;
 
 			// Add refer script
-			// id_solicitud
+			// tipoinmueble
 
+			$this->tipoinmueble->LinkCustomAttributes = "";
+			$this->tipoinmueble->HrefValue = "";
+
+			// id_solicitud
 			$this->id_solicitud->LinkCustomAttributes = "";
 			$this->id_solicitud->HrefValue = "";
 
@@ -1085,6 +1151,9 @@ class cavaluo_add extends cavaluo {
 		if ($rsold) {
 		}
 		$rsnew = array();
+
+		// tipoinmueble
+		$this->tipoinmueble->SetDbValueDef($rsnew, $this->tipoinmueble->CurrentValue, NULL, FALSE);
 
 		// id_solicitud
 		$this->id_solicitud->SetDbValueDef($rsnew, $this->id_solicitud->CurrentValue, NULL, FALSE);
@@ -1255,6 +1324,18 @@ class cavaluo_add extends cavaluo {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
+		case "x_tipoinmueble":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`nombre` IN ({filter_value})', "t0" => "200", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->tipoinmueble, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		case "x_id_solicitud":
 			$sSqlWrk = "";
 			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
@@ -1451,6 +1532,8 @@ favaluoadd.Form_CustomValidate =
 favaluoadd.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
+favaluoadd.Lists["x_tipoinmueble"] = {"LinkField":"x_nombre","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
+favaluoadd.Lists["x_tipoinmueble"].Data = "<?php echo $avaluo_add->tipoinmueble->LookupFilterQuery(FALSE, "add") ?>";
 favaluoadd.Lists["x_id_solicitud"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"solicitud"};
 favaluoadd.Lists["x_id_solicitud"].Data = "<?php echo $avaluo_add->id_solicitud->LookupFilterQuery(FALSE, "add") ?>";
 favaluoadd.AutoSuggests["x_id_solicitud"] = <?php echo json_encode(array("data" => "ajax=autosuggest&" . $avaluo_add->id_solicitud->LookupFilterQuery(TRUE, "add"))) ?>;
@@ -1485,6 +1568,31 @@ $avaluo_add->ShowMessage();
 <div class="ewAddDiv"><!-- page* -->
 <?php } else { ?>
 <table id="tbl_avaluoadd" class="table table-striped table-bordered table-hover table-condensed ewDesktopTable"><!-- table* -->
+<?php } ?>
+<?php if ($avaluo->tipoinmueble->Visible) { // tipoinmueble ?>
+<?php if ($avaluo_add->IsMobileOrModal) { ?>
+	<div id="r_tipoinmueble" class="form-group">
+		<label id="elh_avaluo_tipoinmueble" for="x_tipoinmueble" class="<?php echo $avaluo_add->LeftColumnClass ?>"><?php echo $avaluo->tipoinmueble->FldCaption() ?></label>
+		<div class="<?php echo $avaluo_add->RightColumnClass ?>"><div<?php echo $avaluo->tipoinmueble->CellAttributes() ?>>
+<span id="el_avaluo_tipoinmueble">
+<select data-table="avaluo" data-field="x_tipoinmueble" data-value-separator="<?php echo $avaluo->tipoinmueble->DisplayValueSeparatorAttribute() ?>" id="x_tipoinmueble" name="x_tipoinmueble"<?php echo $avaluo->tipoinmueble->EditAttributes() ?>>
+<?php echo $avaluo->tipoinmueble->SelectOptionListHtml("x_tipoinmueble") ?>
+</select>
+</span>
+<?php echo $avaluo->tipoinmueble->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_tipoinmueble">
+		<td class="col-sm-3"><span id="elh_avaluo_tipoinmueble"><?php echo $avaluo->tipoinmueble->FldCaption() ?></span></td>
+		<td<?php echo $avaluo->tipoinmueble->CellAttributes() ?>>
+<span id="el_avaluo_tipoinmueble">
+<select data-table="avaluo" data-field="x_tipoinmueble" data-value-separator="<?php echo $avaluo->tipoinmueble->DisplayValueSeparatorAttribute() ?>" id="x_tipoinmueble" name="x_tipoinmueble"<?php echo $avaluo->tipoinmueble->EditAttributes() ?>>
+<?php echo $avaluo->tipoinmueble->SelectOptionListHtml("x_tipoinmueble") ?>
+</select>
+</span>
+<?php echo $avaluo->tipoinmueble->CustomMsg ?></td>
+	</tr>
+<?php } ?>
 <?php } ?>
 <?php if ($avaluo->id_solicitud->Visible) { // id_solicitud ?>
 <?php if ($avaluo_add->IsMobileOrModal) { ?>

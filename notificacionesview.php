@@ -388,6 +388,7 @@ class cnotificaciones_view extends cnotificaciones {
 		$this->recibidopor->SetVisibility();
 		$this->leido->SetVisibility();
 		$this->desde->SetVisibility();
+		$this->id_avaluo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -661,6 +662,7 @@ class cnotificaciones_view extends cnotificaciones {
 		$this->fecha->setDbValue($row['fecha']);
 		$this->fechaleido->setDbValue($row['fechaleido']);
 		$this->desde->setDbValue($row['desde']);
+		$this->id_avaluo->setDbValue($row['id_avaluo']);
 	}
 
 	// Return a row with default values
@@ -675,6 +677,7 @@ class cnotificaciones_view extends cnotificaciones {
 		$row['fecha'] = NULL;
 		$row['fechaleido'] = NULL;
 		$row['desde'] = NULL;
+		$row['id_avaluo'] = NULL;
 		return $row;
 	}
 
@@ -692,6 +695,7 @@ class cnotificaciones_view extends cnotificaciones {
 		$this->fecha->DbValue = $row['fecha'];
 		$this->fechaleido->DbValue = $row['fechaleido'];
 		$this->desde->DbValue = $row['desde'];
+		$this->id_avaluo->DbValue = $row['id_avaluo'];
 	}
 
 	// Render row values based on field settings
@@ -719,6 +723,7 @@ class cnotificaciones_view extends cnotificaciones {
 		// fecha
 		// fechaleido
 		// desde
+		// id_avaluo
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -745,6 +750,10 @@ class cnotificaciones_view extends cnotificaciones {
 		// desde
 		$this->desde->ViewValue = $this->desde->CurrentValue;
 		$this->desde->ViewCustomAttributes = "";
+
+		// id_avaluo
+		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		$this->id_avaluo->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -775,6 +784,11 @@ class cnotificaciones_view extends cnotificaciones {
 			$this->desde->LinkCustomAttributes = "";
 			$this->desde->HrefValue = "";
 			$this->desde->TooltipValue = "";
+
+			// id_avaluo
+			$this->id_avaluo->LinkCustomAttributes = "";
+			$this->id_avaluo->HrefValue = "";
+			$this->id_avaluo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -1020,6 +1034,17 @@ $notificaciones_view->ShowMessage();
 <span id="el_notificaciones_desde">
 <span<?php echo $notificaciones->desde->ViewAttributes() ?>>
 <?php echo $notificaciones->desde->ViewValue ?></span>
+</span>
+</td>
+	</tr>
+<?php } ?>
+<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
+	<tr id="r_id_avaluo">
+		<td class="col-sm-3"><span id="elh_notificaciones_id_avaluo"><?php echo $notificaciones->id_avaluo->FldCaption() ?></span></td>
+		<td data-name="id_avaluo"<?php echo $notificaciones->id_avaluo->CellAttributes() ?>>
+<span id="el_notificaciones_id_avaluo">
+<span<?php echo $notificaciones->id_avaluo->ViewAttributes() ?>>
+<?php echo $notificaciones->id_avaluo->ViewValue ?></span>
 </span>
 </td>
 	</tr>

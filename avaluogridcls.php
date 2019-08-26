@@ -363,6 +363,7 @@ class cavaluo_grid extends cavaluo {
 		$this->estado->SetVisibility();
 		$this->estadointerno->SetVisibility();
 		$this->estadopago->SetVisibility();
+		$this->fecha_avaluo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -734,29 +735,6 @@ class cavaluo_grid extends cavaluo {
 			$this->Grid_Updated($rsold, $rsnew);
 			if ($this->AuditTrailOnEdit) $this->WriteAuditTrailDummy($Language->Phrase("BatchUpdateSuccess")); // Batch update success
 			$this->ClearInlineMode(); // Clear inline edit mode
-
-			// Send notify email
-			$sTable = 'avaluo';
-			$sSubject = $sTable . " " . $Language->Phrase("RecordUpdated");
-			$sAction = $Language->Phrase("ActionUpdatedGridEdit");
-			$Email = new cEmail();
-			$Email->Load(EW_EMAIL_NOTIFY_TEMPLATE);
-			$Email->ReplaceSender(EW_SENDER_EMAIL); // Replace Sender
-			$Email->ReplaceRecipient(EW_RECIPIENT_EMAIL); // Replace Recipient
-			$Email->ReplaceSubject($sSubject); // Replace Subject
-			$Email->ReplaceContent("<!--table-->", $sTable);
-			$Email->ReplaceContent("<!--key-->", $sKey);
-			$Email->ReplaceContent("<!--action-->", $sAction);
-			$Args = array();
-			$Args["rsold"] = &$rsold;
-			$Args["rsnew"] = &$rsnew;
-			$bEmailSent = FALSE;
-			if ($this->Email_Sending($Email, $Args))
-				$bEmailSent = $Email->Send();
-
-			// Set up error message
-			if (!$bEmailSent)
-				$this->setFailureMessage($Email->SendErrDescription);
 		} else {
 			if ($this->AuditTrailOnEdit) $this->WriteAuditTrailDummy($Language->Phrase("BatchUpdateRollback")); // Batch update rollback
 			if ($this->getFailureMessage() == "")
@@ -912,6 +890,8 @@ class cavaluo_grid extends cavaluo {
 		if ($objForm->HasValue("x_estadointerno") && $objForm->HasValue("o_estadointerno") && $this->estadointerno->CurrentValue <> $this->estadointerno->OldValue)
 			return FALSE;
 		if ($objForm->HasValue("x_estadopago") && $objForm->HasValue("o_estadopago") && $this->estadopago->CurrentValue <> $this->estadopago->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_fecha_avaluo") && $objForm->HasValue("o_fecha_avaluo") && $this->fecha_avaluo->CurrentValue <> $this->fecha_avaluo->OldValue)
 			return FALSE;
 		return TRUE;
 	}
@@ -1272,6 +1252,8 @@ class cavaluo_grid extends cavaluo {
 		$this->ModifiedBy->OldValue = $this->ModifiedBy->CurrentValue;
 		$this->DeletedBy->CurrentValue = NULL;
 		$this->DeletedBy->OldValue = $this->DeletedBy->CurrentValue;
+		$this->id_sucursal->CurrentValue = NULL;
+		$this->id_sucursal->OldValue = $this->id_sucursal->CurrentValue;
 	}
 
 	// Load form values
@@ -1312,6 +1294,11 @@ class cavaluo_grid extends cavaluo {
 			$this->estadopago->setFormValue($objForm->GetValue("x_estadopago"));
 		}
 		$this->estadopago->setOldValue($objForm->GetValue("o_estadopago"));
+		if (!$this->fecha_avaluo->FldIsDetailKey) {
+			$this->fecha_avaluo->setFormValue($objForm->GetValue("x_fecha_avaluo"));
+			$this->fecha_avaluo->CurrentValue = ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 10);
+		}
+		$this->fecha_avaluo->setOldValue($objForm->GetValue("o_fecha_avaluo"));
 		if (!$this->id->FldIsDetailKey && $this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
 			$this->id->setFormValue($objForm->GetValue("x_id"));
 	}
@@ -1329,6 +1316,8 @@ class cavaluo_grid extends cavaluo {
 		$this->estado->CurrentValue = $this->estado->FormValue;
 		$this->estadointerno->CurrentValue = $this->estadointerno->FormValue;
 		$this->estadopago->CurrentValue = $this->estadopago->FormValue;
+		$this->fecha_avaluo->CurrentValue = $this->fecha_avaluo->FormValue;
+		$this->fecha_avaluo->CurrentValue = ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 10);
 	}
 
 	// Load recordset
@@ -1420,6 +1409,7 @@ class cavaluo_grid extends cavaluo {
 		$this->CreatedBy->setDbValue($row['CreatedBy']);
 		$this->ModifiedBy->setDbValue($row['ModifiedBy']);
 		$this->DeletedBy->setDbValue($row['DeletedBy']);
+		$this->id_sucursal->setDbValue($row['id_sucursal']);
 	}
 
 	// Return a row with default values
@@ -1446,6 +1436,7 @@ class cavaluo_grid extends cavaluo {
 		$row['CreatedBy'] = $this->CreatedBy->CurrentValue;
 		$row['ModifiedBy'] = $this->ModifiedBy->CurrentValue;
 		$row['DeletedBy'] = $this->DeletedBy->CurrentValue;
+		$row['id_sucursal'] = $this->id_sucursal->CurrentValue;
 		return $row;
 	}
 
@@ -1474,6 +1465,7 @@ class cavaluo_grid extends cavaluo {
 		$this->CreatedBy->DbValue = $row['CreatedBy'];
 		$this->ModifiedBy->DbValue = $row['ModifiedBy'];
 		$this->DeletedBy->DbValue = $row['DeletedBy'];
+		$this->id_sucursal->DbValue = $row['id_sucursal'];
 	}
 
 	// Load old record
@@ -1555,11 +1547,14 @@ class cavaluo_grid extends cavaluo {
 
 		// DeletedBy
 		$this->DeletedBy->CellCssStyle = "white-space: nowrap;";
+
+		// id_sucursal
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// codigoavaluo
 		$this->codigoavaluo->ViewValue = $this->codigoavaluo->CurrentValue;
-		$this->codigoavaluo->ViewValue = ew_FormatNumber($this->codigoavaluo->ViewValue, 0, -2, -2, -2);
+		$this->codigoavaluo->ViewValue = ew_FormatNumber($this->codigoavaluo->ViewValue, 0, 0, 0, 0);
+		$this->codigoavaluo->CssStyle = "font-weight: bold;font-style: italic;";
 		$this->codigoavaluo->ViewCustomAttributes = "";
 
 		// tipoinmueble
@@ -1739,6 +1734,15 @@ class cavaluo_grid extends cavaluo {
 		}
 		$this->estadopago->ViewCustomAttributes = "";
 
+		// fecha_avaluo
+		$this->fecha_avaluo->ViewValue = $this->fecha_avaluo->CurrentValue;
+		$this->fecha_avaluo->ViewValue = ew_FormatDateTime($this->fecha_avaluo->ViewValue, 10);
+		$this->fecha_avaluo->ViewCustomAttributes = "";
+
+		// id_sucursal
+		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
+		$this->id_sucursal->ViewCustomAttributes = "";
+
 			// codigoavaluo
 			$this->codigoavaluo->LinkCustomAttributes = "";
 			$this->codigoavaluo->HrefValue = "";
@@ -1778,6 +1782,11 @@ class cavaluo_grid extends cavaluo {
 			$this->estadopago->LinkCustomAttributes = "";
 			$this->estadopago->HrefValue = "";
 			$this->estadopago->TooltipValue = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->LinkCustomAttributes = "";
+			$this->fecha_avaluo->HrefValue = "";
+			$this->fecha_avaluo->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// codigoavaluo
@@ -1980,6 +1989,12 @@ class cavaluo_grid extends cavaluo {
 			if ($rswrk) $rswrk->Close();
 			$this->estadopago->EditValue = $arwrk;
 
+			// fecha_avaluo
+			$this->fecha_avaluo->EditAttrs["class"] = "form-control";
+			$this->fecha_avaluo->EditCustomAttributes = "";
+			$this->fecha_avaluo->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->fecha_avaluo->CurrentValue, 10));
+			$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
+
 			// Add refer script
 			// codigoavaluo
 
@@ -2013,6 +2028,10 @@ class cavaluo_grid extends cavaluo {
 			// estadopago
 			$this->estadopago->LinkCustomAttributes = "";
 			$this->estadopago->HrefValue = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->LinkCustomAttributes = "";
+			$this->fecha_avaluo->HrefValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// codigoavaluo
@@ -2215,6 +2234,12 @@ class cavaluo_grid extends cavaluo {
 			}
 			$this->estadopago->ViewCustomAttributes = "";
 
+			// fecha_avaluo
+			$this->fecha_avaluo->EditAttrs["class"] = "form-control";
+			$this->fecha_avaluo->EditCustomAttributes = "";
+			$this->fecha_avaluo->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->fecha_avaluo->CurrentValue, 10));
+			$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
+
 			// Edit refer script
 			// codigoavaluo
 
@@ -2251,6 +2276,10 @@ class cavaluo_grid extends cavaluo {
 			$this->estadopago->LinkCustomAttributes = "";
 			$this->estadopago->HrefValue = "";
 			$this->estadopago->TooltipValue = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->LinkCustomAttributes = "";
+			$this->fecha_avaluo->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -2272,6 +2301,12 @@ class cavaluo_grid extends cavaluo {
 		}
 		if (!ew_CheckInteger($this->id_solicitud->FormValue)) {
 			ew_AddMessage($gsFormError, $this->id_solicitud->FldErrMsg());
+		}
+		if (!$this->fecha_avaluo->FldIsDetailKey && !is_null($this->fecha_avaluo->FormValue) && $this->fecha_avaluo->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->fecha_avaluo->FldCaption(), $this->fecha_avaluo->ReqErrMsg));
+		}
+		if (!ew_CheckUSDate($this->fecha_avaluo->FormValue)) {
+			ew_AddMessage($gsFormError, $this->fecha_avaluo->FldErrMsg());
 		}
 
 		// Return validate result
@@ -2403,6 +2438,9 @@ class cavaluo_grid extends cavaluo {
 			// id_cliente
 			$this->id_cliente->SetDbValueDef($rsnew, $this->id_cliente->CurrentValue, NULL, $this->id_cliente->ReadOnly);
 
+			// fecha_avaluo
+			$this->fecha_avaluo->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 10), NULL, $this->fecha_avaluo->ReadOnly);
+
 			// Check referential integrity for master table 'solicitud'
 			$bValidMasterRecord = TRUE;
 			$sMasterFilter = $this->SqlMasterFilter_solicitud();
@@ -2516,6 +2554,9 @@ class cavaluo_grid extends cavaluo {
 
 		// estadopago
 		$this->estadopago->SetDbValueDef($rsnew, $this->estadopago->CurrentValue, NULL, strval($this->estadopago->CurrentValue) == "");
+
+		// fecha_avaluo
+		$this->fecha_avaluo->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 10), NULL, FALSE);
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;

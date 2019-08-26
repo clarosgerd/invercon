@@ -452,6 +452,7 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 		$this->enviadopor->SetVisibility();
 		$this->recibidopor->SetVisibility();
 		$this->mensaje->SetVisibility();
+		$this->id_avaluo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -808,6 +809,7 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 		// Load server side filters
 		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
 			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "femailnotificacioneslistsrch");
+		$sFilterList = ew_Concat($sFilterList, $this->id_avaluo->AdvancedSearch->ToJson(), ","); // Field id_avaluo
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -851,6 +853,14 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 			return FALSE;
 		$filter = json_decode(@$_POST["filter"], TRUE);
 		$this->Command = "search";
+
+		// Field id_avaluo
+		$this->id_avaluo->AdvancedSearch->SearchValue = @$filter["x_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->SearchOperator = @$filter["z_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->SearchCondition = @$filter["v_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->SearchValue2 = @$filter["y_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->SearchOperator2 = @$filter["w_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -1012,6 +1022,7 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 			$this->UpdateSort($this->enviadopor); // enviadopor
 			$this->UpdateSort($this->recibidopor); // recibidopor
 			$this->UpdateSort($this->mensaje); // mensaje
+			$this->UpdateSort($this->id_avaluo); // id_avaluo
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1047,6 +1058,7 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 				$this->enviadopor->setSort("");
 				$this->recibidopor->setSort("");
 				$this->mensaje->setSort("");
+				$this->id_avaluo->setSort("");
 			}
 
 			// Reset start position
@@ -1446,6 +1458,7 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 		$this->estado->setDbValue($row['estado']);
 		$this->fechaenvio->setDbValue($row['fechaenvio']);
 		$this->fecharecibido->setDbValue($row['fecharecibido']);
+		$this->id_avaluo->setDbValue($row['id_avaluo']);
 	}
 
 	// Return a row with default values
@@ -1461,6 +1474,7 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 		$row['estado'] = NULL;
 		$row['fechaenvio'] = NULL;
 		$row['fecharecibido'] = NULL;
+		$row['id_avaluo'] = NULL;
 		return $row;
 	}
 
@@ -1479,6 +1493,7 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 		$this->estado->DbValue = $row['estado'];
 		$this->fechaenvio->DbValue = $row['fechaenvio'];
 		$this->fecharecibido->DbValue = $row['fecharecibido'];
+		$this->id_avaluo->DbValue = $row['id_avaluo'];
 	}
 
 	// Load old record
@@ -1540,6 +1555,8 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 
 		// fecharecibido
 		$this->fecharecibido->CellCssStyle = "white-space: nowrap;";
+
+		// id_avaluo
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// enviadopor
@@ -1553,6 +1570,10 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 		// mensaje
 		$this->mensaje->ViewValue = $this->mensaje->CurrentValue;
 		$this->mensaje->ViewCustomAttributes = "";
+
+		// id_avaluo
+		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		$this->id_avaluo->ViewCustomAttributes = "";
 
 			// enviadopor
 			$this->enviadopor->LinkCustomAttributes = "";
@@ -1568,6 +1589,11 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 			$this->mensaje->LinkCustomAttributes = "";
 			$this->mensaje->HrefValue = "";
 			$this->mensaje->TooltipValue = "";
+
+			// id_avaluo
+			$this->id_avaluo->LinkCustomAttributes = "";
+			$this->id_avaluo->HrefValue = "";
+			$this->id_avaluo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -2167,6 +2193,15 @@ $emailnotificaciones_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($emailnotificaciones->id_avaluo->Visible) { // id_avaluo ?>
+	<?php if ($emailnotificaciones->SortUrl($emailnotificaciones->id_avaluo) == "") { ?>
+		<th data-name="id_avaluo" class="<?php echo $emailnotificaciones->id_avaluo->HeaderCellClass() ?>"><div id="elh_emailnotificaciones_id_avaluo" class="emailnotificaciones_id_avaluo"><div class="ewTableHeaderCaption"><?php echo $emailnotificaciones->id_avaluo->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="id_avaluo" class="<?php echo $emailnotificaciones->id_avaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $emailnotificaciones->SortUrl($emailnotificaciones->id_avaluo) ?>',1);"><div id="elh_emailnotificaciones_id_avaluo" class="emailnotificaciones_id_avaluo">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $emailnotificaciones->id_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($emailnotificaciones->id_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($emailnotificaciones->id_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php
 
 // Render list options (header, right)
@@ -2253,6 +2288,14 @@ $emailnotificaciones_list->ListOptions->Render("body", "left", $emailnotificacio
 <span id="el<?php echo $emailnotificaciones_list->RowCnt ?>_emailnotificaciones_mensaje" class="emailnotificaciones_mensaje">
 <span<?php echo $emailnotificaciones->mensaje->ViewAttributes() ?>>
 <?php echo $emailnotificaciones->mensaje->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($emailnotificaciones->id_avaluo->Visible) { // id_avaluo ?>
+		<td data-name="id_avaluo"<?php echo $emailnotificaciones->id_avaluo->CellAttributes() ?>>
+<span id="el<?php echo $emailnotificaciones_list->RowCnt ?>_emailnotificaciones_id_avaluo" class="emailnotificaciones_id_avaluo">
+<span<?php echo $emailnotificaciones->id_avaluo->ViewAttributes() ?>>
+<?php echo $emailnotificaciones->id_avaluo->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>

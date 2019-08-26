@@ -335,8 +335,6 @@ class cpago_edit extends cpago {
 			$this->id->Visible = FALSE;
 		$this->code->SetVisibility();
 		$this->cliente_id->SetVisibility();
-		$this->status_id->SetVisibility();
-		$this->created_at->SetVisibility();
 		$this->metodopago_id->SetVisibility();
 		$this->documento_pago->SetVisibility();
 
@@ -617,13 +615,6 @@ class cpago_edit extends cpago {
 		if (!$this->cliente_id->FldIsDetailKey) {
 			$this->cliente_id->setFormValue($objForm->GetValue("x_cliente_id"));
 		}
-		if (!$this->status_id->FldIsDetailKey) {
-			$this->status_id->setFormValue($objForm->GetValue("x_status_id"));
-		}
-		if (!$this->created_at->FldIsDetailKey) {
-			$this->created_at->setFormValue($objForm->GetValue("x_created_at"));
-			$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
-		}
 		if (!$this->metodopago_id->FldIsDetailKey) {
 			$this->metodopago_id->setFormValue($objForm->GetValue("x_metodopago_id"));
 		}
@@ -635,9 +626,6 @@ class cpago_edit extends cpago {
 		$this->id->CurrentValue = $this->id->FormValue;
 		$this->code->CurrentValue = $this->code->FormValue;
 		$this->cliente_id->CurrentValue = $this->cliente_id->FormValue;
-		$this->status_id->CurrentValue = $this->status_id->FormValue;
-		$this->created_at->CurrentValue = $this->created_at->FormValue;
-		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
 		$this->metodopago_id->CurrentValue = $this->metodopago_id->FormValue;
 	}
 
@@ -823,7 +811,7 @@ class cpago_edit extends cpago {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->metodopago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
 		$sWhereWrk = "";
-		$this->metodopago_id->LookupFilters = array();
+		$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -864,16 +852,6 @@ class cpago_edit extends cpago {
 			$this->cliente_id->LinkCustomAttributes = "";
 			$this->cliente_id->HrefValue = "";
 			$this->cliente_id->TooltipValue = "";
-
-			// status_id
-			$this->status_id->LinkCustomAttributes = "";
-			$this->status_id->HrefValue = "";
-			$this->status_id->TooltipValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
 
 			// metodopago_id
 			$this->metodopago_id->LinkCustomAttributes = "";
@@ -957,28 +935,7 @@ class cpago_edit extends cpago {
 			$this->cliente_id->EditValue = $arwrk;
 			}
 
-			// status_id
-			$this->status_id->EditCustomAttributes = "";
-			if (trim(strval($this->status_id->CurrentValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->status_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-			$sWhereWrk = "";
-			$this->status_id->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->status_id, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->status_id->EditValue = $arwrk;
-
-			// created_at
 			// metodopago_id
-
-			$this->metodopago_id->EditAttrs["class"] = "form-control";
 			$this->metodopago_id->EditCustomAttributes = "";
 			if (trim(strval($this->metodopago_id->CurrentValue)) == "") {
 				$sFilterWrk = "0=1";
@@ -987,11 +944,18 @@ class cpago_edit extends cpago {
 			}
 			$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
 			$sWhereWrk = "";
-			$this->metodopago_id->LookupFilters = array();
+			$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+				$this->metodopago_id->ViewValue = $this->metodopago_id->DisplayValue($arwrk);
+			} else {
+				$this->metodopago_id->ViewValue = $Language->Phrase("PleaseSelect");
+			}
 			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
 			if ($rswrk) $rswrk->Close();
 			$this->metodopago_id->EditValue = $arwrk;
@@ -1020,14 +984,6 @@ class cpago_edit extends cpago {
 			// cliente_id
 			$this->cliente_id->LinkCustomAttributes = "";
 			$this->cliente_id->HrefValue = "";
-
-			// status_id
-			$this->status_id->LinkCustomAttributes = "";
-			$this->status_id->HrefValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
 
 			// metodopago_id
 			$this->metodopago_id->LinkCustomAttributes = "";
@@ -1114,13 +1070,6 @@ class cpago_edit extends cpago {
 
 			// cliente_id
 			$this->cliente_id->SetDbValueDef($rsnew, $this->cliente_id->CurrentValue, NULL, $this->cliente_id->ReadOnly);
-
-			// status_id
-			$this->status_id->SetDbValueDef($rsnew, $this->status_id->CurrentValue, NULL, $this->status_id->ReadOnly);
-
-			// created_at
-			$this->created_at->SetDbValueDef($rsnew, ew_CurrentDateTime(), NULL);
-			$rsnew['created_at'] = &$this->created_at->DbValue;
 
 			// metodopago_id
 			$this->metodopago_id->SetDbValueDef($rsnew, $this->metodopago_id->CurrentValue, NULL, $this->metodopago_id->ReadOnly);
@@ -1331,23 +1280,11 @@ class cpago_edit extends cpago {
 			if ($sSqlWrk <> "")
 				$fld->LookupFilters["s"] .= $sSqlWrk;
 			break;
-		case "x_status_id":
-			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
-			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
-			$sSqlWrk = "";
-			$this->Lookup_Selecting($this->status_id, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			if ($sSqlWrk <> "")
-				$fld->LookupFilters["s"] .= $sSqlWrk;
-			break;
 		case "x_metodopago_id":
 			$sSqlWrk = "";
 			$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			$sWhereWrk = "{filter}";
+			$fld->LookupFilters = array("dx1" => '`short_name`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
@@ -1505,8 +1442,6 @@ fpagoedit.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 // Dynamic selection lists
 fpagoedit.Lists["x_cliente_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"cliente"};
 fpagoedit.Lists["x_cliente_id"].Data = "<?php echo $pago_edit->cliente_id->LookupFilterQuery(FALSE, "edit") ?>";
-fpagoedit.Lists["x_status_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadopago"};
-fpagoedit.Lists["x_status_id"].Data = "<?php echo $pago_edit->status_id->LookupFilterQuery(FALSE, "edit") ?>";
 fpagoedit.Lists["x_metodopago_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_short_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"metodopago"};
 fpagoedit.Lists["x_metodopago_id"].Data = "<?php echo $pago_edit->metodopago_id->LookupFilterQuery(FALSE, "edit") ?>";
 
@@ -1636,42 +1571,17 @@ $pago_edit->ShowMessage();
 	</tr>
 <?php } ?>
 <?php } ?>
-<?php if ($pago->status_id->Visible) { // status_id ?>
-<?php if ($pago_edit->IsMobileOrModal) { ?>
-	<div id="r_status_id" class="form-group">
-		<label id="elh_pago_status_id" class="<?php echo $pago_edit->LeftColumnClass ?>"><?php echo $pago->status_id->FldCaption() ?></label>
-		<div class="<?php echo $pago_edit->RightColumnClass ?>"><div<?php echo $pago->status_id->CellAttributes() ?>>
-<span id="el_pago_status_id">
-<div id="tp_x_status_id" class="ewTemplate"><input type="radio" data-table="pago" data-field="x_status_id" data-value-separator="<?php echo $pago->status_id->DisplayValueSeparatorAttribute() ?>" name="x_status_id" id="x_status_id" value="{value}"<?php echo $pago->status_id->EditAttributes() ?>></div>
-<div id="dsl_x_status_id" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $pago->status_id->RadioButtonListHtml(FALSE, "x_status_id") ?>
-</div></div>
-</span>
-<?php echo $pago->status_id->CustomMsg ?></div></div>
-	</div>
-<?php } else { ?>
-	<tr id="r_status_id">
-		<td class="col-sm-3"><span id="elh_pago_status_id"><?php echo $pago->status_id->FldCaption() ?></span></td>
-		<td<?php echo $pago->status_id->CellAttributes() ?>>
-<span id="el_pago_status_id">
-<div id="tp_x_status_id" class="ewTemplate"><input type="radio" data-table="pago" data-field="x_status_id" data-value-separator="<?php echo $pago->status_id->DisplayValueSeparatorAttribute() ?>" name="x_status_id" id="x_status_id" value="{value}"<?php echo $pago->status_id->EditAttributes() ?>></div>
-<div id="dsl_x_status_id" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $pago->status_id->RadioButtonListHtml(FALSE, "x_status_id") ?>
-</div></div>
-</span>
-<?php echo $pago->status_id->CustomMsg ?></td>
-	</tr>
-<?php } ?>
-<?php } ?>
 <?php if ($pago->metodopago_id->Visible) { // metodopago_id ?>
 <?php if ($pago_edit->IsMobileOrModal) { ?>
 	<div id="r_metodopago_id" class="form-group">
 		<label id="elh_pago_metodopago_id" for="x_metodopago_id" class="<?php echo $pago_edit->LeftColumnClass ?>"><?php echo $pago->metodopago_id->FldCaption() ?></label>
 		<div class="<?php echo $pago_edit->RightColumnClass ?>"><div<?php echo $pago->metodopago_id->CellAttributes() ?>>
 <span id="el_pago_metodopago_id">
-<select data-table="pago" data-field="x_metodopago_id" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" id="x_metodopago_id" name="x_metodopago_id"<?php echo $pago->metodopago_id->EditAttributes() ?>>
-<?php echo $pago->metodopago_id->SelectOptionListHtml("x_metodopago_id") ?>
-</select>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->metodopago_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_metodopago_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->metodopago_id->ReadOnly || $pago->metodopago_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="pago" data-field="x_metodopago_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" name="x_metodopago_id" id="x_metodopago_id" value="<?php echo $pago->metodopago_id->CurrentValue ?>"<?php echo $pago->metodopago_id->EditAttributes() ?>>
 </span>
 <?php echo $pago->metodopago_id->CustomMsg ?></div></div>
 	</div>
@@ -1680,9 +1590,11 @@ $pago_edit->ShowMessage();
 		<td class="col-sm-3"><span id="elh_pago_metodopago_id"><?php echo $pago->metodopago_id->FldCaption() ?></span></td>
 		<td<?php echo $pago->metodopago_id->CellAttributes() ?>>
 <span id="el_pago_metodopago_id">
-<select data-table="pago" data-field="x_metodopago_id" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" id="x_metodopago_id" name="x_metodopago_id"<?php echo $pago->metodopago_id->EditAttributes() ?>>
-<?php echo $pago->metodopago_id->SelectOptionListHtml("x_metodopago_id") ?>
-</select>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->metodopago_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_metodopago_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->metodopago_id->ReadOnly || $pago->metodopago_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="pago" data-field="x_metodopago_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" name="x_metodopago_id" id="x_metodopago_id" value="<?php echo $pago->metodopago_id->CurrentValue ?>"<?php echo $pago->metodopago_id->EditAttributes() ?>>
 </span>
 <?php echo $pago->metodopago_id->CustomMsg ?></td>
 	</tr>
@@ -1709,9 +1621,7 @@ $pago_edit->ShowMessage();
 <input type="hidden" name="fx_x_documento_pago" id= "fx_x_documento_pago" value="<?php echo $pago->documento_pago->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_documento_pago" id= "fm_x_documento_pago" value="<?php echo $pago->documento_pago->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$pago->documento_pago->ReadOnly && !$pago->documento_pago->Disabled && @$pago->documento_pago->EditAttrs["readonly"] == "" && @$pago->documento_pago->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fpagoedit", "x_documento_pago");</script>
-<?php } ?>
+<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php echo $pago->documento_pago->CustomMsg ?></div></div>
 	</div>
@@ -1735,9 +1645,7 @@ $pago_edit->ShowMessage();
 <input type="hidden" name="fx_x_documento_pago" id= "fx_x_documento_pago" value="<?php echo $pago->documento_pago->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_documento_pago" id= "fm_x_documento_pago" value="<?php echo $pago->documento_pago->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$pago->documento_pago->ReadOnly && !$pago->documento_pago->Disabled && @$pago->documento_pago->EditAttrs["readonly"] == "" && @$pago->documento_pago->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fpagoedit", "x_documento_pago");</script>
-<?php } ?>
+<table id="ft_x_documento_pago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php echo $pago->documento_pago->CustomMsg ?></td>
 	</tr>

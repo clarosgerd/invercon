@@ -390,8 +390,6 @@ class cpago_view extends cpago {
 			$this->id->Visible = FALSE;
 		$this->code->SetVisibility();
 		$this->cliente_id->SetVisibility();
-		$this->status_id->SetVisibility();
-		$this->created_at->SetVisibility();
 		$this->metodopago_id->SetVisibility();
 		$this->documento_pago->SetVisibility();
 
@@ -567,15 +565,6 @@ class cpago_view extends cpago {
 			$item->Body = "<a class=\"ewAction ewEdit\" title=\"" . $editcaption . "\" data-caption=\"" . $editcaption . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("ViewPageEditLink") . "</a>";
 		$item->Visible = ($this->EditUrl <> "" && $Security->CanEdit());
 
-		// Copy
-		$item = &$option->Add("copy");
-		$copycaption = ew_HtmlTitle($Language->Phrase("ViewPageCopyLink"));
-		if ($this->IsModal) // Modal
-			$item->Body = "<a class=\"ewAction ewCopy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'AddBtn',url:'" . ew_HtmlEncode($this->CopyUrl) . "'});\">" . $Language->Phrase("ViewPageCopyLink") . "</a>";
-		else
-			$item->Body = "<a class=\"ewAction ewCopy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . ew_HtmlEncode($this->CopyUrl) . "\">" . $Language->Phrase("ViewPageCopyLink") . "</a>";
-		$item->Visible = ($this->CopyUrl <> "" && $Security->CanAdd());
-
 		// Delete
 		$item = &$option->Add("delete");
 		if ($this->IsModal) // Handle as inline delete
@@ -603,11 +592,6 @@ class cpago_view extends cpago {
 			$links .= "<li><a class=\"ewRowLink ewDetailEdit\" data-action=\"edit\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailEditLink")) . "\" href=\"" . ew_HtmlEncode($this->GetEditUrl(EW_TABLE_SHOW_DETAIL . "=pago_avaluo")) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailEditLink")) . "</a></li>";
 			if ($DetailEditTblVar <> "") $DetailEditTblVar .= ",";
 			$DetailEditTblVar .= "pago_avaluo";
-		}
-		if ($GLOBALS["pago_avaluo_grid"] && $GLOBALS["pago_avaluo_grid"]->DetailAdd && $Security->CanAdd() && $Security->AllowAdd(CurrentProjectID() . 'pago_avaluo')) {
-			$links .= "<li><a class=\"ewRowLink ewDetailCopy\" data-action=\"add\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailCopyLink")) . "\" href=\"" . ew_HtmlEncode($this->GetCopyUrl(EW_TABLE_SHOW_DETAIL . "=pago_avaluo")) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailCopyLink")) . "</a></li>";
-			if ($DetailCopyTblVar <> "") $DetailCopyTblVar .= ",";
-			$DetailCopyTblVar .= "pago_avaluo";
 		}
 		if ($links <> "") {
 			$body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewDetail\" data-toggle=\"dropdown\"><b class=\"caret\"></b></button>";
@@ -872,7 +856,7 @@ class cpago_view extends cpago {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->metodopago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
 		$sWhereWrk = "";
-		$this->metodopago_id->LookupFilters = array();
+		$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -913,16 +897,6 @@ class cpago_view extends cpago {
 			$this->cliente_id->LinkCustomAttributes = "";
 			$this->cliente_id->HrefValue = "";
 			$this->cliente_id->TooltipValue = "";
-
-			// status_id
-			$this->status_id->LinkCustomAttributes = "";
-			$this->status_id->HrefValue = "";
-			$this->status_id->TooltipValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
 
 			// metodopago_id
 			$this->metodopago_id->LinkCustomAttributes = "";
@@ -1191,8 +1165,6 @@ fpagoview.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 // Dynamic selection lists
 fpagoview.Lists["x_cliente_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"cliente"};
 fpagoview.Lists["x_cliente_id"].Data = "<?php echo $pago_view->cliente_id->LookupFilterQuery(FALSE, "view") ?>";
-fpagoview.Lists["x_status_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadopago"};
-fpagoview.Lists["x_status_id"].Data = "<?php echo $pago_view->status_id->LookupFilterQuery(FALSE, "view") ?>";
 fpagoview.Lists["x_metodopago_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_short_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"metodopago"};
 fpagoview.Lists["x_metodopago_id"].Data = "<?php echo $pago_view->metodopago_id->LookupFilterQuery(FALSE, "view") ?>";
 
@@ -1250,28 +1222,6 @@ $pago_view->ShowMessage();
 <span id="el_pago_cliente_id">
 <span<?php echo $pago->cliente_id->ViewAttributes() ?>>
 <?php echo $pago->cliente_id->ViewValue ?></span>
-</span>
-</td>
-	</tr>
-<?php } ?>
-<?php if ($pago->status_id->Visible) { // status_id ?>
-	<tr id="r_status_id">
-		<td class="col-sm-3"><span id="elh_pago_status_id"><?php echo $pago->status_id->FldCaption() ?></span></td>
-		<td data-name="status_id"<?php echo $pago->status_id->CellAttributes() ?>>
-<span id="el_pago_status_id">
-<span<?php echo $pago->status_id->ViewAttributes() ?>>
-<?php echo $pago->status_id->ViewValue ?></span>
-</span>
-</td>
-	</tr>
-<?php } ?>
-<?php if ($pago->created_at->Visible) { // created_at ?>
-	<tr id="r_created_at">
-		<td class="col-sm-3"><span id="elh_pago_created_at"><?php echo $pago->created_at->FldCaption() ?></span></td>
-		<td data-name="created_at"<?php echo $pago->created_at->CellAttributes() ?>>
-<span id="el_pago_created_at">
-<span<?php echo $pago->created_at->ViewAttributes() ?>>
-<?php echo $pago->created_at->ViewValue ?></span>
 </span>
 </td>
 	</tr>

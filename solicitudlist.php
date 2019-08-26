@@ -450,6 +450,9 @@ class csolicitud_list extends csolicitud {
 
 		// Setup export options
 		$this->SetupExportOptions();
+		$this->id->SetVisibility();
+		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
+			$this->id->Visible = FALSE;
 		$this->nombre_contacto->SetVisibility();
 		$this->name->SetVisibility();
 		$this->lastname->SetVisibility();
@@ -1472,6 +1475,7 @@ class csolicitud_list extends csolicitud {
 		if (@$_GET["order"] <> "") {
 			$this->CurrentOrder = @$_GET["order"];
 			$this->CurrentOrderType = @$_GET["ordertype"];
+			$this->UpdateSort($this->id); // id
 			$this->UpdateSort($this->nombre_contacto); // nombre_contacto
 			$this->UpdateSort($this->name); // name
 			$this->UpdateSort($this->lastname); // lastname
@@ -1520,6 +1524,7 @@ class csolicitud_list extends csolicitud {
 			if ($this->Command == "resetsort") {
 				$sOrderBy = "";
 				$this->setSessionOrderBy($sOrderBy);
+				$this->id->setSort("");
 				$this->nombre_contacto->setSort("");
 				$this->name->setSort("");
 				$this->lastname->setSort("");
@@ -2571,6 +2576,10 @@ class csolicitud_list extends csolicitud {
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
+		// id
+		$this->id->ViewValue = $this->id->CurrentValue;
+		$this->id->ViewCustomAttributes = "";
+
 		// nombre_contacto
 		$this->nombre_contacto->ViewValue = $this->nombre_contacto->CurrentValue;
 		$this->nombre_contacto->ViewCustomAttributes = "";
@@ -2980,6 +2989,11 @@ class csolicitud_list extends csolicitud {
 		}
 		$this->email_contacto->ViewCustomAttributes = "";
 
+			// id
+			$this->id->LinkCustomAttributes = "";
+			$this->id->HrefValue = "";
+			$this->id->TooltipValue = "";
+
 			// nombre_contacto
 			$this->nombre_contacto->LinkCustomAttributes = "";
 			$this->nombre_contacto->HrefValue = "";
@@ -3055,6 +3069,12 @@ class csolicitud_list extends csolicitud {
 			$this->email_contacto->HrefValue = "";
 			$this->email_contacto->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_SEARCH) { // Search row
+
+			// id
+			$this->id->EditAttrs["class"] = "form-control";
+			$this->id->EditCustomAttributes = "";
+			$this->id->EditValue = ew_HtmlEncode($this->id->AdvancedSearch->SearchValue);
+			$this->id->PlaceHolder = ew_RemoveHtml($this->id->FldTitle());
 
 			// nombre_contacto
 			$this->nombre_contacto->EditAttrs["class"] = "form-control";
@@ -3907,6 +3927,15 @@ $solicitud_list->RenderListOptions();
 // Render list options (header, left)
 $solicitud_list->ListOptions->Render("header", "left");
 ?>
+<?php if ($solicitud->id->Visible) { // id ?>
+	<?php if ($solicitud->SortUrl($solicitud->id) == "") { ?>
+		<th data-name="id" class="<?php echo $solicitud->id->HeaderCellClass() ?>"><div id="elh_solicitud_id" class="solicitud_id"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $solicitud->id->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="id" class="<?php echo $solicitud->id->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $solicitud->SortUrl($solicitud->id) ?>',1);"><div id="elh_solicitud_id" class="solicitud_id">
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $solicitud->id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($solicitud->id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($solicitud->id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php if ($solicitud->nombre_contacto->Visible) { // nombre_contacto ?>
 	<?php if ($solicitud->SortUrl($solicitud->nombre_contacto) == "") { ?>
 		<th data-name="nombre_contacto" class="<?php echo $solicitud->nombre_contacto->HeaderCellClass() ?>"><div id="elh_solicitud_nombre_contacto" class="solicitud_nombre_contacto"><div class="ewTableHeaderCaption"><?php echo $solicitud->nombre_contacto->FldCaption() ?></div></div></th>
@@ -4107,6 +4136,14 @@ while ($solicitud_list->RecCnt < $solicitud_list->StopRec) {
 // Render list options (body, left)
 $solicitud_list->ListOptions->Render("body", "left", $solicitud_list->RowCnt);
 ?>
+	<?php if ($solicitud->id->Visible) { // id ?>
+		<td data-name="id"<?php echo $solicitud->id->CellAttributes() ?>>
+<span id="el<?php echo $solicitud_list->RowCnt ?>_solicitud_id" class="solicitud_id">
+<span<?php echo $solicitud->id->ViewAttributes() ?>>
+<?php echo $solicitud->id->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
 	<?php if ($solicitud->nombre_contacto->Visible) { // nombre_contacto ?>
 		<td data-name="nombre_contacto"<?php echo $solicitud->nombre_contacto->CellAttributes() ?>>
 <span id="el<?php echo $solicitud_list->RowCnt ?>_solicitud_nombre_contacto" class="solicitud_nombre_contacto">

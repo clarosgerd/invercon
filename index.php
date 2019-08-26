@@ -377,6 +377,20 @@ class cdefault {
 			$this->Page_Terminate("getApiRestWordPress.php");
 		if ($Security->AllowList(CurrentProjectID() . 'offline_messages'))
 			$this->Page_Terminate("offline_messageslist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewdocumentosavaluosc'))
+			$this->Page_Terminate("viewdocumentosavaluosclist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewsolicitudinspector'))
+			$this->Page_Terminate("viewsolicitudinspectorlist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewavaluoinspector'))
+			$this->Page_Terminate("viewavaluoinspectorlist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewdocumentoinspector'))
+			$this->Page_Terminate("viewdocumentoinspectorlist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewsolicitudsupervisor'))
+			$this->Page_Terminate("viewsolicitudsupervisorlist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewavaluosupervisor'))
+			$this->Page_Terminate("viewavaluosupervisorlist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewdocumentosupervisor'))
+			$this->Page_Terminate("viewdocumentosupervisorlist.php");
 		if ($Security->IsLoggedIn()) {
 			$this->setFailureMessage(ew_DeniedMsg() . "<br><br><a href=\"logout.php\">" . $Language->Phrase("BackToLogin") . "</a>");
 		} else {

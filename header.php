@@ -61,7 +61,6 @@ if (!isset($Language)) {
 ?>
 <script type="text/javascript" src="<?php echo $jsfile ?>"></script>
 <?php } ?>
-<script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/ewcheckfileupload.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo $EW_RELATIVE_PATH ?>phpcss/bootstrap-datetimepicker.css">
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/ewdatetimepicker.js"></script>

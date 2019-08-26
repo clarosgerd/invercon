@@ -3149,28 +3149,28 @@ class csolicitud extends cTable {
 			{
 				if ($tipoinmueble[$x]!=null)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipoinmueble[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW())");
+					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipoinmueble[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
 				}
 			}
 			for($x=0;$x<count($tipovehiculo);$x++)
 			{
 				if ($tipovehiculo[$x]!=null)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipovehiculo[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW())");
+					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipovehiculo[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
 				}
 			}
 		  for($x=0;$x<count($tipomaquinaria);$x++)
 			{
 				if ($tipomaquinaria[$x]!=null)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipomaquinaria[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW())");
+					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipomaquinaria[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
 				}
 			}
 			 for($x=0;$x<count($tipoespecial);$x++)
 			{
 				if ($tipoespecial[$x]!=null)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipoespecial[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW())");
+					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipoespecial[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
 				}
 			}
 	}

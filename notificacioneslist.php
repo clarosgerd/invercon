@@ -457,6 +457,7 @@ class cnotificaciones_list extends cnotificaciones {
 		$this->recibidopor->SetVisibility();
 		$this->leido->SetVisibility();
 		$this->desde->SetVisibility();
+		$this->id_avaluo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -819,6 +820,7 @@ class cnotificaciones_list extends cnotificaciones {
 		$sFilterList = ew_Concat($sFilterList, $this->recibidopor->AdvancedSearch->ToJson(), ","); // Field recibidopor
 		$sFilterList = ew_Concat($sFilterList, $this->leido->AdvancedSearch->ToJson(), ","); // Field leido
 		$sFilterList = ew_Concat($sFilterList, $this->desde->AdvancedSearch->ToJson(), ","); // Field desde
+		$sFilterList = ew_Concat($sFilterList, $this->id_avaluo->AdvancedSearch->ToJson(), ","); // Field id_avaluo
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -910,6 +912,14 @@ class cnotificaciones_list extends cnotificaciones {
 		$this->desde->AdvancedSearch->SearchValue2 = @$filter["y_desde"];
 		$this->desde->AdvancedSearch->SearchOperator2 = @$filter["w_desde"];
 		$this->desde->AdvancedSearch->Save();
+
+		// Field id_avaluo
+		$this->id_avaluo->AdvancedSearch->SearchValue = @$filter["x_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->SearchOperator = @$filter["z_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->SearchCondition = @$filter["v_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->SearchValue2 = @$filter["y_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->SearchOperator2 = @$filter["w_id_avaluo"];
+		$this->id_avaluo->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -1073,6 +1083,7 @@ class cnotificaciones_list extends cnotificaciones {
 			$this->UpdateSort($this->recibidopor); // recibidopor
 			$this->UpdateSort($this->leido); // leido
 			$this->UpdateSort($this->desde); // desde
+			$this->UpdateSort($this->id_avaluo); // id_avaluo
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1111,6 +1122,7 @@ class cnotificaciones_list extends cnotificaciones {
 				$this->recibidopor->setSort("");
 				$this->leido->setSort("");
 				$this->desde->setSort("");
+				$this->id_avaluo->setSort("");
 			}
 
 			// Reset start position
@@ -1574,6 +1586,7 @@ class cnotificaciones_list extends cnotificaciones {
 		$this->fecha->setDbValue($row['fecha']);
 		$this->fechaleido->setDbValue($row['fechaleido']);
 		$this->desde->setDbValue($row['desde']);
+		$this->id_avaluo->setDbValue($row['id_avaluo']);
 	}
 
 	// Return a row with default values
@@ -1588,6 +1601,7 @@ class cnotificaciones_list extends cnotificaciones {
 		$row['fecha'] = NULL;
 		$row['fechaleido'] = NULL;
 		$row['desde'] = NULL;
+		$row['id_avaluo'] = NULL;
 		return $row;
 	}
 
@@ -1605,6 +1619,7 @@ class cnotificaciones_list extends cnotificaciones {
 		$this->fecha->DbValue = $row['fecha'];
 		$this->fechaleido->DbValue = $row['fechaleido'];
 		$this->desde->DbValue = $row['desde'];
+		$this->id_avaluo->DbValue = $row['id_avaluo'];
 	}
 
 	// Load old record
@@ -1661,6 +1676,8 @@ class cnotificaciones_list extends cnotificaciones {
 		$this->fechaleido->CellCssStyle = "white-space: nowrap;";
 
 		// desde
+		// id_avaluo
+
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -1686,6 +1703,10 @@ class cnotificaciones_list extends cnotificaciones {
 		// desde
 		$this->desde->ViewValue = $this->desde->CurrentValue;
 		$this->desde->ViewCustomAttributes = "";
+
+		// id_avaluo
+		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		$this->id_avaluo->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -1716,6 +1737,11 @@ class cnotificaciones_list extends cnotificaciones {
 			$this->desde->LinkCustomAttributes = "";
 			$this->desde->HrefValue = "";
 			$this->desde->TooltipValue = "";
+
+			// id_avaluo
+			$this->id_avaluo->LinkCustomAttributes = "";
+			$this->id_avaluo->HrefValue = "";
+			$this->id_avaluo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -2342,6 +2368,15 @@ $notificaciones_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
+	<?php if ($notificaciones->SortUrl($notificaciones->id_avaluo) == "") { ?>
+		<th data-name="id_avaluo" class="<?php echo $notificaciones->id_avaluo->HeaderCellClass() ?>"><div id="elh_notificaciones_id_avaluo" class="notificaciones_id_avaluo"><div class="ewTableHeaderCaption"><?php echo $notificaciones->id_avaluo->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="id_avaluo" class="<?php echo $notificaciones->id_avaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->id_avaluo) ?>',1);"><div id="elh_notificaciones_id_avaluo" class="notificaciones_id_avaluo">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->id_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->id_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->id_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php
 
 // Render list options (header, right)
@@ -2452,6 +2487,14 @@ $notificaciones_list->ListOptions->Render("body", "left", $notificaciones_list->
 <span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_desde" class="notificaciones_desde">
 <span<?php echo $notificaciones->desde->ViewAttributes() ?>>
 <?php echo $notificaciones->desde->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
+		<td data-name="id_avaluo"<?php echo $notificaciones->id_avaluo->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_id_avaluo" class="notificaciones_id_avaluo">
+<span<?php echo $notificaciones->id_avaluo->ViewAttributes() ?>>
+<?php echo $notificaciones->id_avaluo->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>

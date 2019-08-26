@@ -1,5 +1,6 @@
 <?php
 
+// id
 // nombre_contacto
 // name
 // lastname
@@ -21,6 +22,19 @@
 <div class="ewMasterDiv">
 <table id="tbl_solicitudmaster" class="table ewViewTable ewMasterTable ewVertical hidden">
 	<tbody>
+<?php if ($solicitud->id->Visible) { // id ?>
+		<tr id="r_id">
+			<td class="col-sm-3"><script id="tpc_solicitud_id" class="solicitudmaster" type="text/html"><span><?php echo $solicitud->id->FldCaption() ?></span></script></td>
+			<td<?php echo $solicitud->id->CellAttributes() ?>>
+<script id="tpx_solicitud_id" class="solicitudmaster" type="text/html">
+<span id="el_solicitud_id">
+<span<?php echo $solicitud->id->ViewAttributes() ?>>
+<?php echo $solicitud->id->ListViewValue() ?></span>
+</span>
+</script>
+</td>
+		</tr>
+<?php } ?>
 <?php if ($solicitud->nombre_contacto->Visible) { // nombre_contacto ?>
 		<tr id="r_nombre_contacto">
 			<td class="col-sm-3"><script id="tpc_solicitud_nombre_contacto" class="solicitudmaster" type="text/html"><span><?php echo $solicitud->nombre_contacto->FldCaption() ?></span></script></td>

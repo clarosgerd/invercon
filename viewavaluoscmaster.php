@@ -1,5 +1,6 @@
 <?php
 
+// id
 // codigoavaluo
 // id_solicitud
 // id_oficialcredito
@@ -15,6 +16,17 @@
 <div class="ewMasterDiv">
 <table id="tbl_viewavaluoscmaster" class="table ewViewTable ewMasterTable ewVertical">
 	<tbody>
+<?php if ($viewavaluosc->id->Visible) { // id ?>
+		<tr id="r_id">
+			<td class="col-sm-3"><?php echo $viewavaluosc->id->FldCaption() ?></td>
+			<td<?php echo $viewavaluosc->id->CellAttributes() ?>>
+<span id="el_viewavaluosc_id">
+<span<?php echo $viewavaluosc->id->ViewAttributes() ?>>
+<?php echo $viewavaluosc->id->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
 <?php if ($viewavaluosc->codigoavaluo->Visible) { // codigoavaluo ?>
 		<tr id="r_codigoavaluo">
 			<td class="col-sm-3"><?php echo $viewavaluosc->codigoavaluo->FldCaption() ?></td>

@@ -48,6 +48,12 @@ favaluogrid.Validate = function() {
 			elm = this.GetElements("x" + infix + "_id_solicitud");
 			if (elm && !ew_CheckInteger(elm.value))
 				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->id_solicitud->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_fecha_avaluo");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $avaluo->fecha_avaluo->FldCaption(), $avaluo->fecha_avaluo->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_fecha_avaluo");
+			if (elm && !ew_CheckUSDate(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->fecha_avaluo->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -68,6 +74,7 @@ favaluogrid.EmptyRow = function(infix) {
 	if (ew_ValueChanged(fobj, infix, "estado", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "estadointerno", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "estadopago", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "fecha_avaluo", false)) return false;
 	return true;
 }
 
@@ -239,6 +246,15 @@ $avaluo_grid->ListOptions->Render("header", "left");
 	<?php } else { ?>
 		<th data-name="estadopago" class="<?php echo $avaluo->estadopago->HeaderCellClass() ?>"><div><div id="elh_avaluo_estadopago" class="avaluo_estadopago">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->estadopago->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->estadopago->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->estadopago->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
+	<?php if ($avaluo->SortUrl($avaluo->fecha_avaluo) == "") { ?>
+		<th data-name="fecha_avaluo" class="<?php echo $avaluo->fecha_avaluo->HeaderCellClass() ?>"><div id="elh_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo"><div class="ewTableHeaderCaption"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="fecha_avaluo" class="<?php echo $avaluo->fecha_avaluo->HeaderCellClass() ?>"><div><div id="elh_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->fecha_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->fecha_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -656,6 +672,44 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 <?php } ?>
 </td>
 	<?php } ?>
+	<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
+		<td data-name="fecha_avaluo"<?php echo $avaluo->fecha_avaluo->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_fecha_avaluo" class="form-group avaluo_fecha_avaluo">
+<input type="text" data-table="avaluo" data-field="x_fecha_avaluo" data-format="10" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->fecha_avaluo->EditValue ?>"<?php echo $avaluo->fecha_avaluo->EditAttributes() ?>>
+<?php if (!$avaluo->fecha_avaluo->ReadOnly && !$avaluo->fecha_avaluo->Disabled && !isset($avaluo->fecha_avaluo->EditAttrs["readonly"]) && !isset($avaluo->fecha_avaluo->EditAttrs["disabled"])) { ?>
+<script type="text/javascript">
+ew_CreateDateTimePicker("favaluogrid", "x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
+</script>
+<?php } ?>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->OldValue) ?>">
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_fecha_avaluo" class="form-group avaluo_fecha_avaluo">
+<input type="text" data-table="avaluo" data-field="x_fecha_avaluo" data-format="10" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->fecha_avaluo->EditValue ?>"<?php echo $avaluo->fecha_avaluo->EditAttributes() ?>>
+<?php if (!$avaluo->fecha_avaluo->ReadOnly && !$avaluo->fecha_avaluo->Disabled && !isset($avaluo->fecha_avaluo->EditAttrs["readonly"]) && !isset($avaluo->fecha_avaluo->EditAttrs["disabled"])) { ?>
+<script type="text/javascript">
+ew_CreateDateTimePicker("favaluogrid", "x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
+</script>
+<?php } ?>
+</span>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $avaluo_grid->RowCnt ?>_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo">
+<span<?php echo $avaluo->fecha_avaluo->ViewAttributes() ?>>
+<?php echo $avaluo->fecha_avaluo->ListViewValue() ?></span>
+</span>
+<?php if ($avaluo->CurrentAction <> "F") { ?>
+<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->FormValue) ?>">
+<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->OldValue) ?>">
+<?php } else { ?>
+<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="favaluogrid$x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->FormValue) ?>">
+<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="favaluogrid$o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+	<?php } ?>
 <?php
 
 // Render list options (body, right)
@@ -864,6 +918,27 @@ favaluogrid.CreateAutoSuggest({"id":"x<?php echo $avaluo_grid->RowIndex ?>_id_so
 <input type="hidden" data-table="avaluo" data-field="x_estadopago" name="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="x<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($avaluo->estadopago->FormValue) ?>">
 <?php } ?>
 <input type="hidden" data-table="avaluo" data-field="x_estadopago" name="o<?php echo $avaluo_grid->RowIndex ?>_estadopago" id="o<?php echo $avaluo_grid->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($avaluo->estadopago->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
+		<td data-name="fecha_avaluo">
+<?php if ($avaluo->CurrentAction <> "F") { ?>
+<span id="el$rowindex$_avaluo_fecha_avaluo" class="form-group avaluo_fecha_avaluo">
+<input type="text" data-table="avaluo" data-field="x_fecha_avaluo" data-format="10" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->fecha_avaluo->EditValue ?>"<?php echo $avaluo->fecha_avaluo->EditAttributes() ?>>
+<?php if (!$avaluo->fecha_avaluo->ReadOnly && !$avaluo->fecha_avaluo->Disabled && !isset($avaluo->fecha_avaluo->EditAttrs["readonly"]) && !isset($avaluo->fecha_avaluo->EditAttrs["disabled"])) { ?>
+<script type="text/javascript">
+ew_CreateDateTimePicker("favaluogrid", "x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
+</script>
+<?php } ?>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_avaluo_fecha_avaluo" class="form-group avaluo_fecha_avaluo">
+<span<?php echo $avaluo->fecha_avaluo->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->fecha_avaluo->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="avaluo" data-field="x_fecha_avaluo" name="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" id="o<?php echo $avaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php

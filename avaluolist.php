@@ -468,6 +468,7 @@ class cavaluo_list extends cavaluo {
 		$this->estado->SetVisibility();
 		$this->estadointerno->SetVisibility();
 		$this->estadopago->SetVisibility();
+		$this->fecha_avaluo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -868,10 +869,11 @@ class cavaluo_list extends cavaluo {
 		$sFilterList = ew_Concat($sFilterList, $this->id->AdvancedSearch->ToJson(), ","); // Field id
 		$sFilterList = ew_Concat($sFilterList, $this->id_solicitud->AdvancedSearch->ToJson(), ","); // Field id_solicitud
 		$sFilterList = ew_Concat($sFilterList, $this->id_oficialcredito->AdvancedSearch->ToJson(), ","); // Field id_oficialcredito
-		$sFilterList = ew_Concat($sFilterList, $this->is_active->AdvancedSearch->ToJson(), ","); // Field is_active
 		$sFilterList = ew_Concat($sFilterList, $this->id_cliente->AdvancedSearch->ToJson(), ","); // Field id_cliente
 		$sFilterList = ew_Concat($sFilterList, $this->estado->AdvancedSearch->ToJson(), ","); // Field estado
 		$sFilterList = ew_Concat($sFilterList, $this->estadointerno->AdvancedSearch->ToJson(), ","); // Field estadointerno
+		$sFilterList = ew_Concat($sFilterList, $this->fecha_avaluo->AdvancedSearch->ToJson(), ","); // Field fecha_avaluo
+		$sFilterList = ew_Concat($sFilterList, $this->id_sucursal->AdvancedSearch->ToJson(), ","); // Field id_sucursal
 		$sFilterList = preg_replace('/,$/', "", $sFilterList);
 
 		// Return filter list in json
@@ -936,14 +938,6 @@ class cavaluo_list extends cavaluo {
 		$this->id_oficialcredito->AdvancedSearch->SearchOperator2 = @$filter["w_id_oficialcredito"];
 		$this->id_oficialcredito->AdvancedSearch->Save();
 
-		// Field is_active
-		$this->is_active->AdvancedSearch->SearchValue = @$filter["x_is_active"];
-		$this->is_active->AdvancedSearch->SearchOperator = @$filter["z_is_active"];
-		$this->is_active->AdvancedSearch->SearchCondition = @$filter["v_is_active"];
-		$this->is_active->AdvancedSearch->SearchValue2 = @$filter["y_is_active"];
-		$this->is_active->AdvancedSearch->SearchOperator2 = @$filter["w_is_active"];
-		$this->is_active->AdvancedSearch->Save();
-
 		// Field id_cliente
 		$this->id_cliente->AdvancedSearch->SearchValue = @$filter["x_id_cliente"];
 		$this->id_cliente->AdvancedSearch->SearchOperator = @$filter["z_id_cliente"];
@@ -967,6 +961,22 @@ class cavaluo_list extends cavaluo {
 		$this->estadointerno->AdvancedSearch->SearchValue2 = @$filter["y_estadointerno"];
 		$this->estadointerno->AdvancedSearch->SearchOperator2 = @$filter["w_estadointerno"];
 		$this->estadointerno->AdvancedSearch->Save();
+
+		// Field fecha_avaluo
+		$this->fecha_avaluo->AdvancedSearch->SearchValue = @$filter["x_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->SearchOperator = @$filter["z_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->SearchCondition = @$filter["v_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->SearchValue2 = @$filter["y_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->SearchOperator2 = @$filter["w_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->Save();
+
+		// Field id_sucursal
+		$this->id_sucursal->AdvancedSearch->SearchValue = @$filter["x_id_sucursal"];
+		$this->id_sucursal->AdvancedSearch->SearchOperator = @$filter["z_id_sucursal"];
+		$this->id_sucursal->AdvancedSearch->SearchCondition = @$filter["v_id_sucursal"];
+		$this->id_sucursal->AdvancedSearch->SearchValue2 = @$filter["y_id_sucursal"];
+		$this->id_sucursal->AdvancedSearch->SearchOperator2 = @$filter["w_id_sucursal"];
+		$this->id_sucursal->AdvancedSearch->Save();
 	}
 
 	// Advanced search WHERE clause based on QueryString
@@ -977,10 +987,11 @@ class cavaluo_list extends cavaluo {
 		$this->BuildSearchSql($sWhere, $this->id, $Default, FALSE); // id
 		$this->BuildSearchSql($sWhere, $this->id_solicitud, $Default, FALSE); // id_solicitud
 		$this->BuildSearchSql($sWhere, $this->id_oficialcredito, $Default, FALSE); // id_oficialcredito
-		$this->BuildSearchSql($sWhere, $this->is_active, $Default, FALSE); // is_active
 		$this->BuildSearchSql($sWhere, $this->id_cliente, $Default, FALSE); // id_cliente
 		$this->BuildSearchSql($sWhere, $this->estado, $Default, FALSE); // estado
 		$this->BuildSearchSql($sWhere, $this->estadointerno, $Default, FALSE); // estadointerno
+		$this->BuildSearchSql($sWhere, $this->fecha_avaluo, $Default, FALSE); // fecha_avaluo
+		$this->BuildSearchSql($sWhere, $this->id_sucursal, $Default, FALSE); // id_sucursal
 
 		// Set up search parm
 		if (!$Default && $sWhere <> "" && in_array($this->Command, array("", "reset", "resetall"))) {
@@ -990,10 +1001,11 @@ class cavaluo_list extends cavaluo {
 			$this->id->AdvancedSearch->Save(); // id
 			$this->id_solicitud->AdvancedSearch->Save(); // id_solicitud
 			$this->id_oficialcredito->AdvancedSearch->Save(); // id_oficialcredito
-			$this->is_active->AdvancedSearch->Save(); // is_active
 			$this->id_cliente->AdvancedSearch->Save(); // id_cliente
 			$this->estado->AdvancedSearch->Save(); // estado
 			$this->estadointerno->AdvancedSearch->Save(); // estadointerno
+			$this->fecha_avaluo->AdvancedSearch->Save(); // fecha_avaluo
+			$this->id_sucursal->AdvancedSearch->Save(); // id_sucursal
 		}
 		return $sWhere;
 	}
@@ -1050,13 +1062,15 @@ class cavaluo_list extends cavaluo {
 			return TRUE;
 		if ($this->id_oficialcredito->AdvancedSearch->IssetSession())
 			return TRUE;
-		if ($this->is_active->AdvancedSearch->IssetSession())
-			return TRUE;
 		if ($this->id_cliente->AdvancedSearch->IssetSession())
 			return TRUE;
 		if ($this->estado->AdvancedSearch->IssetSession())
 			return TRUE;
 		if ($this->estadointerno->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->fecha_avaluo->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->id_sucursal->AdvancedSearch->IssetSession())
 			return TRUE;
 		return FALSE;
 	}
@@ -1082,10 +1096,11 @@ class cavaluo_list extends cavaluo {
 		$this->id->AdvancedSearch->UnsetSession();
 		$this->id_solicitud->AdvancedSearch->UnsetSession();
 		$this->id_oficialcredito->AdvancedSearch->UnsetSession();
-		$this->is_active->AdvancedSearch->UnsetSession();
 		$this->id_cliente->AdvancedSearch->UnsetSession();
 		$this->estado->AdvancedSearch->UnsetSession();
 		$this->estadointerno->AdvancedSearch->UnsetSession();
+		$this->fecha_avaluo->AdvancedSearch->UnsetSession();
+		$this->id_sucursal->AdvancedSearch->UnsetSession();
 	}
 
 	// Restore all search parameters
@@ -1096,10 +1111,11 @@ class cavaluo_list extends cavaluo {
 		$this->id->AdvancedSearch->Load();
 		$this->id_solicitud->AdvancedSearch->Load();
 		$this->id_oficialcredito->AdvancedSearch->Load();
-		$this->is_active->AdvancedSearch->Load();
 		$this->id_cliente->AdvancedSearch->Load();
 		$this->estado->AdvancedSearch->Load();
 		$this->estadointerno->AdvancedSearch->Load();
+		$this->fecha_avaluo->AdvancedSearch->Load();
+		$this->id_sucursal->AdvancedSearch->Load();
 	}
 
 	// Set up sort parameters
@@ -1120,6 +1136,7 @@ class cavaluo_list extends cavaluo {
 			$this->UpdateSort($this->estado, $bCtrl); // estado
 			$this->UpdateSort($this->estadointerno, $bCtrl); // estadointerno
 			$this->UpdateSort($this->estadopago, $bCtrl); // estadopago
+			$this->UpdateSort($this->fecha_avaluo, $bCtrl); // fecha_avaluo
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1169,6 +1186,7 @@ class cavaluo_list extends cavaluo {
 				$this->estado->setSort("");
 				$this->estadointerno->setSort("");
 				$this->estadopago->setSort("");
+				$this->fecha_avaluo->setSort("");
 			}
 
 			// Reset start position
@@ -1641,11 +1659,6 @@ class cavaluo_list extends cavaluo {
 		if ($this->id_oficialcredito->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
 		$this->id_oficialcredito->AdvancedSearch->SearchOperator = @$_GET["z_id_oficialcredito"];
 
-		// is_active
-		$this->is_active->AdvancedSearch->SearchValue = @$_GET["x_is_active"];
-		if ($this->is_active->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->is_active->AdvancedSearch->SearchOperator = @$_GET["z_is_active"];
-
 		// id_cliente
 		$this->id_cliente->AdvancedSearch->SearchValue = @$_GET["x_id_cliente"];
 		if ($this->id_cliente->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
@@ -1660,6 +1673,16 @@ class cavaluo_list extends cavaluo {
 		$this->estadointerno->AdvancedSearch->SearchValue = @$_GET["x_estadointerno"];
 		if ($this->estadointerno->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
 		$this->estadointerno->AdvancedSearch->SearchOperator = @$_GET["z_estadointerno"];
+
+		// fecha_avaluo
+		$this->fecha_avaluo->AdvancedSearch->SearchValue = @$_GET["x_fecha_avaluo"];
+		if ($this->fecha_avaluo->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->fecha_avaluo->AdvancedSearch->SearchOperator = @$_GET["z_fecha_avaluo"];
+
+		// id_sucursal
+		$this->id_sucursal->AdvancedSearch->SearchValue = @$_GET["x_id_sucursal"];
+		if ($this->id_sucursal->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->id_sucursal->AdvancedSearch->SearchOperator = @$_GET["z_id_sucursal"];
 	}
 
 	// Load recordset
@@ -1751,6 +1774,7 @@ class cavaluo_list extends cavaluo {
 		$this->CreatedBy->setDbValue($row['CreatedBy']);
 		$this->ModifiedBy->setDbValue($row['ModifiedBy']);
 		$this->DeletedBy->setDbValue($row['DeletedBy']);
+		$this->id_sucursal->setDbValue($row['id_sucursal']);
 	}
 
 	// Return a row with default values
@@ -1776,6 +1800,7 @@ class cavaluo_list extends cavaluo {
 		$row['CreatedBy'] = NULL;
 		$row['ModifiedBy'] = NULL;
 		$row['DeletedBy'] = NULL;
+		$row['id_sucursal'] = NULL;
 		return $row;
 	}
 
@@ -1804,6 +1829,7 @@ class cavaluo_list extends cavaluo {
 		$this->CreatedBy->DbValue = $row['CreatedBy'];
 		$this->ModifiedBy->DbValue = $row['ModifiedBy'];
 		$this->DeletedBy->DbValue = $row['DeletedBy'];
+		$this->id_sucursal->DbValue = $row['id_sucursal'];
 	}
 
 	// Load old record
@@ -1881,11 +1907,14 @@ class cavaluo_list extends cavaluo {
 
 		// DeletedBy
 		$this->DeletedBy->CellCssStyle = "white-space: nowrap;";
+
+		// id_sucursal
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// codigoavaluo
 		$this->codigoavaluo->ViewValue = $this->codigoavaluo->CurrentValue;
-		$this->codigoavaluo->ViewValue = ew_FormatNumber($this->codigoavaluo->ViewValue, 0, -2, -2, -2);
+		$this->codigoavaluo->ViewValue = ew_FormatNumber($this->codigoavaluo->ViewValue, 0, 0, 0, 0);
+		$this->codigoavaluo->CssStyle = "font-weight: bold;font-style: italic;";
 		$this->codigoavaluo->ViewCustomAttributes = "";
 
 		// tipoinmueble
@@ -2065,6 +2094,15 @@ class cavaluo_list extends cavaluo {
 		}
 		$this->estadopago->ViewCustomAttributes = "";
 
+		// fecha_avaluo
+		$this->fecha_avaluo->ViewValue = $this->fecha_avaluo->CurrentValue;
+		$this->fecha_avaluo->ViewValue = ew_FormatDateTime($this->fecha_avaluo->ViewValue, 10);
+		$this->fecha_avaluo->ViewCustomAttributes = "";
+
+		// id_sucursal
+		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
+		$this->id_sucursal->ViewCustomAttributes = "";
+
 			// codigoavaluo
 			$this->codigoavaluo->LinkCustomAttributes = "";
 			$this->codigoavaluo->HrefValue = "";
@@ -2104,6 +2142,11 @@ class cavaluo_list extends cavaluo {
 			$this->estadopago->LinkCustomAttributes = "";
 			$this->estadopago->HrefValue = "";
 			$this->estadopago->TooltipValue = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->LinkCustomAttributes = "";
+			$this->fecha_avaluo->HrefValue = "";
+			$this->fecha_avaluo->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_SEARCH) { // Search row
 
 			// codigoavaluo
@@ -2221,6 +2264,12 @@ class cavaluo_list extends cavaluo {
 			// estadopago
 			$this->estadopago->EditAttrs["class"] = "form-control";
 			$this->estadopago->EditCustomAttributes = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->EditAttrs["class"] = "form-control";
+			$this->fecha_avaluo->EditCustomAttributes = "";
+			$this->fecha_avaluo->EditValue = ew_HtmlEncode(ew_FormatDateTime(ew_UnFormatDateTime($this->fecha_avaluo->AdvancedSearch->SearchValue, 10), 10));
+			$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -2243,6 +2292,9 @@ class cavaluo_list extends cavaluo {
 		if (!ew_CheckInteger($this->id_solicitud->AdvancedSearch->SearchValue)) {
 			ew_AddMessage($gsSearchError, $this->id_solicitud->FldErrMsg());
 		}
+		if (!ew_CheckUSDate($this->fecha_avaluo->AdvancedSearch->SearchValue)) {
+			ew_AddMessage($gsSearchError, $this->fecha_avaluo->FldErrMsg());
+		}
 
 		// Return validate result
 		$ValidateSearch = ($gsSearchError == "");
@@ -2261,10 +2313,11 @@ class cavaluo_list extends cavaluo {
 		$this->id->AdvancedSearch->Load();
 		$this->id_solicitud->AdvancedSearch->Load();
 		$this->id_oficialcredito->AdvancedSearch->Load();
-		$this->is_active->AdvancedSearch->Load();
 		$this->id_cliente->AdvancedSearch->Load();
 		$this->estado->AdvancedSearch->Load();
 		$this->estadointerno->AdvancedSearch->Load();
+		$this->fecha_avaluo->AdvancedSearch->Load();
+		$this->id_sucursal->AdvancedSearch->Load();
 	}
 
 	// Set up export options
@@ -2529,10 +2582,11 @@ class cavaluo_list extends cavaluo {
 		$this->AddSearchQueryString($sQry, $this->id); // id
 		$this->AddSearchQueryString($sQry, $this->id_solicitud); // id_solicitud
 		$this->AddSearchQueryString($sQry, $this->id_oficialcredito); // id_oficialcredito
-		$this->AddSearchQueryString($sQry, $this->is_active); // is_active
 		$this->AddSearchQueryString($sQry, $this->id_cliente); // id_cliente
 		$this->AddSearchQueryString($sQry, $this->estado); // estado
 		$this->AddSearchQueryString($sQry, $this->estadointerno); // estadointerno
+		$this->AddSearchQueryString($sQry, $this->fecha_avaluo); // fecha_avaluo
+		$this->AddSearchQueryString($sQry, $this->id_sucursal); // id_sucursal
 
 		// Build QueryString for pager
 		$sQry .= "&" . EW_TABLE_REC_PER_PAGE . "=" . urlencode($this->getRecordsPerPage()) . "&" . EW_TABLE_START_REC . "=" . urlencode($this->getStartRecordNumber());
@@ -2832,6 +2886,9 @@ class cavaluo_list extends cavaluo {
 		//$this->ListOptions->Items["ESTADOPAGO"]->Body = "<a href='./fpdf/report.php?id=".CurrentTable()->id->CurrentValue."' target='_blank'>ESTADOPAGO</a>";
 		//$this->ListOptions->Items["ESTADOINTERNO"]->Body = "<a href='./fpdf/report.php?id=".CurrentTable()->id->CurrentValue."' target='_blank'>ESTADOINTERNO</a>";
 
+		$this->ListOptions->Items["edit"]->Visible = FALSE;
+
+		//var_dump($this->ListOptions);
 	}
 
 	// Row Custom Action event
@@ -2951,6 +3008,9 @@ favaluolistsrch.Validate = function(fobj) {
 	elm = this.GetElements("x" + infix + "_id_solicitud");
 	if (elm && !ew_CheckInteger(elm.value))
 		return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->id_solicitud->FldErrMsg()) ?>");
+	elm = this.GetElements("x" + infix + "_fecha_avaluo");
+	if (elm && !ew_CheckUSDate(elm.value))
+		return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->fecha_avaluo->FldErrMsg()) ?>");
 
 	// Fire Form_CustomValidate event
 	if (!this.Form_CustomValidate(fobj))
@@ -3144,6 +3204,22 @@ favaluolistsrch.CreateAutoSuggest({"id":"x_id_solicitud","forceSelect":false});
 <?php } ?>
 </div>
 <div id="xsr_6" class="ewRow">
+<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
+	<div id="xsc_fecha_avaluo" class="ewCell form-group">
+		<label for="x_fecha_avaluo" class="ewSearchCaption ewLabel"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></label>
+		<span class="ewSearchOperator"><?php echo $Language->Phrase("=") ?><input type="hidden" name="z_fecha_avaluo" id="z_fecha_avaluo" value="="></span>
+		<span class="ewSearchField">
+<input type="text" data-table="avaluo" data-field="x_fecha_avaluo" data-format="10" name="x_fecha_avaluo" id="x_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->fecha_avaluo->EditValue ?>"<?php echo $avaluo->fecha_avaluo->EditAttributes() ?>>
+<?php if (!$avaluo->fecha_avaluo->ReadOnly && !$avaluo->fecha_avaluo->Disabled && !isset($avaluo->fecha_avaluo->EditAttrs["readonly"]) && !isset($avaluo->fecha_avaluo->EditAttrs["disabled"])) { ?>
+<script type="text/javascript">
+ew_CreateDateTimePicker("favaluolistsrch", "x_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
+</script>
+<?php } ?>
+</span>
+	</div>
+<?php } ?>
+</div>
+<div id="xsr_7" class="ewRow">
 	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("SearchBtn") ?></button>
 </div>
 	</div>
@@ -3251,6 +3327,15 @@ $avaluo_list->ListOptions->Render("header", "left");
 	<?php } else { ?>
 		<th data-name="estadopago" class="<?php echo $avaluo->estadopago->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->estadopago) ?>',2);"><div id="elh_avaluo_estadopago" class="avaluo_estadopago">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->estadopago->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->estadopago->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->estadopago->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
+	<?php if ($avaluo->SortUrl($avaluo->fecha_avaluo) == "") { ?>
+		<th data-name="fecha_avaluo" class="<?php echo $avaluo->fecha_avaluo->HeaderCellClass() ?>"><div id="elh_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo"><div class="ewTableHeaderCaption"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="fecha_avaluo" class="<?php echo $avaluo->fecha_avaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->fecha_avaluo) ?>',2);"><div id="elh_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->fecha_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->fecha_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -3380,6 +3465,14 @@ $avaluo_list->ListOptions->Render("body", "left", $avaluo_list->RowCnt);
 <span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_estadopago" class="avaluo_estadopago">
 <span<?php echo $avaluo->estadopago->ViewAttributes() ?>>
 <?php echo $avaluo->estadopago->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
+		<td data-name="fecha_avaluo"<?php echo $avaluo->fecha_avaluo->CellAttributes() ?>>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo">
+<span<?php echo $avaluo->fecha_avaluo->ViewAttributes() ?>>
+<?php echo $avaluo->fecha_avaluo->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>

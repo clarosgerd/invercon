@@ -2,95 +2,138 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0eaa19a0-4102-40fb-9210-8f183fa97c48" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluoinspectoradd.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluoinspectoredit.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluoinspectorgrid.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluoinspectorgridcls.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluoinspectorinfo.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluoinspectorlist.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluoinspectormaster.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluoinspectorupdate.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluosupervisoradd.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluosupervisoredit.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluosupervisorgrid.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluosupervisorgridcls.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluosupervisorinfo.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluosupervisorlist.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluosupervisormaster.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewavaluosupervisorupdate.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentoinspector_imagen_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentoinspectoradd.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentoinspectoredit.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentoinspectorgrid.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentoinspectorgridcls.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentoinspectorinfo.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentoinspectorlist.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentoinspectorupdate.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentoinspectorview.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosavaluosc_imagen_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosavaluoscadd.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosavaluoscedit.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosavaluoscgrid.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosavaluoscgridcls.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosavaluoscinfo.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosavaluosclist.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosavaluoscupdate.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosavaluoscview.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosupervisor_imagen_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosupervisoradd.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosupervisoredit.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosupervisorgrid.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosupervisorgridcls.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosupervisorinfo.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosupervisorlist.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosupervisorupdate.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewdocumentosupervisorview.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_inmueble01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_inmueble02_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_inmueble03_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_inmueble04_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_inmueble05_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_inmueble06_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_inmueble07_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_inmueble08_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_maquinaria01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_maquinaria02_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_maquinaria03_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_maquinaria04_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_maquinaria05_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_maquinaria06_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_maquinaria07_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_maquinaria08_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_mercaderia01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_tipoespecial01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_vehiculo01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_vehiculo02_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_vehiculo03_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_vehiculo04_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_vehiculo05_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_vehiculo06_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_vehiculo07_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspector_imagen_vehiculo08_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspectorinfo.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspectorlist.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudinspectormaster.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_inmueble01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_inmueble02_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_inmueble03_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_inmueble04_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_inmueble05_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_inmueble06_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_inmueble07_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_inmueble08_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_maquinaria01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_maquinaria02_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_maquinaria03_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_maquinaria04_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_maquinaria05_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_maquinaria06_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_maquinaria07_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_maquinaria08_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_mercaderia01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_tipoespecial01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_vehiculo01_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_vehiculo02_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_vehiculo03_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_vehiculo04_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_vehiculo05_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_vehiculo06_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_vehiculo07_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisor_imagen_vehiculo08_bv.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisorinfo.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisorlist.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/viewsolicitudsupervisormaster.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asesoradd.php" afterPath="$PROJECT_DIR$/asesoradd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asesoredit.php" afterPath="$PROJECT_DIR$/asesoredit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asesorinfo.php" afterPath="$PROJECT_DIR$/asesorinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asesorlist.php" afterPath="$PROJECT_DIR$/asesorlist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audittrailinfo.php" afterPath="$PROJECT_DIR$/audittrailinfo.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/avaluoadd.php" afterPath="$PROJECT_DIR$/avaluoadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/avaluocore.php" afterPath="$PROJECT_DIR$/avaluocore.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/avaluoedit.php" afterPath="$PROJECT_DIR$/avaluoedit.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/avaluogrid.php" afterPath="$PROJECT_DIR$/avaluogrid.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/avaluogridcls.php" afterPath="$PROJECT_DIR$/avaluogridcls.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/avaluoinfo.php" afterPath="$PROJECT_DIR$/avaluoinfo.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/avaluolist.php" afterPath="$PROJECT_DIR$/avaluolist.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/avaluomaster.php" afterPath="$PROJECT_DIR$/avaluomaster.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bancoadd.php" afterPath="$PROJECT_DIR$/bancoadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bancoedit.php" afterPath="$PROJECT_DIR$/bancoedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bancoinfo.php" afterPath="$PROJECT_DIR$/bancoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bancolist.php" afterPath="$PROJECT_DIR$/bancolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/calendario.php" afterPath="$PROJECT_DIR$/calendario.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clienteadd.php" afterPath="$PROJECT_DIR$/clienteadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clienteaddopt.php" afterPath="$PROJECT_DIR$/clienteaddopt.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clienteedit.php" afterPath="$PROJECT_DIR$/clienteedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clienteinfo.php" afterPath="$PROJECT_DIR$/clienteinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clientelist.php" afterPath="$PROJECT_DIR$/clientelist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clientemaster.php" afterPath="$PROJECT_DIR$/clientemaster.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clienteview.php" afterPath="$PROJECT_DIR$/clienteview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comentariosavaluoadd.php" afterPath="$PROJECT_DIR$/comentariosavaluoadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comentariosavaluodelete.php" afterPath="$PROJECT_DIR$/comentariosavaluodelete.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comentariosavaluoedit.php" afterPath="$PROJECT_DIR$/comentariosavaluoedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comentariosavaluoinfo.php" afterPath="$PROJECT_DIR$/comentariosavaluoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comentariosavaluolist.php" afterPath="$PROJECT_DIR$/comentariosavaluolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core.php" afterPath="$PROJECT_DIR$/core.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/corenotificacion.php" afterPath="$PROJECT_DIR$/corenotificacion.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/departamentoadd.php" afterPath="$PROJECT_DIR$/departamentoadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/departamentoedit.php" afterPath="$PROJECT_DIR$/departamentoedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/departamentoinfo.php" afterPath="$PROJECT_DIR$/departamentoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/departamentolist.php" afterPath="$PROJECT_DIR$/departamentolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentosavaluo_imagen_bv.php" afterPath="$PROJECT_DIR$/documentosavaluo_imagen_bv.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/avaluoupdate.php" afterPath="$PROJECT_DIR$/avaluoupdate.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentosavaluoadd.php" afterPath="$PROJECT_DIR$/documentosavaluoadd.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentosavaluoedit.php" afterPath="$PROJECT_DIR$/documentosavaluoedit.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentosavaluogrid.php" afterPath="$PROJECT_DIR$/documentosavaluogrid.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentosavaluogridcls.php" afterPath="$PROJECT_DIR$/documentosavaluogridcls.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentosavaluoinfo.php" afterPath="$PROJECT_DIR$/documentosavaluoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentosavaluolist.php" afterPath="$PROJECT_DIR$/documentosavaluolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentosavaluoview.php" afterPath="$PROJECT_DIR$/documentosavaluoview.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentosavaluoupdate.php" afterPath="$PROJECT_DIR$/documentosavaluoupdate.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/emailnotificacionesinfo.php" afterPath="$PROJECT_DIR$/emailnotificacionesinfo.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/emailnotificacioneslist.php" afterPath="$PROJECT_DIR$/emailnotificacioneslist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadoadd.php" afterPath="$PROJECT_DIR$/estadoadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadoedit.php" afterPath="$PROJECT_DIR$/estadoedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadoinfo.php" afterPath="$PROJECT_DIR$/estadoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadointernoadd.php" afterPath="$PROJECT_DIR$/estadointernoadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadointernoedit.php" afterPath="$PROJECT_DIR$/estadointernoedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadointernoinfo.php" afterPath="$PROJECT_DIR$/estadointernoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadointernolist.php" afterPath="$PROJECT_DIR$/estadointernolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadointernoview.php" afterPath="$PROJECT_DIR$/estadointernoview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadolist.php" afterPath="$PROJECT_DIR$/estadolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadopagoadd.php" afterPath="$PROJECT_DIR$/estadopagoadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadopagoedit.php" afterPath="$PROJECT_DIR$/estadopagoedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadopagoinfo.php" afterPath="$PROJECT_DIR$/estadopagoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadopagolist.php" afterPath="$PROJECT_DIR$/estadopagolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadopagoview.php" afterPath="$PROJECT_DIR$/estadopagoview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/estadoview.php" afterPath="$PROJECT_DIR$/estadoview.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ewcfg14.php" afterPath="$PROJECT_DIR$/ewcfg14.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ewmenu.php" afterPath="$PROJECT_DIR$/ewmenu.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ewshared14.php" afterPath="$PROJECT_DIR$/ewshared14.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/footer.php" afterPath="$PROJECT_DIR$/footer.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/header.php" afterPath="$PROJECT_DIR$/header.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.php" afterPath="$PROJECT_DIR$/index.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inspector_avatar_bv.php" afterPath="$PROJECT_DIR$/inspector_avatar_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inspectoradd.php" afterPath="$PROJECT_DIR$/inspectoradd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inspectoredit.php" afterPath="$PROJECT_DIR$/inspectoredit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inspectorinfo.php" afterPath="$PROJECT_DIR$/inspectorinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inspectorlist.php" afterPath="$PROJECT_DIR$/inspectorlist.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/invercon/{30AA0C25-B486-48CC-AF92-47D039BF725C}.xml" afterPath="$PROJECT_DIR$/invercon/{30AA0C25-B486-48CC-AF92-47D039BF725C}.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/metodopagoadd.php" afterPath="$PROJECT_DIR$/metodopagoadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/metodopagoedit.php" afterPath="$PROJECT_DIR$/metodopagoedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/metodopagoinfo.php" afterPath="$PROJECT_DIR$/metodopagoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/metodopagolist.php" afterPath="$PROJECT_DIR$/metodopagolist.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/login.php" afterPath="$PROJECT_DIR$/login.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/notificacionesadd.php" afterPath="$PROJECT_DIR$/notificacionesadd.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/notificacionesdelete.php" afterPath="$PROJECT_DIR$/notificacionesdelete.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/notificacionesedit.php" afterPath="$PROJECT_DIR$/notificacionesedit.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/notificacionesinfo.php" afterPath="$PROJECT_DIR$/notificacionesinfo.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/notificacioneslist.php" afterPath="$PROJECT_DIR$/notificacioneslist.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/notificacionesview.php" afterPath="$PROJECT_DIR$/notificacionesview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/oficialcredito_avatar_bv.php" afterPath="$PROJECT_DIR$/oficialcredito_avatar_bv.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/offline_messageslist.php" afterPath="$PROJECT_DIR$/offline_messageslist.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/offline_messagesview.php" afterPath="$PROJECT_DIR$/offline_messagesview.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/oficialcreditoadd.php" afterPath="$PROJECT_DIR$/oficialcreditoadd.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/oficialcreditoedit.php" afterPath="$PROJECT_DIR$/oficialcreditoedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/oficialcreditoinfo.php" afterPath="$PROJECT_DIR$/oficialcreditoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/oficialcreditolist.php" afterPath="$PROJECT_DIR$/oficialcreditolist.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pago_avaluoadd.php" afterPath="$PROJECT_DIR$/pago_avaluoadd.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pago_avaluodelete.php" afterPath="$PROJECT_DIR$/pago_avaluodelete.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pago_avaluoedit.php" afterPath="$PROJECT_DIR$/pago_avaluoedit.php" />
@@ -98,8 +141,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pago_avaluogridcls.php" afterPath="$PROJECT_DIR$/pago_avaluogridcls.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pago_avaluoinfo.php" afterPath="$PROJECT_DIR$/pago_avaluoinfo.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pago_avaluolist.php" afterPath="$PROJECT_DIR$/pago_avaluolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pago_avaluoview.php" afterPath="$PROJECT_DIR$/pago_avaluoview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pago_documento_pago_bv.php" afterPath="$PROJECT_DIR$/pago_documento_pago_bv.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pagoadd.php" afterPath="$PROJECT_DIR$/pagoadd.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pagodelete.php" afterPath="$PROJECT_DIR$/pagodelete.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pagoedit.php" afterPath="$PROJECT_DIR$/pagoedit.php" />
@@ -107,118 +148,25 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pagogridcls.php" afterPath="$PROJECT_DIR$/pagogridcls.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pagoinfo.php" afterPath="$PROJECT_DIR$/pagoinfo.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pagolist.php" afterPath="$PROJECT_DIR$/pagolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pagomaster.php" afterPath="$PROJECT_DIR$/pagomaster.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pagoview.php" afterPath="$PROJECT_DIR$/pagoview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/phpcss/invercon.css" afterPath="$PROJECT_DIR$/phpcss/invercon.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/phpfn14.php" afterPath="$PROJECT_DIR$/phpfn14.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/phphtml/register_content.html" afterPath="$PROJECT_DIR$/phphtml/register_content.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/phplang/spanish.xml" afterPath="$PROJECT_DIR$/phplang/spanish.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/provinciaadd.php" afterPath="$PROJECT_DIR$/provinciaadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/provinciaedit.php" afterPath="$PROJECT_DIR$/provinciaedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/provinciainfo.php" afterPath="$PROJECT_DIR$/provinciainfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/provincialist.php" afterPath="$PROJECT_DIR$/provincialist.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/register.php" afterPath="$PROJECT_DIR$/register.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reservacion.php" afterPath="$PROJECT_DIR$/reservacion.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_inmueble01_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_inmueble01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_inmueble02_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_inmueble02_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_inmueble03_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_inmueble03_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_inmueble04_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_inmueble04_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_inmueble05_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_inmueble05_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_inmueble06_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_inmueble06_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_inmueble07_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_inmueble07_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_inmueble08_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_inmueble08_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_maquinaria01_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_maquinaria01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_maquinaria02_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_maquinaria02_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_maquinaria03_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_maquinaria03_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_maquinaria04_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_maquinaria04_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_maquinaria05_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_maquinaria05_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_maquinaria06_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_maquinaria06_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_maquinaria07_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_maquinaria07_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_maquinaria08_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_maquinaria08_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_mercaderia01_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_mercaderia01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_tipoespecial01_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_tipoespecial01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_vehiculo01_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_vehiculo01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_vehiculo02_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_vehiculo02_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_vehiculo03_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_vehiculo03_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_vehiculo04_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_vehiculo04_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_vehiculo05_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_vehiculo05_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_vehiculo06_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_vehiculo06_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_vehiculo07_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_vehiculo07_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitud_imagen_vehiculo08_bv.php" afterPath="$PROJECT_DIR$/solicitud_imagen_vehiculo08_bv.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitudadd.php" afterPath="$PROJECT_DIR$/solicitudadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitudcore.php" afterPath="$PROJECT_DIR$/solicitudcore.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitudedit.php" afterPath="$PROJECT_DIR$/solicitudedit.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitudinfo.php" afterPath="$PROJECT_DIR$/solicitudinfo.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitudlist.php" afterPath="$PROJECT_DIR$/solicitudlist.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solicitudmaster.php" afterPath="$PROJECT_DIR$/solicitudmaster.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sucursaladd.php" afterPath="$PROJECT_DIR$/sucursaladd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sucursaledit.php" afterPath="$PROJECT_DIR$/sucursaledit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sucursalinfo.php" afterPath="$PROJECT_DIR$/sucursalinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sucursallist.php" afterPath="$PROJECT_DIR$/sucursallist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sucursalview.php" afterPath="$PROJECT_DIR$/sucursalview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisor_avatar_bv.php" afterPath="$PROJECT_DIR$/supervisor_avatar_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisoradd.php" afterPath="$PROJECT_DIR$/supervisoradd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisoredit.php" afterPath="$PROJECT_DIR$/supervisoredit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisorinfo.php" afterPath="$PROJECT_DIR$/supervisorinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supervisorlist.php" afterPath="$PROJECT_DIR$/supervisorlist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tipoinmuebleadd.php" afterPath="$PROJECT_DIR$/tipoinmuebleadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tipoinmuebleedit.php" afterPath="$PROJECT_DIR$/tipoinmuebleedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tipoinmuebleinfo.php" afterPath="$PROJECT_DIR$/tipoinmuebleinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tipoinmueblelist.php" afterPath="$PROJECT_DIR$/tipoinmueblelist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tipoinmuebleview.php" afterPath="$PROJECT_DIR$/tipoinmuebleview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelpermissionsadd.php" afterPath="$PROJECT_DIR$/userlevelpermissionsadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelpermissionsdelete.php" afterPath="$PROJECT_DIR$/userlevelpermissionsdelete.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelpermissionsedit.php" afterPath="$PROJECT_DIR$/userlevelpermissionsedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelpermissionsinfo.php" afterPath="$PROJECT_DIR$/userlevelpermissionsinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelpermissionslist.php" afterPath="$PROJECT_DIR$/userlevelpermissionslist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelpermissionsview.php" afterPath="$PROJECT_DIR$/userlevelpermissionsview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelsadd.php" afterPath="$PROJECT_DIR$/userlevelsadd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelsdelete.php" afterPath="$PROJECT_DIR$/userlevelsdelete.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelsedit.php" afterPath="$PROJECT_DIR$/userlevelsedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelsinfo.php" afterPath="$PROJECT_DIR$/userlevelsinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelslist.php" afterPath="$PROJECT_DIR$/userlevelslist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userlevelsview.php" afterPath="$PROJECT_DIR$/userlevelsview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuario_avatar_bv.php" afterPath="$PROJECT_DIR$/usuario_avatar_bv.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuarioadd.php" afterPath="$PROJECT_DIR$/usuarioadd.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuarioedit.php" afterPath="$PROJECT_DIR$/usuarioedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuarioinfo.php" afterPath="$PROJECT_DIR$/usuarioinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuariolist.php" afterPath="$PROJECT_DIR$/usuariolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluogrid.php" afterPath="$PROJECT_DIR$/viewavaluogrid.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluogridcls.php" afterPath="$PROJECT_DIR$/viewavaluogridcls.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluoinfo.php" afterPath="$PROJECT_DIR$/viewavaluoinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluolist.php" afterPath="$PROJECT_DIR$/viewavaluolist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluoview.php" afterPath="$PROJECT_DIR$/viewavaluoview.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble01_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble02_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble02_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble03_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble03_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble04_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble04_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble05_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble05_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble06_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble06_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble07_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble07_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble08_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_inmueble08_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria01_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria02_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria02_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria03_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria03_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria04_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria04_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria05_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria05_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria06_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria06_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria07_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria07_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria08_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_maquinaria08_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_mercaderia01_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_mercaderia01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_tipoespecial01_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_tipoespecial01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo01_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo01_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo02_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo02_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo03_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo03_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo04_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo04_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo05_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo05_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo06_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo06_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo07_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo07_bv.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo08_bv.php" afterPath="$PROJECT_DIR$/viewsolicitud_imagen_vehiculo08_bv.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluoscadd.php" afterPath="$PROJECT_DIR$/viewavaluoscadd.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluoscedit.php" afterPath="$PROJECT_DIR$/viewavaluoscedit.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluoscinfo.php" afterPath="$PROJECT_DIR$/viewavaluoscinfo.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluosclist.php" afterPath="$PROJECT_DIR$/viewavaluosclist.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluoscmaster.php" afterPath="$PROJECT_DIR$/viewavaluoscmaster.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluoscupdate.php" afterPath="$PROJECT_DIR$/viewavaluoscupdate.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitudadd.php" afterPath="$PROJECT_DIR$/viewsolicitudadd.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitudedit.php" afterPath="$PROJECT_DIR$/viewsolicitudedit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitudinfo.php" afterPath="$PROJECT_DIR$/viewsolicitudinfo.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitudlist.php" afterPath="$PROJECT_DIR$/viewsolicitudlist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitudmaster.php" afterPath="$PROJECT_DIR$/viewsolicitudmaster.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -229,8 +177,8 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="userevt14.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phpjs/userevt14.js">
+      <file leaf-file-name="bootstrap.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bootstrap3/css/bootstrap.css">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -239,8 +187,8 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="userfn14.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phpjs/userfn14.js">
+      <file leaf-file-name="bootstrap-theme.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bootstrap3/css/bootstrap-theme.css">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -249,95 +197,106 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="agenteadd.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/agenteadd.php">
+      <file leaf-file-name="invercon.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phpcss/invercon.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="11460" lean-forward="false" selection-start-line="0" selection-start-column="11460" selection-end-line="0" selection-end-column="11460" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="viewavaluoinspectoradd.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/viewavaluoinspectoradd.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+              <folding>
+                <marker date="1566856342148" expanded="true" signature="3278:3285" ph="×" />
+                <marker date="1566856342148" expanded="true" signature="3799:3806" ph="×" />
+                <marker date="1566856342148" expanded="true" signature="4348:4355" ph="×" />
+                <marker date="1566856342148" expanded="true" signature="4889:4896" ph="×" />
+                <marker date="1566856342148" expanded="true" signature="25568:25686" ph="SELECT `id`,... solicitud" />
+                <marker date="1566856342148" expanded="true" signature="26969:27090" ph="SELECT `logi... oficialcredito" />
+                <marker date="1566856342148" expanded="true" signature="28264:28380" ph="SELECT `logi... inspector" />
+                <marker date="1566856342148" expanded="true" signature="29631:29738" ph="SELECT `id`,... estado" />
+                <marker date="1566856342148" expanded="true" signature="30603:30717" ph="SELECT `id`,... estadointerno" />
+                <marker date="1566856342148" expanded="true" signature="31653:31764" ph="SELECT `id`,... estadopago" />
+                <marker date="1566856342148" expanded="true" signature="34208:34326" ph="SELECT `id`,... solicitud" />
+                <marker date="1566856342148" expanded="true" signature="35548:35666" ph="SELECT `id`,... solicitud" />
+                <marker date="1566856342148" expanded="true" signature="37047:37271" ph="SELECT `logi... oficialcredito" />
+                <marker date="1566856342148" expanded="true" signature="38438:38657" ph="SELECT `logi... inspector" />
+                <marker date="1566856342148" expanded="true" signature="49340:49471" ph="SELECT `id` solicitud" />
+                <marker date="1566856342148" expanded="true" signature="50039:50173" ph="SELECT `logi... oficialcredito" />
+                <marker date="1566856342148" expanded="true" signature="50711:50840" ph="SELECT `logi... inspector" />
+                <marker date="1566856342148" expanded="true" signature="51566:51684" ph="SELECT `id`,... solicitud" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="viewsolicitudinspectorinfo.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/viewsolicitudinspectorinfo.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="17">
-              <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+              <caret line="761" column="72" lean-forward="false" selection-start-line="761" selection-start-column="60" selection-end-line="761" selection-end-column="72" />
               <folding>
-                <marker date="1555952581498" expanded="true" signature="3087:3094" ph="×" />
-                <marker date="1555952581498" expanded="true" signature="3608:3615" ph="×" />
-                <marker date="1555952581498" expanded="true" signature="4157:4164" ph="×" />
-                <marker date="1555952581498" expanded="true" signature="4698:4705" ph="×" />
+                <marker date="1566856341061" expanded="true" signature="30876:30890" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1566856341061" expanded="true" signature="34434:34484" ph="SELECT COUNT... ${$sql}" />
+                <marker date="1566856341061" expanded="true" signature="35003:35017" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1566856341061" expanded="true" signature="35857:35871" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1566856341061" expanded="true" signature="36820:36884" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
+                <marker date="1566856341061" expanded="true" signature="39313:39357" ph="DELETE FROM " />
+                <marker date="1566856341061" expanded="true" signature="55485:55597" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1566856341061" expanded="true" signature="56869:56977" ph="SELECT `id`,... departamento" />
+                <marker date="1566856341061" expanded="true" signature="57962:58067" ph="SELECT `id`,... provincia" />
+                <marker date="1566856341061" expanded="true" signature="62879:62991" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1566856341061" expanded="true" signature="68419:68531" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1566856341061" expanded="true" signature="69831:69939" ph="SELECT `id`,... departamento" />
+                <marker date="1566856341061" expanded="true" signature="70946:71051" ph="SELECT `id`,... provincia" />
+                <marker date="1566856341061" expanded="true" signature="76022:76143" ph="SELECT `id_t... tipoinmueble" />
+                <marker date="1566856341061" expanded="true" signature="78079:78200" ph="SELECT `id_t... tipoinmueble" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="getApiRestWordPress.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/getApiRestWordPress.php">
+      <file leaf-file-name="viewavaluoinspectorinfo.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/viewavaluoinspectorinfo.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="173">
-              <caret line="371" column="3" lean-forward="true" selection-start-line="346" selection-start-column="0" selection-end-line="371" selection-end-column="3" />
+            <state relative-caret-position="-289">
+              <caret line="8" column="26" lean-forward="false" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="26" />
+              <folding>
+                <marker date="1566856341527" expanded="true" signature="16193:16207" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1566856341527" expanded="true" signature="16496:17116" ph="SELECT * FRO... *" />
+                <marker date="1566856341527" expanded="true" signature="16519:17092" ph="SELECT *, (S... viewavaluoinspector" />
+                <marker date="1566856341527" expanded="true" signature="22176:22226" ph="SELECT COUNT... ${$sql}" />
+                <marker date="1566856341527" expanded="true" signature="22745:22759" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1566856341527" expanded="true" signature="23599:23613" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1566856341527" expanded="true" signature="24717:24781" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
+                <marker date="1566856341527" expanded="true" signature="27216:27260" ph="DELETE FROM " />
+                <marker date="1566856341527" expanded="true" signature="37402:37514" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1566856341527" expanded="true" signature="38633:38751" ph="SELECT `id`,... solicitud" />
+                <marker date="1566856341527" expanded="true" signature="40034:40155" ph="SELECT `logi... oficialcredito" />
+                <marker date="1566856341527" expanded="true" signature="41329:41445" ph="SELECT `logi... inspector" />
+                <marker date="1566856341527" expanded="true" signature="42439:42548" ph="SELECT `id`,... cliente" />
+                <marker date="1566856341527" expanded="true" signature="43737:43844" ph="SELECT `id`,... estado" />
+                <marker date="1566856341527" expanded="true" signature="44709:44823" ph="SELECT `id`,... estadointerno" />
+                <marker date="1566856341527" expanded="true" signature="45759:45870" ph="SELECT `id`,... estadopago" />
+                <marker date="1566856341527" expanded="true" signature="47228:47338" ph="SELECT `id`,... metodopago" />
+                <marker date="1566856341527" expanded="true" signature="53415:53533" ph="SELECT `id`,... solicitud" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ewpdf.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phpcss/ewpdf.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ewdatetimepicker.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phpjs/ewdatetimepicker.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="bootstrap-datetimepicker.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phpjs/bootstrap-datetimepicker.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ewgooglemaps.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phpjs/ewgooglemaps.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="jsrender.min.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phpjs/jsrender.min.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mobile-detect.min.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phpjs/mobile-detect.min.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="typeahead.jquery.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phpjs/typeahead.jquery.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -356,6 +315,10 @@
       <find>ew_Scrollable</find>
       <find>ew_ScrollableTable</find>
       <find>header border color</find>
+      <find>ScrollWidth</find>
+      <find>END_SYSTEM_STYLES</find>
+      <find>ewGrid</find>
+      <find>Row_Updating</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -371,6 +334,8 @@
         <option value="$PROJECT_DIR$/solicitudinfo.php" />
         <option value="$PROJECT_DIR$/solicitudlist.php" />
         <option value="$PROJECT_DIR$/getApiRestWordPress.php" />
+        <option value="$PROJECT_DIR$/phpcss/invercon.css" />
+        <option value="$PROJECT_DIR$/viewavaluoinspectorinfo.php" />
       </list>
     </option>
   </component>
@@ -403,6 +368,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -491,15 +458,13 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path" value="C:/Program Files/nodejs/node" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="SearchEverywhereHistoryKey" value="get&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/getApiRestWordPress.php&#10;soli&#9;null&#9;null" />
+    <property name="SearchEverywhereHistoryKey" value="viewa&#9;null&#9;null&#10;viewavaluoinsp&#9;null&#9;null&#10;ewGrid&#9;null&#9;null&#10;get&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/getApiRestWordPress.php&#10;soli&#9;null&#9;null" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -529,12 +494,16 @@
       <workItem from="1565377784371" duration="8829000" />
       <workItem from="1565728168666" duration="6801000" />
       <workItem from="1566228540331" duration="8484000" />
-      <workItem from="1566499128921" duration="2801000" />
+      <workItem from="1566499128921" duration="3359000" />
+      <workItem from="1566509045686" duration="1710000" />
+      <workItem from="1566569613256" duration="1324000" />
+      <workItem from="1566847534128" duration="3315000" />
+      <workItem from="1566859223985" duration="76000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30505000" />
+    <option name="totallyTimeSpent" value="37488000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -547,16 +516,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2602118" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3419062" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -574,10 +542,10 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25642964" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3419062" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -590,6 +558,32 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
@@ -598,50 +592,10 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/assets/fullcalendar/fullcalendar.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3383">
-          <caret line="5" column="24667" lean-forward="false" selection-start-line="5" selection-start-column="24667" selection-end-line="5" selection-end-column="24667" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/userfn14.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="9" lean-forward="false" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/header.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1411">
-          <caret line="83" column="38" lean-forward="false" selection-start-line="83" selection-start-column="38" selection-end-line="83" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reservacion.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="112" lean-forward="false" selection-start-line="20" selection-start-column="112" selection-end-line="20" selection-end-column="112" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clienteadd.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18921">
-          <caret line="1113" column="10" lean-forward="false" selection-start-line="1113" selection-start-column="10" selection-end-line="1113" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/solicitudadd.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51884">
           <caret line="3052" column="74" lean-forward="false" selection-start-line="3052" selection-start-column="74" selection-end-line="3052" selection-end-column="74" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -649,7 +603,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="9" column="32" lean-forward="false" selection-start-line="9" selection-start-column="27" selection-end-line="9" selection-end-column="32" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -657,7 +610,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -665,7 +617,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
           <caret line="3202" column="56" lean-forward="false" selection-start-line="3202" selection-start-column="56" selection-end-line="3202" selection-end-column="56" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -673,7 +624,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1258">
           <caret line="74" column="38" lean-forward="false" selection-start-line="74" selection-start-column="38" selection-end-line="74" selection-end-column="38" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -681,7 +631,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="20" column="112" lean-forward="false" selection-start-line="20" selection-start-column="112" selection-end-line="20" selection-end-column="112" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -689,7 +638,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -697,7 +645,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -705,7 +652,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="10" column="9" lean-forward="false" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -713,12 +659,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7038">
           <caret line="414" column="33" lean-forward="false" selection-start-line="414" selection-start-column="33" selection-end-line="414" selection-end-column="33" />
-          <folding>
-            <marker date="1562697672909" expanded="true" signature="3097:3104" ph="×" />
-            <marker date="1562697672909" expanded="true" signature="3618:3625" ph="×" />
-            <marker date="1562697672909" expanded="true" signature="4167:4174" ph="×" />
-            <marker date="1562697672909" expanded="true" signature="4708:4715" ph="×" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -726,7 +666,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17731">
           <caret line="1043" column="10" lean-forward="false" selection-start-line="1043" selection-start-column="10" selection-end-line="1043" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -734,7 +673,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1071">
           <caret line="63" column="31" lean-forward="false" selection-start-line="63" selection-start-column="31" selection-end-line="63" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -742,7 +680,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -750,12 +687,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7038">
           <caret line="414" column="33" lean-forward="false" selection-start-line="414" selection-start-column="33" selection-end-line="414" selection-end-column="33" />
-          <folding>
-            <marker date="1562697672909" expanded="true" signature="3097:3104" ph="×" />
-            <marker date="1562697672909" expanded="true" signature="3618:3625" ph="×" />
-            <marker date="1562697672909" expanded="true" signature="4167:4174" ph="×" />
-            <marker date="1562697672909" expanded="true" signature="4708:4715" ph="×" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -763,7 +694,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="10" column="9" lean-forward="false" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -771,7 +701,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="1" column="5" lean-forward="false" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -779,12 +708,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7038">
           <caret line="414" column="33" lean-forward="false" selection-start-line="414" selection-start-column="33" selection-end-line="414" selection-end-column="33" />
-          <folding>
-            <marker date="1562697672909" expanded="true" signature="3097:3104" ph="×" />
-            <marker date="1562697672909" expanded="true" signature="3618:3625" ph="×" />
-            <marker date="1562697672909" expanded="true" signature="4167:4174" ph="×" />
-            <marker date="1562697672909" expanded="true" signature="4708:4715" ph="×" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -799,7 +722,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="10" column="9" lean-forward="false" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -807,7 +729,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1411">
           <caret line="83" column="38" lean-forward="false" selection-start-line="83" selection-start-column="38" selection-end-line="83" selection-end-column="38" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -815,7 +736,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="20" column="112" lean-forward="false" selection-start-line="20" selection-start-column="112" selection-end-line="20" selection-end-column="112" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -823,7 +743,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18921">
           <caret line="1113" column="10" lean-forward="false" selection-start-line="1113" selection-start-column="10" selection-end-line="1113" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -831,7 +750,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51884">
           <caret line="3052" column="74" lean-forward="false" selection-start-line="3052" selection-start-column="74" selection-end-line="3052" selection-end-column="74" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -839,7 +757,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="9" column="32" lean-forward="false" selection-start-line="9" selection-start-column="27" selection-end-line="9" selection-end-column="32" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -847,7 +764,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -855,7 +771,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
           <caret line="3256" column="56" lean-forward="false" selection-start-line="3256" selection-start-column="56" selection-end-line="3256" selection-end-column="56" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -877,28 +792,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="149">
           <caret line="3946" column="0" lean-forward="true" selection-start-line="3946" selection-start-column="0" selection-end-line="3946" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phpcss/invercon.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="79">
-          <caret line="0" column="11584" lean-forward="false" selection-start-line="0" selection-start-column="11570" selection-end-line="0" selection-end-column="11584" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phpcss/project1.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="70">
-          <caret line="0" column="15590" lean-forward="false" selection-start-line="0" selection-start-column="15588" selection-end-line="0" selection-end-column="15590" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phpcss/ewpdf.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-26">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -916,10 +809,102 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/phpjs/ewgooglemaps.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpjs/jsrender.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpjs/mobile-detect.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpjs/typeahead.jquery.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpjs/bootstrap-datetimepicker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpjs/ewdatetimepicker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/getApiRestWordPress.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6307">
+          <caret line="371" column="3" lean-forward="false" selection-start-line="371" selection-start-column="3" selection-end-line="371" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/agenteadd.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1139">
+          <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpjs/userfn14.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpcss/project1.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1972">
+          <caret line="0" column="15590" lean-forward="false" selection-start-line="0" selection-start-column="15588" selection-end-line="0" selection-end-column="15590" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adminlte/css/alt/AdminLTE-bootstrap-social.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="12" column="22" lean-forward="false" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adminlte/css/alt/AdminLTE-without-plugins.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpjs/userevt14.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="15" lean-forward="false" selection-start-line="0" selection-start-column="15" selection-end-line="0" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bootstrap3/css/bootstrap.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-26">
+        <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -931,7 +916,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/phpjs/ewgooglemaps.js">
+    <entry file="file://$PROJECT_DIR$/phpcss/ewpdf.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -939,88 +924,89 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/phpjs/jsrender.min.js">
+    <entry file="file://$PROJECT_DIR$/phpcss/invercon.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phpjs/mobile-detect.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phpjs/typeahead.jquery.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phpjs/userevt14.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="0" column="11460" lean-forward="false" selection-start-line="0" selection-start-column="11460" selection-end-line="0" selection-end-column="11460" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/phpjs/userfn14.js">
+    <entry file="file://$PROJECT_DIR$/viewavaluoinspectoradd.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phpjs/ewdatetimepicker.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phpjs/bootstrap-datetimepicker.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="306">
+          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <marker date="1566856342148" expanded="true" signature="3278:3285" ph="×" />
+            <marker date="1566856342148" expanded="true" signature="3799:3806" ph="×" />
+            <marker date="1566856342148" expanded="true" signature="4348:4355" ph="×" />
+            <marker date="1566856342148" expanded="true" signature="4889:4896" ph="×" />
+            <marker date="1566856342148" expanded="true" signature="25568:25686" ph="SELECT `id`,... solicitud" />
+            <marker date="1566856342148" expanded="true" signature="26969:27090" ph="SELECT `logi... oficialcredito" />
+            <marker date="1566856342148" expanded="true" signature="28264:28380" ph="SELECT `logi... inspector" />
+            <marker date="1566856342148" expanded="true" signature="29631:29738" ph="SELECT `id`,... estado" />
+            <marker date="1566856342148" expanded="true" signature="30603:30717" ph="SELECT `id`,... estadointerno" />
+            <marker date="1566856342148" expanded="true" signature="31653:31764" ph="SELECT `id`,... estadopago" />
+            <marker date="1566856342148" expanded="true" signature="34208:34326" ph="SELECT `id`,... solicitud" />
+            <marker date="1566856342148" expanded="true" signature="35548:35666" ph="SELECT `id`,... solicitud" />
+            <marker date="1566856342148" expanded="true" signature="37047:37271" ph="SELECT `logi... oficialcredito" />
+            <marker date="1566856342148" expanded="true" signature="38438:38657" ph="SELECT `logi... inspector" />
+            <marker date="1566856342148" expanded="true" signature="49340:49471" ph="SELECT `id` solicitud" />
+            <marker date="1566856342148" expanded="true" signature="50039:50173" ph="SELECT `logi... oficialcredito" />
+            <marker date="1566856342148" expanded="true" signature="50711:50840" ph="SELECT `logi... inspector" />
+            <marker date="1566856342148" expanded="true" signature="51566:51684" ph="SELECT `id`,... solicitud" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/agenteadd.php">
+    <entry file="file://$PROJECT_DIR$/viewavaluoinspectorinfo.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-289">
+          <caret line="8" column="26" lean-forward="false" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="26" />
+          <folding>
+            <marker date="1566856341527" expanded="true" signature="16193:16207" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1566856341527" expanded="true" signature="16496:17116" ph="SELECT * FRO... *" />
+            <marker date="1566856341527" expanded="true" signature="16519:17092" ph="SELECT *, (S... viewavaluoinspector" />
+            <marker date="1566856341527" expanded="true" signature="22176:22226" ph="SELECT COUNT... ${$sql}" />
+            <marker date="1566856341527" expanded="true" signature="22745:22759" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1566856341527" expanded="true" signature="23599:23613" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1566856341527" expanded="true" signature="24717:24781" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
+            <marker date="1566856341527" expanded="true" signature="27216:27260" ph="DELETE FROM " />
+            <marker date="1566856341527" expanded="true" signature="37402:37514" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1566856341527" expanded="true" signature="38633:38751" ph="SELECT `id`,... solicitud" />
+            <marker date="1566856341527" expanded="true" signature="40034:40155" ph="SELECT `logi... oficialcredito" />
+            <marker date="1566856341527" expanded="true" signature="41329:41445" ph="SELECT `logi... inspector" />
+            <marker date="1566856341527" expanded="true" signature="42439:42548" ph="SELECT `id`,... cliente" />
+            <marker date="1566856341527" expanded="true" signature="43737:43844" ph="SELECT `id`,... estado" />
+            <marker date="1566856341527" expanded="true" signature="44709:44823" ph="SELECT `id`,... estadointerno" />
+            <marker date="1566856341527" expanded="true" signature="45759:45870" ph="SELECT `id`,... estadopago" />
+            <marker date="1566856341527" expanded="true" signature="47228:47338" ph="SELECT `id`,... metodopago" />
+            <marker date="1566856341527" expanded="true" signature="53415:53533" ph="SELECT `id`,... solicitud" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viewsolicitudinspectorinfo.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
-          <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+          <caret line="761" column="72" lean-forward="false" selection-start-line="761" selection-start-column="60" selection-end-line="761" selection-end-column="72" />
           <folding>
-            <marker date="1555952581498" expanded="true" signature="3087:3094" ph="×" />
-            <marker date="1555952581498" expanded="true" signature="3608:3615" ph="×" />
-            <marker date="1555952581498" expanded="true" signature="4157:4164" ph="×" />
-            <marker date="1555952581498" expanded="true" signature="4698:4705" ph="×" />
+            <marker date="1566856341061" expanded="true" signature="30876:30890" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1566856341061" expanded="true" signature="34434:34484" ph="SELECT COUNT... ${$sql}" />
+            <marker date="1566856341061" expanded="true" signature="35003:35017" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1566856341061" expanded="true" signature="35857:35871" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1566856341061" expanded="true" signature="36820:36884" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
+            <marker date="1566856341061" expanded="true" signature="39313:39357" ph="DELETE FROM " />
+            <marker date="1566856341061" expanded="true" signature="55485:55597" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1566856341061" expanded="true" signature="56869:56977" ph="SELECT `id`,... departamento" />
+            <marker date="1566856341061" expanded="true" signature="57962:58067" ph="SELECT `id`,... provincia" />
+            <marker date="1566856341061" expanded="true" signature="62879:62991" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1566856341061" expanded="true" signature="68419:68531" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1566856341061" expanded="true" signature="69831:69939" ph="SELECT `id`,... departamento" />
+            <marker date="1566856341061" expanded="true" signature="70946:71051" ph="SELECT `id`,... provincia" />
+            <marker date="1566856341061" expanded="true" signature="76022:76143" ph="SELECT `id_t... tipoinmueble" />
+            <marker date="1566856341061" expanded="true" signature="78079:78200" ph="SELECT `id_t... tipoinmueble" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/getApiRestWordPress.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="371" column="3" lean-forward="true" selection-start-line="346" selection-start-column="0" selection-end-line="371" selection-end-column="3" />
-          <folding />
         </state>
       </provider>
     </entry>

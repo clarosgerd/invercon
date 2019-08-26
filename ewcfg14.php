@@ -25,12 +25,12 @@ define("EW_CONFIG_FILE_FOLDER", EW_PROJECT_NAME, TRUE); // Config file name
 define("EW_PROJECT_ID", "{30AA0C25-B486-48CC-AF92-47D039BF725C}", TRUE); // Project ID (GUID)
 $EW_RELATED_PROJECT_ID = "";
 $EW_RELATED_LANGUAGE_FOLDER = "";
-define("EW_RANDOM_KEY", '9fSxsduhp302dzL0', TRUE); // Random key for encryption
+define("EW_RANDOM_KEY", 'Cp6AEpzCrnG6YZFy', TRUE); // Random key for encryption
 define("EW_PROJECT_STYLESHEET_FILENAME", "phpcss/invercon.css", TRUE); // Project stylesheet file name
 define("EW_CHARSET", "utf-8", TRUE); // Project charset
 define("EW_EMAIL_CHARSET", EW_CHARSET, TRUE); // Email charset
 define("EW_EMAIL_KEYWORD_SEPARATOR", "", TRUE); // Email keyword separator
-$EW_COMPOSITE_KEY_SEPARATOR = ","; // Composite key separator
+$EW_COMPOSITE_KEY_SEPARATOR = "-"; // Composite key separator
 define("EW_HIGHLIGHT_COMPARE", TRUE, TRUE); // Highlight compare mode, TRUE(case-insensitive)|FALSE(case-sensitive)
 if (!function_exists('xml_parser_create') && !class_exists("DOMDocument")) die("This script requires PHP XML Parser or DOM.");
 define('EW_USE_DOM_XML', ((!function_exists('xml_parser_create') && class_exists("DOMDocument")) || FALSE), TRUE);

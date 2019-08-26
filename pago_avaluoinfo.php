@@ -35,9 +35,9 @@ class cpago_avaluo extends cTable {
 		$this->ExportExcelPageSize = ""; // Page size (PHPExcel only)
 		$this->ExportWordPageOrientation = "portrait"; // Page orientation (PHPWord only)
 		$this->ExportWordColumnWidth = NULL; // Cell width (PHPWord only)
-		$this->DetailAdd = TRUE; // Allow detail add
-		$this->DetailEdit = TRUE; // Allow detail edit
-		$this->DetailView = TRUE; // Allow detail view
+		$this->DetailAdd = FALSE; // Allow detail add
+		$this->DetailEdit = FALSE; // Allow detail edit
+		$this->DetailView = FALSE; // Allow detail view
 		$this->ShowMultipleDetails = FALSE; // Show multiple details
 		$this->GridAddRowCount = 3;
 		$this->AllowAddDeleteRow = TRUE; // Allow add/delete row
@@ -59,7 +59,7 @@ class cpago_avaluo extends cTable {
 		$this->fields['pago_id'] = &$this->pago_id;
 
 		// avaluo_id
-		$this->avaluo_id = new cField('pago_avaluo', 'pago_avaluo', 'x_avaluo_id', 'avaluo_id', '`avaluo_id`', '`avaluo_id`', 3, -1, FALSE, '`avaluo_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->avaluo_id = new cField('pago_avaluo', 'pago_avaluo', 'x_avaluo_id', 'avaluo_id', '`avaluo_id`', '`avaluo_id`', 3, -1, FALSE, '`EV__avaluo_id`', TRUE, TRUE, TRUE, 'FORMATTED TEXT', 'SELECT');
 		$this->avaluo_id->Sortable = TRUE; // Allow sort
 		$this->avaluo_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->avaluo_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
@@ -105,9 +105,20 @@ class cpago_avaluo extends cTable {
 			}
 			$ofld->setSort($sThisSort);
 			$this->setSessionOrderBy($sSortField . " " . $sThisSort); // Save to Session
+			$sSortFieldList = ($ofld->FldVirtualExpression <> "") ? $ofld->FldVirtualExpression : $sSortField;
+			$this->setSessionOrderByList($sSortFieldList . " " . $sThisSort); // Save to Session
 		} else {
 			$ofld->setSort("");
 		}
+	}
+
+	// Session ORDER BY for List page
+	function getSessionOrderByList() {
+		return @$_SESSION[EW_PROJECT_NAME . "_" . $this->TableVar . "_" . EW_TABLE_ORDER_BY_LIST];
+	}
+
+	function setSessionOrderByList($v) {
+		$_SESSION[EW_PROJECT_NAME . "_" . $this->TableVar . "_" . EW_TABLE_ORDER_BY_LIST] = $v;
 	}
 
 	// Current master table name
@@ -205,6 +216,23 @@ class cpago_avaluo extends cTable {
 
 	function setSqlSelect($v) {
 		$this->_SqlSelect = $v;
+	}
+	var $_SqlSelectList = "";
+
+	function getSqlSelectList() { // Select for List page
+		$select = "";
+		$select = "SELECT * FROM (" .
+			"SELECT *, (SELECT CONCAT(COALESCE(`id`, ''),'" . ew_ValueSeparator(1, $this->avaluo_id) . "',COALESCE(`codigoavaluo`,''),'" . ew_ValueSeparator(2, $this->avaluo_id) . "',COALESCE(`id_oficialcredito`,''),'" . ew_ValueSeparator(3, $this->avaluo_id) . "',COALESCE(`tipoinmueble`,'')) FROM `avaluo` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`id` = `pago_avaluo`.`avaluo_id` LIMIT 1) AS `EV__avaluo_id` FROM `pago_avaluo`" .
+			") `EW_TMP_TABLE`";
+		return ($this->_SqlSelectList <> "") ? $this->_SqlSelectList : $select;
+	}
+
+	function SqlSelectList() { // For backward compatibility
+		return $this->getSqlSelectList();
+	}
+
+	function setSqlSelectList($v) {
+		$this->_SqlSelectList = $v;
 	}
 	var $_SqlWhere = "";
 
@@ -317,16 +345,38 @@ class cpago_avaluo extends cTable {
 		ew_AddFilter($sFilter, $this->CurrentFilter);
 		$sFilter = $this->ApplyUserIDFilters($sFilter);
 		$this->Recordset_Selecting($sFilter);
-		$sSelect = $this->getSqlSelect();
-		$sSort = $this->UseSessionForListSQL ? $this->getSessionOrderBy() : "";
+		if ($this->UseVirtualFields()) {
+			$sSelect = $this->getSqlSelectList();
+			$sSort = $this->UseSessionForListSQL ? $this->getSessionOrderByList() : "";
+		} else {
+			$sSelect = $this->getSqlSelect();
+			$sSort = $this->UseSessionForListSQL ? $this->getSessionOrderBy() : "";
+		}
 		return ew_BuildSelectSql($sSelect, $this->getSqlWhere(), $this->getSqlGroupBy(),
 			$this->getSqlHaving(), $this->getSqlOrderBy(), $sFilter, $sSort);
 	}
 
 	// Get ORDER BY clause
 	function GetOrderBy() {
-		$sSort = $this->getSessionOrderBy();
+		$sSort = ($this->UseVirtualFields()) ? $this->getSessionOrderByList() : $this->getSessionOrderBy();
 		return ew_BuildSelectSql("", "", "", "", $this->getSqlOrderBy(), "", $sSort);
+	}
+
+	// Check if virtual fields is used in SQL
+	function UseVirtualFields() {
+		$sWhere = $this->UseSessionForListSQL ? $this->getSessionWhere() : $this->CurrentFilter;
+		$sOrderBy = $this->UseSessionForListSQL ? $this->getSessionOrderByList() : "";
+		if ($sWhere <> "")
+			$sWhere = " " . str_replace(array("(",")"), array("",""), $sWhere) . " ";
+		if ($sOrderBy <> "")
+			$sOrderBy = " " . str_replace(array("(",")"), array("",""), $sOrderBy) . " ";
+		if ($this->avaluo_id->AdvancedSearch->SearchValue <> "" ||
+			$this->avaluo_id->AdvancedSearch->SearchValue2 <> "" ||
+			strpos($sWhere, " " . $this->avaluo_id->FldVirtualExpression . " ") !== FALSE)
+			return TRUE;
+		if (strpos($sOrderBy, " " . $this->avaluo_id->FldVirtualExpression . " ") !== FALSE)
+			return TRUE;
+		return FALSE;
 	}
 
 	// Try to get record count
@@ -377,7 +427,10 @@ class cpago_avaluo extends cTable {
 		$select = $this->TableType == 'CUSTOMVIEW' ? $this->getSqlSelect() : "SELECT * FROM " . $this->getSqlFrom();
 		$groupBy = $this->TableType == 'CUSTOMVIEW' ? $this->getSqlGroupBy() : "";
 		$having = $this->TableType == 'CUSTOMVIEW' ? $this->getSqlHaving() : "";
-		$sql = ew_BuildSelectSql($select, $this->getSqlWhere(), $groupBy, $having, "", $filter, "");
+		if ($this->UseVirtualFields())
+			$sql = ew_BuildSelectSql($this->getSqlSelectList(), $this->getSqlWhere(), $groupBy, $having, "", $filter, "");
+		else
+			$sql = ew_BuildSelectSql($select, $this->getSqlWhere(), $groupBy, $having, "", $filter, "");
 		$cnt = $this->TryGetRecordCount($sql);
 		if ($cnt == -1) {
 			$conn = &$this->Connection();
@@ -701,7 +754,7 @@ class cpago_avaluo extends cTable {
 		// pago_id
 		if (strval($this->pago_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->pago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `code` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
 		$sWhereWrk = "";
 		$this->pago_id->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -722,18 +775,24 @@ class cpago_avaluo extends cTable {
 		$this->pago_id->ViewCustomAttributes = "";
 
 		// avaluo_id
+		if ($this->avaluo_id->VirtualValue <> "") {
+			$this->avaluo_id->ViewValue = $this->avaluo_id->VirtualValue;
+		} else {
 		if (strval($this->avaluo_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `codigoavaluo` AS `Disp2Fld`, `id_oficialcredito` AS `Disp3Fld`, `tipoinmueble` AS `Disp4Fld` FROM `avaluo`";
 		$sWhereWrk = "";
-		$this->avaluo_id->LookupFilters = array();
+		$this->avaluo_id->LookupFilters = array("dx1" => '`id`', "dx2" => '`codigoavaluo`', "dx3" => '`id_oficialcredito`', "dx4" => '`tipoinmueble`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = ew_FormatNumber($rswrk->fields('Disp2Fld'), 0, 0, 0, 0);
+				$arwrk[3] = $rswrk->fields('Disp3Fld');
+				$arwrk[4] = $rswrk->fields('Disp4Fld');
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -741,6 +800,7 @@ class cpago_avaluo extends cTable {
 			}
 		} else {
 			$this->avaluo_id->ViewValue = NULL;
+		}
 		}
 		$this->avaluo_id->ViewCustomAttributes = "";
 
@@ -795,7 +855,7 @@ class cpago_avaluo extends cTable {
 			$this->pago_id->CurrentValue = $this->pago_id->getSessionValue();
 		if (strval($this->pago_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->pago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `code` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
 		$sWhereWrk = "";
 		$this->pago_id->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -822,18 +882,24 @@ class cpago_avaluo extends cTable {
 		$this->avaluo_id->EditCustomAttributes = "";
 		if ($this->avaluo_id->getSessionValue() <> "") {
 			$this->avaluo_id->CurrentValue = $this->avaluo_id->getSessionValue();
+		if ($this->avaluo_id->VirtualValue <> "") {
+			$this->avaluo_id->ViewValue = $this->avaluo_id->VirtualValue;
+		} else {
 		if (strval($this->avaluo_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `codigoavaluo` AS `Disp2Fld`, `id_oficialcredito` AS `Disp3Fld`, `tipoinmueble` AS `Disp4Fld` FROM `avaluo`";
 		$sWhereWrk = "";
-		$this->avaluo_id->LookupFilters = array();
+		$this->avaluo_id->LookupFilters = array("dx1" => '`id`', "dx2" => '`codigoavaluo`', "dx3" => '`id_oficialcredito`', "dx4" => '`tipoinmueble`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, -2, -2, -2);
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = ew_FormatNumber($rswrk->fields('Disp2Fld'), 0, 0, 0, 0);
+				$arwrk[3] = $rswrk->fields('Disp3Fld');
+				$arwrk[4] = $rswrk->fields('Disp4Fld');
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -841,6 +907,7 @@ class cpago_avaluo extends cTable {
 			}
 		} else {
 			$this->avaluo_id->ViewValue = NULL;
+		}
 		}
 		$this->avaluo_id->ViewCustomAttributes = "";
 		} else {
@@ -850,7 +917,7 @@ class cpago_avaluo extends cTable {
 		$this->q->EditAttrs["class"] = "form-control";
 		$this->q->EditCustomAttributes = "";
 		$this->q->EditValue = $this->q->CurrentValue;
-		$this->q->PlaceHolder = ew_RemoveHtml($this->q->FldTitle());
+		$this->q->ViewCustomAttributes = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();

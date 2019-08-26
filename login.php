@@ -569,16 +569,27 @@ class clogin extends cusuario {
 
 		//echo "User Logged In";
 		$id_sucursal = ew_ExecuteScalar("SELECT id_sucursal FROM usuario WHERE 	login = '".$usr."'");
+		$secretaria = ew_ExecuteRows("SELECT login FROM usuario WHERE id_sucursal = '".$id_sucursal."' and id_rol=3");
+	/*
+	if(is_array($secretaria)){
+	foreach($secretaria as $secretarias){
+	 $secretarias["login"];
+	}
+	}*/
 		$id_rol = ew_ExecuteScalar("SELECT id_rol FROM usuario WHERE 	login = '".$usr."'");
 				if ($usr=="admin")
 				{
 			      $_SESSION["sucursal"]="0";
 			      $_SESSION["rol"]="0";
 			      $_SESSION["usr"]=$usr;
+	  		      $_SESSION["emailnotificaciones"]="notificacionesscz@invercon-sgv.com";
+	  		      $_SESSION["secretarias"]="notificacionesscz@invercon-sgv.com";
 			      }else{
 				  $_SESSION["sucursal"]=$id_sucursal;
 				  $_SESSION["rol"]=$id_rol;
 	  		      $_SESSION["usr"]=$usr;
+	  		      $_SESSION["emailnotificaciones"]="notificacionesscz@invercon-sgv.com";
+	  		      $_SESSION["secretarias"]=$secretaria;
 				}
 	}
 

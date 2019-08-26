@@ -2345,9 +2345,7 @@ $register->ShowMessage();
 <input type="hidden" name="fx_x_avatar" id= "fx_x_avatar" value="<?php echo $usuario->avatar->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_avatar" id= "fm_x_avatar" value="<?php echo $usuario->avatar->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_avatar" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$usuario->avatar->ReadOnly && !$usuario->avatar->Disabled && @$usuario->avatar->EditAttrs["readonly"] == "" && @$usuario->avatar->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fregister", "x_avatar");</script>
-<?php } ?>
+<table id="ft_x_avatar" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php echo $usuario->avatar->CustomMsg ?></div></div>
 	</div>
@@ -2367,9 +2365,7 @@ $register->ShowMessage();
 <input type="hidden" name="fx_x_avatar" id= "fx_x_avatar" value="<?php echo $usuario->avatar->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_avatar" id= "fm_x_avatar" value="<?php echo $usuario->avatar->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_avatar" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$usuario->avatar->ReadOnly && !$usuario->avatar->Disabled && @$usuario->avatar->EditAttrs["readonly"] == "" && @$usuario->avatar->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fregister", "x_avatar");</script>
-<?php } ?>
+<table id="ft_x_avatar" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php echo $usuario->avatar->CustomMsg ?></td>
 	</tr>

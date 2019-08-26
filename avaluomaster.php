@@ -8,6 +8,7 @@
 // estado
 // estadointerno
 // estadopago
+// fecha_avaluo
 
 ?>
 <?php if ($avaluo->Visible) { ?>
@@ -98,6 +99,17 @@
 <span id="el_avaluo_estadopago">
 <span<?php echo $avaluo->estadopago->ViewAttributes() ?>>
 <?php echo $avaluo->estadopago->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
+		<tr id="r_fecha_avaluo">
+			<td class="col-sm-3"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></td>
+			<td<?php echo $avaluo->fecha_avaluo->CellAttributes() ?>>
+<span id="el_avaluo_fecha_avaluo">
+<span<?php echo $avaluo->fecha_avaluo->ViewAttributes() ?>>
+<?php echo $avaluo->fecha_avaluo->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>

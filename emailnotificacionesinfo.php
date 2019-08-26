@@ -17,6 +17,7 @@ class cemailnotificaciones extends cTable {
 	var $estado;
 	var $fechaenvio;
 	var $fecharecibido;
+	var $id_avaluo;
 
 	//
 	// Table class constructor
@@ -104,6 +105,12 @@ class cemailnotificaciones extends cTable {
 		$this->fecharecibido->Sortable = FALSE; // Allow sort
 		$this->fecharecibido->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['fecharecibido'] = &$this->fecharecibido;
+
+		// id_avaluo
+		$this->id_avaluo = new cField('emailnotificaciones', 'emailnotificaciones', 'x_id_avaluo', 'id_avaluo', '`id_avaluo`', '`id_avaluo`', 3, -1, FALSE, '`id_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->id_avaluo->Sortable = TRUE; // Allow sort
+		$this->id_avaluo->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['id_avaluo'] = &$this->id_avaluo;
 	}
 
 	// Field Visibility
@@ -641,6 +648,7 @@ class cemailnotificaciones extends cTable {
 		$this->estado->setDbValue($rs->fields('estado'));
 		$this->fechaenvio->setDbValue($rs->fields('fechaenvio'));
 		$this->fecharecibido->setDbValue($rs->fields('fecharecibido'));
+		$this->id_avaluo->setDbValue($rs->fields('id_avaluo'));
 	}
 
 	// Render list row values
@@ -673,7 +681,9 @@ class cemailnotificaciones extends cTable {
 		// fecharecibido
 		$this->fecharecibido->CellCssStyle = "white-space: nowrap;";
 
+		// id_avaluo
 		// id
+
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
@@ -714,6 +724,10 @@ class cemailnotificaciones extends cTable {
 		$this->fecharecibido->ViewValue = $this->fecharecibido->CurrentValue;
 		$this->fecharecibido->ViewValue = ew_FormatDateTime($this->fecharecibido->ViewValue, 0);
 		$this->fecharecibido->ViewCustomAttributes = "";
+
+		// id_avaluo
+		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		$this->id_avaluo->ViewCustomAttributes = "";
 
 		// id
 		$this->id->LinkCustomAttributes = "";
@@ -764,6 +778,11 @@ class cemailnotificaciones extends cTable {
 		$this->fecharecibido->LinkCustomAttributes = "";
 		$this->fecharecibido->HrefValue = "";
 		$this->fecharecibido->TooltipValue = "";
+
+		// id_avaluo
+		$this->id_avaluo->LinkCustomAttributes = "";
+		$this->id_avaluo->HrefValue = "";
+		$this->id_avaluo->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -839,6 +858,12 @@ class cemailnotificaciones extends cTable {
 		$this->fecharecibido->EditValue = ew_FormatDateTime($this->fecharecibido->CurrentValue, 8);
 		$this->fecharecibido->PlaceHolder = ew_RemoveHtml($this->fecharecibido->FldTitle());
 
+		// id_avaluo
+		$this->id_avaluo->EditAttrs["class"] = "form-control";
+		$this->id_avaluo->EditCustomAttributes = "";
+		$this->id_avaluo->EditValue = $this->id_avaluo->CurrentValue;
+		$this->id_avaluo->PlaceHolder = ew_RemoveHtml($this->id_avaluo->FldTitle());
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 	}
@@ -871,7 +896,9 @@ class cemailnotificaciones extends cTable {
 					if ($this->cc->Exportable) $Doc->ExportCaption($this->cc);
 					if ($this->bcc->Exportable) $Doc->ExportCaption($this->bcc);
 					if ($this->mensaje->Exportable) $Doc->ExportCaption($this->mensaje);
+					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
 				} else {
+					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
 				}
 				$Doc->EndExportRow();
 			}
@@ -908,7 +935,9 @@ class cemailnotificaciones extends cTable {
 						if ($this->cc->Exportable) $Doc->ExportField($this->cc);
 						if ($this->bcc->Exportable) $Doc->ExportField($this->bcc);
 						if ($this->mensaje->Exportable) $Doc->ExportField($this->mensaje);
+						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
 					} else {
+						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

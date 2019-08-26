@@ -8,6 +8,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "viewavaluoscinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
 <?php include_once "pago_avaluogridcls.php" ?>
+<?php include_once "viewdocumentosavaluoscgridcls.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -330,7 +331,9 @@ class cviewavaluosc_add extends cviewavaluosc {
 		$this->id_solicitud->SetVisibility();
 		$this->id_oficialcredito->SetVisibility();
 		$this->id_inspector->SetVisibility();
-		$this->fecha_avaluo->SetVisibility();
+
+		// Set up detail page object
+		$this->SetupDetailPages();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -358,6 +361,16 @@ class cviewavaluosc_add extends cviewavaluosc {
 					if (preg_match('/^fpago_avaluo(grid|add|addopt|edit|update|search)$/', @$_POST["form"])) {
 						if (!isset($GLOBALS["pago_avaluo_grid"])) $GLOBALS["pago_avaluo_grid"] = new cpago_avaluo_grid;
 						$GLOBALS["pago_avaluo_grid"]->Page_Init();
+						$this->Page_Terminate();
+						exit();
+					}
+				}
+				if (in_array("viewdocumentosavaluosc", $DetailTblVar)) {
+
+					// Process auto fill for detail table 'viewdocumentosavaluosc'
+					if (preg_match('/^fviewdocumentosavaluosc(grid|add|addopt|edit|update|search)$/', @$_POST["form"])) {
+						if (!isset($GLOBALS["viewdocumentosavaluosc_grid"])) $GLOBALS["viewdocumentosavaluosc_grid"] = new cviewdocumentosavaluosc_grid;
+						$GLOBALS["viewdocumentosavaluosc_grid"]->Page_Init();
 						$this->Page_Terminate();
 						exit();
 					}
@@ -448,6 +461,7 @@ class cviewavaluosc_add extends cviewavaluosc {
 	var $Priv = 0;
 	var $OldRecordset;
 	var $CopyRecord;
+	var $DetailPages; // Detail pages object
 
 	//
 	// Page main
@@ -562,10 +576,10 @@ class cviewavaluosc_add extends cviewavaluosc {
 	function LoadDefaultValues() {
 		$this->id->CurrentValue = NULL;
 		$this->id->OldValue = $this->id->CurrentValue;
-		$this->tipoinmueble->CurrentValue = NULL;
-		$this->tipoinmueble->OldValue = $this->tipoinmueble->CurrentValue;
 		$this->codigoavaluo->CurrentValue = NULL;
 		$this->codigoavaluo->OldValue = $this->codigoavaluo->CurrentValue;
+		$this->tipoinmueble->CurrentValue = NULL;
+		$this->tipoinmueble->OldValue = $this->tipoinmueble->CurrentValue;
 		$this->id_solicitud->CurrentValue = NULL;
 		$this->id_solicitud->OldValue = $this->id_solicitud->CurrentValue;
 		$this->id_oficialcredito->CurrentValue = NULL;
@@ -615,10 +629,6 @@ class cviewavaluosc_add extends cviewavaluosc {
 		if (!$this->id_inspector->FldIsDetailKey) {
 			$this->id_inspector->setFormValue($objForm->GetValue("x_id_inspector"));
 		}
-		if (!$this->fecha_avaluo->FldIsDetailKey) {
-			$this->fecha_avaluo->setFormValue($objForm->GetValue("x_fecha_avaluo"));
-			$this->fecha_avaluo->CurrentValue = ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 10);
-		}
 	}
 
 	// Restore form values
@@ -628,8 +638,6 @@ class cviewavaluosc_add extends cviewavaluosc {
 		$this->id_solicitud->CurrentValue = $this->id_solicitud->FormValue;
 		$this->id_oficialcredito->CurrentValue = $this->id_oficialcredito->FormValue;
 		$this->id_inspector->CurrentValue = $this->id_inspector->FormValue;
-		$this->fecha_avaluo->CurrentValue = $this->fecha_avaluo->FormValue;
-		$this->fecha_avaluo->CurrentValue = ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 10);
 	}
 
 	// Load row based on key values
@@ -666,8 +674,8 @@ class cviewavaluosc_add extends cviewavaluosc {
 		if (!$rs || $rs->EOF)
 			return;
 		$this->id->setDbValue($row['id']);
-		$this->tipoinmueble->setDbValue($row['tipoinmueble']);
 		$this->codigoavaluo->setDbValue($row['codigoavaluo']);
+		$this->tipoinmueble->setDbValue($row['tipoinmueble']);
 		$this->id_solicitud->setDbValue($row['id_solicitud']);
 		$this->id_oficialcredito->setDbValue($row['id_oficialcredito']);
 		if (array_key_exists('EV__id_oficialcredito', $rs->fields)) {
@@ -702,8 +710,8 @@ class cviewavaluosc_add extends cviewavaluosc {
 		$this->LoadDefaultValues();
 		$row = array();
 		$row['id'] = $this->id->CurrentValue;
-		$row['tipoinmueble'] = $this->tipoinmueble->CurrentValue;
 		$row['codigoavaluo'] = $this->codigoavaluo->CurrentValue;
+		$row['tipoinmueble'] = $this->tipoinmueble->CurrentValue;
 		$row['id_solicitud'] = $this->id_solicitud->CurrentValue;
 		$row['id_oficialcredito'] = $this->id_oficialcredito->CurrentValue;
 		$row['id_inspector'] = $this->id_inspector->CurrentValue;
@@ -730,8 +738,8 @@ class cviewavaluosc_add extends cviewavaluosc {
 			return;
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
-		$this->tipoinmueble->DbValue = $row['tipoinmueble'];
 		$this->codigoavaluo->DbValue = $row['codigoavaluo'];
+		$this->tipoinmueble->DbValue = $row['tipoinmueble'];
 		$this->id_solicitud->DbValue = $row['id_solicitud'];
 		$this->id_oficialcredito->DbValue = $row['id_oficialcredito'];
 		$this->id_inspector->DbValue = $row['id_inspector'];
@@ -784,8 +792,8 @@ class cviewavaluosc_add extends cviewavaluosc {
 
 		// Common render codes for all row types
 		// id
-		// tipoinmueble
 		// codigoavaluo
+		// tipoinmueble
 		// id_solicitud
 		// id_oficialcredito
 		// id_inspector
@@ -814,9 +822,9 @@ class cviewavaluosc_add extends cviewavaluosc {
 		$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
 		if (strval($this->id_solicitud->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
 		$sWhereWrk = "";
-		$this->id_solicitud->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+		$this->id_solicitud->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -825,6 +833,8 @@ class cviewavaluosc_add extends cviewavaluosc {
 				$arwrk = array();
 				$arwrk[1] = $rswrk->fields('DispFld');
 				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$arwrk[3] = $rswrk->fields('Disp3Fld');
+				$arwrk[4] = $rswrk->fields('Disp4Fld');
 				$this->id_solicitud->ViewValue = $this->id_solicitud->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -992,11 +1002,6 @@ class cviewavaluosc_add extends cviewavaluosc {
 			$this->id_inspector->LinkCustomAttributes = "";
 			$this->id_inspector->HrefValue = "";
 			$this->id_inspector->TooltipValue = "";
-
-			// fecha_avaluo
-			$this->fecha_avaluo->LinkCustomAttributes = "";
-			$this->fecha_avaluo->HrefValue = "";
-			$this->fecha_avaluo->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// codigoavaluo
@@ -1011,9 +1016,9 @@ class cviewavaluosc_add extends cviewavaluosc {
 			$this->id_solicitud->EditValue = ew_HtmlEncode($this->id_solicitud->CurrentValue);
 			if (strval($this->id_solicitud->CurrentValue) <> "") {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+			$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
 			$sWhereWrk = "";
-			$this->id_solicitud->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+			$this->id_solicitud->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1022,6 +1027,8 @@ class cviewavaluosc_add extends cviewavaluosc {
 					$arwrk = array();
 					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
 					$arwrk[2] = ew_HtmlEncode($rswrk->fields('Disp2Fld'));
+					$arwrk[3] = ew_HtmlEncode($rswrk->fields('Disp3Fld'));
+					$arwrk[4] = ew_HtmlEncode($rswrk->fields('Disp4Fld'));
 					$this->id_solicitud->EditValue = $this->id_solicitud->DisplayValue($arwrk);
 					$rswrk->Close();
 				} else {
@@ -1084,12 +1091,6 @@ class cviewavaluosc_add extends cviewavaluosc {
 			if ($rswrk) $rswrk->Close();
 			$this->id_inspector->EditValue = $arwrk;
 
-			// fecha_avaluo
-			$this->fecha_avaluo->EditAttrs["class"] = "form-control";
-			$this->fecha_avaluo->EditCustomAttributes = "";
-			$this->fecha_avaluo->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->fecha_avaluo->CurrentValue, 10));
-			$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
-
 			// Add refer script
 			// codigoavaluo
 
@@ -1107,10 +1108,6 @@ class cviewavaluosc_add extends cviewavaluosc {
 			// id_inspector
 			$this->id_inspector->LinkCustomAttributes = "";
 			$this->id_inspector->HrefValue = "";
-
-			// fecha_avaluo
-			$this->fecha_avaluo->LinkCustomAttributes = "";
-			$this->fecha_avaluo->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1133,18 +1130,16 @@ class cviewavaluosc_add extends cviewavaluosc {
 		if (!ew_CheckInteger($this->id_solicitud->FormValue)) {
 			ew_AddMessage($gsFormError, $this->id_solicitud->FldErrMsg());
 		}
-		if (!$this->fecha_avaluo->FldIsDetailKey && !is_null($this->fecha_avaluo->FormValue) && $this->fecha_avaluo->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->fecha_avaluo->FldCaption(), $this->fecha_avaluo->ReqErrMsg));
-		}
-		if (!ew_CheckUSDate($this->fecha_avaluo->FormValue)) {
-			ew_AddMessage($gsFormError, $this->fecha_avaluo->FldErrMsg());
-		}
 
 		// Validate detail grid
 		$DetailTblVar = explode(",", $this->getCurrentDetailTable());
 		if (in_array("pago_avaluo", $DetailTblVar) && $GLOBALS["pago_avaluo"]->DetailAdd) {
 			if (!isset($GLOBALS["pago_avaluo_grid"])) $GLOBALS["pago_avaluo_grid"] = new cpago_avaluo_grid(); // get detail page object
 			$GLOBALS["pago_avaluo_grid"]->ValidateGridForm();
+		}
+		if (in_array("viewdocumentosavaluosc", $DetailTblVar) && $GLOBALS["viewdocumentosavaluosc"]->DetailAdd) {
+			if (!isset($GLOBALS["viewdocumentosavaluosc_grid"])) $GLOBALS["viewdocumentosavaluosc_grid"] = new cviewdocumentosavaluosc_grid(); // get detail page object
+			$GLOBALS["viewdocumentosavaluosc_grid"]->ValidateGridForm();
 		}
 
 		// Return validate result
@@ -1186,9 +1181,6 @@ class cviewavaluosc_add extends cviewavaluosc {
 		// id_inspector
 		$this->id_inspector->SetDbValueDef($rsnew, $this->id_inspector->CurrentValue, NULL, FALSE);
 
-		// fecha_avaluo
-		$this->fecha_avaluo->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 10), NULL, FALSE);
-
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
 		$bInsertRow = $this->Row_Inserting($rs, $rsnew);
@@ -1222,6 +1214,15 @@ class cviewavaluosc_add extends cviewavaluosc {
 				$Security->LoadCurrentUserLevel($this->ProjectID . $this->TableName); // Restore user level of master table
 				if (!$AddRow)
 					$GLOBALS["pago_avaluo"]->avaluo_id->setSessionValue(""); // Clear master key if insert failed
+			}
+			if (in_array("viewdocumentosavaluosc", $DetailTblVar) && $GLOBALS["viewdocumentosavaluosc"]->DetailAdd) {
+				$GLOBALS["viewdocumentosavaluosc"]->avaluo->setSessionValue($this->id->CurrentValue); // Set master key
+				if (!isset($GLOBALS["viewdocumentosavaluosc_grid"])) $GLOBALS["viewdocumentosavaluosc_grid"] = new cviewdocumentosavaluosc_grid(); // Get detail page object
+				$Security->LoadCurrentUserLevel($this->ProjectID . "viewdocumentosavaluosc"); // Load user level of detail table
+				$AddRow = $GLOBALS["viewdocumentosavaluosc_grid"]->GridInsert();
+				$Security->LoadCurrentUserLevel($this->ProjectID . $this->TableName); // Restore user level of master table
+				if (!$AddRow)
+					$GLOBALS["viewdocumentosavaluosc"]->avaluo->setSessionValue(""); // Clear master key if insert failed
 			}
 		}
 
@@ -1272,6 +1273,24 @@ class cviewavaluosc_add extends cviewavaluosc {
 					$GLOBALS["pago_avaluo_grid"]->avaluo_id->setSessionValue($GLOBALS["pago_avaluo_grid"]->avaluo_id->CurrentValue);
 				}
 			}
+			if (in_array("viewdocumentosavaluosc", $DetailTblVar)) {
+				if (!isset($GLOBALS["viewdocumentosavaluosc_grid"]))
+					$GLOBALS["viewdocumentosavaluosc_grid"] = new cviewdocumentosavaluosc_grid;
+				if ($GLOBALS["viewdocumentosavaluosc_grid"]->DetailAdd) {
+					if ($this->CopyRecord)
+						$GLOBALS["viewdocumentosavaluosc_grid"]->CurrentMode = "copy";
+					else
+						$GLOBALS["viewdocumentosavaluosc_grid"]->CurrentMode = "add";
+					$GLOBALS["viewdocumentosavaluosc_grid"]->CurrentAction = "gridadd";
+
+					// Save current master table to detail table
+					$GLOBALS["viewdocumentosavaluosc_grid"]->setCurrentMasterTable($this->TableVar);
+					$GLOBALS["viewdocumentosavaluosc_grid"]->setStartRecordNumber(1);
+					$GLOBALS["viewdocumentosavaluosc_grid"]->avaluo->FldIsDetailKey = TRUE;
+					$GLOBALS["viewdocumentosavaluosc_grid"]->avaluo->CurrentValue = $this->id->CurrentValue;
+					$GLOBALS["viewdocumentosavaluosc_grid"]->avaluo->setSessionValue($GLOBALS["viewdocumentosavaluosc_grid"]->avaluo->CurrentValue);
+				}
+			}
 		}
 	}
 
@@ -1285,6 +1304,15 @@ class cviewavaluosc_add extends cviewavaluosc {
 		$Breadcrumb->Add("add", $PageId, $url);
 	}
 
+	// Set up detail pages
+	function SetupDetailPages() {
+		$pages = new cSubPages();
+		$pages->Style = "tabs";
+		$pages->Add('pago_avaluo');
+		$pages->Add('viewdocumentosavaluosc');
+		$this->DetailPages = $pages;
+	}
+
 	// Setup lookup filters of a field
 	function SetupLookupFilters($fld, $pageId = null) {
 		global $gsLanguage;
@@ -1292,9 +1320,9 @@ class cviewavaluosc_add extends cviewavaluosc {
 		switch ($fld->FldVar) {
 		case "x_id_solicitud":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
 			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+			$fld->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
@@ -1336,9 +1364,9 @@ class cviewavaluosc_add extends cviewavaluosc {
 		switch ($fld->FldVar) {
 		case "x_id_solicitud":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld` FROM `solicitud`";
-			$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(COALESCE(`name`, ''),'" . ew_ValueSeparator(1, $this->id_solicitud) . "',COALESCE(`lastname`,'')) LIKE '{query_value}%'";
-			$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+			$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
+			$sWhereWrk = "`id` LIKE '{query_value}%' OR CONCAT(COALESCE(`id`, ''),'" . ew_ValueSeparator(1, $this->id_solicitud) . "',COALESCE(`name`,''),'" . ew_ValueSeparator(2, $this->id_solicitud) . "',COALESCE(`lastname`,''),'" . ew_ValueSeparator(3, $this->id_solicitud) . "',COALESCE(`email`,'')) LIKE '{query_value}%'";
+			$fld->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
@@ -1460,12 +1488,6 @@ fviewavaluoscadd.Validate = function() {
 			elm = this.GetElements("x" + infix + "_id_solicitud");
 			if (elm && !ew_CheckInteger(elm.value))
 				return this.OnError(elm, "<?php echo ew_JsEncode2($viewavaluosc->id_solicitud->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_fecha_avaluo");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $viewavaluosc->fecha_avaluo->FldCaption(), $viewavaluosc->fecha_avaluo->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_fecha_avaluo");
-			if (elm && !ew_CheckUSDate(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($viewavaluosc->fecha_avaluo->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -1495,7 +1517,7 @@ fviewavaluoscadd.Form_CustomValidate =
 fviewavaluoscadd.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-fviewavaluoscadd.Lists["x_id_solicitud"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"solicitud"};
+fviewavaluoscadd.Lists["x_id_solicitud"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","x_name","x_lastname","x__email"],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"solicitud"};
 fviewavaluoscadd.Lists["x_id_solicitud"].Data = "<?php echo $viewavaluosc_add->id_solicitud->LookupFilterQuery(FALSE, "add") ?>";
 fviewavaluoscadd.AutoSuggests["x_id_solicitud"] = <?php echo json_encode(array("data" => "ajax=autosuggest&" . $viewavaluosc_add->id_solicitud->LookupFilterQuery(TRUE, "add"))) ?>;
 fviewavaluoscadd.Lists["x_id_oficialcredito"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","x_apellido","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"oficialcredito"};
@@ -1652,49 +1674,64 @@ fviewavaluoscadd.CreateAutoSuggest({"id":"x_id_solicitud","forceSelect":false});
 	</tr>
 <?php } ?>
 <?php } ?>
-<?php if ($viewavaluosc->fecha_avaluo->Visible) { // fecha_avaluo ?>
-<?php if ($viewavaluosc_add->IsMobileOrModal) { ?>
-	<div id="r_fecha_avaluo" class="form-group">
-		<label id="elh_viewavaluosc_fecha_avaluo" for="x_fecha_avaluo" class="<?php echo $viewavaluosc_add->LeftColumnClass ?>"><?php echo $viewavaluosc->fecha_avaluo->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
-		<div class="<?php echo $viewavaluosc_add->RightColumnClass ?>"><div<?php echo $viewavaluosc->fecha_avaluo->CellAttributes() ?>>
-<span id="el_viewavaluosc_fecha_avaluo">
-<input type="text" data-table="viewavaluosc" data-field="x_fecha_avaluo" data-format="10" name="x_fecha_avaluo" id="x_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($viewavaluosc->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $viewavaluosc->fecha_avaluo->EditValue ?>"<?php echo $viewavaluosc->fecha_avaluo->EditAttributes() ?>>
-<?php if (!$viewavaluosc->fecha_avaluo->ReadOnly && !$viewavaluosc->fecha_avaluo->Disabled && !isset($viewavaluosc->fecha_avaluo->EditAttrs["readonly"]) && !isset($viewavaluosc->fecha_avaluo->EditAttrs["disabled"])) { ?>
-<script type="text/javascript">
-ew_CreateDateTimePicker("fviewavaluoscadd", "x_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
-</script>
-<?php } ?>
-</span>
-<?php echo $viewavaluosc->fecha_avaluo->CustomMsg ?></div></div>
-	</div>
-<?php } else { ?>
-	<tr id="r_fecha_avaluo">
-		<td class="col-sm-3"><span id="elh_viewavaluosc_fecha_avaluo"><?php echo $viewavaluosc->fecha_avaluo->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
-		<td<?php echo $viewavaluosc->fecha_avaluo->CellAttributes() ?>>
-<span id="el_viewavaluosc_fecha_avaluo">
-<input type="text" data-table="viewavaluosc" data-field="x_fecha_avaluo" data-format="10" name="x_fecha_avaluo" id="x_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($viewavaluosc->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $viewavaluosc->fecha_avaluo->EditValue ?>"<?php echo $viewavaluosc->fecha_avaluo->EditAttributes() ?>>
-<?php if (!$viewavaluosc->fecha_avaluo->ReadOnly && !$viewavaluosc->fecha_avaluo->Disabled && !isset($viewavaluosc->fecha_avaluo->EditAttrs["readonly"]) && !isset($viewavaluosc->fecha_avaluo->EditAttrs["disabled"])) { ?>
-<script type="text/javascript">
-ew_CreateDateTimePicker("fviewavaluoscadd", "x_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
-</script>
-<?php } ?>
-</span>
-<?php echo $viewavaluosc->fecha_avaluo->CustomMsg ?></td>
-	</tr>
-<?php } ?>
-<?php } ?>
 <?php if ($viewavaluosc_add->IsMobileOrModal) { ?>
 </div><!-- /page* -->
 <?php } else { ?>
 </table><!-- /table* -->
 <?php } ?>
+<?php if ($viewavaluosc->getCurrentDetailTable() <> "") { ?>
+<?php
+	$viewavaluosc_add->DetailPages->ValidKeys = explode(",", $viewavaluosc->getCurrentDetailTable());
+	$FirstActiveDetailTable = $viewavaluosc_add->DetailPages->ActivePageIndex();
+?>
+<div class="ewDetailPages"><!-- detail-pages -->
+<div class="nav-tabs-custom" id="viewavaluosc_add_details"><!-- .nav-tabs-custom -->
+	<ul class="nav<?php echo $viewavaluosc_add->DetailPages->NavStyle() ?>"><!-- .nav -->
 <?php
 	if (in_array("pago_avaluo", explode(",", $viewavaluosc->getCurrentDetailTable())) && $pago_avaluo->DetailAdd) {
+		if ($FirstActiveDetailTable == "" || $FirstActiveDetailTable == "pago_avaluo") {
+			$FirstActiveDetailTable = "pago_avaluo";
+		}
 ?>
-<?php if ($viewavaluosc->getCurrentDetailTable() <> "") { ?>
-<h4 class="ewDetailCaption"><?php echo $Language->TablePhrase("pago_avaluo", "TblCaption") ?></h4>
-<?php } ?>
+		<li<?php echo $viewavaluosc_add->DetailPages->TabStyle("pago_avaluo") ?>><a href="#tab_pago_avaluo" data-toggle="tab"><?php echo $Language->TablePhrase("pago_avaluo", "TblCaption") ?></a></li>
+<?php
+	}
+?>
+<?php
+	if (in_array("viewdocumentosavaluosc", explode(",", $viewavaluosc->getCurrentDetailTable())) && $viewdocumentosavaluosc->DetailAdd) {
+		if ($FirstActiveDetailTable == "" || $FirstActiveDetailTable == "viewdocumentosavaluosc") {
+			$FirstActiveDetailTable = "viewdocumentosavaluosc";
+		}
+?>
+		<li<?php echo $viewavaluosc_add->DetailPages->TabStyle("viewdocumentosavaluosc") ?>><a href="#tab_viewdocumentosavaluosc" data-toggle="tab"><?php echo $Language->TablePhrase("viewdocumentosavaluosc", "TblCaption") ?></a></li>
+<?php
+	}
+?>
+	</ul><!-- /.nav -->
+	<div class="tab-content"><!-- .tab-content -->
+<?php
+	if (in_array("pago_avaluo", explode(",", $viewavaluosc->getCurrentDetailTable())) && $pago_avaluo->DetailAdd) {
+		if ($FirstActiveDetailTable == "" || $FirstActiveDetailTable == "pago_avaluo") {
+			$FirstActiveDetailTable = "pago_avaluo";
+		}
+?>
+		<div class="tab-pane<?php echo $viewavaluosc_add->DetailPages->PageStyle("pago_avaluo") ?>" id="tab_pago_avaluo"><!-- page* -->
 <?php include_once "pago_avaluogrid.php" ?>
+		</div><!-- /page* -->
+<?php } ?>
+<?php
+	if (in_array("viewdocumentosavaluosc", explode(",", $viewavaluosc->getCurrentDetailTable())) && $viewdocumentosavaluosc->DetailAdd) {
+		if ($FirstActiveDetailTable == "" || $FirstActiveDetailTable == "viewdocumentosavaluosc") {
+			$FirstActiveDetailTable = "viewdocumentosavaluosc";
+		}
+?>
+		<div class="tab-pane<?php echo $viewavaluosc_add->DetailPages->PageStyle("viewdocumentosavaluosc") ?>" id="tab_viewdocumentosavaluosc"><!-- page* -->
+<?php include_once "viewdocumentosavaluoscgrid.php" ?>
+		</div><!-- /page* -->
+<?php } ?>
+	</div><!-- /.tab-content -->
+</div><!-- /.nav-tabs-custom -->
+</div><!-- /detail-pages -->
 <?php } ?>
 <?php if (!$viewavaluosc_add->IsModal) { ?>
 <div class="form-group"><!-- buttons .form-group -->

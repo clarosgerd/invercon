@@ -328,6 +328,7 @@ class cnotificaciones_delete extends cnotificaciones {
 		$this->recibidopor->SetVisibility();
 		$this->leido->SetVisibility();
 		$this->desde->SetVisibility();
+		$this->id_avaluo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -516,6 +517,7 @@ class cnotificaciones_delete extends cnotificaciones {
 		$this->fecha->setDbValue($row['fecha']);
 		$this->fechaleido->setDbValue($row['fechaleido']);
 		$this->desde->setDbValue($row['desde']);
+		$this->id_avaluo->setDbValue($row['id_avaluo']);
 	}
 
 	// Return a row with default values
@@ -530,6 +532,7 @@ class cnotificaciones_delete extends cnotificaciones {
 		$row['fecha'] = NULL;
 		$row['fechaleido'] = NULL;
 		$row['desde'] = NULL;
+		$row['id_avaluo'] = NULL;
 		return $row;
 	}
 
@@ -547,6 +550,7 @@ class cnotificaciones_delete extends cnotificaciones {
 		$this->fecha->DbValue = $row['fecha'];
 		$this->fechaleido->DbValue = $row['fechaleido'];
 		$this->desde->DbValue = $row['desde'];
+		$this->id_avaluo->DbValue = $row['id_avaluo'];
 	}
 
 	// Render row values based on field settings
@@ -575,6 +579,8 @@ class cnotificaciones_delete extends cnotificaciones {
 		$this->fechaleido->CellCssStyle = "white-space: nowrap;";
 
 		// desde
+		// id_avaluo
+
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -600,6 +606,10 @@ class cnotificaciones_delete extends cnotificaciones {
 		// desde
 		$this->desde->ViewValue = $this->desde->CurrentValue;
 		$this->desde->ViewCustomAttributes = "";
+
+		// id_avaluo
+		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		$this->id_avaluo->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -630,6 +640,11 @@ class cnotificaciones_delete extends cnotificaciones {
 			$this->desde->LinkCustomAttributes = "";
 			$this->desde->HrefValue = "";
 			$this->desde->TooltipValue = "";
+
+			// id_avaluo
+			$this->id_avaluo->LinkCustomAttributes = "";
+			$this->id_avaluo->HrefValue = "";
+			$this->id_avaluo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -885,6 +900,9 @@ $notificaciones_delete->ShowMessage();
 <?php if ($notificaciones->desde->Visible) { // desde ?>
 		<th class="<?php echo $notificaciones->desde->HeaderCellClass() ?>"><span id="elh_notificaciones_desde" class="notificaciones_desde"><?php echo $notificaciones->desde->FldCaption() ?></span></th>
 <?php } ?>
+<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
+		<th class="<?php echo $notificaciones->id_avaluo->HeaderCellClass() ?>"><span id="elh_notificaciones_id_avaluo" class="notificaciones_id_avaluo"><?php echo $notificaciones->id_avaluo->FldCaption() ?></span></th>
+<?php } ?>
 	</tr>
 	</thead>
 	<tbody>
@@ -951,6 +969,14 @@ while (!$notificaciones_delete->Recordset->EOF) {
 <span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_desde" class="notificaciones_desde">
 <span<?php echo $notificaciones->desde->ViewAttributes() ?>>
 <?php echo $notificaciones->desde->ListViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
+		<td<?php echo $notificaciones->id_avaluo->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_id_avaluo" class="notificaciones_id_avaluo">
+<span<?php echo $notificaciones->id_avaluo->ViewAttributes() ?>>
+<?php echo $notificaciones->id_avaluo->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

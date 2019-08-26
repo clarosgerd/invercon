@@ -16,6 +16,7 @@ class cnotificaciones extends cTable {
 	var $fecha;
 	var $fechaleido;
 	var $desde;
+	var $id_avaluo;
 
 	//
 	// Table class constructor
@@ -98,6 +99,12 @@ class cnotificaciones extends cTable {
 		$this->desde = new cField('notificaciones', 'notificaciones', 'x_desde', 'desde', '`desde`', '`desde`', 200, -1, FALSE, '`desde`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->desde->Sortable = TRUE; // Allow sort
 		$this->fields['desde'] = &$this->desde;
+
+		// id_avaluo
+		$this->id_avaluo = new cField('notificaciones', 'notificaciones', 'x_id_avaluo', 'id_avaluo', '`id_avaluo`', '`id_avaluo`', 3, -1, FALSE, '`id_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->id_avaluo->Sortable = TRUE; // Allow sort
+		$this->id_avaluo->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['id_avaluo'] = &$this->id_avaluo;
 	}
 
 	// Field Visibility
@@ -634,6 +641,7 @@ class cnotificaciones extends cTable {
 		$this->fecha->setDbValue($rs->fields('fecha'));
 		$this->fechaleido->setDbValue($rs->fields('fechaleido'));
 		$this->desde->setDbValue($rs->fields('desde'));
+		$this->id_avaluo->setDbValue($rs->fields('id_avaluo'));
 	}
 
 	// Render list row values
@@ -660,6 +668,7 @@ class cnotificaciones extends cTable {
 		$this->fechaleido->CellCssStyle = "white-space: nowrap;";
 
 		// desde
+		// id_avaluo
 		// id
 
 		$this->id->ViewValue = $this->id->CurrentValue;
@@ -698,6 +707,10 @@ class cnotificaciones extends cTable {
 		// desde
 		$this->desde->ViewValue = $this->desde->CurrentValue;
 		$this->desde->ViewCustomAttributes = "";
+
+		// id_avaluo
+		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		$this->id_avaluo->ViewCustomAttributes = "";
 
 		// id
 		$this->id->LinkCustomAttributes = "";
@@ -743,6 +756,11 @@ class cnotificaciones extends cTable {
 		$this->desde->LinkCustomAttributes = "";
 		$this->desde->HrefValue = "";
 		$this->desde->TooltipValue = "";
+
+		// id_avaluo
+		$this->id_avaluo->LinkCustomAttributes = "";
+		$this->id_avaluo->HrefValue = "";
+		$this->id_avaluo->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -812,6 +830,12 @@ class cnotificaciones extends cTable {
 		$this->desde->EditValue = $this->desde->CurrentValue;
 		$this->desde->PlaceHolder = ew_RemoveHtml($this->desde->FldTitle());
 
+		// id_avaluo
+		$this->id_avaluo->EditAttrs["class"] = "form-control";
+		$this->id_avaluo->EditCustomAttributes = "";
+		$this->id_avaluo->EditValue = $this->id_avaluo->CurrentValue;
+		$this->id_avaluo->PlaceHolder = ew_RemoveHtml($this->id_avaluo->FldTitle());
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 	}
@@ -845,10 +869,12 @@ class cnotificaciones extends cTable {
 					if ($this->recibidopor->Exportable) $Doc->ExportCaption($this->recibidopor);
 					if ($this->leido->Exportable) $Doc->ExportCaption($this->leido);
 					if ($this->desde->Exportable) $Doc->ExportCaption($this->desde);
+					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->leido->Exportable) $Doc->ExportCaption($this->leido);
 					if ($this->desde->Exportable) $Doc->ExportCaption($this->desde);
+					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
 				}
 				$Doc->EndExportRow();
 			}
@@ -886,10 +912,12 @@ class cnotificaciones extends cTable {
 						if ($this->recibidopor->Exportable) $Doc->ExportField($this->recibidopor);
 						if ($this->leido->Exportable) $Doc->ExportField($this->leido);
 						if ($this->desde->Exportable) $Doc->ExportField($this->desde);
+						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->leido->Exportable) $Doc->ExportField($this->leido);
 						if ($this->desde->Exportable) $Doc->ExportField($this->desde);
+						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

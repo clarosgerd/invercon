@@ -26,8 +26,10 @@
 	}
 $thejson=null;
 $events = getEvery();
+if(is_array($events)){
 foreach($events as $event){
 	$thejson[] = array("title"=>$event["id"],"url"=>"./avaluoedit.php?id=".$event["id"],"start"=>$event["fecha"]."T".$event["hora"],"backgroundColor"=>$event["color"],"borderColor"=>$event["color"]);
+}
 }
 //var_dump($thejson);
 ?>

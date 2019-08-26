@@ -1332,9 +1332,7 @@ $documentosavaluo_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen" id= "fx_x_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen" id= "fm_x_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluoadd", "x_imagen");</script>
-<?php } ?>
+<table id="ft_x_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php echo $documentosavaluo->imagen->CustomMsg ?></div></div>
 	</div>
@@ -1354,9 +1352,7 @@ $documentosavaluo_add->ShowMessage();
 <input type="hidden" name="fx_x_imagen" id= "fx_x_imagen" value="<?php echo $documentosavaluo->imagen->UploadAllowedFileExt ?>">
 <input type="hidden" name="fm_x_imagen" id= "fm_x_imagen" value="<?php echo $documentosavaluo->imagen->UploadMaxFileSize ?>">
 </div>
-<table id="ft_x_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table><?php if (!$documentosavaluo->imagen->ReadOnly && !$documentosavaluo->imagen->Disabled && @$documentosavaluo->imagen->EditAttrs["readonly"] == "" && @$documentosavaluo->imagen->EditAttrs["disabled"] == "") { ?>
-<script type="text/javascript">ew_CheckFileUpload("fdocumentosavaluoadd", "x_imagen");</script>
-<?php } ?>
+<table id="ft_x_imagen" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php echo $documentosavaluo->imagen->CustomMsg ?></td>
 	</tr>
