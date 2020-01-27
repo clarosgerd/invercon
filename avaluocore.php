@@ -1250,7 +1250,7 @@ if (isset($_GET['id']))
 	$TheQuery="UPDATE emailnotificaciones set leido=1 where id= '" . ew_AdjustSql($_GET['id']) . "'";
 	ew_Execute($TheQuery);
 	$avaluocore_php->setSuccessMessage("Correo Leido");
-	header('Location: notificacionesview.php?showdetail=&id='.$_GET['id']);
+	header('Location: emailnotificacionesview.php?showdetail=&id='.$_GET['id']);
 	exit;
 }
 }
@@ -1260,7 +1260,7 @@ if ($_GET['type']=="smslearn")
 //	$TheQuery="UPDATE emailnotificaciones set leido=1 where id= '" . ew_AdjustSql($_GET['id']) . "'";
 //	ew_Execute($TheQuery);
 	$avaluocore_php->setSuccessMessage("SMS enviado");
-	header('Location:solicitudedit.php?showdetail=&id='.$_GET['id']);
+	header('Location:notificacionesview.php?showdetail=&id='.$_GET['id']);
 	exit;
 
 }
@@ -1268,7 +1268,7 @@ if ($_GET['type']=="smslearn")
 
 }else{
 
-	header('Location:viewsolicitudlist.php');
+	header('Location:notificacioneslist.php?showdetail=&id=');
 	exit;
 }
 ?>

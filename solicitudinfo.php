@@ -8,9 +8,7 @@ $solicitud = NULL;
 //
 class csolicitud extends cTable {
 	var $id;
-	var $nombre_contacto;
 	var $name;
-	var $lastname;
 	var $_email;
 	var $address;
 	var $phone;
@@ -65,6 +63,9 @@ class csolicitud extends cTable {
 	var $tipoespecial;
 	var $imagen_tipoespecial01;
 	var $email_contacto;
+	var $nombre_contacto;
+	var $lastname;
+	var $monto_inicial;
 
 	//
 	// Table class constructor
@@ -89,8 +90,8 @@ class csolicitud extends cTable {
 		$this->ExportExcelPageSize = ""; // Page size (PHPExcel only)
 		$this->ExportWordPageOrientation = "portrait"; // Page orientation (PHPWord only)
 		$this->ExportWordColumnWidth = NULL; // Cell width (PHPWord only)
-		$this->DetailAdd = FALSE; // Allow detail add
-		$this->DetailEdit = FALSE; // Allow detail edit
+		$this->DetailAdd = TRUE; // Allow detail add
+		$this->DetailEdit = TRUE; // Allow detail edit
 		$this->DetailView = FALSE; // Allow detail view
 		$this->ShowMultipleDetails = FALSE; // Show multiple details
 		$this->GridAddRowCount = 3;
@@ -104,20 +105,10 @@ class csolicitud extends cTable {
 		$this->id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id'] = &$this->id;
 
-		// nombre_contacto
-		$this->nombre_contacto = new cField('solicitud', 'solicitud', 'x_nombre_contacto', 'nombre_contacto', '`nombre_contacto`', '`nombre_contacto`', 200, -1, FALSE, '`nombre_contacto`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->nombre_contacto->Sortable = TRUE; // Allow sort
-		$this->fields['nombre_contacto'] = &$this->nombre_contacto;
-
 		// name
 		$this->name = new cField('solicitud', 'solicitud', 'x_name', 'name', '`name`', '`name`', 200, -1, FALSE, '`name`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->name->Sortable = TRUE; // Allow sort
 		$this->fields['name'] = &$this->name;
-
-		// lastname
-		$this->lastname = new cField('solicitud', 'solicitud', 'x_lastname', 'lastname', '`lastname`', '`lastname`', 200, -1, FALSE, '`lastname`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->lastname->Sortable = TRUE; // Allow sort
-		$this->fields['lastname'] = &$this->lastname;
 
 		// email
 		$this->_email = new cField('solicitud', 'solicitud', 'x__email', 'email', '`email`', '`email`', 200, -1, FALSE, '`email`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
@@ -148,15 +139,13 @@ class csolicitud extends cTable {
 
 		// created_at
 		$this->created_at = new cField('solicitud', 'solicitud', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 17, "DB"), 135, 17, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->created_at->Sortable = TRUE; // Allow sort
+		$this->created_at->Sortable = FALSE; // Allow sort
 		$this->created_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_SEPARATOR"], $Language->Phrase("IncorrectShortDateDMY"));
 		$this->fields['created_at'] = &$this->created_at;
 
 		// id_sucursal
-		$this->id_sucursal = new cField('solicitud', 'solicitud', 'x_id_sucursal', 'id_sucursal', '`id_sucursal`', '`id_sucursal`', 3, -1, FALSE, '`id_sucursal`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->id_sucursal->Sortable = TRUE; // Allow sort
-		$this->id_sucursal->UsePleaseSelect = TRUE; // Use PleaseSelect by default
-		$this->id_sucursal->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
+		$this->id_sucursal = new cField('solicitud', 'solicitud', 'x_id_sucursal', 'id_sucursal', '`id_sucursal`', '`id_sucursal`', 3, -1, FALSE, '`id_sucursal`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'HIDDEN');
+		$this->id_sucursal->Sortable = FALSE; // Allow sort
 		$this->id_sucursal->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_sucursal'] = &$this->id_sucursal;
 
@@ -427,6 +416,22 @@ class csolicitud extends cTable {
 		$this->email_contacto->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->email_contacto->FldDefaultErrMsg = $Language->Phrase("IncorrectEmail");
 		$this->fields['email_contacto'] = &$this->email_contacto;
+
+		// nombre_contacto
+		$this->nombre_contacto = new cField('solicitud', 'solicitud', 'x_nombre_contacto', 'nombre_contacto', '`nombre_contacto`', '`nombre_contacto`', 200, -1, FALSE, '`nombre_contacto`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->nombre_contacto->Sortable = TRUE; // Allow sort
+		$this->fields['nombre_contacto'] = &$this->nombre_contacto;
+
+		// lastname
+		$this->lastname = new cField('solicitud', 'solicitud', 'x_lastname', 'lastname', '`lastname`', '`lastname`', 200, -1, FALSE, '`lastname`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->lastname->Sortable = TRUE; // Allow sort
+		$this->fields['lastname'] = &$this->lastname;
+
+		// monto_inicial
+		$this->monto_inicial = new cField('solicitud', 'solicitud', 'x_monto_inicial', 'monto_inicial', '`monto_inicial`', '`monto_inicial`', 5, -1, FALSE, '`monto_inicial`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->monto_inicial->Sortable = TRUE; // Allow sort
+		$this->monto_inicial->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
+		$this->fields['monto_inicial'] = &$this->monto_inicial;
 	}
 
 	// Field Visibility
@@ -1039,9 +1044,7 @@ class csolicitud extends cTable {
 	// Load row values from recordset
 	function LoadListRowValues(&$rs) {
 		$this->id->setDbValue($rs->fields('id'));
-		$this->nombre_contacto->setDbValue($rs->fields('nombre_contacto'));
 		$this->name->setDbValue($rs->fields('name'));
-		$this->lastname->setDbValue($rs->fields('lastname'));
 		$this->_email->setDbValue($rs->fields('email'));
 		$this->address->setDbValue($rs->fields('address'));
 		$this->phone->setDbValue($rs->fields('phone'));
@@ -1096,6 +1099,9 @@ class csolicitud extends cTable {
 		$this->tipoespecial->setDbValue($rs->fields('tipoespecial'));
 		$this->imagen_tipoespecial01->Upload->DbValue = $rs->fields('imagen_tipoespecial01');
 		$this->email_contacto->setDbValue($rs->fields('email_contacto'));
+		$this->nombre_contacto->setDbValue($rs->fields('nombre_contacto'));
+		$this->lastname->setDbValue($rs->fields('lastname'));
+		$this->monto_inicial->setDbValue($rs->fields('monto_inicial'));
 	}
 
 	// Render list row values
@@ -1110,9 +1116,7 @@ class csolicitud extends cTable {
 
 		$this->id->CellCssStyle = "white-space: nowrap;";
 
-		// nombre_contacto
 		// name
-		// lastname
 		// email
 		// address
 		// phone
@@ -1122,9 +1126,12 @@ class csolicitud extends cTable {
 		$this->is_active->CellCssStyle = "white-space: nowrap;";
 
 		// created_at
-		// id_sucursal
-		// documentos
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
 
+		// id_sucursal
+		$this->id_sucursal->CellCssStyle = "white-space: nowrap;";
+
+		// documentos
 		$this->documentos->CellCssStyle = "white-space: nowrap;";
 
 		// DateModified
@@ -1219,22 +1226,17 @@ class csolicitud extends cTable {
 		// tipoespecial
 		// imagen_tipoespecial01
 		// email_contacto
+		// nombre_contacto
+		// lastname
+		// monto_inicial
 		// id
 
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
-		// nombre_contacto
-		$this->nombre_contacto->ViewValue = $this->nombre_contacto->CurrentValue;
-		$this->nombre_contacto->ViewCustomAttributes = "";
-
 		// name
 		$this->name->ViewValue = $this->name->CurrentValue;
 		$this->name->ViewCustomAttributes = "";
-
-		// lastname
-		$this->lastname->ViewValue = $this->lastname->CurrentValue;
-		$this->lastname->ViewCustomAttributes = "";
 
 		// email
 		$this->_email->ViewValue = $this->_email->CurrentValue;
@@ -1272,28 +1274,7 @@ class csolicitud extends cTable {
 		$this->created_at->ViewCustomAttributes = "";
 
 		// id_sucursal
-		if (strval($this->id_sucursal->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
-		$lookuptblfilter = "`id`='".$_SESSION["sucursal"]."'";
-		ew_AddFilter($sWhereWrk, $lookuptblfilter);
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->id_sucursal->ViewValue = $this->id_sucursal->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
-			}
-		} else {
-			$this->id_sucursal->ViewValue = NULL;
-		}
+		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
 		$this->id_sucursal->ViewCustomAttributes = "";
 
 		// documentos
@@ -1304,9 +1285,23 @@ class csolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`descripcion`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_MEMO, "");
 			}
-		$sSqlWrk = "SELECT `descripcion`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `documentosavaluo`";
-		$sWhereWrk = "";
-		$this->documentos->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `descripcion`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `documentosavaluo`";
+				$sWhereWrk = "";
+				$this->documentos->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `descripcion`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `documentosavaluo`";
+				$sWhereWrk = "";
+				$this->documentos->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `descripcion`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `documentosavaluo`";
+				$sWhereWrk = "";
+				$this->documentos->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->documentos, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1369,9 +1364,23 @@ class csolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='INMUEBLE'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1401,9 +1410,23 @@ class csolicitud extends cTable {
 		// id_ciudad_inmueble
 		if (strval($this->id_ciudad_inmueble->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_inmueble->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_inmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_inmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_inmueble->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_ciudad_inmueble, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1424,9 +1447,23 @@ class csolicitud extends cTable {
 		// id_provincia_inmueble
 		if (strval($this->id_provincia_inmueble->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_inmueble->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_inmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_inmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_inmueble->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_provincia_inmueble, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1524,9 +1561,23 @@ class csolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='VEHICULO'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1556,9 +1607,23 @@ class csolicitud extends cTable {
 		// id_ciudad_vehiculo
 		if (strval($this->id_ciudad_vehiculo->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_vehiculo->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_vehiculo->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_vehiculo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_vehiculo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_vehiculo->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_ciudad_vehiculo, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1579,9 +1644,23 @@ class csolicitud extends cTable {
 		// id_provincia_vehiculo
 		if (strval($this->id_provincia_vehiculo->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_vehiculo->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_vehiculo->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_vehiculo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_vehiculo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_vehiculo->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_provincia_vehiculo, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1679,9 +1758,23 @@ class csolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='MAQUINARIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1711,9 +1804,23 @@ class csolicitud extends cTable {
 		// id_ciudad_maquinaria
 		if (strval($this->id_ciudad_maquinaria->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_maquinaria->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_maquinaria->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_maquinaria->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_maquinaria->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_ciudad_maquinaria, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1734,9 +1841,23 @@ class csolicitud extends cTable {
 		// id_provincia_maquinaria
 		if (strval($this->id_provincia_maquinaria->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_maquinaria->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_maquinaria->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_maquinaria->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_maquinaria->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_provincia_maquinaria, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1834,9 +1955,23 @@ class csolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 			}
-		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='MERCADERIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1884,9 +2019,23 @@ class csolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 			}
-		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='ESPECIAL'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1925,9 +2074,23 @@ class csolicitud extends cTable {
 		// email_contacto
 		if (strval($this->email_contacto->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->email_contacto->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-		$sWhereWrk = "";
-		$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->email_contacto, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1946,25 +2109,27 @@ class csolicitud extends cTable {
 		}
 		$this->email_contacto->ViewCustomAttributes = "";
 
+		// nombre_contacto
+		$this->nombre_contacto->ViewValue = $this->nombre_contacto->CurrentValue;
+		$this->nombre_contacto->ViewCustomAttributes = "";
+
+		// lastname
+		$this->lastname->ViewValue = $this->lastname->CurrentValue;
+		$this->lastname->ViewCustomAttributes = "";
+
+		// monto_inicial
+		$this->monto_inicial->ViewValue = $this->monto_inicial->CurrentValue;
+		$this->monto_inicial->ViewCustomAttributes = "";
+
 		// id
 		$this->id->LinkCustomAttributes = "";
 		$this->id->HrefValue = "";
 		$this->id->TooltipValue = "";
 
-		// nombre_contacto
-		$this->nombre_contacto->LinkCustomAttributes = "";
-		$this->nombre_contacto->HrefValue = "";
-		$this->nombre_contacto->TooltipValue = "";
-
 		// name
 		$this->name->LinkCustomAttributes = "";
 		$this->name->HrefValue = "";
 		$this->name->TooltipValue = "";
-
-		// lastname
-		$this->lastname->LinkCustomAttributes = "";
-		$this->lastname->HrefValue = "";
-		$this->lastname->TooltipValue = "";
 
 		// email
 		$this->_email->LinkCustomAttributes = "";
@@ -2418,6 +2583,21 @@ class csolicitud extends cTable {
 		$this->email_contacto->HrefValue = "";
 		$this->email_contacto->TooltipValue = "";
 
+		// nombre_contacto
+		$this->nombre_contacto->LinkCustomAttributes = "";
+		$this->nombre_contacto->HrefValue = "";
+		$this->nombre_contacto->TooltipValue = "";
+
+		// lastname
+		$this->lastname->LinkCustomAttributes = "";
+		$this->lastname->HrefValue = "";
+		$this->lastname->TooltipValue = "";
+
+		// monto_inicial
+		$this->monto_inicial->LinkCustomAttributes = "";
+		$this->monto_inicial->HrefValue = "";
+		$this->monto_inicial->TooltipValue = "";
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 
@@ -2438,23 +2618,11 @@ class csolicitud extends cTable {
 		$this->id->EditValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
-		// nombre_contacto
-		$this->nombre_contacto->EditAttrs["class"] = "form-control";
-		$this->nombre_contacto->EditCustomAttributes = "";
-		$this->nombre_contacto->EditValue = $this->nombre_contacto->CurrentValue;
-		$this->nombre_contacto->PlaceHolder = ew_RemoveHtml($this->nombre_contacto->FldTitle());
-
 		// name
 		$this->name->EditAttrs["class"] = "form-control";
 		$this->name->EditCustomAttributes = "";
 		$this->name->EditValue = $this->name->CurrentValue;
 		$this->name->PlaceHolder = ew_RemoveHtml($this->name->FldTitle());
-
-		// lastname
-		$this->lastname->EditAttrs["class"] = "form-control";
-		$this->lastname->EditCustomAttributes = "";
-		$this->lastname->EditValue = $this->lastname->CurrentValue;
-		$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
 
 		// email
 		$this->_email->EditAttrs["class"] = "form-control";
@@ -2499,9 +2667,8 @@ class csolicitud extends cTable {
 		// created_at
 		$this->created_at->EditAttrs["class"] = "form-control";
 		$this->created_at->EditCustomAttributes = "";
-		$this->created_at->EditValue = $this->created_at->CurrentValue;
-		$this->created_at->EditValue = ew_FormatDateTime($this->created_at->EditValue, 17);
-		$this->created_at->ViewCustomAttributes = "";
+		$this->created_at->EditValue = ew_FormatDateTime($this->created_at->CurrentValue, 17);
+		$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldTitle());
 
 		// id_sucursal
 		$this->id_sucursal->EditAttrs["class"] = "form-control";
@@ -2556,7 +2723,6 @@ class csolicitud extends cTable {
 		if (strval($this->longitud->EditValue) <> "" && is_numeric($this->longitud->EditValue)) $this->longitud->EditValue = ew_FormatNumber($this->longitud->EditValue, -2, -1, -2, 0);
 
 		// tipoinmueble
-		$this->tipoinmueble->EditAttrs["class"] = "form-control";
 		$this->tipoinmueble->EditCustomAttributes = "";
 
 		// id_ciudad_inmueble
@@ -2869,6 +3035,25 @@ class csolicitud extends cTable {
 		$this->email_contacto->EditAttrs["class"] = "form-control";
 		$this->email_contacto->EditCustomAttributes = "";
 
+		// nombre_contacto
+		$this->nombre_contacto->EditAttrs["class"] = "form-control";
+		$this->nombre_contacto->EditCustomAttributes = "";
+		$this->nombre_contacto->EditValue = $this->nombre_contacto->CurrentValue;
+		$this->nombre_contacto->PlaceHolder = ew_RemoveHtml($this->nombre_contacto->FldTitle());
+
+		// lastname
+		$this->lastname->EditAttrs["class"] = "form-control";
+		$this->lastname->EditCustomAttributes = "";
+		$this->lastname->EditValue = $this->lastname->CurrentValue;
+		$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
+
+		// monto_inicial
+		$this->monto_inicial->EditAttrs["class"] = "form-control";
+		$this->monto_inicial->EditCustomAttributes = "";
+		$this->monto_inicial->EditValue = $this->monto_inicial->CurrentValue;
+		$this->monto_inicial->PlaceHolder = ew_RemoveHtml($this->monto_inicial->FldTitle());
+		if (strval($this->monto_inicial->EditValue) <> "" && is_numeric($this->monto_inicial->EditValue)) $this->monto_inicial->EditValue = ew_FormatNumber($this->monto_inicial->EditValue, -2, -1, -2, 0);
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 	}
@@ -2896,14 +3081,11 @@ class csolicitud extends cTable {
 			if ($Doc->Horizontal) { // Horizontal format, write header
 				$Doc->BeginExportRow();
 				if ($ExportPageType == "view") {
-					if ($this->nombre_contacto->Exportable) $Doc->ExportCaption($this->nombre_contacto);
 					if ($this->name->Exportable) $Doc->ExportCaption($this->name);
-					if ($this->lastname->Exportable) $Doc->ExportCaption($this->lastname);
 					if ($this->_email->Exportable) $Doc->ExportCaption($this->_email);
 					if ($this->address->Exportable) $Doc->ExportCaption($this->address);
 					if ($this->phone->Exportable) $Doc->ExportCaption($this->phone);
 					if ($this->cell->Exportable) $Doc->ExportCaption($this->cell);
-					if ($this->id_sucursal->Exportable) $Doc->ExportCaption($this->id_sucursal);
 					if ($this->tipoinmueble->Exportable) $Doc->ExportCaption($this->tipoinmueble);
 					if ($this->id_ciudad_inmueble->Exportable) $Doc->ExportCaption($this->id_ciudad_inmueble);
 					if ($this->id_provincia_inmueble->Exportable) $Doc->ExportCaption($this->id_provincia_inmueble);
@@ -2931,15 +3113,14 @@ class csolicitud extends cTable {
 					if ($this->tipoespecial->Exportable) $Doc->ExportCaption($this->tipoespecial);
 					if ($this->imagen_tipoespecial01->Exportable) $Doc->ExportCaption($this->imagen_tipoespecial01);
 					if ($this->email_contacto->Exportable) $Doc->ExportCaption($this->email_contacto);
-				} else {
 					if ($this->nombre_contacto->Exportable) $Doc->ExportCaption($this->nombre_contacto);
+					if ($this->monto_inicial->Exportable) $Doc->ExportCaption($this->monto_inicial);
+				} else {
 					if ($this->name->Exportable) $Doc->ExportCaption($this->name);
-					if ($this->lastname->Exportable) $Doc->ExportCaption($this->lastname);
 					if ($this->_email->Exportable) $Doc->ExportCaption($this->_email);
 					if ($this->address->Exportable) $Doc->ExportCaption($this->address);
 					if ($this->phone->Exportable) $Doc->ExportCaption($this->phone);
 					if ($this->cell->Exportable) $Doc->ExportCaption($this->cell);
-					if ($this->id_sucursal->Exportable) $Doc->ExportCaption($this->id_sucursal);
 					if ($this->tipoinmueble->Exportable) $Doc->ExportCaption($this->tipoinmueble);
 					if ($this->id_ciudad_inmueble->Exportable) $Doc->ExportCaption($this->id_ciudad_inmueble);
 					if ($this->id_provincia_inmueble->Exportable) $Doc->ExportCaption($this->id_provincia_inmueble);
@@ -2953,6 +3134,9 @@ class csolicitud extends cTable {
 					if ($this->documento_mercaderia->Exportable) $Doc->ExportCaption($this->documento_mercaderia);
 					if ($this->tipoespecial->Exportable) $Doc->ExportCaption($this->tipoespecial);
 					if ($this->email_contacto->Exportable) $Doc->ExportCaption($this->email_contacto);
+					if ($this->nombre_contacto->Exportable) $Doc->ExportCaption($this->nombre_contacto);
+					if ($this->lastname->Exportable) $Doc->ExportCaption($this->lastname);
+					if ($this->monto_inicial->Exportable) $Doc->ExportCaption($this->monto_inicial);
 				}
 				$Doc->EndExportRow();
 			}
@@ -2984,14 +3168,11 @@ class csolicitud extends cTable {
 				if (!$Doc->ExportCustom) {
 					$Doc->BeginExportRow($RowCnt); // Allow CSS styles if enabled
 					if ($ExportPageType == "view") {
-						if ($this->nombre_contacto->Exportable) $Doc->ExportField($this->nombre_contacto);
 						if ($this->name->Exportable) $Doc->ExportField($this->name);
-						if ($this->lastname->Exportable) $Doc->ExportField($this->lastname);
 						if ($this->_email->Exportable) $Doc->ExportField($this->_email);
 						if ($this->address->Exportable) $Doc->ExportField($this->address);
 						if ($this->phone->Exportable) $Doc->ExportField($this->phone);
 						if ($this->cell->Exportable) $Doc->ExportField($this->cell);
-						if ($this->id_sucursal->Exportable) $Doc->ExportField($this->id_sucursal);
 						if ($this->tipoinmueble->Exportable) $Doc->ExportField($this->tipoinmueble);
 						if ($this->id_ciudad_inmueble->Exportable) $Doc->ExportField($this->id_ciudad_inmueble);
 						if ($this->id_provincia_inmueble->Exportable) $Doc->ExportField($this->id_provincia_inmueble);
@@ -3019,15 +3200,14 @@ class csolicitud extends cTable {
 						if ($this->tipoespecial->Exportable) $Doc->ExportField($this->tipoespecial);
 						if ($this->imagen_tipoespecial01->Exportable) $Doc->ExportField($this->imagen_tipoespecial01);
 						if ($this->email_contacto->Exportable) $Doc->ExportField($this->email_contacto);
-					} else {
 						if ($this->nombre_contacto->Exportable) $Doc->ExportField($this->nombre_contacto);
+						if ($this->monto_inicial->Exportable) $Doc->ExportField($this->monto_inicial);
+					} else {
 						if ($this->name->Exportable) $Doc->ExportField($this->name);
-						if ($this->lastname->Exportable) $Doc->ExportField($this->lastname);
 						if ($this->_email->Exportable) $Doc->ExportField($this->_email);
 						if ($this->address->Exportable) $Doc->ExportField($this->address);
 						if ($this->phone->Exportable) $Doc->ExportField($this->phone);
 						if ($this->cell->Exportable) $Doc->ExportField($this->cell);
-						if ($this->id_sucursal->Exportable) $Doc->ExportField($this->id_sucursal);
 						if ($this->tipoinmueble->Exportable) $Doc->ExportField($this->tipoinmueble);
 						if ($this->id_ciudad_inmueble->Exportable) $Doc->ExportField($this->id_ciudad_inmueble);
 						if ($this->id_provincia_inmueble->Exportable) $Doc->ExportField($this->id_provincia_inmueble);
@@ -3041,6 +3221,9 @@ class csolicitud extends cTable {
 						if ($this->documento_mercaderia->Exportable) $Doc->ExportField($this->documento_mercaderia);
 						if ($this->tipoespecial->Exportable) $Doc->ExportField($this->tipoespecial);
 						if ($this->email_contacto->Exportable) $Doc->ExportField($this->email_contacto);
+						if ($this->nombre_contacto->Exportable) $Doc->ExportField($this->nombre_contacto);
+						if ($this->lastname->Exportable) $Doc->ExportField($this->lastname);
+						if ($this->monto_inicial->Exportable) $Doc->ExportField($this->monto_inicial);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}
@@ -3145,6 +3328,7 @@ class csolicitud extends cTable {
 			$tipomaquinaria=explode(",", $rsnew["tipomaquinaria"]);
 			$tipomercaderia=explode(",", $rsnew["tipomercaderia"]);
 			$tipoespecial=explode(",", $rsnew["tipoespecial"]);
+			$rsnew["cell"]="591".$rsnew["cell"];
 			for($x=0;$x<count($tipoinmueble);$x++)
 			{
 				if ($tipoinmueble[$x]!=null)
@@ -3173,6 +3357,19 @@ class csolicitud extends cTable {
 					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipoespecial[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
 				}
 			}
+		 if ($rsnew["email_contacto"]!='')
+			 {
+			            $Email = new cEmail;
+						$Email->Sender= $_SESSION["emailnotificaciones"];
+						$Email->Subject = "Existe una solicitud por Invercon";
+						$Email->Content = "Existe una solicitud por Invercon";
+						$Email->Recipient =  $rsnew["email_contacto"];
+						$bEmailSent = $Email->Send();
+						$sql_new_email_secretaria="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["email_contacto"]."', NULL, NULL, 'Existe una solicitud por Invercon', '0', '0', CURRENT_TIMESTAMP)";
+							$sql_new_notificacion_secretaria = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('Existe una solicitud por Invercon', '" . $_SESSION["usr"] . "', '" . $rsnew["email_contacto"]. "', '0', '0', CURRENT_TIMESTAMP)";
+							$MyResult = ew_Execute($sql_new_email_secretaria);
+							$MyResult1 = ew_Execute($sql_new_notificacion_secretaria);
+			 }		
 	}
 
 	// Row Updating event

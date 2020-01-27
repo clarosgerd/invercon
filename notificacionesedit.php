@@ -800,26 +800,26 @@ class cnotificaciones_edit extends cnotificaciones {
 			// mensaje
 			$this->mensaje->EditAttrs["class"] = "form-control";
 			$this->mensaje->EditCustomAttributes = "";
-			$this->mensaje->EditValue = ew_HtmlEncode($this->mensaje->CurrentValue);
-			$this->mensaje->PlaceHolder = ew_RemoveHtml($this->mensaje->FldTitle());
+			$this->mensaje->EditValue = $this->mensaje->CurrentValue;
+			$this->mensaje->ViewCustomAttributes = "";
 
 			// creadopor
 			$this->creadopor->EditAttrs["class"] = "form-control";
 			$this->creadopor->EditCustomAttributes = "";
-			$this->creadopor->EditValue = ew_HtmlEncode($this->creadopor->CurrentValue);
-			$this->creadopor->PlaceHolder = ew_RemoveHtml($this->creadopor->FldTitle());
+			$this->creadopor->EditValue = $this->creadopor->CurrentValue;
+			$this->creadopor->ViewCustomAttributes = "";
 
 			// recibidopor
 			$this->recibidopor->EditAttrs["class"] = "form-control";
 			$this->recibidopor->EditCustomAttributes = "";
-			$this->recibidopor->EditValue = ew_HtmlEncode($this->recibidopor->CurrentValue);
-			$this->recibidopor->PlaceHolder = ew_RemoveHtml($this->recibidopor->FldTitle());
+			$this->recibidopor->EditValue = $this->recibidopor->CurrentValue;
+			$this->recibidopor->ViewCustomAttributes = "";
 
 			// leido
 			$this->leido->EditAttrs["class"] = "form-control";
 			$this->leido->EditCustomAttributes = "";
-			$this->leido->EditValue = ew_HtmlEncode($this->leido->CurrentValue);
-			$this->leido->PlaceHolder = ew_RemoveHtml($this->leido->FldTitle());
+			$this->leido->EditValue = $this->leido->CurrentValue;
+			$this->leido->ViewCustomAttributes = "";
 
 			// desde
 			$this->desde->EditAttrs["class"] = "form-control";
@@ -838,22 +838,27 @@ class cnotificaciones_edit extends cnotificaciones {
 
 			$this->id->LinkCustomAttributes = "";
 			$this->id->HrefValue = "";
+			$this->id->TooltipValue = "";
 
 			// mensaje
 			$this->mensaje->LinkCustomAttributes = "";
 			$this->mensaje->HrefValue = "";
+			$this->mensaje->TooltipValue = "";
 
 			// creadopor
 			$this->creadopor->LinkCustomAttributes = "";
 			$this->creadopor->HrefValue = "";
+			$this->creadopor->TooltipValue = "";
 
 			// recibidopor
 			$this->recibidopor->LinkCustomAttributes = "";
 			$this->recibidopor->HrefValue = "";
+			$this->recibidopor->TooltipValue = "";
 
 			// leido
 			$this->leido->LinkCustomAttributes = "";
 			$this->leido->HrefValue = "";
+			$this->leido->TooltipValue = "";
 
 			// desde
 			$this->desde->LinkCustomAttributes = "";
@@ -881,18 +886,6 @@ class cnotificaciones_edit extends cnotificaciones {
 		// Check if validation required
 		if (!EW_SERVER_VALIDATE)
 			return ($gsFormError == "");
-		if (!$this->mensaje->FldIsDetailKey && !is_null($this->mensaje->FormValue) && $this->mensaje->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->mensaje->FldCaption(), $this->mensaje->ReqErrMsg));
-		}
-		if (!$this->creadopor->FldIsDetailKey && !is_null($this->creadopor->FormValue) && $this->creadopor->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->creadopor->FldCaption(), $this->creadopor->ReqErrMsg));
-		}
-		if (!$this->recibidopor->FldIsDetailKey && !is_null($this->recibidopor->FormValue) && $this->recibidopor->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->recibidopor->FldCaption(), $this->recibidopor->ReqErrMsg));
-		}
-		if (!ew_CheckInteger($this->leido->FormValue)) {
-			ew_AddMessage($gsFormError, $this->leido->FldErrMsg());
-		}
 		if (!ew_CheckInteger($this->id_avaluo->FormValue)) {
 			ew_AddMessage($gsFormError, $this->id_avaluo->FldErrMsg());
 		}
@@ -931,18 +924,6 @@ class cnotificaciones_edit extends cnotificaciones {
 			$rsold = &$rs->fields;
 			$this->LoadDbValues($rsold);
 			$rsnew = array();
-
-			// mensaje
-			$this->mensaje->SetDbValueDef($rsnew, $this->mensaje->CurrentValue, "", $this->mensaje->ReadOnly);
-
-			// creadopor
-			$this->creadopor->SetDbValueDef($rsnew, $this->creadopor->CurrentValue, "", $this->creadopor->ReadOnly);
-
-			// recibidopor
-			$this->recibidopor->SetDbValueDef($rsnew, $this->recibidopor->CurrentValue, "", $this->recibidopor->ReadOnly);
-
-			// leido
-			$this->leido->SetDbValueDef($rsnew, $this->leido->CurrentValue, 0, $this->leido->ReadOnly);
 
 			// desde
 			$this->desde->SetDbValueDef($rsnew, $this->desde->CurrentValue, NULL, $this->desde->ReadOnly);
@@ -1116,18 +1097,6 @@ fnotificacionesedit.Validate = function() {
 	for (var i = startcnt; i <= rowcnt; i++) {
 		var infix = ($k[0]) ? String(i) : "";
 		$fobj.data("rowindex", infix);
-			elm = this.GetElements("x" + infix + "_mensaje");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $notificaciones->mensaje->FldCaption(), $notificaciones->mensaje->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_creadopor");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $notificaciones->creadopor->FldCaption(), $notificaciones->creadopor->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_recibidopor");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $notificaciones->recibidopor->FldCaption(), $notificaciones->recibidopor->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_leido");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($notificaciones->leido->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_id_avaluo");
 			if (elm && !ew_CheckInteger(elm.value))
 				return this.OnError(elm, "<?php echo ew_JsEncode2($notificaciones->id_avaluo->FldErrMsg()) ?>");
@@ -1214,20 +1183,24 @@ $notificaciones_edit->ShowMessage();
 <?php if ($notificaciones->mensaje->Visible) { // mensaje ?>
 <?php if ($notificaciones_edit->IsMobileOrModal) { ?>
 	<div id="r_mensaje" class="form-group">
-		<label id="elh_notificaciones_mensaje" for="x_mensaje" class="<?php echo $notificaciones_edit->LeftColumnClass ?>"><?php echo $notificaciones->mensaje->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_notificaciones_mensaje" for="x_mensaje" class="<?php echo $notificaciones_edit->LeftColumnClass ?>"><?php echo $notificaciones->mensaje->FldCaption() ?></label>
 		<div class="<?php echo $notificaciones_edit->RightColumnClass ?>"><div<?php echo $notificaciones->mensaje->CellAttributes() ?>>
 <span id="el_notificaciones_mensaje">
-<textarea data-table="notificaciones" data-field="x_mensaje" name="x_mensaje" id="x_mensaje" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($notificaciones->mensaje->getPlaceHolder()) ?>"<?php echo $notificaciones->mensaje->EditAttributes() ?>><?php echo $notificaciones->mensaje->EditValue ?></textarea>
+<span<?php echo $notificaciones->mensaje->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $notificaciones->mensaje->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="notificaciones" data-field="x_mensaje" name="x_mensaje" id="x_mensaje" value="<?php echo ew_HtmlEncode($notificaciones->mensaje->CurrentValue) ?>">
 <?php echo $notificaciones->mensaje->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_mensaje">
-		<td class="col-sm-3"><span id="elh_notificaciones_mensaje"><?php echo $notificaciones->mensaje->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
+		<td class="col-sm-3"><span id="elh_notificaciones_mensaje"><?php echo $notificaciones->mensaje->FldCaption() ?></span></td>
 		<td<?php echo $notificaciones->mensaje->CellAttributes() ?>>
 <span id="el_notificaciones_mensaje">
-<textarea data-table="notificaciones" data-field="x_mensaje" name="x_mensaje" id="x_mensaje" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($notificaciones->mensaje->getPlaceHolder()) ?>"<?php echo $notificaciones->mensaje->EditAttributes() ?>><?php echo $notificaciones->mensaje->EditValue ?></textarea>
+<span<?php echo $notificaciones->mensaje->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $notificaciones->mensaje->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="notificaciones" data-field="x_mensaje" name="x_mensaje" id="x_mensaje" value="<?php echo ew_HtmlEncode($notificaciones->mensaje->CurrentValue) ?>">
 <?php echo $notificaciones->mensaje->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1235,20 +1208,24 @@ $notificaciones_edit->ShowMessage();
 <?php if ($notificaciones->creadopor->Visible) { // creadopor ?>
 <?php if ($notificaciones_edit->IsMobileOrModal) { ?>
 	<div id="r_creadopor" class="form-group">
-		<label id="elh_notificaciones_creadopor" for="x_creadopor" class="<?php echo $notificaciones_edit->LeftColumnClass ?>"><?php echo $notificaciones->creadopor->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_notificaciones_creadopor" for="x_creadopor" class="<?php echo $notificaciones_edit->LeftColumnClass ?>"><?php echo $notificaciones->creadopor->FldCaption() ?></label>
 		<div class="<?php echo $notificaciones_edit->RightColumnClass ?>"><div<?php echo $notificaciones->creadopor->CellAttributes() ?>>
 <span id="el_notificaciones_creadopor">
-<textarea data-table="notificaciones" data-field="x_creadopor" name="x_creadopor" id="x_creadopor" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($notificaciones->creadopor->getPlaceHolder()) ?>"<?php echo $notificaciones->creadopor->EditAttributes() ?>><?php echo $notificaciones->creadopor->EditValue ?></textarea>
+<span<?php echo $notificaciones->creadopor->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $notificaciones->creadopor->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="notificaciones" data-field="x_creadopor" name="x_creadopor" id="x_creadopor" value="<?php echo ew_HtmlEncode($notificaciones->creadopor->CurrentValue) ?>">
 <?php echo $notificaciones->creadopor->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_creadopor">
-		<td class="col-sm-3"><span id="elh_notificaciones_creadopor"><?php echo $notificaciones->creadopor->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
+		<td class="col-sm-3"><span id="elh_notificaciones_creadopor"><?php echo $notificaciones->creadopor->FldCaption() ?></span></td>
 		<td<?php echo $notificaciones->creadopor->CellAttributes() ?>>
 <span id="el_notificaciones_creadopor">
-<textarea data-table="notificaciones" data-field="x_creadopor" name="x_creadopor" id="x_creadopor" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($notificaciones->creadopor->getPlaceHolder()) ?>"<?php echo $notificaciones->creadopor->EditAttributes() ?>><?php echo $notificaciones->creadopor->EditValue ?></textarea>
+<span<?php echo $notificaciones->creadopor->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $notificaciones->creadopor->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="notificaciones" data-field="x_creadopor" name="x_creadopor" id="x_creadopor" value="<?php echo ew_HtmlEncode($notificaciones->creadopor->CurrentValue) ?>">
 <?php echo $notificaciones->creadopor->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1256,20 +1233,24 @@ $notificaciones_edit->ShowMessage();
 <?php if ($notificaciones->recibidopor->Visible) { // recibidopor ?>
 <?php if ($notificaciones_edit->IsMobileOrModal) { ?>
 	<div id="r_recibidopor" class="form-group">
-		<label id="elh_notificaciones_recibidopor" for="x_recibidopor" class="<?php echo $notificaciones_edit->LeftColumnClass ?>"><?php echo $notificaciones->recibidopor->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_notificaciones_recibidopor" for="x_recibidopor" class="<?php echo $notificaciones_edit->LeftColumnClass ?>"><?php echo $notificaciones->recibidopor->FldCaption() ?></label>
 		<div class="<?php echo $notificaciones_edit->RightColumnClass ?>"><div<?php echo $notificaciones->recibidopor->CellAttributes() ?>>
 <span id="el_notificaciones_recibidopor">
-<textarea data-table="notificaciones" data-field="x_recibidopor" name="x_recibidopor" id="x_recibidopor" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($notificaciones->recibidopor->getPlaceHolder()) ?>"<?php echo $notificaciones->recibidopor->EditAttributes() ?>><?php echo $notificaciones->recibidopor->EditValue ?></textarea>
+<span<?php echo $notificaciones->recibidopor->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $notificaciones->recibidopor->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="notificaciones" data-field="x_recibidopor" name="x_recibidopor" id="x_recibidopor" value="<?php echo ew_HtmlEncode($notificaciones->recibidopor->CurrentValue) ?>">
 <?php echo $notificaciones->recibidopor->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_recibidopor">
-		<td class="col-sm-3"><span id="elh_notificaciones_recibidopor"><?php echo $notificaciones->recibidopor->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
+		<td class="col-sm-3"><span id="elh_notificaciones_recibidopor"><?php echo $notificaciones->recibidopor->FldCaption() ?></span></td>
 		<td<?php echo $notificaciones->recibidopor->CellAttributes() ?>>
 <span id="el_notificaciones_recibidopor">
-<textarea data-table="notificaciones" data-field="x_recibidopor" name="x_recibidopor" id="x_recibidopor" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($notificaciones->recibidopor->getPlaceHolder()) ?>"<?php echo $notificaciones->recibidopor->EditAttributes() ?>><?php echo $notificaciones->recibidopor->EditValue ?></textarea>
+<span<?php echo $notificaciones->recibidopor->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $notificaciones->recibidopor->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="notificaciones" data-field="x_recibidopor" name="x_recibidopor" id="x_recibidopor" value="<?php echo ew_HtmlEncode($notificaciones->recibidopor->CurrentValue) ?>">
 <?php echo $notificaciones->recibidopor->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1280,8 +1261,10 @@ $notificaciones_edit->ShowMessage();
 		<label id="elh_notificaciones_leido" for="x_leido" class="<?php echo $notificaciones_edit->LeftColumnClass ?>"><?php echo $notificaciones->leido->FldCaption() ?></label>
 		<div class="<?php echo $notificaciones_edit->RightColumnClass ?>"><div<?php echo $notificaciones->leido->CellAttributes() ?>>
 <span id="el_notificaciones_leido">
-<input type="text" data-table="notificaciones" data-field="x_leido" name="x_leido" id="x_leido" size="30" placeholder="<?php echo ew_HtmlEncode($notificaciones->leido->getPlaceHolder()) ?>" value="<?php echo $notificaciones->leido->EditValue ?>"<?php echo $notificaciones->leido->EditAttributes() ?>>
+<span<?php echo $notificaciones->leido->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $notificaciones->leido->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="notificaciones" data-field="x_leido" name="x_leido" id="x_leido" value="<?php echo ew_HtmlEncode($notificaciones->leido->CurrentValue) ?>">
 <?php echo $notificaciones->leido->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
@@ -1289,8 +1272,10 @@ $notificaciones_edit->ShowMessage();
 		<td class="col-sm-3"><span id="elh_notificaciones_leido"><?php echo $notificaciones->leido->FldCaption() ?></span></td>
 		<td<?php echo $notificaciones->leido->CellAttributes() ?>>
 <span id="el_notificaciones_leido">
-<input type="text" data-table="notificaciones" data-field="x_leido" name="x_leido" id="x_leido" size="30" placeholder="<?php echo ew_HtmlEncode($notificaciones->leido->getPlaceHolder()) ?>" value="<?php echo $notificaciones->leido->EditValue ?>"<?php echo $notificaciones->leido->EditAttributes() ?>>
+<span<?php echo $notificaciones->leido->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $notificaciones->leido->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="notificaciones" data-field="x_leido" name="x_leido" id="x_leido" value="<?php echo ew_HtmlEncode($notificaciones->leido->CurrentValue) ?>">
 <?php echo $notificaciones->leido->CustomMsg ?></td>
 	</tr>
 <?php } ?>

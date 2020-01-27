@@ -506,8 +506,6 @@ class cforgotpwd extends cusuario {
 
 		// Example:
 		//$header = "your header";
-	// Count records in a table
-	// NOTE: Modify your SQL here, replace the table name, field name and the condition
 
 	}
 

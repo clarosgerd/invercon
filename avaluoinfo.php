@@ -26,7 +26,6 @@ class cavaluo extends cTable {
 	var $estadointerno;
 	var $estadopago;
 	var $fecha_avaluo;
-	var $montoincial;
 	var $id_metodopago;
 	var $DateModified;
 	var $DateDeleted;
@@ -34,6 +33,11 @@ class cavaluo extends cTable {
 	var $ModifiedBy;
 	var $DeletedBy;
 	var $id_sucursal;
+	var $informe;
+	var $monto_pago;
+	var $montoincial;
+	var $comentario;
+	var $documento_pago;
 
 	//
 	// Table class constructor
@@ -59,9 +63,9 @@ class cavaluo extends cTable {
 		$this->ExportWordPageOrientation = "portrait"; // Page orientation (PHPWord only)
 		$this->ExportWordColumnWidth = NULL; // Cell width (PHPWord only)
 		$this->DetailAdd = FALSE; // Allow detail add
-		$this->DetailEdit = FALSE; // Allow detail edit
+		$this->DetailEdit = TRUE; // Allow detail edit
 		$this->DetailView = FALSE; // Allow detail view
-		$this->ShowMultipleDetails = FALSE; // Show multiple details
+		$this->ShowMultipleDetails = TRUE; // Show multiple details
 		$this->GridAddRowCount = 3;
 		$this->AllowAddDeleteRow = TRUE; // Allow add/delete row
 		$this->UserIDAllowSecurity = 0; // User ID Allow
@@ -156,16 +160,10 @@ class cavaluo extends cTable {
 		$this->fields['estadopago'] = &$this->estadopago;
 
 		// fecha_avaluo
-		$this->fecha_avaluo = new cField('avaluo', 'avaluo', 'x_fecha_avaluo', 'fecha_avaluo', '`fecha_avaluo`', ew_CastDateFieldForLike('`fecha_avaluo`', 10, "DB"), 135, 10, FALSE, '`fecha_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->fecha_avaluo = new cField('avaluo', 'avaluo', 'x_fecha_avaluo', 'fecha_avaluo', '`fecha_avaluo`', ew_CastDateFieldForLike('`fecha_avaluo`', 11, "DB"), 135, 11, FALSE, '`fecha_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->fecha_avaluo->Sortable = FALSE; // Allow sort
-		$this->fecha_avaluo->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_SEPARATOR"], $Language->Phrase("IncorrectDateMDY"));
+		$this->fecha_avaluo->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_SEPARATOR"], $Language->Phrase("IncorrectDateDMY"));
 		$this->fields['fecha_avaluo'] = &$this->fecha_avaluo;
-
-		// montoincial
-		$this->montoincial = new cField('avaluo', 'avaluo', 'x_montoincial', 'montoincial', '`montoincial`', '`montoincial`', 5, -1, FALSE, '`montoincial`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->montoincial->Sortable = FALSE; // Allow sort
-		$this->montoincial->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
-		$this->fields['montoincial'] = &$this->montoincial;
 
 		// id_metodopago
 		$this->id_metodopago = new cField('avaluo', 'avaluo', 'x_id_metodopago', 'id_metodopago', '`id_metodopago`', '`id_metodopago`', 3, -1, FALSE, '`id_metodopago`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
@@ -204,9 +202,36 @@ class cavaluo extends cTable {
 
 		// id_sucursal
 		$this->id_sucursal = new cField('avaluo', 'avaluo', 'x_id_sucursal', 'id_sucursal', '`id_sucursal`', '`id_sucursal`', 3, -1, FALSE, '`id_sucursal`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'HIDDEN');
-		$this->id_sucursal->Sortable = TRUE; // Allow sort
+		$this->id_sucursal->Sortable = FALSE; // Allow sort
 		$this->id_sucursal->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_sucursal'] = &$this->id_sucursal;
+
+		// informe
+		$this->informe = new cField('avaluo', 'avaluo', 'x_informe', 'informe', '`informe`', '`informe`', 205, -1, TRUE, '`informe`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
+		$this->informe->Sortable = FALSE; // Allow sort
+		$this->fields['informe'] = &$this->informe;
+
+		// monto_pago
+		$this->monto_pago = new cField('avaluo', 'avaluo', 'x_monto_pago', 'monto_pago', '`monto_pago`', '`monto_pago`', 5, -1, FALSE, '`monto_pago`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->monto_pago->Sortable = FALSE; // Allow sort
+		$this->monto_pago->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
+		$this->fields['monto_pago'] = &$this->monto_pago;
+
+		// montoincial
+		$this->montoincial = new cField('avaluo', 'avaluo', 'x_montoincial', 'montoincial', '`montoincial`', '`montoincial`', 5, -1, FALSE, '`montoincial`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->montoincial->Sortable = FALSE; // Allow sort
+		$this->montoincial->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
+		$this->fields['montoincial'] = &$this->montoincial;
+
+		// comentario
+		$this->comentario = new cField('avaluo', 'avaluo', 'x_comentario', 'comentario', '`comentario`', '`comentario`', 201, -1, FALSE, '`comentario`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
+		$this->comentario->Sortable = TRUE; // Allow sort
+		$this->fields['comentario'] = &$this->comentario;
+
+		// documento_pago
+		$this->documento_pago = new cField('avaluo', 'avaluo', 'x_documento_pago', 'documento_pago', '`documento_pago`', '`documento_pago`', 205, -1, TRUE, '`documento_pago`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
+		$this->documento_pago->Sortable = TRUE; // Allow sort
+		$this->fields['documento_pago'] = &$this->documento_pago;
 	}
 
 	// Field Visibility
@@ -229,8 +254,8 @@ class cavaluo extends cTable {
 		}
 	}
 
-	// Multiple column sort
-	function UpdateSort(&$ofld, $ctrl) {
+	// Single column sort
+	function UpdateSort(&$ofld) {
 		if ($this->CurrentOrder == $ofld->FldName) {
 			$sSortField = $ofld->FldExpression;
 			$sLastSort = $ofld->getSort();
@@ -240,33 +265,11 @@ class cavaluo extends cTable {
 				$sThisSort = ($sLastSort == "ASC") ? "DESC" : "ASC";
 			}
 			$ofld->setSort($sThisSort);
-			if ($ctrl) {
-				$sOrderBy = $this->getSessionOrderBy();
-				if (strpos($sOrderBy, $sSortField . " " . $sLastSort) !== FALSE) {
-					$sOrderBy = str_replace($sSortField . " " . $sLastSort, $sSortField . " " . $sThisSort, $sOrderBy);
-				} else {
-					if ($sOrderBy <> "") $sOrderBy .= ", ";
-					$sOrderBy .= $sSortField . " " . $sThisSort;
-				}
-				$this->setSessionOrderBy($sOrderBy); // Save to Session
-			} else {
-				$this->setSessionOrderBy($sSortField . " " . $sThisSort); // Save to Session
-			}
+			$this->setSessionOrderBy($sSortField . " " . $sThisSort); // Save to Session
 			$sSortFieldList = ($ofld->FldVirtualExpression <> "") ? $ofld->FldVirtualExpression : $sSortField;
-			if ($ctrl) {
-				$sOrderByList = $this->getSessionOrderByList();
-				if (strpos($sOrderByList, $sSortFieldList . " " . $sLastSort) !== FALSE) {
-					$sOrderByList = str_replace($sSortFieldList . " " . $sLastSort, $sSortFieldList . " " . $sThisSort, $sOrderByList);
-				} else {
-					if ($sOrderByList <> "") $sOrderByList .= ", ";
-					$sOrderByList .= $sSortFieldList . " " . $sThisSort;
-				}
-				$this->setSessionOrderByList($sOrderByList); // Save to Session
-			} else {
-				$this->setSessionOrderByList($sSortFieldList . " " . $sThisSort); // Save to Session
-			}
+			$this->setSessionOrderByList($sSortFieldList . " " . $sThisSort); // Save to Session
 		} else {
-			if (!$ctrl) $ofld->setSort("");
+			$ofld->setSort("");
 		}
 	}
 
@@ -344,6 +347,14 @@ class cavaluo extends cTable {
 			$sDetailUrl = $GLOBALS["documentosavaluo"]->GetListUrl() . "?" . EW_TABLE_SHOW_MASTER . "=" . $this->TableVar;
 			$sDetailUrl .= "&fk_id=" . urlencode($this->id->CurrentValue);
 		}
+		if ($this->getCurrentDetailTable() == "pago_avaluo") {
+			$sDetailUrl = $GLOBALS["pago_avaluo"]->GetListUrl() . "?" . EW_TABLE_SHOW_MASTER . "=" . $this->TableVar;
+			$sDetailUrl .= "&fk_id=" . urlencode($this->id->CurrentValue);
+		}
+		if ($this->getCurrentDetailTable() == "comentariosavaluo") {
+			$sDetailUrl = $GLOBALS["comentariosavaluo"]->GetListUrl() . "?" . EW_TABLE_SHOW_MASTER . "=" . $this->TableVar;
+			$sDetailUrl .= "&fk_id=" . urlencode($this->id->CurrentValue);
+		}
 		if ($sDetailUrl == "") {
 			$sDetailUrl = "avaluolist.php";
 		}
@@ -381,9 +392,19 @@ class cavaluo extends cTable {
 
 	function getSqlSelectList() { // Select for List page
 		$select = "";
-		$select = "SELECT * FROM (" .
-			"SELECT *, (SELECT CONCAT(COALESCE(`nombre`, ''),'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',COALESCE(`apellido`,'')) FROM `oficialcredito` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_oficialcredito` LIMIT 1) AS `EV__id_oficialcredito`, (SELECT CONCAT(COALESCE(`apellido`, ''),'" . ew_ValueSeparator(1, $this->id_inspector) . "',COALESCE(`nombre`,'')) FROM `inspector` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_inspector` LIMIT 1) AS `EV__id_inspector` FROM `avaluo`" .
-			") `EW_TMP_TABLE`";
+		global $gsLanguage;
+		switch ($gsLanguage) {
+		case "es":
+			$select = "SELECT * FROM (" .
+				"SELECT *, (SELECT CONCAT(COALESCE(`nombre`, ''),'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',COALESCE(`apellido`,'')) FROM `oficialcredito` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_oficialcredito` LIMIT 1) AS `EV__id_oficialcredito`, (SELECT CONCAT(COALESCE(`apellido`, ''),'" . ew_ValueSeparator(1, $this->id_inspector) . "',COALESCE(`nombre`,'')) FROM `inspector` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_inspector` LIMIT 1) AS `EV__id_inspector` FROM `avaluo`" .
+				") `EW_TMP_TABLE`";
+			break;
+		default:
+			$select = "SELECT * FROM (" .
+				"SELECT *, (SELECT CONCAT(COALESCE(`nombre`, ''),'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',COALESCE(`apellido`,'')) FROM `oficialcredito` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_oficialcredito` LIMIT 1) AS `EV__id_oficialcredito`, (SELECT CONCAT(COALESCE(`apellido`, ''),'" . ew_ValueSeparator(1, $this->id_inspector) . "',COALESCE(`nombre`,'')) FROM `inspector` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_inspector` LIMIT 1) AS `EV__id_inspector` FROM `avaluo`" .
+				") `EW_TMP_TABLE`";
+			break;
+		}
 		return ($this->_SqlSelectList <> "") ? $this->_SqlSelectList : $select;
 	}
 
@@ -688,6 +709,64 @@ class cavaluo extends cTable {
 				$rswrk->MoveNext();
 			}
 		}
+
+		// Cascade Update detail table 'pago_avaluo'
+		$bCascadeUpdate = FALSE;
+		$rscascade = array();
+		if (!is_null($rsold) && (isset($rs['id']) && $rsold['id'] <> $rs['id'])) { // Update detail field 'avaluo_id'
+			$bCascadeUpdate = TRUE;
+			$rscascade['avaluo_id'] = $rs['id']; 
+		}
+		if ($bCascadeUpdate) {
+			if (!isset($GLOBALS["pago_avaluo"])) $GLOBALS["pago_avaluo"] = new cpago_avaluo();
+			$rswrk = $GLOBALS["pago_avaluo"]->LoadRs("`avaluo_id` = " . ew_QuotedValue($rsold['id'], EW_DATATYPE_NUMBER, 'DB')); 
+			while ($rswrk && !$rswrk->EOF) {
+				$rskey = array();
+				$fldname = 'id';
+				$rskey[$fldname] = $rswrk->fields[$fldname];
+				$rsdtlold = &$rswrk->fields;
+				$rsdtlnew = array_merge($rsdtlold, $rscascade);
+
+				// Call Row_Updating event
+				$bUpdate = $GLOBALS["pago_avaluo"]->Row_Updating($rsdtlold, $rsdtlnew);
+				if ($bUpdate)
+					$bUpdate = $GLOBALS["pago_avaluo"]->Update($rscascade, $rskey, $rswrk->fields);
+				if (!$bUpdate) return FALSE;
+
+				// Call Row_Updated event
+				$GLOBALS["pago_avaluo"]->Row_Updated($rsdtlold, $rsdtlnew);
+				$rswrk->MoveNext();
+			}
+		}
+
+		// Cascade Update detail table 'comentariosavaluo'
+		$bCascadeUpdate = FALSE;
+		$rscascade = array();
+		if (!is_null($rsold) && (isset($rs['id']) && $rsold['id'] <> $rs['id'])) { // Update detail field 'id_avaluo'
+			$bCascadeUpdate = TRUE;
+			$rscascade['id_avaluo'] = $rs['id']; 
+		}
+		if ($bCascadeUpdate) {
+			if (!isset($GLOBALS["comentariosavaluo"])) $GLOBALS["comentariosavaluo"] = new ccomentariosavaluo();
+			$rswrk = $GLOBALS["comentariosavaluo"]->LoadRs("`id_avaluo` = " . ew_QuotedValue($rsold['id'], EW_DATATYPE_NUMBER, 'DB')); 
+			while ($rswrk && !$rswrk->EOF) {
+				$rskey = array();
+				$fldname = 'id';
+				$rskey[$fldname] = $rswrk->fields[$fldname];
+				$rsdtlold = &$rswrk->fields;
+				$rsdtlnew = array_merge($rsdtlold, $rscascade);
+
+				// Call Row_Updating event
+				$bUpdate = $GLOBALS["comentariosavaluo"]->Row_Updating($rsdtlold, $rsdtlnew);
+				if ($bUpdate)
+					$bUpdate = $GLOBALS["comentariosavaluo"]->Update($rscascade, $rskey, $rswrk->fields);
+				if (!$bUpdate) return FALSE;
+
+				// Call Row_Updated event
+				$GLOBALS["comentariosavaluo"]->Row_Updated($rsdtlold, $rsdtlnew);
+				$rswrk->MoveNext();
+			}
+		}
 		$bUpdate = $conn->Execute($this->UpdateSQL($rs, $where, $curfilter));
 		if ($bUpdate && $this->AuditTrailOnEdit) {
 			$rsaudit = $rs;
@@ -743,6 +822,56 @@ class cavaluo extends cTable {
 		if ($bDelete) {
 			foreach ($dtlrows as $dtlrow) {
 				$GLOBALS["documentosavaluo"]->Row_Deleted($dtlrow);
+			}
+		}
+
+		// Cascade delete detail table 'pago_avaluo'
+		if (!isset($GLOBALS["pago_avaluo"])) $GLOBALS["pago_avaluo"] = new cpago_avaluo();
+		$rscascade = $GLOBALS["pago_avaluo"]->LoadRs("`avaluo_id` = " . ew_QuotedValue($rs['id'], EW_DATATYPE_NUMBER, "DB")); 
+		$dtlrows = ($rscascade) ? $rscascade->GetRows() : array();
+
+		// Call Row Deleting event
+		foreach ($dtlrows as $dtlrow) {
+			$bDelete = $GLOBALS["pago_avaluo"]->Row_Deleting($dtlrow);
+			if (!$bDelete) break;
+		}
+		if ($bDelete) {
+			foreach ($dtlrows as $dtlrow) {
+				$bDelete = $GLOBALS["pago_avaluo"]->Delete($dtlrow); // Delete
+				if ($bDelete === FALSE)
+					break;
+			}
+		}
+
+		// Call Row Deleted event
+		if ($bDelete) {
+			foreach ($dtlrows as $dtlrow) {
+				$GLOBALS["pago_avaluo"]->Row_Deleted($dtlrow);
+			}
+		}
+
+		// Cascade delete detail table 'comentariosavaluo'
+		if (!isset($GLOBALS["comentariosavaluo"])) $GLOBALS["comentariosavaluo"] = new ccomentariosavaluo();
+		$rscascade = $GLOBALS["comentariosavaluo"]->LoadRs("`id_avaluo` = " . ew_QuotedValue($rs['id'], EW_DATATYPE_NUMBER, "DB")); 
+		$dtlrows = ($rscascade) ? $rscascade->GetRows() : array();
+
+		// Call Row Deleting event
+		foreach ($dtlrows as $dtlrow) {
+			$bDelete = $GLOBALS["comentariosavaluo"]->Row_Deleting($dtlrow);
+			if (!$bDelete) break;
+		}
+		if ($bDelete) {
+			foreach ($dtlrows as $dtlrow) {
+				$bDelete = $GLOBALS["comentariosavaluo"]->Delete($dtlrow); // Delete
+				if ($bDelete === FALSE)
+					break;
+			}
+		}
+
+		// Call Row Deleted event
+		if ($bDelete) {
+			foreach ($dtlrows as $dtlrow) {
+				$GLOBALS["comentariosavaluo"]->Row_Deleted($dtlrow);
 			}
 		}
 		if ($bDelete)
@@ -973,7 +1102,6 @@ class cavaluo extends cTable {
 		$this->estadointerno->setDbValue($rs->fields('estadointerno'));
 		$this->estadopago->setDbValue($rs->fields('estadopago'));
 		$this->fecha_avaluo->setDbValue($rs->fields('fecha_avaluo'));
-		$this->montoincial->setDbValue($rs->fields('montoincial'));
 		$this->id_metodopago->setDbValue($rs->fields('id_metodopago'));
 		$this->DateModified->setDbValue($rs->fields('DateModified'));
 		$this->DateDeleted->setDbValue($rs->fields('DateDeleted'));
@@ -981,6 +1109,11 @@ class cavaluo extends cTable {
 		$this->ModifiedBy->setDbValue($rs->fields('ModifiedBy'));
 		$this->DeletedBy->setDbValue($rs->fields('DeletedBy'));
 		$this->id_sucursal->setDbValue($rs->fields('id_sucursal'));
+		$this->informe->Upload->DbValue = $rs->fields('informe');
+		$this->monto_pago->setDbValue($rs->fields('monto_pago'));
+		$this->montoincial->setDbValue($rs->fields('montoincial'));
+		$this->comentario->setDbValue($rs->fields('comentario'));
+		$this->documento_pago->Upload->DbValue = $rs->fields('documento_pago');
 	}
 
 	// Render list row values
@@ -1007,11 +1140,8 @@ class cavaluo extends cTable {
 		// estadointerno
 		// estadopago
 		// fecha_avaluo
-		// montoincial
-
-		$this->montoincial->CellCssStyle = "white-space: nowrap;";
-
 		// id_metodopago
+
 		$this->id_metodopago->CellCssStyle = "white-space: nowrap;";
 
 		// DateModified
@@ -1030,6 +1160,11 @@ class cavaluo extends cTable {
 		$this->DeletedBy->CellCssStyle = "white-space: nowrap;";
 
 		// id_sucursal
+		// informe
+		// monto_pago
+		// montoincial
+		// comentario
+		// documento_pago
 		// id
 
 		$this->id->ViewValue = $this->id->CurrentValue;
@@ -1044,9 +1179,23 @@ class cavaluo extends cTable {
 		// tipoinmueble
 		if (strval($this->tipoinmueble->CurrentValue) <> "") {
 			$sFilterWrk = "`nombre`" . ew_SearchString("=", $this->tipoinmueble->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoinmueble->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->tipoinmueble, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1068,9 +1217,23 @@ class cavaluo extends cTable {
 		$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
 		if (strval($this->id_solicitud->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
-		$sWhereWrk = "";
-		$this->id_solicitud->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+				$sWhereWrk = "";
+				$this->id_solicitud->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+				$sWhereWrk = "";
+				$this->id_solicitud->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+				$sWhereWrk = "";
+				$this->id_solicitud->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1095,9 +1258,23 @@ class cavaluo extends cTable {
 		} else {
 		if (strval($this->id_oficialcredito->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_oficialcredito->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-		$sWhereWrk = "";
-		$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->id_oficialcredito->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->id_oficialcredito->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->id_oficialcredito->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1123,9 +1300,23 @@ class cavaluo extends cTable {
 		} else {
 		if (strval($this->id_inspector->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_inspector->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-		$sWhereWrk = "";
-		$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+				$sWhereWrk = "";
+				$this->id_inspector->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+				$sWhereWrk = "";
+				$this->id_inspector->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+				$sWhereWrk = "";
+				$this->id_inspector->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_inspector, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1161,9 +1352,23 @@ class cavaluo extends cTable {
 		// id_cliente
 		if (strval($this->id_cliente->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_cliente->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-		$sWhereWrk = "";
-		$this->id_cliente->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+				$sWhereWrk = "";
+				$this->id_cliente->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+				$sWhereWrk = "";
+				$this->id_cliente->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+				$sWhereWrk = "";
+				$this->id_cliente->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_cliente, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1185,9 +1390,23 @@ class cavaluo extends cTable {
 		// estado
 		if (strval($this->estado->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estado->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
-		$sWhereWrk = "";
-		$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+				$sWhereWrk = "";
+				$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+				$sWhereWrk = "";
+				$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+				$sWhereWrk = "";
+				$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1208,9 +1427,23 @@ class cavaluo extends cTable {
 		// estadointerno
 		if (strval($this->estadointerno->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-		$sWhereWrk = "";
-		$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1231,9 +1464,23 @@ class cavaluo extends cTable {
 		// estadopago
 		if (strval($this->estadopago->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadopago->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-		$sWhereWrk = "";
-		$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadopago, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1253,20 +1500,29 @@ class cavaluo extends cTable {
 
 		// fecha_avaluo
 		$this->fecha_avaluo->ViewValue = $this->fecha_avaluo->CurrentValue;
-		$this->fecha_avaluo->ViewValue = ew_FormatDateTime($this->fecha_avaluo->ViewValue, 10);
+		$this->fecha_avaluo->ViewValue = ew_FormatDateTime($this->fecha_avaluo->ViewValue, 11);
 		$this->fecha_avaluo->ViewCustomAttributes = "";
-
-		// montoincial
-		$this->montoincial->ViewValue = $this->montoincial->CurrentValue;
-		$this->montoincial->ViewValue = ew_FormatNumber($this->montoincial->ViewValue, 0, -2, -2, -2);
-		$this->montoincial->ViewCustomAttributes = "";
 
 		// id_metodopago
 		if (strval($this->id_metodopago->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_metodopago->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-		$sWhereWrk = "";
-		$this->id_metodopago->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id_metodopago->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id_metodopago->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id_metodopago->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_metodopago, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1309,6 +1565,37 @@ class cavaluo extends cTable {
 		// id_sucursal
 		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
 		$this->id_sucursal->ViewCustomAttributes = "";
+
+		// informe
+		if (!ew_Empty($this->informe->Upload->DbValue)) {
+			$this->informe->ViewValue = "avaluo_informe_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->informe->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->informe->Upload->DbValue, 0, 11)));
+		} else {
+			$this->informe->ViewValue = "";
+		}
+		$this->informe->ViewCustomAttributes = "";
+
+		// monto_pago
+		$this->monto_pago->ViewValue = $this->monto_pago->CurrentValue;
+		$this->monto_pago->ViewCustomAttributes = "";
+
+		// montoincial
+		$this->montoincial->ViewValue = $this->montoincial->CurrentValue;
+		$this->montoincial->ViewValue = ew_FormatNumber($this->montoincial->ViewValue, 0, -2, -2, -2);
+		$this->montoincial->ViewCustomAttributes = "";
+
+		// comentario
+		$this->comentario->ViewValue = $this->comentario->CurrentValue;
+		$this->comentario->ViewCustomAttributes = "";
+
+		// documento_pago
+		if (!ew_Empty($this->documento_pago->Upload->DbValue)) {
+			$this->documento_pago->ViewValue = "avaluo_documento_pago_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->documento_pago->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->documento_pago->Upload->DbValue, 0, 11)));
+		} else {
+			$this->documento_pago->ViewValue = "";
+		}
+		$this->documento_pago->ViewCustomAttributes = "";
 
 		// id
 		$this->id->LinkCustomAttributes = "";
@@ -1375,11 +1662,6 @@ class cavaluo extends cTable {
 		$this->fecha_avaluo->HrefValue = "";
 		$this->fecha_avaluo->TooltipValue = "";
 
-		// montoincial
-		$this->montoincial->LinkCustomAttributes = "";
-		$this->montoincial->HrefValue = "";
-		$this->montoincial->TooltipValue = "";
-
 		// id_metodopago
 		$this->id_metodopago->LinkCustomAttributes = "";
 		$this->id_metodopago->HrefValue = "";
@@ -1414,6 +1696,45 @@ class cavaluo extends cTable {
 		$this->id_sucursal->LinkCustomAttributes = "";
 		$this->id_sucursal->HrefValue = "";
 		$this->id_sucursal->TooltipValue = "";
+
+		// informe
+		$this->informe->LinkCustomAttributes = "";
+		if (!empty($this->informe->Upload->DbValue)) {
+			$this->informe->HrefValue = "avaluo_informe_bv.php?id=" . $this->id->CurrentValue;
+			$this->informe->LinkAttrs["target"] = "_blank";
+			if ($this->Export <> "") $this->informe->HrefValue = ew_FullUrl($this->informe->HrefValue, "href");
+		} else {
+			$this->informe->HrefValue = "";
+		}
+		$this->informe->HrefValue2 = "avaluo_informe_bv.php?id=" . $this->id->CurrentValue;
+		$this->informe->TooltipValue = "";
+
+		// monto_pago
+		$this->monto_pago->LinkCustomAttributes = "";
+		$this->monto_pago->HrefValue = "";
+		$this->monto_pago->TooltipValue = "";
+
+		// montoincial
+		$this->montoincial->LinkCustomAttributes = "";
+		$this->montoincial->HrefValue = "";
+		$this->montoincial->TooltipValue = "";
+
+		// comentario
+		$this->comentario->LinkCustomAttributes = "";
+		$this->comentario->HrefValue = "";
+		$this->comentario->TooltipValue = "";
+
+		// documento_pago
+		$this->documento_pago->LinkCustomAttributes = "";
+		if (!empty($this->documento_pago->Upload->DbValue)) {
+			$this->documento_pago->HrefValue = "avaluo_documento_pago_bv.php?id=" . $this->id->CurrentValue;
+			$this->documento_pago->LinkAttrs["target"] = "_blank";
+			if ($this->Export <> "") $this->documento_pago->HrefValue = ew_FullUrl($this->documento_pago->HrefValue, "href");
+		} else {
+			$this->documento_pago->HrefValue = "";
+		}
+		$this->documento_pago->HrefValue2 = "avaluo_documento_pago_bv.php?id=" . $this->id->CurrentValue;
+		$this->documento_pago->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -1453,9 +1774,23 @@ class cavaluo extends cTable {
 		$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
 		if (strval($this->id_solicitud->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
-		$sWhereWrk = "";
-		$this->id_solicitud->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+				$sWhereWrk = "";
+				$this->id_solicitud->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+				$sWhereWrk = "";
+				$this->id_solicitud->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+				$sWhereWrk = "";
+				$this->id_solicitud->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1492,8 +1827,12 @@ class cavaluo extends cTable {
 		$this->is_active->EditValue = $this->is_active->Options(TRUE);
 
 		// created_at
-		// id_cliente
+		$this->created_at->EditAttrs["class"] = "form-control";
+		$this->created_at->EditCustomAttributes = "";
+		$this->created_at->EditValue = ew_FormatDateTime($this->created_at->CurrentValue, 8);
+		$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldTitle());
 
+		// id_cliente
 		$this->id_cliente->EditAttrs["class"] = "form-control";
 		$this->id_cliente->EditCustomAttributes = "";
 
@@ -1502,9 +1841,23 @@ class cavaluo extends cTable {
 		$this->estado->EditCustomAttributes = "";
 		if (strval($this->estado->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estado->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
-		$sWhereWrk = "";
-		$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+				$sWhereWrk = "";
+				$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+				$sWhereWrk = "";
+				$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+				$sWhereWrk = "";
+				$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1527,9 +1880,23 @@ class cavaluo extends cTable {
 		$this->estadointerno->EditCustomAttributes = "";
 		if (strval($this->estadointerno->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-		$sWhereWrk = "";
-		$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1552,9 +1919,23 @@ class cavaluo extends cTable {
 		$this->estadopago->EditCustomAttributes = "";
 		if (strval($this->estadopago->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadopago->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-		$sWhereWrk = "";
-		$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadopago, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1575,15 +1956,8 @@ class cavaluo extends cTable {
 		// fecha_avaluo
 		$this->fecha_avaluo->EditAttrs["class"] = "form-control";
 		$this->fecha_avaluo->EditCustomAttributes = "";
-		$this->fecha_avaluo->EditValue = ew_FormatDateTime($this->fecha_avaluo->CurrentValue, 10);
+		$this->fecha_avaluo->EditValue = ew_FormatDateTime($this->fecha_avaluo->CurrentValue, 11);
 		$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
-
-		// montoincial
-		$this->montoincial->EditAttrs["class"] = "form-control";
-		$this->montoincial->EditCustomAttributes = "";
-		$this->montoincial->EditValue = $this->montoincial->CurrentValue;
-		$this->montoincial->PlaceHolder = ew_RemoveHtml($this->montoincial->FldTitle());
-		if (strval($this->montoincial->EditValue) <> "" && is_numeric($this->montoincial->EditValue)) $this->montoincial->EditValue = ew_FormatNumber($this->montoincial->EditValue, -2, -2, -2, -2);
 
 		// id_metodopago
 		$this->id_metodopago->EditAttrs["class"] = "form-control";
@@ -1623,6 +1997,47 @@ class cavaluo extends cTable {
 		$this->id_sucursal->EditAttrs["class"] = "form-control";
 		$this->id_sucursal->EditCustomAttributes = "";
 
+		// informe
+		$this->informe->EditAttrs["class"] = "form-control";
+		$this->informe->EditCustomAttributes = "";
+		if (!ew_Empty($this->informe->Upload->DbValue)) {
+			$this->informe->EditValue = "avaluo_informe_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->informe->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->informe->Upload->DbValue, 0, 11)));
+		} else {
+			$this->informe->EditValue = "";
+		}
+		$this->informe->ViewCustomAttributes = "";
+
+		// monto_pago
+		$this->monto_pago->EditAttrs["class"] = "form-control";
+		$this->monto_pago->EditCustomAttributes = "";
+		$this->monto_pago->EditValue = $this->monto_pago->CurrentValue;
+		$this->monto_pago->PlaceHolder = ew_RemoveHtml($this->monto_pago->FldTitle());
+		if (strval($this->monto_pago->EditValue) <> "" && is_numeric($this->monto_pago->EditValue)) $this->monto_pago->EditValue = ew_FormatNumber($this->monto_pago->EditValue, -2, -1, -2, 0);
+
+		// montoincial
+		$this->montoincial->EditAttrs["class"] = "form-control";
+		$this->montoincial->EditCustomAttributes = "";
+		$this->montoincial->EditValue = $this->montoincial->CurrentValue;
+		$this->montoincial->EditValue = ew_FormatNumber($this->montoincial->EditValue, 0, -2, -2, -2);
+		$this->montoincial->ViewCustomAttributes = "";
+
+		// comentario
+		$this->comentario->EditAttrs["class"] = "form-control";
+		$this->comentario->EditCustomAttributes = "";
+		$this->comentario->EditValue = $this->comentario->CurrentValue;
+		$this->comentario->PlaceHolder = ew_RemoveHtml($this->comentario->FldTitle());
+
+		// documento_pago
+		$this->documento_pago->EditAttrs["class"] = "form-control";
+		$this->documento_pago->EditCustomAttributes = "";
+		if (!ew_Empty($this->documento_pago->Upload->DbValue)) {
+			$this->documento_pago->EditValue = "avaluo_documento_pago_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->documento_pago->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->documento_pago->Upload->DbValue, 0, 11)));
+		} else {
+			$this->documento_pago->EditValue = "";
+		}
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 	}
@@ -1658,13 +2073,16 @@ class cavaluo extends cTable {
 					if ($this->estadointerno->Exportable) $Doc->ExportCaption($this->estadointerno);
 					if ($this->estadopago->Exportable) $Doc->ExportCaption($this->estadopago);
 					if ($this->id_sucursal->Exportable) $Doc->ExportCaption($this->id_sucursal);
+					if ($this->informe->Exportable) $Doc->ExportCaption($this->informe);
+					if ($this->monto_pago->Exportable) $Doc->ExportCaption($this->monto_pago);
+					if ($this->comentario->Exportable) $Doc->ExportCaption($this->comentario);
+					if ($this->documento_pago->Exportable) $Doc->ExportCaption($this->documento_pago);
 				} else {
 					if ($this->id_solicitud->Exportable) $Doc->ExportCaption($this->id_solicitud);
 					if ($this->id_oficialcredito->Exportable) $Doc->ExportCaption($this->id_oficialcredito);
 					if ($this->is_active->Exportable) $Doc->ExportCaption($this->is_active);
 					if ($this->estado->Exportable) $Doc->ExportCaption($this->estado);
 					if ($this->estadointerno->Exportable) $Doc->ExportCaption($this->estadointerno);
-					if ($this->id_sucursal->Exportable) $Doc->ExportCaption($this->id_sucursal);
 				}
 				$Doc->EndExportRow();
 			}
@@ -1704,13 +2122,16 @@ class cavaluo extends cTable {
 						if ($this->estadointerno->Exportable) $Doc->ExportField($this->estadointerno);
 						if ($this->estadopago->Exportable) $Doc->ExportField($this->estadopago);
 						if ($this->id_sucursal->Exportable) $Doc->ExportField($this->id_sucursal);
+						if ($this->informe->Exportable) $Doc->ExportField($this->informe);
+						if ($this->monto_pago->Exportable) $Doc->ExportField($this->monto_pago);
+						if ($this->comentario->Exportable) $Doc->ExportField($this->comentario);
+						if ($this->documento_pago->Exportable) $Doc->ExportField($this->documento_pago);
 					} else {
 						if ($this->id_solicitud->Exportable) $Doc->ExportField($this->id_solicitud);
 						if ($this->id_oficialcredito->Exportable) $Doc->ExportField($this->id_oficialcredito);
 						if ($this->is_active->Exportable) $Doc->ExportField($this->is_active);
 						if ($this->estado->Exportable) $Doc->ExportField($this->estado);
 						if ($this->estadointerno->Exportable) $Doc->ExportField($this->estadointerno);
-						if ($this->id_sucursal->Exportable) $Doc->ExportField($this->id_sucursal);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}
@@ -1921,146 +2342,146 @@ class cavaluo extends cTable {
 		// To cancel, set return value to FALSE
 	//$quantity2 = ew_Execute("UPDATE solicitud SET is_active=1 WHERE id = " . ew_AdjustSql($rsnew["id_solicitud"]));
 
-			$TheQuery="SELECT * FROM solicitud WHERE id = '" . ew_AdjustSql($rsnew["id_solicitud"]) . "'";
+		$TheQuery="SELECT * FROM solicitud WHERE id = '" . ew_AdjustSql($rsnew["id_solicitud"]) . "'";
 
-		//echo $TheQuery;
-			$all_mensaje_result = ew_Execute($TheQuery) or die("error during: ".$TheQuery);
-			if ($all_mensaje_result && $all_mensaje_result->RecordCount() > 0) {
-				$all_mensaje_result->MoveFirst();
-				$sData = "";
-				while ($all_mensaje_result && !$all_mensaje_result->EOF)
-				{
-					$nombre=$all_mensaje_result->fields["name"].$all_mensaje_result->fields["lastname"];
-					$sData .= "<p>Nombre: ".$nombre."</p>";
-					$email=$all_mensaje_result->fields[3];
-					$sData .= "<p>Correo Electronico: ".$email."</p>";
-					$address=$all_mensaje_result->fields["address"];
-					$sData .= "<p>Direccion: ".$address."</p>";
-					$telefono=$all_mensaje_result->fields["phone"];
-					$sData .= "<p>Telefono: ".$telefono."</p>";
-					$celular=$all_mensaje_result->fields["cell"];
-					$sData .= "<p>Celular: ".$celular."</p>";
-					$nombre_contacto=$all_mensaje_result->fields["nombre_contacto"];
-					$sData .= "<p>Nombre Contacto: ".$nombre_contacto."</p>";
-					$email_contacto=$all_mensaje_result->fields["email_contacto"];
-					$sData .= "<p>Email Contacto: ".$email_contacto."</p>";
-					$esinmueble=$all_mensaje_result->fields["tipoinmueble"];
-					$esvehiculo=$all_mensaje_result->fields[21];
-					$esmaquinaria=$all_mensaje_result->fields[32];
-					$esmercaderia=$all_mensaje_result->fields[43];
-					$esespecial=$all_mensaje_result->fields[43];
-					if (isset($esinmueble) && $esinmueble != ""){
+			//echo $TheQuery;
+				$all_mensaje_result = ew_Execute($TheQuery) or die("error during: ".$TheQuery);
+				if ($all_mensaje_result && $all_mensaje_result->RecordCount() > 0) {
+					$all_mensaje_result->MoveFirst();
+					$sData = "";
+					while ($all_mensaje_result && !$all_mensaje_result->EOF)
+					{
+						$nombre=$all_mensaje_result->fields["name"].$all_mensaje_result->fields["lastname"];
+						$sData .= "<p>Nombre: ".$nombre."</p>";
+						$email=$all_mensaje_result->fields[3];
+						$sData .= "<p>Correo Electronico: ".$email."</p>";
+						$address=$all_mensaje_result->fields["address"];
+						$sData .= "<p>Direccion: ".$address."</p>";
+						$telefono=$all_mensaje_result->fields["phone"];
+						$sData .= "<p>Telefono: ".$telefono."</p>";
+						$celular=$all_mensaje_result->fields["cell"];
+						$sData .= "<p>Celular: ".$celular."</p>";
+						$nombre_contacto=$all_mensaje_result->fields["nombre_contacto"];
+						$sData .= "<p>Nombre Contacto: ".$nombre_contacto."</p>";
+						$email_contacto=$all_mensaje_result->fields["email_contacto"];
+						$sData .= "<p>Email Contacto: ".$email_contacto."</p>";
+						$esinmueble=$all_mensaje_result->fields["tipoinmueble"];
+						$esvehiculo=$all_mensaje_result->fields[21];
+						$esmaquinaria=$all_mensaje_result->fields[32];
+						$esmercaderia=$all_mensaje_result->fields[43];
+						$esespecial=$all_mensaje_result->fields[43];
+						if (isset($esinmueble) && $esinmueble != ""){
 
-						//echo "es inmbueble";
-						//echo "es inmbueble";
-						//$ubicacion=$all_mensaje_result->fields["imagen_inmueble01"];
+							//echo "es inmbueble";
+							//echo "es inmbueble";
+							//$ubicacion=$all_mensaje_result->fields["imagen_inmueble01"];
 
-						$ubicacion = (isset($all_mensaje_result->fields["imagen_inmueble01"]) || $all_mensaje_result->fields["imagen_inmueble01"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Ubicacion: ".$ubicacion."</p>";
+							$ubicacion = (isset($all_mensaje_result->fields["imagen_inmueble01"]) || $all_mensaje_result->fields["imagen_inmueble01"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Ubicacion: ".$ubicacion."</p>";
 
-						//$documentos=$all_mensaje_result->fields["imagen_inmueble02"];
-						$documentos = (isset($all_mensaje_result->fields["imagen_inmueble02"]) || $all_mensaje_result->fields["imagen_inmueble02"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Documentos: ".$documentos."</p>";
+							//$documentos=$all_mensaje_result->fields["imagen_inmueble02"];
+							$documentos = (isset($all_mensaje_result->fields["imagen_inmueble02"]) || $all_mensaje_result->fields["imagen_inmueble02"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Documentos: ".$documentos."</p>";
 
-						//$folioreal=$all_mensaje_result->fields["imagen_inmueble03"];
-						$folioreal = (isset($all_mensaje_result->fields["imagen_inmueble03"]) || $all_mensaje_result->fields["imagen_inmueble03"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Folio Real: ".$folioreal."</p>";
+							//$folioreal=$all_mensaje_result->fields["imagen_inmueble03"];
+							$folioreal = (isset($all_mensaje_result->fields["imagen_inmueble03"]) || $all_mensaje_result->fields["imagen_inmueble03"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Folio Real: ".$folioreal."</p>";
 
-						//$plano=$all_mensaje_result->fields["imagen_inmueble04"];
-						$plano = (isset($all_mensaje_result->fields["imagen_inmueble04"]) || $all_mensaje_result->fields["imagen_inmueble04"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Plano: ".$plano."</p>";
+							//$plano=$all_mensaje_result->fields["imagen_inmueble04"];
+							$plano = (isset($all_mensaje_result->fields["imagen_inmueble04"]) || $all_mensaje_result->fields["imagen_inmueble04"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Plano: ".$plano."</p>";
 
-						//$impuesto=$all_mensaje_result->fields["imagen_inmueble05"];
-						$impuesto = (isset($all_mensaje_result->fields["imagen_inmueble05"]) || $all_mensaje_result->fields["imagen_inmueble05"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Impuesto: ".$impuesto."</p>";
+							//$impuesto=$all_mensaje_result->fields["imagen_inmueble05"];
+							$impuesto = (isset($all_mensaje_result->fields["imagen_inmueble05"]) || $all_mensaje_result->fields["imagen_inmueble05"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Impuesto: ".$impuesto."</p>";
+						}
+						if (isset($esvehiculo) && $esvehiculo != ""){
+
+							//$documentosvehiculo=$all_mensaje_result->fields["imagen_vehiculo01"];
+							$documentosvehiculo = (isset($all_mensaje_result->fields["imagen_vehiculo01"]) && $all_mensaje_result->fields["imagen_vehiculo01"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Docuementos del Vehiculo: ".$documentosvehiculo."</p>";
+
+							//$impuestovehiculo=$all_mensaje_result->fields["imagen_vehiculo05"];
+							$impuestovehiculo = (isset($all_mensaje_result->fields["imagen_vehiculo05"]) && $all_mensaje_result->fields["imagen_vehiculo05"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Impuestos del Vehiculo: ".$impuestovehiculo."</p>";
+
+							//$ruat=$all_mensaje_result->fields["imagen_vehiculo06"];
+							$ruat = (isset($all_mensaje_result->fields["imagen_vehiculo06"]) && $all_mensaje_result->fields["imagen_vehiculo06"] != "") ? "SI":"NO";
+							$sData .=  "<p>Tiene Ruat del Vehiculo: ".$ruat."</p>";
+
+							//$poliza=$all_mensaje_result->fields["imagen_vehiculo07"];
+							$poliza = (isset($all_mensaje_result->fields["imagen_vehiculo06"]) && $all_mensaje_result->fields["imagen_vehiculo06"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Poliza: ".$poliza."</p>";
+						}
+						if (isset($esmaquinaria) && $esmaquinaria != ""){
+
+							//$documentosmaquinaria=$all_mensaje_result->fields["imagen_maquinaria02"];
+							$documentosmaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria02"]) && $all_mensaje_result->fields["imagen_maquinaria02"] != "") ? "SI":"NO";
+							$sData .= "Tiene Documentos Maquinaria: ".$documentosmaquinaria."</p>";
+
+							//$foliorealmaquinaria=$all_mensaje_result->fields["imagen_maquinaria03"];
+							$foliorealmaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria03"]) && $all_mensaje_result->fields["imagen_maquinaria03"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Folio Maquinaria: ".$foliorealmaquinaria."</p>";
+
+							//$impuestomaquinaria=$all_mensaje_result->fields["imagen_maquinaria05"];
+							$impuestomaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria05"]) && $all_mensaje_result->fields["imagen_maquinaria05"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Impuestos Maquinaria: ".$impuestomaquinaria."</p>";
+
+							//$ruatmaquinaria=$all_mensaje_result->fields["imagen_maquinaria06"];
+							$ruatmaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria06"]) && $all_mensaje_result->fields["imagen_maquinaria06"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Rutas Maquinaria: ".$ruatmaquinaria."</p>";
+
+							//$polizamaquinaria=$all_mensaje_result->fields["imagen_maquinaria07"];
+							$polizamaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria07"]) && $all_mensaje_result->fields["imagen_maquinaria07"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Poliza Maquinaria: ".$polizamaquinaria."</p>";
+						}
+						if (isset($esmercaderia) && $esmercaderia != ""){
+
+							//$documentosmercaderia=$all_mensaje_result->fields["documento_mercaderia"];
+							$documentosmercaderia = (isset($all_mensaje_result->fields["documento_mercaderia"]) && $all_mensaje_result->fields["documento_mercaderia"] != "") ? true:false;
+							$sData .= "<p>Tiene Docuemento Mercaderia: ".$documentosmercaderia."</p>";
+
+							//$imagenmercaderia=$all_mensaje_result->fields["imagen_mercaderia01"];
+							$imagenmercaderia = (isset($all_mensaje_result->fields["imagen_mercaderia01"]) && $all_mensaje_result->fields["imagen_mercaderia01"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Imagen Mercaderia: ".$imagenmercaderia."</p>";
+						}
+						if (isset($esespecial) && $esespecial != ""){
+
+							//$imagenespecial=$all_mensaje_result->fields["imagen_tipoespecial01"];
+							$imagenespecial = (isset($all_mensaje_result->fields["imagen_tipoespecial01"]) && $all_mensaje_result->fields["imagen_tipoespecial01"] != "") ? "SI":"NO";
+							$sData .= "<p>Tiene Imagen Especial: ".$imagenespecial."</p>";
+						}
+
+						//$sData = $email.$esinmueble.$esvehiculo.$esmaquinaria.$esmercaderia;
+						$all_mensaje_result->MoveNext();
 					}
-					if (isset($esvehiculo) && $esvehiculo != ""){
 
-						//$documentosvehiculo=$all_mensaje_result->fields["imagen_vehiculo01"];
-						$documentosvehiculo = (isset($all_mensaje_result->fields["imagen_vehiculo01"]) && $all_mensaje_result->fields["imagen_vehiculo01"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Docuementos del Vehiculo: ".$documentosvehiculo."</p>";
+					//echo $sData; // display it
+					$all_mensaje_result->Close();
+					/** @var TYPE_NAME $this */
+					$assunto = "Creacion de Avaluo";
+					$texto = $sData;
+					$Email = new cEmail;
+					$Email->Sender=$_SESSION["emailnotificaciones"];
 
-						//$impuestovehiculo=$all_mensaje_result->fields["imagen_vehiculo05"];
-						$impuestovehiculo = (isset($all_mensaje_result->fields["imagen_vehiculo05"]) && $all_mensaje_result->fields["imagen_vehiculo05"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Impuestos del Vehiculo: ".$impuestovehiculo."</p>";
+				//	$Email->AddRecipient($rsnew["id_oficialcredito"]);
+				  //  $Email->AddCc($email_contacto);
 
-						//$ruat=$all_mensaje_result->fields["imagen_vehiculo06"];
-						$ruat = (isset($all_mensaje_result->fields["imagen_vehiculo06"]) && $all_mensaje_result->fields["imagen_vehiculo06"] != "") ? "SI":"NO";
-						$sData .=  "<p>Tiene Ruat del Vehiculo: ".$ruat."</p>";
-
-						//$poliza=$all_mensaje_result->fields["imagen_vehiculo07"];
-						$poliza = (isset($all_mensaje_result->fields["imagen_vehiculo06"]) && $all_mensaje_result->fields["imagen_vehiculo06"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Poliza: ".$poliza."</p>";
-					}
-					if (isset($esmaquinaria) && $esmaquinaria != ""){
-
-						//$documentosmaquinaria=$all_mensaje_result->fields["imagen_maquinaria02"];
-						$documentosmaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria02"]) && $all_mensaje_result->fields["imagen_maquinaria02"] != "") ? "SI":"NO";
-						$sData .= "Tiene Documentos Maquinaria: ".$documentosmaquinaria."</p>";
-
-						//$foliorealmaquinaria=$all_mensaje_result->fields["imagen_maquinaria03"];
-						$foliorealmaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria03"]) && $all_mensaje_result->fields["imagen_maquinaria03"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Folio Maquinaria: ".$foliorealmaquinaria."</p>";
-
-						//$impuestomaquinaria=$all_mensaje_result->fields["imagen_maquinaria05"];
-						$impuestomaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria05"]) && $all_mensaje_result->fields["imagen_maquinaria05"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Impuestos Maquinaria: ".$impuestomaquinaria."</p>";
-
-						//$ruatmaquinaria=$all_mensaje_result->fields["imagen_maquinaria06"];
-						$ruatmaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria06"]) && $all_mensaje_result->fields["imagen_maquinaria06"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Rutas Maquinaria: ".$ruatmaquinaria."</p>";
-
-						//$polizamaquinaria=$all_mensaje_result->fields["imagen_maquinaria07"];
-						$polizamaquinaria = (isset($all_mensaje_result->fields["imagen_maquinaria07"]) && $all_mensaje_result->fields["imagen_maquinaria07"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Poliza Maquinaria: ".$polizamaquinaria."</p>";
-					}
-					if (isset($esmercaderia) && $esmercaderia != ""){
-
-						//$documentosmercaderia=$all_mensaje_result->fields["documento_mercaderia"];
-						$documentosmercaderia = (isset($all_mensaje_result->fields["documento_mercaderia"]) && $all_mensaje_result->fields["documento_mercaderia"] != "") ? true:false;
-						$sData .= "<p>Tiene Docuemento Mercaderia: ".$documentosmercaderia."</p>";
-
-						//$imagenmercaderia=$all_mensaje_result->fields["imagen_mercaderia01"];
-						$imagenmercaderia = (isset($all_mensaje_result->fields["imagen_mercaderia01"]) && $all_mensaje_result->fields["imagen_mercaderia01"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Imagen Mercaderia: ".$imagenmercaderia."</p>";
-					}
-					if (isset($esespecial) && $esespecial != ""){
-
-						//$imagenespecial=$all_mensaje_result->fields["imagen_tipoespecial01"];
-						$imagenespecial = (isset($all_mensaje_result->fields["imagen_tipoespecial01"]) && $all_mensaje_result->fields["imagen_tipoespecial01"] != "") ? "SI":"NO";
-						$sData .= "<p>Tiene Imagen Especial: ".$imagenespecial."</p>";
-					}
-
-					//$sData = $email.$esinmueble.$esvehiculo.$esmaquinaria.$esmercaderia;
-					$all_mensaje_result->MoveNext();
+					$Email->Cc=$rsnew["id_inspector"];
+					$Email->Bcc=$rsnew["id_oficialcredito"];
+					$Email->Subject = $assunto;
+					$Email->Content = $sData;
+					$Email->Recipient = $rsnew["id_inspector"];
+					$bEmailSent = $Email->Send();
+					$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`, `fecharecibido`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_inspector"]."', NULL, NULL, '".$texto."', '0', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+					$sql_new_notificacion = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`, `fechaleido`) VALUES ('".$texto."', '" . $_SESSION["usr"] . "', '" . $rsnew["id_inspector"] . "', '0', '0', NOW(), NOW())";
+					$MyResult = ew_Execute($sql_new);
+					$MyResult1 = ew_Execute($sql_new_notificacion);
+					$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`, `fecharecibido`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_oficialcredito"]."', NULL, NULL, '".$texto."', '0', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+					$MyResult2 = ew_Execute($sql_new);
+				} else {
+					$this->setFailureMessage("No records found.");
 				}
-
-				//echo $sData; // display it
-				$all_mensaje_result->Close();
-				/** @var TYPE_NAME $this */
-				$assunto = "Creacion de Avaluo";
-				$texto = $sData;
-				$Email = new cEmail;
-				$Email->Sender="tester@communitysoft.org";
-
-			//	$Email->AddRecipient($rsnew["id_oficialcredito"]);
-			  //  $Email->AddCc($email_contacto);
-
-				$Email->Cc=$rsnew["id_inspector"];
-				$Email->Bcc=$rsnew["id_oficialcredito"];
-				$Email->Subject = $assunto;
-				$Email->Content = $sData;
-				$Email->Recipient = $rsnew["id_inspector"];
-				$bEmailSent = $Email->Send();
-				$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`, `fecharecibido`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_inspector"]."', NULL, NULL, '".$texto."', '0', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
-				$sql_new_notificacion = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`, `fechaleido`) VALUES ('".$texto."', '" . $_SESSION["usr"] . "', '" . $rsnew["id_inspector"] . "', '0', '0', NOW(), NOW())";
-				$MyResult = ew_Execute($sql_new);
-				$MyResult1 = ew_Execute($sql_new_notificacion);
-				$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`, `fecharecibido`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_oficialcredito"]."', NULL, NULL, '".$texto."', '0', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
-				$MyResult2 = ew_Execute($sql_new);
-			} else {
-				$this->setFailureMessage("No records found.");
-			}
 		return TRUE;
 	}
 
@@ -2075,36 +2496,97 @@ class cavaluo extends cTable {
 
 		// Enter your code here
 		// To cancel, set return value to FALSE
+	   //if ($rsnew['estado'])
 
-		if ($rsold['estado']==1)
-			{
+		/*if ($rsold['estadointerno']==1)
+				{
 					$rsnew['estado']=2;
 					$rsnew['estadointerno']=2;
-				$Email = new cEmail;
-				$Email->Sender=$_SESSION["emailnotificaciones"];
-				$Email->AddRecipient($rsnew["id_oficialcredito"]);
-				$Email->Cc=$rsnew["id_inspector"];
-				$Email->Bcc=$rsnew["id_oficialcredito"];
-				$Email->Subject = "Nueva Solicitud de Avaluo";
-				$Email->Content = "teste";
-				$Email->Recipient = $rsnew["id_inspector"];
-				$bEmailSent = $Email->Send();
-				$bEmailSent->
+					$html="<p>El codigo de avaluo". $rsnew["codigoavaluo"]."  cambio de estado en progreso</p>";
+					$html.="<p>La Hora de Avaluo es ". $rsnew["fecha_avaluo"]." </p>";
+					$Email = new cEmail;
+					$Email->Sender=$_SESSION["emailnotificaciones"];
+					$Email->Cc=$rsnew["id_inspector"];
+					$Email->Bcc=$rsnew["id_oficialcredito"];
+					$Email->Subject = "La solicitud cambio de estado";
+					$Email->Content = "<p>El codigo de avaluo". $rsnew["codigoavaluo"]."  cambio de estado en progreso</p>";
+					$Email->Recipient = $rsnew["id_inspector"];
+					$bEmailSent = $Email->Send();
 
-				//var_dump($bEmailSent);
-				//exit;
+					//var_dump($bEmailSent);
+					//exit;
 
-				$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`, `fecharecibido`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_inspector"]."', NULL, NULL, '', '0', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
-				$sql_new_notificacion = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`, `fechaleido`) VALUES ('', '" . $_SESSION["usr"] . "', '" . $rsnew["id_inspector"] . "', '0', '0', NOW(), NOW())";
-				$MyResult = ew_Execute($sql_new);
-				$MyResult1 = ew_Execute($sql_new_notificacion);
-				$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`, `fecharecibido`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_oficialcredito"]."', NULL, NULL, '', '0', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
-				$MyResult2 = ew_Execute($sql_new);
-			}
-			if ($rsold['estadointerno']==2)
+					$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_inspector"]."', NULL, NULL, 'El avaluo cambio de estado en progreso', '0', '0', CURRENT_TIMESTAMP)";
+					$sql_new_notificacion = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('El avaluo cambio de estado en progreso', '".$_SESSION["usr"]."', '" . $rsnew["id_inspector"] . "', '0', '0',CURRENT_TIMESTAMP)";
+					$MyResult = ew_Execute($sql_new);
+					$MyResult1 = ew_Execute($sql_new_notificacion);
+					$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$rsold["id_oficialcredito"]."', NULL, NULL, 'El avaluo cambio de estado en progreso', '0', '0', CURRENT_TIMESTAMP)";
+					$sql_new_notificacion = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('El avaluo cambio de estado en progreso', '".$_SESSION["usr"]."', '" . $rsnew["id_oficialcredito"] . "', '0', '0',CURRENT_TIMESTAMP)";
+				   	$sql_comentarios="INSERT INTO `comentariosavaluo`(`descripcion`, `id_avaluo`) VALUES ('".$rsnew['comentario']."','".$rsold['id']."')";
+				   	$sql_historico="INSERT INTO `historico`(`proceso`, `responsable`, `salida`, `comentario`, `id_solicitud`, `id_avaluo`) VALUES ('".$rsnew['estadointerno']."','".$rsnew["id_inspector"]."',NOW(),'".$rsnew["comentario"]."','".$rsnew["id_solicitud"]."','".$rsold["id"]."')";
+					$MyResult2 = ew_Execute($sql_new);
+					$MyResult3 = ew_Execute($sql_new_notificacion);
+					$MyResult4 = ew_Execute($sql_comentarios);
+					$MyResult5 = ew_Execute($sql_historico);
+				}
+		if ($rsold['estadointerno']==2)
 			{
-				$this->setFailureMessage("El Avaluo ya no puede ser actualizado porque esta en progreso");
-			}
+					$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]."ya no puede ser actualizado porque esta en progreso");
+
+					//return FALSE;
+		}
+	   if ($rsold['estadointerno']==3)
+			{
+					$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]."ya no puede ser actualizado porque esta en progreso");
+
+					//return FALSE;
+		}*/
+		switch ($rsold['estadointerno']) {
+		case 1:
+					$rsnew['estado']=2;
+					$rsnew['estadointerno']=2;
+					$html="<p>El codigo de avaluo". $rsnew["codigoavaluo"]."  cambio de estado en progreso</p>";
+					$html.="<p>La Hora de Avaluo es ". $rsnew["fecha_avaluo"]." </p>";
+					$Email = new cEmail;
+					$Email->Sender=$_SESSION["emailnotificaciones"];
+					$Email->Cc=$rsnew["id_inspector"];
+					$Email->Bcc=$rsnew["id_oficialcredito"];
+					$Email->Subject = "La solicitud cambio de estado";
+					$Email->Content = "<p>El codigo de avaluo". $rsnew["codigoavaluo"]."  cambio de estado en progreso</p>";
+					$Email->Recipient = $rsnew["id_inspector"];
+					$bEmailSent = $Email->Send();
+					$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$rsnew["id_inspector"]."', NULL, NULL, 'El avaluo cambio de estado en progreso', '0', '0', CURRENT_TIMESTAMP)";
+					$sql_new_notificacion = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('El avaluo cambio de estado en progreso', '".$_SESSION["usr"]."', '" . $rsnew["id_inspector"] . "', '0', '0',CURRENT_TIMESTAMP)";
+					$MyResult = ew_Execute($sql_new);
+					$MyResult1 = ew_Execute($sql_new_notificacion);
+					$sql_new="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$rsold["id_oficialcredito"]."', NULL, NULL, 'El avaluo cambio de estado en progreso', '0', '0', CURRENT_TIMESTAMP)";
+					$sql_new_notificacion = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('El avaluo cambio de estado en progreso', '".$_SESSION["usr"]."', '" . $rsnew["id_oficialcredito"] . "', '0', '0',CURRENT_TIMESTAMP)";
+				   	$sql_comentarios="INSERT INTO `comentariosavaluo`(`descripcion`, `id_avaluo`) VALUES ('".$rsnew['comentario']."','".$rsold['id']."')";
+				   	$sql_historico="INSERT INTO `historico`(`proceso`, `responsable`, `salida`, `comentario`, `id_solicitud`, `id_avaluo`) VALUES ('".$rsnew['estadointerno']."','".$rsnew["id_inspector"]."',NOW(),'".$rsnew["comentario"]."','".$rsnew["id_solicitud"]."','".$rsold["id"]."')";
+					$MyResult2 = ew_Execute($sql_new);
+					$MyResult3 = ew_Execute($sql_new_notificacion);
+					$MyResult4 = ew_Execute($sql_comentarios);
+					$MyResult5 = ew_Execute($sql_historico);
+					break;
+		case 2:
+				$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]."ya no puede ser actualizado porque esta en progreso");
+				return FALSE;
+				break;
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+				$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]."no puede ser actualizado porque esta en progreso revision");
+				break;
+		case 8:
+			   	$sql_comentarios="INSERT INTO `comentariosavaluo`(`descripcion`, `id_avaluo`) VALUES ('".$rsnew['comentario']."','".$rsold['id']."')";
+				   	$sql_historico="INSERT INTO `historico`(`proceso`, `responsable`, `salida`, `comentario`, `id_solicitud`, `id_avaluo`) VALUES ('".$rsnew['estadointerno']."','".$rsnew["id_inspector"]."',NOW(),'".$rsnew["comentario"]."','".$rsnew["id_solicitud"]."','".$rsold["id"]."')";
+					$MyResult4 = ew_Execute($sql_comentarios);
+					$MyResult5 = ew_Execute($sql_historico);
+				$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]."ya no puede ser actualizado porque esta en progreso");
+				break;
+		}
 		return TRUE;
 	}
 
@@ -2112,8 +2594,6 @@ class cavaluo extends cTable {
 	function Row_Updated($rsold, &$rsnew) {
 
 		//echo "Row Updated";
-		//$rsnew
-
 	}
 
 	// Row Update Conflict event

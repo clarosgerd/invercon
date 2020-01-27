@@ -108,7 +108,7 @@ class cemailnotificaciones extends cTable {
 
 		// id_avaluo
 		$this->id_avaluo = new cField('emailnotificaciones', 'emailnotificaciones', 'x_id_avaluo', 'id_avaluo', '`id_avaluo`', '`id_avaluo`', 3, -1, FALSE, '`id_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->id_avaluo->Sortable = TRUE; // Allow sort
+		$this->id_avaluo->Sortable = FALSE; // Allow sort
 		$this->id_avaluo->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_avaluo'] = &$this->id_avaluo;
 	}
@@ -682,8 +682,9 @@ class cemailnotificaciones extends cTable {
 		$this->fecharecibido->CellCssStyle = "white-space: nowrap;";
 
 		// id_avaluo
-		// id
+		$this->id_avaluo->CellCssStyle = "white-space: nowrap;";
 
+		// id
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
@@ -808,55 +809,57 @@ class cemailnotificaciones extends cTable {
 		$this->enviadopor->EditAttrs["class"] = "form-control";
 		$this->enviadopor->EditCustomAttributes = "";
 		$this->enviadopor->EditValue = $this->enviadopor->CurrentValue;
-		$this->enviadopor->PlaceHolder = ew_RemoveHtml($this->enviadopor->FldTitle());
+		$this->enviadopor->ViewCustomAttributes = "";
 
 		// recibidopor
 		$this->recibidopor->EditAttrs["class"] = "form-control";
 		$this->recibidopor->EditCustomAttributes = "";
 		$this->recibidopor->EditValue = $this->recibidopor->CurrentValue;
-		$this->recibidopor->PlaceHolder = ew_RemoveHtml($this->recibidopor->FldTitle());
+		$this->recibidopor->ViewCustomAttributes = "";
 
 		// cc
 		$this->cc->EditAttrs["class"] = "form-control";
 		$this->cc->EditCustomAttributes = "";
 		$this->cc->EditValue = $this->cc->CurrentValue;
-		$this->cc->PlaceHolder = ew_RemoveHtml($this->cc->FldTitle());
+		$this->cc->ViewCustomAttributes = "";
 
 		// bcc
 		$this->bcc->EditAttrs["class"] = "form-control";
 		$this->bcc->EditCustomAttributes = "";
 		$this->bcc->EditValue = $this->bcc->CurrentValue;
-		$this->bcc->PlaceHolder = ew_RemoveHtml($this->bcc->FldTitle());
+		$this->bcc->ViewCustomAttributes = "";
 
 		// mensaje
 		$this->mensaje->EditAttrs["class"] = "form-control";
 		$this->mensaje->EditCustomAttributes = "";
 		$this->mensaje->EditValue = $this->mensaje->CurrentValue;
-		$this->mensaje->PlaceHolder = ew_RemoveHtml($this->mensaje->FldTitle());
+		$this->mensaje->ViewCustomAttributes = "";
 
 		// leido
 		$this->leido->EditAttrs["class"] = "form-control";
 		$this->leido->EditCustomAttributes = "";
 		$this->leido->EditValue = $this->leido->CurrentValue;
-		$this->leido->PlaceHolder = ew_RemoveHtml($this->leido->FldTitle());
+		$this->leido->ViewCustomAttributes = "";
 
 		// estado
 		$this->estado->EditAttrs["class"] = "form-control";
 		$this->estado->EditCustomAttributes = "";
 		$this->estado->EditValue = $this->estado->CurrentValue;
-		$this->estado->PlaceHolder = ew_RemoveHtml($this->estado->FldTitle());
+		$this->estado->ViewCustomAttributes = "";
 
 		// fechaenvio
 		$this->fechaenvio->EditAttrs["class"] = "form-control";
 		$this->fechaenvio->EditCustomAttributes = "";
-		$this->fechaenvio->EditValue = ew_FormatDateTime($this->fechaenvio->CurrentValue, 8);
-		$this->fechaenvio->PlaceHolder = ew_RemoveHtml($this->fechaenvio->FldTitle());
+		$this->fechaenvio->EditValue = $this->fechaenvio->CurrentValue;
+		$this->fechaenvio->EditValue = ew_FormatDateTime($this->fechaenvio->EditValue, 0);
+		$this->fechaenvio->ViewCustomAttributes = "";
 
 		// fecharecibido
 		$this->fecharecibido->EditAttrs["class"] = "form-control";
 		$this->fecharecibido->EditCustomAttributes = "";
-		$this->fecharecibido->EditValue = ew_FormatDateTime($this->fecharecibido->CurrentValue, 8);
-		$this->fecharecibido->PlaceHolder = ew_RemoveHtml($this->fecharecibido->FldTitle());
+		$this->fecharecibido->EditValue = $this->fecharecibido->CurrentValue;
+		$this->fecharecibido->EditValue = ew_FormatDateTime($this->fecharecibido->EditValue, 0);
+		$this->fecharecibido->ViewCustomAttributes = "";
 
 		// id_avaluo
 		$this->id_avaluo->EditAttrs["class"] = "form-control";
@@ -896,9 +899,7 @@ class cemailnotificaciones extends cTable {
 					if ($this->cc->Exportable) $Doc->ExportCaption($this->cc);
 					if ($this->bcc->Exportable) $Doc->ExportCaption($this->bcc);
 					if ($this->mensaje->Exportable) $Doc->ExportCaption($this->mensaje);
-					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
 				} else {
-					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
 				}
 				$Doc->EndExportRow();
 			}
@@ -935,9 +936,7 @@ class cemailnotificaciones extends cTable {
 						if ($this->cc->Exportable) $Doc->ExportField($this->cc);
 						if ($this->bcc->Exportable) $Doc->ExportField($this->bcc);
 						if ($this->mensaje->Exportable) $Doc->ExportField($this->mensaje);
-						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
 					} else {
-						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

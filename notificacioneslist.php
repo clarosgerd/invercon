@@ -449,15 +449,13 @@ class cnotificaciones_list extends cnotificaciones {
 
 		// Setup export options
 		$this->SetupExportOptions();
-		$this->id->SetVisibility();
-		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
-			$this->id->Visible = FALSE;
 		$this->mensaje->SetVisibility();
 		$this->creadopor->SetVisibility();
 		$this->recibidopor->SetVisibility();
 		$this->leido->SetVisibility();
+		$this->fecha->SetVisibility();
+		$this->fechaleido->SetVisibility();
 		$this->desde->SetVisibility();
-		$this->id_avaluo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -599,6 +597,11 @@ class cnotificaciones_list extends cnotificaciones {
 	//
 	function Page_Main() {
 		global $objForm, $Language, $gsFormError, $gsSearchError, $Security, $EW_EXPORT;
+
+		// Multi Column
+		$this->RecPerRow = 3;
+		$this->MultiColumnCnt = 4;
+		$this->MultiColumnEditCnt = 12;
 
 		// Search filters
 		$sSrchAdvanced = ""; // Advanced search filter
@@ -810,17 +813,12 @@ class cnotificaciones_list extends cnotificaciones {
 		// Initialize
 		$sFilterList = "";
 		$sSavedFilterList = "";
-
-		// Load server side filters
-		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
-			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "fnotificacioneslistsrch");
 		$sFilterList = ew_Concat($sFilterList, $this->id->AdvancedSearch->ToJson(), ","); // Field id
 		$sFilterList = ew_Concat($sFilterList, $this->mensaje->AdvancedSearch->ToJson(), ","); // Field mensaje
 		$sFilterList = ew_Concat($sFilterList, $this->creadopor->AdvancedSearch->ToJson(), ","); // Field creadopor
 		$sFilterList = ew_Concat($sFilterList, $this->recibidopor->AdvancedSearch->ToJson(), ","); // Field recibidopor
 		$sFilterList = ew_Concat($sFilterList, $this->leido->AdvancedSearch->ToJson(), ","); // Field leido
 		$sFilterList = ew_Concat($sFilterList, $this->desde->AdvancedSearch->ToJson(), ","); // Field desde
-		$sFilterList = ew_Concat($sFilterList, $this->id_avaluo->AdvancedSearch->ToJson(), ","); // Field id_avaluo
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -912,14 +910,6 @@ class cnotificaciones_list extends cnotificaciones {
 		$this->desde->AdvancedSearch->SearchValue2 = @$filter["y_desde"];
 		$this->desde->AdvancedSearch->SearchOperator2 = @$filter["w_desde"];
 		$this->desde->AdvancedSearch->Save();
-
-		// Field id_avaluo
-		$this->id_avaluo->AdvancedSearch->SearchValue = @$filter["x_id_avaluo"];
-		$this->id_avaluo->AdvancedSearch->SearchOperator = @$filter["z_id_avaluo"];
-		$this->id_avaluo->AdvancedSearch->SearchCondition = @$filter["v_id_avaluo"];
-		$this->id_avaluo->AdvancedSearch->SearchValue2 = @$filter["y_id_avaluo"];
-		$this->id_avaluo->AdvancedSearch->SearchOperator2 = @$filter["w_id_avaluo"];
-		$this->id_avaluo->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -1077,13 +1067,13 @@ class cnotificaciones_list extends cnotificaciones {
 		if (@$_GET["order"] <> "") {
 			$this->CurrentOrder = @$_GET["order"];
 			$this->CurrentOrderType = @$_GET["ordertype"];
-			$this->UpdateSort($this->id); // id
 			$this->UpdateSort($this->mensaje); // mensaje
 			$this->UpdateSort($this->creadopor); // creadopor
 			$this->UpdateSort($this->recibidopor); // recibidopor
 			$this->UpdateSort($this->leido); // leido
+			$this->UpdateSort($this->fecha); // fecha
+			$this->UpdateSort($this->fechaleido); // fechaleido
 			$this->UpdateSort($this->desde); // desde
-			$this->UpdateSort($this->id_avaluo); // id_avaluo
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1116,13 +1106,13 @@ class cnotificaciones_list extends cnotificaciones {
 			if ($this->Command == "resetsort") {
 				$sOrderBy = "";
 				$this->setSessionOrderBy($sOrderBy);
-				$this->id->setSort("");
 				$this->mensaje->setSort("");
 				$this->creadopor->setSort("");
 				$this->recibidopor->setSort("");
 				$this->leido->setSort("");
+				$this->fecha->setSort("");
+				$this->fechaleido->setSort("");
 				$this->desde->setSort("");
-				$this->id_avaluo->setSort("");
 			}
 
 			// Reset start position
@@ -1153,12 +1143,6 @@ class cnotificaciones_list extends cnotificaciones {
 		$item->Visible = $Security->CanEdit();
 		$item->OnLeft = TRUE;
 
-		// "copy"
-		$item = &$this->ListOptions->Add("copy");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->CanAdd();
-		$item->OnLeft = TRUE;
-
 		// "delete"
 		$item = &$this->ListOptions->Add("delete");
 		$item->CssClass = "text-nowrap";
@@ -1175,7 +1159,7 @@ class cnotificaciones_list extends cnotificaciones {
 
 		// "checkbox"
 		$item = &$this->ListOptions->Add("checkbox");
-		$item->Visible = FALSE;
+		$item->Visible = $Security->CanEdit();
 		$item->OnLeft = TRUE;
 		$item->Header = "<input type=\"checkbox\" name=\"key\" id=\"key\" onclick=\"ew_SelectAllKey(this);\">";
 		$item->MoveTo(0);
@@ -1224,15 +1208,6 @@ class cnotificaciones_list extends cnotificaciones {
 			$oListOpt->Body = "";
 		}
 
-		// "copy"
-		$oListOpt = &$this->ListOptions->Items["copy"];
-		$copycaption = ew_HtmlTitle($Language->Phrase("CopyLink"));
-		if ($Security->CanAdd()) {
-			$oListOpt->Body = "<a class=\"ewRowLink ewCopy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . ew_HtmlEncode($this->CopyUrl) . "\">" . $Language->Phrase("CopyLink") . "</a>";
-		} else {
-			$oListOpt->Body = "";
-		}
-
 		// "delete"
 		$oListOpt = &$this->ListOptions->Items["delete"];
 		if ($Security->CanDelete())
@@ -1271,7 +1246,7 @@ class cnotificaciones_list extends cnotificaciones {
 
 		// "checkbox"
 		$oListOpt = &$this->ListOptions->Items["checkbox"];
-		$oListOpt->Body = "<input type=\"checkbox\" name=\"key_m[]\" class=\"ewMultiSelect\" value=\"" . ew_HtmlEncode($this->id->CurrentValue) . "\" onclick=\"ew_ClickMultiCheckbox(event);\">";
+		$oListOpt->Body = "<input type=\"checkbox\" name=\"key_m[]\" class=\"ewMultiSelect\" value=\"" . ew_HtmlEncode($this->id->CurrentValue) . "\">";
 		$this->RenderListOptionsExt();
 
 		// Call ListOptions_Rendered event
@@ -1290,6 +1265,11 @@ class cnotificaciones_list extends cnotificaciones {
 		$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . ew_HtmlEncode($this->AddUrl) . "\">" . $Language->Phrase("AddLink") . "</a>";
 		$item->Visible = ($this->AddUrl <> "" && $Security->CanAdd());
 		$option = $options["action"];
+
+		// Add multi update
+		$item = &$option->Add("multiupdate");
+		$item->Body = "<a class=\"ewAction ewMultiUpdate\" title=\"" . ew_HtmlTitle($Language->Phrase("UpdateSelectedLink")) . "\" data-table=\"notificaciones\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("UpdateSelectedLink")) . "\" href=\"\" onclick=\"ew_SubmitAction(event,{f:document.fnotificacioneslist,url:'" . $this->MultiUpdateUrl . "'});return false;\">" . $Language->Phrase("UpdateSelectedLink") . "</a>";
+		$item->Visible = ($Security->CanEdit());
 
 		// Set up options default
 		foreach ($options as &$option) {
@@ -1426,6 +1406,47 @@ class cnotificaciones_list extends cnotificaciones {
 			}
 		}
 		return FALSE; // Not ajax request
+	}
+
+	// Begin grid
+	function MultiColumnBeginGrid() {
+		$div = "";
+
+		// Get correct grid count
+		if (in_array($this->CurrentAction, array("gridadd", "gridedit"))) { // Grid add/edit
+			$cnt = $this->MultiColumnEditCnt;
+		} elseif ($this->CurrentAction == "edit" && $this->RowType == EW_ROWTYPE_EDIT) { // Inline edit row
+			$cnt = $this->MultiColumnEditCnt;
+		} else {
+			$cnt = $this->MultiColumnCnt;
+		}
+		$this->GridCnt += $cnt;
+		$this->ColCnt += 1;
+		$this->MultiColumnClass = "col-sm-" . $cnt;
+
+		// Close previous div
+		if ($this->GridCnt > 12) {
+			$this->GridCnt = $cnt;
+			$this->ColCnt = 1;
+			$div .= "</div>";
+		}
+
+		// Begin new div
+		if ($this->ColCnt == 1) {
+			$div .= "<div class=\"row ewMultiColumnRow\">";
+		}
+		return $div;
+	}
+
+	// End grid
+	function MultiColumnEndGrid() {
+		$div = "";
+
+		// Close previous div
+		if ($this->GridCnt > 0) {
+			$div = "</div>";
+		}
+		return $div;
 	}
 
 	// Set up search options
@@ -1678,6 +1699,7 @@ class cnotificaciones_list extends cnotificaciones {
 		// desde
 		// id_avaluo
 
+		$this->id_avaluo->CellCssStyle = "white-space: nowrap;";
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -1700,18 +1722,19 @@ class cnotificaciones_list extends cnotificaciones {
 		$this->leido->ViewValue = $this->leido->CurrentValue;
 		$this->leido->ViewCustomAttributes = "";
 
+		// fecha
+		$this->fecha->ViewValue = $this->fecha->CurrentValue;
+		$this->fecha->ViewValue = ew_FormatDateTime($this->fecha->ViewValue, 0);
+		$this->fecha->ViewCustomAttributes = "";
+
+		// fechaleido
+		$this->fechaleido->ViewValue = $this->fechaleido->CurrentValue;
+		$this->fechaleido->ViewValue = ew_FormatDateTime($this->fechaleido->ViewValue, 0);
+		$this->fechaleido->ViewCustomAttributes = "";
+
 		// desde
 		$this->desde->ViewValue = $this->desde->CurrentValue;
 		$this->desde->ViewCustomAttributes = "";
-
-		// id_avaluo
-		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
-		$this->id_avaluo->ViewCustomAttributes = "";
-
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
 
 			// mensaje
 			$this->mensaje->LinkCustomAttributes = "";
@@ -1733,15 +1756,20 @@ class cnotificaciones_list extends cnotificaciones {
 			$this->leido->HrefValue = "";
 			$this->leido->TooltipValue = "";
 
+			// fecha
+			$this->fecha->LinkCustomAttributes = "";
+			$this->fecha->HrefValue = "";
+			$this->fecha->TooltipValue = "";
+
+			// fechaleido
+			$this->fechaleido->LinkCustomAttributes = "";
+			$this->fechaleido->HrefValue = "";
+			$this->fechaleido->TooltipValue = "";
+
 			// desde
 			$this->desde->LinkCustomAttributes = "";
 			$this->desde->HrefValue = "";
 			$this->desde->TooltipValue = "";
-
-			// id_avaluo
-			$this->id_avaluo->LinkCustomAttributes = "";
-			$this->id_avaluo->HrefValue = "";
-			$this->id_avaluo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -2292,99 +2320,13 @@ $notificaciones_list->RenderOtherOptions();
 $notificaciones_list->ShowMessage();
 ?>
 <?php if ($notificaciones_list->TotalRecs > 0 || $notificaciones->CurrentAction <> "") { ?>
-<div class="box ewBox ewGrid<?php if ($notificaciones_list->IsAddOrEdit()) { ?> ewGridAddEdit<?php } ?> notificaciones">
-<form name="fnotificacioneslist" id="fnotificacioneslist" class="form-inline ewForm ewListForm" action="<?php echo ew_CurrentPage() ?>" method="post">
+<div class="ewMultiColumnGrid">
+<form name="fnotificacioneslist" id="fnotificacioneslist" class="form-horizontal ewForm ewListForm ewMultiColumnForm" action="<?php echo ew_CurrentPage() ?>" method="post">
 <?php if ($notificaciones_list->CheckToken) { ?>
 <input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $notificaciones_list->Token ?>">
 <?php } ?>
 <input type="hidden" name="t" value="notificaciones">
-<div id="gmp_notificaciones" class="<?php if (ew_IsResponsiveLayout()) { ?>table-responsive <?php } ?>ewGridMiddlePanel">
 <?php if ($notificaciones_list->TotalRecs > 0 || $notificaciones->CurrentAction == "gridedit") { ?>
-<table id="tbl_notificacioneslist" class="table ewTable">
-<thead>
-	<tr class="ewTableHeader">
-<?php
-
-// Header row
-$notificaciones_list->RowType = EW_ROWTYPE_HEADER;
-
-// Render list options
-$notificaciones_list->RenderListOptions();
-
-// Render list options (header, left)
-$notificaciones_list->ListOptions->Render("header", "left");
-?>
-<?php if ($notificaciones->id->Visible) { // id ?>
-	<?php if ($notificaciones->SortUrl($notificaciones->id) == "") { ?>
-		<th data-name="id" class="<?php echo $notificaciones->id->HeaderCellClass() ?>"><div id="elh_notificaciones_id" class="notificaciones_id"><div class="ewTableHeaderCaption"><?php echo $notificaciones->id->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id" class="<?php echo $notificaciones->id->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->id) ?>',1);"><div id="elh_notificaciones_id" class="notificaciones_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($notificaciones->mensaje->Visible) { // mensaje ?>
-	<?php if ($notificaciones->SortUrl($notificaciones->mensaje) == "") { ?>
-		<th data-name="mensaje" class="<?php echo $notificaciones->mensaje->HeaderCellClass() ?>"><div id="elh_notificaciones_mensaje" class="notificaciones_mensaje"><div class="ewTableHeaderCaption"><?php echo $notificaciones->mensaje->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="mensaje" class="<?php echo $notificaciones->mensaje->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->mensaje) ?>',1);"><div id="elh_notificaciones_mensaje" class="notificaciones_mensaje">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->mensaje->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->mensaje->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->mensaje->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($notificaciones->creadopor->Visible) { // creadopor ?>
-	<?php if ($notificaciones->SortUrl($notificaciones->creadopor) == "") { ?>
-		<th data-name="creadopor" class="<?php echo $notificaciones->creadopor->HeaderCellClass() ?>"><div id="elh_notificaciones_creadopor" class="notificaciones_creadopor"><div class="ewTableHeaderCaption"><?php echo $notificaciones->creadopor->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="creadopor" class="<?php echo $notificaciones->creadopor->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->creadopor) ?>',1);"><div id="elh_notificaciones_creadopor" class="notificaciones_creadopor">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->creadopor->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->creadopor->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->creadopor->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($notificaciones->recibidopor->Visible) { // recibidopor ?>
-	<?php if ($notificaciones->SortUrl($notificaciones->recibidopor) == "") { ?>
-		<th data-name="recibidopor" class="<?php echo $notificaciones->recibidopor->HeaderCellClass() ?>"><div id="elh_notificaciones_recibidopor" class="notificaciones_recibidopor"><div class="ewTableHeaderCaption"><?php echo $notificaciones->recibidopor->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="recibidopor" class="<?php echo $notificaciones->recibidopor->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->recibidopor) ?>',1);"><div id="elh_notificaciones_recibidopor" class="notificaciones_recibidopor">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->recibidopor->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->recibidopor->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->recibidopor->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($notificaciones->leido->Visible) { // leido ?>
-	<?php if ($notificaciones->SortUrl($notificaciones->leido) == "") { ?>
-		<th data-name="leido" class="<?php echo $notificaciones->leido->HeaderCellClass() ?>"><div id="elh_notificaciones_leido" class="notificaciones_leido"><div class="ewTableHeaderCaption"><?php echo $notificaciones->leido->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="leido" class="<?php echo $notificaciones->leido->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->leido) ?>',1);"><div id="elh_notificaciones_leido" class="notificaciones_leido">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->leido->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->leido->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->leido->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($notificaciones->desde->Visible) { // desde ?>
-	<?php if ($notificaciones->SortUrl($notificaciones->desde) == "") { ?>
-		<th data-name="desde" class="<?php echo $notificaciones->desde->HeaderCellClass() ?>"><div id="elh_notificaciones_desde" class="notificaciones_desde"><div class="ewTableHeaderCaption"><?php echo $notificaciones->desde->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="desde" class="<?php echo $notificaciones->desde->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->desde) ?>',1);"><div id="elh_notificaciones_desde" class="notificaciones_desde">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->desde->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->desde->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->desde->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
-	<?php if ($notificaciones->SortUrl($notificaciones->id_avaluo) == "") { ?>
-		<th data-name="id_avaluo" class="<?php echo $notificaciones->id_avaluo->HeaderCellClass() ?>"><div id="elh_notificaciones_id_avaluo" class="notificaciones_id_avaluo"><div class="ewTableHeaderCaption"><?php echo $notificaciones->id_avaluo->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id_avaluo" class="<?php echo $notificaciones->id_avaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->id_avaluo) ?>',1);"><div id="elh_notificaciones_id_avaluo" class="notificaciones_id_avaluo">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->id_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->id_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->id_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php
-
-// Render list options (header, right)
-$notificaciones_list->ListOptions->Render("header", "right");
-?>
-	</tr>
-</thead>
-<tbody>
 <?php
 if ($notificaciones->ExportAll && $notificaciones->Export <> "") {
 	$notificaciones_list->StopRec = $notificaciones_list->TotalRecs;
@@ -2405,11 +2347,6 @@ if ($notificaciones_list->Recordset && !$notificaciones_list->Recordset->EOF) {
 } elseif (!$notificaciones->AllowAddDeleteRow && $notificaciones_list->StopRec == 0) {
 	$notificaciones_list->StopRec = $notificaciones->GridAddRowCount;
 }
-
-// Initialize aggregate
-$notificaciones->RowType = EW_ROWTYPE_AGGREGATEINIT;
-$notificaciones->ResetAttrs();
-$notificaciones_list->RenderRow();
 while ($notificaciones_list->RecCnt < $notificaciones_list->StopRec) {
 	$notificaciones_list->RecCnt++;
 	if (intval($notificaciones_list->RecCnt) >= intval($notificaciones_list->StartRec)) {
@@ -2436,87 +2373,265 @@ while ($notificaciones_list->RecCnt < $notificaciones_list->StopRec) {
 		// Render list options
 		$notificaciones_list->RenderListOptions();
 ?>
-	<tr<?php echo $notificaciones->RowAttributes() ?>>
-<?php
-
-// Render list options (body, left)
-$notificaciones_list->ListOptions->Render("body", "left", $notificaciones_list->RowCnt);
-?>
-	<?php if ($notificaciones->id->Visible) { // id ?>
-		<td data-name="id"<?php echo $notificaciones->id->CellAttributes() ?>>
-<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_id" class="notificaciones_id">
-<span<?php echo $notificaciones->id->ViewAttributes() ?>>
-<?php echo $notificaciones->id->ListViewValue() ?></span>
-</span>
-</td>
+<?php echo $notificaciones_list->MultiColumnBeginGrid() ?>
+<div class="<?php echo $notificaciones_list->MultiColumnClass ?>"<?php echo $notificaciones->RowAttributes() ?>>
+	<?php if ($notificaciones->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+	<div class="box ewBox">
+	<div class="box-body no-padding">
+	<table class="table table-striped table-bordered table-hover table-condensed ewViewTable">
+	<?php } else { // Add/edit record ?>
+	<div class="box ewBox">
+	<div class="box-body">
 	<?php } ?>
 	<?php if ($notificaciones->mensaje->Visible) { // mensaje ?>
-		<td data-name="mensaje"<?php echo $notificaciones->mensaje->CellAttributes() ?>>
-<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_mensaje" class="notificaciones_mensaje">
+		<?php if ($notificaciones->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+		<tr>
+			<td class="ewTableHeader <?php echo $notificaciones_list->LeftColumnClass ?>"><span class="notificaciones_mensaje">
+<?php if ($notificaciones->Export <> "" || $notificaciones->SortUrl($notificaciones->mensaje) == "") { ?>
+				<div class="ewTableHeaderCaption"><?php echo $notificaciones->mensaje->FldCaption() ?></div>
+<?php } else { ?>
+				<div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->mensaje) ?>',1);">
+				<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->mensaje->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->mensaje->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->mensaje->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+				</div>
+<?php } ?>
+			</span></td>
+			<td<?php echo $notificaciones->mensaje->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_mensaje">
 <span<?php echo $notificaciones->mensaje->ViewAttributes() ?>>
 <?php echo $notificaciones->mensaje->ListViewValue() ?></span>
 </span>
 </td>
+		</tr>
+		<?php } else { // Add/edit record ?>
+		<div class="form-group notificaciones_mensaje">
+			<label class="<?php echo $notificaciones_list->LeftColumnClass ?>"><?php echo $notificaciones->mensaje->FldCaption() ?></label>
+			<div class="<?php echo $notificaciones_list->RightColumnClass ?>"><div<?php echo $notificaciones->mensaje->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_mensaje">
+<span<?php echo $notificaciones->mensaje->ViewAttributes() ?>>
+<?php echo $notificaciones->mensaje->ListViewValue() ?></span>
+</span>
+</div></div>
+		</div>
+		<?php } ?>
 	<?php } ?>
 	<?php if ($notificaciones->creadopor->Visible) { // creadopor ?>
-		<td data-name="creadopor"<?php echo $notificaciones->creadopor->CellAttributes() ?>>
-<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_creadopor" class="notificaciones_creadopor">
+		<?php if ($notificaciones->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+		<tr>
+			<td class="ewTableHeader <?php echo $notificaciones_list->LeftColumnClass ?>"><span class="notificaciones_creadopor">
+<?php if ($notificaciones->Export <> "" || $notificaciones->SortUrl($notificaciones->creadopor) == "") { ?>
+				<div class="ewTableHeaderCaption"><?php echo $notificaciones->creadopor->FldCaption() ?></div>
+<?php } else { ?>
+				<div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->creadopor) ?>',1);">
+				<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->creadopor->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->creadopor->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->creadopor->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+				</div>
+<?php } ?>
+			</span></td>
+			<td<?php echo $notificaciones->creadopor->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_creadopor">
 <span<?php echo $notificaciones->creadopor->ViewAttributes() ?>>
 <?php echo $notificaciones->creadopor->ListViewValue() ?></span>
 </span>
 </td>
+		</tr>
+		<?php } else { // Add/edit record ?>
+		<div class="form-group notificaciones_creadopor">
+			<label class="<?php echo $notificaciones_list->LeftColumnClass ?>"><?php echo $notificaciones->creadopor->FldCaption() ?></label>
+			<div class="<?php echo $notificaciones_list->RightColumnClass ?>"><div<?php echo $notificaciones->creadopor->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_creadopor">
+<span<?php echo $notificaciones->creadopor->ViewAttributes() ?>>
+<?php echo $notificaciones->creadopor->ListViewValue() ?></span>
+</span>
+</div></div>
+		</div>
+		<?php } ?>
 	<?php } ?>
 	<?php if ($notificaciones->recibidopor->Visible) { // recibidopor ?>
-		<td data-name="recibidopor"<?php echo $notificaciones->recibidopor->CellAttributes() ?>>
-<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_recibidopor" class="notificaciones_recibidopor">
+		<?php if ($notificaciones->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+		<tr>
+			<td class="ewTableHeader <?php echo $notificaciones_list->LeftColumnClass ?>"><span class="notificaciones_recibidopor">
+<?php if ($notificaciones->Export <> "" || $notificaciones->SortUrl($notificaciones->recibidopor) == "") { ?>
+				<div class="ewTableHeaderCaption"><?php echo $notificaciones->recibidopor->FldCaption() ?></div>
+<?php } else { ?>
+				<div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->recibidopor) ?>',1);">
+				<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->recibidopor->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->recibidopor->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->recibidopor->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+				</div>
+<?php } ?>
+			</span></td>
+			<td<?php echo $notificaciones->recibidopor->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_recibidopor">
 <span<?php echo $notificaciones->recibidopor->ViewAttributes() ?>>
 <?php echo $notificaciones->recibidopor->ListViewValue() ?></span>
 </span>
 </td>
+		</tr>
+		<?php } else { // Add/edit record ?>
+		<div class="form-group notificaciones_recibidopor">
+			<label class="<?php echo $notificaciones_list->LeftColumnClass ?>"><?php echo $notificaciones->recibidopor->FldCaption() ?></label>
+			<div class="<?php echo $notificaciones_list->RightColumnClass ?>"><div<?php echo $notificaciones->recibidopor->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_recibidopor">
+<span<?php echo $notificaciones->recibidopor->ViewAttributes() ?>>
+<?php echo $notificaciones->recibidopor->ListViewValue() ?></span>
+</span>
+</div></div>
+		</div>
+		<?php } ?>
 	<?php } ?>
 	<?php if ($notificaciones->leido->Visible) { // leido ?>
-		<td data-name="leido"<?php echo $notificaciones->leido->CellAttributes() ?>>
-<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_leido" class="notificaciones_leido">
+		<?php if ($notificaciones->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+		<tr>
+			<td class="ewTableHeader <?php echo $notificaciones_list->LeftColumnClass ?>"><span class="notificaciones_leido">
+<?php if ($notificaciones->Export <> "" || $notificaciones->SortUrl($notificaciones->leido) == "") { ?>
+				<div class="ewTableHeaderCaption"><?php echo $notificaciones->leido->FldCaption() ?></div>
+<?php } else { ?>
+				<div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->leido) ?>',1);">
+				<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->leido->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->leido->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->leido->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+				</div>
+<?php } ?>
+			</span></td>
+			<td<?php echo $notificaciones->leido->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_leido">
 <span<?php echo $notificaciones->leido->ViewAttributes() ?>>
 <?php echo $notificaciones->leido->ListViewValue() ?></span>
 </span>
 </td>
+		</tr>
+		<?php } else { // Add/edit record ?>
+		<div class="form-group notificaciones_leido">
+			<label class="<?php echo $notificaciones_list->LeftColumnClass ?>"><?php echo $notificaciones->leido->FldCaption() ?></label>
+			<div class="<?php echo $notificaciones_list->RightColumnClass ?>"><div<?php echo $notificaciones->leido->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_leido">
+<span<?php echo $notificaciones->leido->ViewAttributes() ?>>
+<?php echo $notificaciones->leido->ListViewValue() ?></span>
+</span>
+</div></div>
+		</div>
+		<?php } ?>
+	<?php } ?>
+	<?php if ($notificaciones->fecha->Visible) { // fecha ?>
+		<?php if ($notificaciones->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+		<tr>
+			<td class="ewTableHeader <?php echo $notificaciones_list->LeftColumnClass ?>"><span class="notificaciones_fecha">
+<?php if ($notificaciones->Export <> "" || $notificaciones->SortUrl($notificaciones->fecha) == "") { ?>
+				<div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $notificaciones->fecha->FldCaption() ?></div>
+<?php } else { ?>
+				<div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->fecha) ?>',1);">
+				<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->fecha->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->fecha->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->fecha->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+				</div>
+<?php } ?>
+			</span></td>
+			<td<?php echo $notificaciones->fecha->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_fecha">
+<span<?php echo $notificaciones->fecha->ViewAttributes() ?>>
+<?php echo $notificaciones->fecha->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+		<?php } else { // Add/edit record ?>
+		<div class="form-group notificaciones_fecha">
+			<label class="<?php echo $notificaciones_list->LeftColumnClass ?>"><?php echo $notificaciones->fecha->FldCaption() ?></label>
+			<div class="<?php echo $notificaciones_list->RightColumnClass ?>"><div<?php echo $notificaciones->fecha->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_fecha">
+<span<?php echo $notificaciones->fecha->ViewAttributes() ?>>
+<?php echo $notificaciones->fecha->ListViewValue() ?></span>
+</span>
+</div></div>
+		</div>
+		<?php } ?>
+	<?php } ?>
+	<?php if ($notificaciones->fechaleido->Visible) { // fechaleido ?>
+		<?php if ($notificaciones->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+		<tr>
+			<td class="ewTableHeader <?php echo $notificaciones_list->LeftColumnClass ?>"><span class="notificaciones_fechaleido">
+<?php if ($notificaciones->Export <> "" || $notificaciones->SortUrl($notificaciones->fechaleido) == "") { ?>
+				<div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $notificaciones->fechaleido->FldCaption() ?></div>
+<?php } else { ?>
+				<div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->fechaleido) ?>',1);">
+				<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->fechaleido->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->fechaleido->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->fechaleido->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+				</div>
+<?php } ?>
+			</span></td>
+			<td<?php echo $notificaciones->fechaleido->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_fechaleido">
+<span<?php echo $notificaciones->fechaleido->ViewAttributes() ?>>
+<?php echo $notificaciones->fechaleido->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+		<?php } else { // Add/edit record ?>
+		<div class="form-group notificaciones_fechaleido">
+			<label class="<?php echo $notificaciones_list->LeftColumnClass ?>"><?php echo $notificaciones->fechaleido->FldCaption() ?></label>
+			<div class="<?php echo $notificaciones_list->RightColumnClass ?>"><div<?php echo $notificaciones->fechaleido->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_fechaleido">
+<span<?php echo $notificaciones->fechaleido->ViewAttributes() ?>>
+<?php echo $notificaciones->fechaleido->ListViewValue() ?></span>
+</span>
+</div></div>
+		</div>
+		<?php } ?>
 	<?php } ?>
 	<?php if ($notificaciones->desde->Visible) { // desde ?>
-		<td data-name="desde"<?php echo $notificaciones->desde->CellAttributes() ?>>
-<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_desde" class="notificaciones_desde">
+		<?php if ($notificaciones->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+		<tr>
+			<td class="ewTableHeader <?php echo $notificaciones_list->LeftColumnClass ?>"><span class="notificaciones_desde">
+<?php if ($notificaciones->Export <> "" || $notificaciones->SortUrl($notificaciones->desde) == "") { ?>
+				<div class="ewTableHeaderCaption"><?php echo $notificaciones->desde->FldCaption() ?></div>
+<?php } else { ?>
+				<div class="ewPointer" onclick="ew_Sort(event,'<?php echo $notificaciones->SortUrl($notificaciones->desde) ?>',1);">
+				<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $notificaciones->desde->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($notificaciones->desde->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($notificaciones->desde->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+				</div>
+<?php } ?>
+			</span></td>
+			<td<?php echo $notificaciones->desde->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_desde">
 <span<?php echo $notificaciones->desde->ViewAttributes() ?>>
 <?php echo $notificaciones->desde->ListViewValue() ?></span>
 </span>
 </td>
-	<?php } ?>
-	<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
-		<td data-name="id_avaluo"<?php echo $notificaciones->id_avaluo->CellAttributes() ?>>
-<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_id_avaluo" class="notificaciones_id_avaluo">
-<span<?php echo $notificaciones->id_avaluo->ViewAttributes() ?>>
-<?php echo $notificaciones->id_avaluo->ListViewValue() ?></span>
+		</tr>
+		<?php } else { // Add/edit record ?>
+		<div class="form-group notificaciones_desde">
+			<label class="<?php echo $notificaciones_list->LeftColumnClass ?>"><?php echo $notificaciones->desde->FldCaption() ?></label>
+			<div class="<?php echo $notificaciones_list->RightColumnClass ?>"><div<?php echo $notificaciones->desde->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_list->RowCnt ?>_notificaciones_desde">
+<span<?php echo $notificaciones->desde->ViewAttributes() ?>>
+<?php echo $notificaciones->desde->ListViewValue() ?></span>
 </span>
-</td>
+</div></div>
+		</div>
+		<?php } ?>
 	<?php } ?>
+	<?php if ($notificaciones->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+	</table>
+	</div>
+	<?php } else { // Add/edit record ?>
+	</div>
+	<?php } ?>
+<?php if ($notificaciones_list->Export == "") { ?>
+<div class="box-footer">
+<div class="ewMultiColumnListOption">
 <?php
 
-// Render list options (body, right)
-$notificaciones_list->ListOptions->Render("body", "right", $notificaciones_list->RowCnt);
+// Render list options (body, bottom)
+$notificaciones_list->ListOptions->Render("body", "bottom", $notificaciones_list->RowCnt);
 ?>
-	</tr>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
+</div>
+</div>
 <?php
 	}
 	if ($notificaciones->CurrentAction <> "gridadd")
 		$notificaciones_list->Recordset->MoveNext();
 }
 ?>
-</tbody>
-</table>
+<?php echo $notificaciones_list->MultiColumnEndGrid() ?>
+<div class="clearfix"></div>
 <?php } ?>
 <?php if ($notificaciones->CurrentAction == "") { ?>
 <input type="hidden" name="a_list" id="a_list" value="">
 <?php } ?>
-</div>
 </form>
 <?php
 
@@ -2525,7 +2640,7 @@ if ($notificaciones_list->Recordset)
 	$notificaciones_list->Recordset->Close();
 ?>
 <?php if ($notificaciones->Export == "") { ?>
-<div class="box-footer ewGridLowerPanel">
+<div>
 <?php if ($notificaciones->CurrentAction <> "gridadd" && $notificaciones->CurrentAction <> "gridedit") { ?>
 <form name="ewPagerForm" class="ewForm form-inline ewPagerForm" action="<?php echo ew_CurrentPage() ?>">
 <?php if (!isset($notificaciones_list->Pager)) $notificaciones_list->Pager = new cNumericPager($notificaciones_list->StartRec, $notificaciones_list->DisplayRecs, $notificaciones_list->TotalRecs, $notificaciones_list->RecRange, $notificaciones_list->AutoHidePager) ?>

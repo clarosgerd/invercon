@@ -380,15 +380,11 @@ class cnotificaciones_view extends cnotificaciones {
 		// 
 
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
-		$this->id->SetVisibility();
-		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
-			$this->id->Visible = FALSE;
 		$this->mensaje->SetVisibility();
 		$this->creadopor->SetVisibility();
 		$this->recibidopor->SetVisibility();
 		$this->leido->SetVisibility();
 		$this->desde->SetVisibility();
-		$this->id_avaluo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -555,15 +551,6 @@ class cnotificaciones_view extends cnotificaciones {
 		else
 			$item->Body = "<a class=\"ewAction ewEdit\" title=\"" . $editcaption . "\" data-caption=\"" . $editcaption . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("ViewPageEditLink") . "</a>";
 		$item->Visible = ($this->EditUrl <> "" && $Security->CanEdit());
-
-		// Copy
-		$item = &$option->Add("copy");
-		$copycaption = ew_HtmlTitle($Language->Phrase("ViewPageCopyLink"));
-		if ($this->IsModal) // Modal
-			$item->Body = "<a class=\"ewAction ewCopy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'AddBtn',url:'" . ew_HtmlEncode($this->CopyUrl) . "'});\">" . $Language->Phrase("ViewPageCopyLink") . "</a>";
-		else
-			$item->Body = "<a class=\"ewAction ewCopy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . ew_HtmlEncode($this->CopyUrl) . "\">" . $Language->Phrase("ViewPageCopyLink") . "</a>";
-		$item->Visible = ($this->CopyUrl <> "" && $Security->CanAdd());
 
 		// Delete
 		$item = &$option->Add("delete");
@@ -751,15 +738,6 @@ class cnotificaciones_view extends cnotificaciones {
 		$this->desde->ViewValue = $this->desde->CurrentValue;
 		$this->desde->ViewCustomAttributes = "";
 
-		// id_avaluo
-		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
-		$this->id_avaluo->ViewCustomAttributes = "";
-
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
-
 			// mensaje
 			$this->mensaje->LinkCustomAttributes = "";
 			$this->mensaje->HrefValue = "";
@@ -784,11 +762,6 @@ class cnotificaciones_view extends cnotificaciones {
 			$this->desde->LinkCustomAttributes = "";
 			$this->desde->HrefValue = "";
 			$this->desde->TooltipValue = "";
-
-			// id_avaluo
-			$this->id_avaluo->LinkCustomAttributes = "";
-			$this->id_avaluo->HrefValue = "";
-			$this->id_avaluo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -972,17 +945,6 @@ $notificaciones_view->ShowMessage();
 <input type="hidden" name="t" value="notificaciones">
 <input type="hidden" name="modal" value="<?php echo intval($notificaciones_view->IsModal) ?>">
 <table class="table table-striped table-bordered table-hover table-condensed ewViewTable">
-<?php if ($notificaciones->id->Visible) { // id ?>
-	<tr id="r_id">
-		<td class="col-sm-3"><span id="elh_notificaciones_id"><?php echo $notificaciones->id->FldCaption() ?></span></td>
-		<td data-name="id"<?php echo $notificaciones->id->CellAttributes() ?>>
-<span id="el_notificaciones_id">
-<span<?php echo $notificaciones->id->ViewAttributes() ?>>
-<?php echo $notificaciones->id->ViewValue ?></span>
-</span>
-</td>
-	</tr>
-<?php } ?>
 <?php if ($notificaciones->mensaje->Visible) { // mensaje ?>
 	<tr id="r_mensaje">
 		<td class="col-sm-3"><span id="elh_notificaciones_mensaje"><?php echo $notificaciones->mensaje->FldCaption() ?></span></td>
@@ -1034,17 +996,6 @@ $notificaciones_view->ShowMessage();
 <span id="el_notificaciones_desde">
 <span<?php echo $notificaciones->desde->ViewAttributes() ?>>
 <?php echo $notificaciones->desde->ViewValue ?></span>
-</span>
-</td>
-	</tr>
-<?php } ?>
-<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
-	<tr id="r_id_avaluo">
-		<td class="col-sm-3"><span id="elh_notificaciones_id_avaluo"><?php echo $notificaciones->id_avaluo->FldCaption() ?></span></td>
-		<td data-name="id_avaluo"<?php echo $notificaciones->id_avaluo->CellAttributes() ?>>
-<span id="el_notificaciones_id_avaluo">
-<span<?php echo $notificaciones->id_avaluo->ViewAttributes() ?>>
-<?php echo $notificaciones->id_avaluo->ViewValue ?></span>
 </span>
 </td>
 	</tr>

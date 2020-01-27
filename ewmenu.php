@@ -2,16 +2,19 @@
 
 // Menu
 $RootMenu = new cMenu("RootMenu", TRUE);
+$RootMenu->AddMenuItem(327, "mi_reservacionesviewsecretaria_php", $Language->MenuPhrase("327", "MenuText"), "reservacionesviewsecretaria.php", -1, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}reservacionesviewsecretaria.php'), FALSE, TRUE, "");
+$RootMenu->AddMenuItem(325, "mci_Dashboard", $Language->MenuPhrase("325", "MenuText"), "", -1, "", TRUE, FALSE, TRUE, "fa fa-dashboard");
+$RootMenu->AddMenuItem(269, "mi_dashboardv1_php", $Language->MenuPhrase("269", "MenuText"), "dashboardv1.php", 325, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}dashboardv1.php'), FALSE, TRUE, "");
+$RootMenu->AddMenuItem(326, "mi_dashboardv2_php", $Language->MenuPhrase("326", "MenuText"), "dashboardv2.php", 325, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}dashboardv2.php'), FALSE, TRUE, "");
+$RootMenu->AddMenuItem(263, "mi_configuracion", $Language->MenuPhrase("263", "MenuText"), "configuracionlist.php", -1, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}configuracion'), FALSE, FALSE, "");
 $RootMenu->AddMenuItem(105, "mci_GESTION_DE_AVALUO", $Language->MenuPhrase("105", "MenuText"), "", -1, "", IsLoggedIn(), FALSE, TRUE, "fa-check-circle-o");
 $RootMenu->AddMenuItem(61, "mi_viewavaluosc", $Language->MenuPhrase("61", "MenuText"), "viewavaluosclist.php", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewavaluosc'), FALSE, FALSE, " fa-bookmark-o");
-$RootMenu->AddMenuItem(258, "mi_viewsolicitudinspector", $Language->MenuPhrase("258", "MenuText"), "viewsolicitudinspectorlist.php", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewsolicitudinspector'), FALSE, FALSE, " fa-bookmark-o");
-$RootMenu->AddMenuItem(259, "mi_viewavaluoinspector", $Language->MenuPhrase("259", "MenuText"), "viewavaluoinspectorlist.php?cmd=resetall", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewavaluoinspector'), FALSE, FALSE, " fa-bookmark-o");
-$RootMenu->AddMenuItem(260, "mi_viewdocumentoinspector", $Language->MenuPhrase("260", "MenuText"), "viewdocumentoinspectorlist.php?cmd=resetall", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewdocumentoinspector'), FALSE, FALSE, " fa-bookmark-o");
+$RootMenu->AddMenuItem(259, "mi_viewavaluoinspector", $Language->MenuPhrase("259", "MenuText"), "viewavaluoinspectorlist.php", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewavaluoinspector'), FALSE, FALSE, " fa-bookmark-o");
 $RootMenu->AddMenuItem(55, "mi_pago", $Language->MenuPhrase("55", "MenuText"), "pagolist.php?cmd=resetall", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}pago'), FALSE, FALSE, " fa-bookmark-o");
-$RootMenu->AddMenuItem(57, "mi_viewavaluo", $Language->MenuPhrase("57", "MenuText"), "viewavaluolist.php?cmd=resetall", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewavaluo'), FALSE, FALSE, "fa fa-files-o");
 $RootMenu->AddMenuItem(58, "mi_viewsolicitud", $Language->MenuPhrase("58", "MenuText"), "viewsolicitudlist.php", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewsolicitud'), FALSE, FALSE, "fa fa-files-o");
-$RootMenu->AddMenuItem(266, "mi_viewavaluosupervisor", $Language->MenuPhrase("266", "MenuText"), "viewavaluosupervisorlist.php?cmd=resetall", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewavaluosupervisor'), FALSE, FALSE, " fa-bookmark-o");
-$RootMenu->AddMenuItem(265, "mi_viewsolicitudsupervisor", $Language->MenuPhrase("265", "MenuText"), "viewsolicitudsupervisorlist.php", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewsolicitudsupervisor'), FALSE, FALSE, " fa-bookmark-o");
+$RootMenu->AddMenuItem(266, "mi_viewavaluosupervisor", $Language->MenuPhrase("266", "MenuText"), "viewavaluosupervisorlist.php", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewavaluosupervisor'), FALSE, FALSE, " fa-bookmark-o");
+$RootMenu->AddMenuItem(333, "mi_viewavaluoinspectorhistorico", $Language->MenuPhrase("333", "MenuText"), "viewavaluoinspectorhistoricolist.php", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewavaluoinspectorhistorico'), FALSE, FALSE, " fa-bookmark-o");
+$RootMenu->AddMenuItem(334, "mi_viewavaluosupervisorhistorial", $Language->MenuPhrase("334", "MenuText"), "viewavaluosupervisorhistoriallist.php", 105, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}viewavaluosupervisorhistorial'), FALSE, FALSE, " fa-bookmark-o");
 $RootMenu->AddMenuItem(237, "mci_GESTION_SOLICITUD", $Language->MenuPhrase("237", "MenuText"), "", -1, "", IsLoggedIn(), FALSE, TRUE, "fa-folder");
 $RootMenu->AddMenuItem(3, "mi_solicitud", $Language->MenuPhrase("3", "MenuText"), "solicitudlist.php", 237, "", AllowListMenu('{30AA0C25-B486-48CC-AF92-47D039BF725C}solicitud'), FALSE, FALSE, "fa fa-files-o");
 $RootMenu->AddMenuItem(150, "mci_GESTION_CLIENTE", $Language->MenuPhrase("150", "MenuText"), "", -1, "", IsLoggedIn(), FALSE, TRUE, "fa-folder");

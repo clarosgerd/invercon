@@ -377,6 +377,8 @@ class cdefault {
 			$this->Page_Terminate("getApiRestWordPress.php");
 		if ($Security->AllowList(CurrentProjectID() . 'offline_messages'))
 			$this->Page_Terminate("offline_messageslist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'configuracion'))
+			$this->Page_Terminate("configuracionlist.php");
 		if ($Security->AllowList(CurrentProjectID() . 'viewdocumentosavaluosc'))
 			$this->Page_Terminate("viewdocumentosavaluosclist.php");
 		if ($Security->AllowList(CurrentProjectID() . 'viewsolicitudinspector'))
@@ -391,6 +393,28 @@ class cdefault {
 			$this->Page_Terminate("viewavaluosupervisorlist.php");
 		if ($Security->AllowList(CurrentProjectID() . 'viewdocumentosupervisor'))
 			$this->Page_Terminate("viewdocumentosupervisorlist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewdocumentooficialcredito'))
+			$this->Page_Terminate("viewdocumentooficialcreditolist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'dashboardv1.php'))
+			$this->Page_Terminate("dashboardv1.php");
+		if ($Security->AllowList(CurrentProjectID() . 'dashboardv2.php'))
+			$this->Page_Terminate("dashboardv2.php");
+		if ($Security->AllowList(CurrentProjectID() . 'reservacionesviewsecretaria.php'))
+			$this->Page_Terminate("reservacionesviewsecretaria.php");
+		if ($Security->AllowList(CurrentProjectID() . 'historico'))
+			$this->Page_Terminate("historicolist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'historicoview.php'))
+			$this->Page_Terminate("historicoview.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewdocumentosavaluoframe'))
+			$this->Page_Terminate("viewdocumentosavaluoframelist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewsolicitudframe'))
+			$this->Page_Terminate("viewsolicitudframelist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewpagoavaluos'))
+			$this->Page_Terminate("viewpagoavaluoslist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewavaluoinspectorhistorico'))
+			$this->Page_Terminate("viewavaluoinspectorhistoricolist.php");
+		if ($Security->AllowList(CurrentProjectID() . 'viewavaluosupervisorhistorial'))
+			$this->Page_Terminate("viewavaluosupervisorhistoriallist.php");
 		if ($Security->IsLoggedIn()) {
 			$this->setFailureMessage(ew_DeniedMsg() . "<br><br><a href=\"logout.php\">" . $Language->Phrase("BackToLogin") . "</a>");
 		} else {

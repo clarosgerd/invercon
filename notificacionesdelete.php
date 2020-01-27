@@ -320,15 +320,13 @@ class cnotificaciones_delete extends cnotificaciones {
 		// 
 
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
-		$this->id->SetVisibility();
-		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
-			$this->id->Visible = FALSE;
 		$this->mensaje->SetVisibility();
 		$this->creadopor->SetVisibility();
 		$this->recibidopor->SetVisibility();
 		$this->leido->SetVisibility();
+		$this->fecha->SetVisibility();
+		$this->fechaleido->SetVisibility();
 		$this->desde->SetVisibility();
-		$this->id_avaluo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -581,6 +579,7 @@ class cnotificaciones_delete extends cnotificaciones {
 		// desde
 		// id_avaluo
 
+		$this->id_avaluo->CellCssStyle = "white-space: nowrap;";
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -603,18 +602,19 @@ class cnotificaciones_delete extends cnotificaciones {
 		$this->leido->ViewValue = $this->leido->CurrentValue;
 		$this->leido->ViewCustomAttributes = "";
 
+		// fecha
+		$this->fecha->ViewValue = $this->fecha->CurrentValue;
+		$this->fecha->ViewValue = ew_FormatDateTime($this->fecha->ViewValue, 0);
+		$this->fecha->ViewCustomAttributes = "";
+
+		// fechaleido
+		$this->fechaleido->ViewValue = $this->fechaleido->CurrentValue;
+		$this->fechaleido->ViewValue = ew_FormatDateTime($this->fechaleido->ViewValue, 0);
+		$this->fechaleido->ViewCustomAttributes = "";
+
 		// desde
 		$this->desde->ViewValue = $this->desde->CurrentValue;
 		$this->desde->ViewCustomAttributes = "";
-
-		// id_avaluo
-		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
-		$this->id_avaluo->ViewCustomAttributes = "";
-
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
 
 			// mensaje
 			$this->mensaje->LinkCustomAttributes = "";
@@ -636,15 +636,20 @@ class cnotificaciones_delete extends cnotificaciones {
 			$this->leido->HrefValue = "";
 			$this->leido->TooltipValue = "";
 
+			// fecha
+			$this->fecha->LinkCustomAttributes = "";
+			$this->fecha->HrefValue = "";
+			$this->fecha->TooltipValue = "";
+
+			// fechaleido
+			$this->fechaleido->LinkCustomAttributes = "";
+			$this->fechaleido->HrefValue = "";
+			$this->fechaleido->TooltipValue = "";
+
 			// desde
 			$this->desde->LinkCustomAttributes = "";
 			$this->desde->HrefValue = "";
 			$this->desde->TooltipValue = "";
-
-			// id_avaluo
-			$this->id_avaluo->LinkCustomAttributes = "";
-			$this->id_avaluo->HrefValue = "";
-			$this->id_avaluo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -882,9 +887,6 @@ $notificaciones_delete->ShowMessage();
 <table class="table ewTable">
 	<thead>
 	<tr class="ewTableHeader">
-<?php if ($notificaciones->id->Visible) { // id ?>
-		<th class="<?php echo $notificaciones->id->HeaderCellClass() ?>"><span id="elh_notificaciones_id" class="notificaciones_id"><?php echo $notificaciones->id->FldCaption() ?></span></th>
-<?php } ?>
 <?php if ($notificaciones->mensaje->Visible) { // mensaje ?>
 		<th class="<?php echo $notificaciones->mensaje->HeaderCellClass() ?>"><span id="elh_notificaciones_mensaje" class="notificaciones_mensaje"><?php echo $notificaciones->mensaje->FldCaption() ?></span></th>
 <?php } ?>
@@ -897,11 +899,14 @@ $notificaciones_delete->ShowMessage();
 <?php if ($notificaciones->leido->Visible) { // leido ?>
 		<th class="<?php echo $notificaciones->leido->HeaderCellClass() ?>"><span id="elh_notificaciones_leido" class="notificaciones_leido"><?php echo $notificaciones->leido->FldCaption() ?></span></th>
 <?php } ?>
+<?php if ($notificaciones->fecha->Visible) { // fecha ?>
+		<th class="<?php echo $notificaciones->fecha->HeaderCellClass() ?>"><span id="elh_notificaciones_fecha" class="notificaciones_fecha"><?php echo $notificaciones->fecha->FldCaption() ?></span></th>
+<?php } ?>
+<?php if ($notificaciones->fechaleido->Visible) { // fechaleido ?>
+		<th class="<?php echo $notificaciones->fechaleido->HeaderCellClass() ?>"><span id="elh_notificaciones_fechaleido" class="notificaciones_fechaleido"><?php echo $notificaciones->fechaleido->FldCaption() ?></span></th>
+<?php } ?>
 <?php if ($notificaciones->desde->Visible) { // desde ?>
 		<th class="<?php echo $notificaciones->desde->HeaderCellClass() ?>"><span id="elh_notificaciones_desde" class="notificaciones_desde"><?php echo $notificaciones->desde->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
-		<th class="<?php echo $notificaciones->id_avaluo->HeaderCellClass() ?>"><span id="elh_notificaciones_id_avaluo" class="notificaciones_id_avaluo"><?php echo $notificaciones->id_avaluo->FldCaption() ?></span></th>
 <?php } ?>
 	</tr>
 	</thead>
@@ -924,14 +929,6 @@ while (!$notificaciones_delete->Recordset->EOF) {
 	$notificaciones_delete->RenderRow();
 ?>
 	<tr<?php echo $notificaciones->RowAttributes() ?>>
-<?php if ($notificaciones->id->Visible) { // id ?>
-		<td<?php echo $notificaciones->id->CellAttributes() ?>>
-<span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_id" class="notificaciones_id">
-<span<?php echo $notificaciones->id->ViewAttributes() ?>>
-<?php echo $notificaciones->id->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($notificaciones->mensaje->Visible) { // mensaje ?>
 		<td<?php echo $notificaciones->mensaje->CellAttributes() ?>>
 <span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_mensaje" class="notificaciones_mensaje">
@@ -964,19 +961,27 @@ while (!$notificaciones_delete->Recordset->EOF) {
 </span>
 </td>
 <?php } ?>
+<?php if ($notificaciones->fecha->Visible) { // fecha ?>
+		<td<?php echo $notificaciones->fecha->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_fecha" class="notificaciones_fecha">
+<span<?php echo $notificaciones->fecha->ViewAttributes() ?>>
+<?php echo $notificaciones->fecha->ListViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($notificaciones->fechaleido->Visible) { // fechaleido ?>
+		<td<?php echo $notificaciones->fechaleido->CellAttributes() ?>>
+<span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_fechaleido" class="notificaciones_fechaleido">
+<span<?php echo $notificaciones->fechaleido->ViewAttributes() ?>>
+<?php echo $notificaciones->fechaleido->ListViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
 <?php if ($notificaciones->desde->Visible) { // desde ?>
 		<td<?php echo $notificaciones->desde->CellAttributes() ?>>
 <span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_desde" class="notificaciones_desde">
 <span<?php echo $notificaciones->desde->ViewAttributes() ?>>
 <?php echo $notificaciones->desde->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($notificaciones->id_avaluo->Visible) { // id_avaluo ?>
-		<td<?php echo $notificaciones->id_avaluo->CellAttributes() ?>>
-<span id="el<?php echo $notificaciones_delete->RowCnt ?>_notificaciones_id_avaluo" class="notificaciones_id_avaluo">
-<span<?php echo $notificaciones->id_avaluo->ViewAttributes() ?>>
-<?php echo $notificaciones->id_avaluo->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

@@ -9,15 +9,15 @@ $viewsolicitud = NULL;
 class cviewsolicitud extends cTable {
 	var $id;
 	var $name;
-	var $lastname;
+	var $cell;
+	var $phone;
 	var $_email;
 	var $address;
 	var $nombre_contacto;
 	var $email_contacto;
+	var $lastname;
 	var $latitud;
 	var $longitud;
-	var $phone;
-	var $cell;
 	var $id_sucursal;
 	var $tipoinmueble;
 	var $id_ciudad_inmueble;
@@ -109,10 +109,15 @@ class cviewsolicitud extends cTable {
 		$this->name->Sortable = TRUE; // Allow sort
 		$this->fields['name'] = &$this->name;
 
-		// lastname
-		$this->lastname = new cField('viewsolicitud', 'viewsolicitud', 'x_lastname', 'lastname', '`lastname`', '`lastname`', 200, -1, FALSE, '`lastname`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->lastname->Sortable = TRUE; // Allow sort
-		$this->fields['lastname'] = &$this->lastname;
+		// cell
+		$this->cell = new cField('viewsolicitud', 'viewsolicitud', 'x_cell', 'cell', '`cell`', '`cell`', 200, -1, FALSE, '`cell`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->cell->Sortable = TRUE; // Allow sort
+		$this->fields['cell'] = &$this->cell;
+
+		// phone
+		$this->phone = new cField('viewsolicitud', 'viewsolicitud', 'x_phone', 'phone', '`phone`', '`phone`', 200, -1, FALSE, '`phone`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->phone->Sortable = TRUE; // Allow sort
+		$this->fields['phone'] = &$this->phone;
 
 		// email
 		$this->_email = new cField('viewsolicitud', 'viewsolicitud', 'x__email', 'email', '`email`', '`email`', 200, -1, FALSE, '`email`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
@@ -127,13 +132,18 @@ class cviewsolicitud extends cTable {
 
 		// nombre_contacto
 		$this->nombre_contacto = new cField('viewsolicitud', 'viewsolicitud', 'x_nombre_contacto', 'nombre_contacto', '`nombre_contacto`', '`nombre_contacto`', 200, -1, FALSE, '`nombre_contacto`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->nombre_contacto->Sortable = TRUE; // Allow sort
+		$this->nombre_contacto->Sortable = FALSE; // Allow sort
 		$this->fields['nombre_contacto'] = &$this->nombre_contacto;
 
 		// email_contacto
 		$this->email_contacto = new cField('viewsolicitud', 'viewsolicitud', 'x_email_contacto', 'email_contacto', '`email_contacto`', '`email_contacto`', 200, -1, FALSE, '`email_contacto`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'HIDDEN');
 		$this->email_contacto->Sortable = TRUE; // Allow sort
 		$this->fields['email_contacto'] = &$this->email_contacto;
+
+		// lastname
+		$this->lastname = new cField('viewsolicitud', 'viewsolicitud', 'x_lastname', 'lastname', '`lastname`', '`lastname`', 200, -1, FALSE, '`lastname`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->lastname->Sortable = TRUE; // Allow sort
+		$this->fields['lastname'] = &$this->lastname;
 
 		// latitud
 		$this->latitud = new cField('viewsolicitud', 'viewsolicitud', 'x_latitud', 'latitud', '`latitud`', '`latitud`', 5, -1, FALSE, '`latitud`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
@@ -146,16 +156,6 @@ class cviewsolicitud extends cTable {
 		$this->longitud->Sortable = FALSE; // Allow sort
 		$this->longitud->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
 		$this->fields['longitud'] = &$this->longitud;
-
-		// phone
-		$this->phone = new cField('viewsolicitud', 'viewsolicitud', 'x_phone', 'phone', '`phone`', '`phone`', 200, -1, FALSE, '`phone`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->phone->Sortable = TRUE; // Allow sort
-		$this->fields['phone'] = &$this->phone;
-
-		// cell
-		$this->cell = new cField('viewsolicitud', 'viewsolicitud', 'x_cell', 'cell', '`cell`', '`cell`', 200, -1, FALSE, '`cell`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->cell->Sortable = TRUE; // Allow sort
-		$this->fields['cell'] = &$this->cell;
 
 		// id_sucursal
 		$this->id_sucursal = new cField('viewsolicitud', 'viewsolicitud', 'x_id_sucursal', 'id_sucursal', '`id_sucursal`', '`id_sucursal`', 3, -1, FALSE, '`id_sucursal`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'HIDDEN');
@@ -171,7 +171,7 @@ class cviewsolicitud extends cTable {
 
 		// id_ciudad_inmueble
 		$this->id_ciudad_inmueble = new cField('viewsolicitud', 'viewsolicitud', 'x_id_ciudad_inmueble', 'id_ciudad_inmueble', '`id_ciudad_inmueble`', '`id_ciudad_inmueble`', 3, -1, FALSE, '`id_ciudad_inmueble`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->id_ciudad_inmueble->Sortable = TRUE; // Allow sort
+		$this->id_ciudad_inmueble->Sortable = FALSE; // Allow sort
 		$this->id_ciudad_inmueble->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->id_ciudad_inmueble->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->id_ciudad_inmueble->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
@@ -179,7 +179,7 @@ class cviewsolicitud extends cTable {
 
 		// id_provincia_inmueble
 		$this->id_provincia_inmueble = new cField('viewsolicitud', 'viewsolicitud', 'x_id_provincia_inmueble', 'id_provincia_inmueble', '`id_provincia_inmueble`', '`id_provincia_inmueble`', 3, -1, FALSE, '`id_provincia_inmueble`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->id_provincia_inmueble->Sortable = TRUE; // Allow sort
+		$this->id_provincia_inmueble->Sortable = FALSE; // Allow sort
 		$this->id_provincia_inmueble->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->id_provincia_inmueble->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->id_provincia_inmueble->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
@@ -192,22 +192,22 @@ class cviewsolicitud extends cTable {
 
 		// imagen_inmueble02
 		$this->imagen_inmueble02 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_inmueble02', 'imagen_inmueble02', '`imagen_inmueble02`', '`imagen_inmueble02`', 205, -1, TRUE, '`imagen_inmueble02`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_inmueble02->Sortable = TRUE; // Allow sort
+		$this->imagen_inmueble02->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_inmueble02'] = &$this->imagen_inmueble02;
 
 		// imagen_inmueble03
 		$this->imagen_inmueble03 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_inmueble03', 'imagen_inmueble03', '`imagen_inmueble03`', '`imagen_inmueble03`', 205, -1, TRUE, '`imagen_inmueble03`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_inmueble03->Sortable = TRUE; // Allow sort
+		$this->imagen_inmueble03->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_inmueble03'] = &$this->imagen_inmueble03;
 
 		// imagen_inmueble04
 		$this->imagen_inmueble04 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_inmueble04', 'imagen_inmueble04', '`imagen_inmueble04`', '`imagen_inmueble04`', 205, -1, TRUE, '`imagen_inmueble04`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_inmueble04->Sortable = TRUE; // Allow sort
+		$this->imagen_inmueble04->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_inmueble04'] = &$this->imagen_inmueble04;
 
 		// imagen_inmueble05
 		$this->imagen_inmueble05 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_inmueble05', 'imagen_inmueble05', '`imagen_inmueble05`', '`imagen_inmueble05`', 205, -1, TRUE, '`imagen_inmueble05`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_inmueble05->Sortable = TRUE; // Allow sort
+		$this->imagen_inmueble05->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_inmueble05'] = &$this->imagen_inmueble05;
 
 		// imagen_inmueble06
@@ -232,14 +232,18 @@ class cviewsolicitud extends cTable {
 		$this->fields['tipovehiculo'] = &$this->tipovehiculo;
 
 		// id_ciudad_vehiculo
-		$this->id_ciudad_vehiculo = new cField('viewsolicitud', 'viewsolicitud', 'x_id_ciudad_vehiculo', 'id_ciudad_vehiculo', '`id_ciudad_vehiculo`', '`id_ciudad_vehiculo`', 3, -1, FALSE, '`id_ciudad_vehiculo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->id_ciudad_vehiculo = new cField('viewsolicitud', 'viewsolicitud', 'x_id_ciudad_vehiculo', 'id_ciudad_vehiculo', '`id_ciudad_vehiculo`', '`id_ciudad_vehiculo`', 3, -1, FALSE, '`id_ciudad_vehiculo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->id_ciudad_vehiculo->Sortable = TRUE; // Allow sort
+		$this->id_ciudad_vehiculo->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->id_ciudad_vehiculo->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->id_ciudad_vehiculo->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_ciudad_vehiculo'] = &$this->id_ciudad_vehiculo;
 
 		// id_provincia_vehiculo
-		$this->id_provincia_vehiculo = new cField('viewsolicitud', 'viewsolicitud', 'x_id_provincia_vehiculo', 'id_provincia_vehiculo', '`id_provincia_vehiculo`', '`id_provincia_vehiculo`', 3, -1, FALSE, '`id_provincia_vehiculo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->id_provincia_vehiculo = new cField('viewsolicitud', 'viewsolicitud', 'x_id_provincia_vehiculo', 'id_provincia_vehiculo', '`id_provincia_vehiculo`', '`id_provincia_vehiculo`', 3, -1, FALSE, '`id_provincia_vehiculo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->id_provincia_vehiculo->Sortable = TRUE; // Allow sort
+		$this->id_provincia_vehiculo->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->id_provincia_vehiculo->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->id_provincia_vehiculo->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_provincia_vehiculo'] = &$this->id_provincia_vehiculo;
 
@@ -265,17 +269,17 @@ class cviewsolicitud extends cTable {
 
 		// imagen_vehiculo05
 		$this->imagen_vehiculo05 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_vehiculo05', 'imagen_vehiculo05', '`imagen_vehiculo05`', '`imagen_vehiculo05`', 205, -1, TRUE, '`imagen_vehiculo05`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_vehiculo05->Sortable = TRUE; // Allow sort
+		$this->imagen_vehiculo05->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_vehiculo05'] = &$this->imagen_vehiculo05;
 
 		// imagen_vehiculo06
 		$this->imagen_vehiculo06 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_vehiculo06', 'imagen_vehiculo06', '`imagen_vehiculo06`', '`imagen_vehiculo06`', 205, -1, TRUE, '`imagen_vehiculo06`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_vehiculo06->Sortable = TRUE; // Allow sort
+		$this->imagen_vehiculo06->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_vehiculo06'] = &$this->imagen_vehiculo06;
 
 		// imagen_vehiculo07
 		$this->imagen_vehiculo07 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_vehiculo07', 'imagen_vehiculo07', '`imagen_vehiculo07`', '`imagen_vehiculo07`', 205, -1, TRUE, '`imagen_vehiculo07`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_vehiculo07->Sortable = TRUE; // Allow sort
+		$this->imagen_vehiculo07->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_vehiculo07'] = &$this->imagen_vehiculo07;
 
 		// imagen_vehiculo08
@@ -291,7 +295,7 @@ class cviewsolicitud extends cTable {
 
 		// id_ciudad_maquinaria
 		$this->id_ciudad_maquinaria = new cField('viewsolicitud', 'viewsolicitud', 'x_id_ciudad_maquinaria', 'id_ciudad_maquinaria', '`id_ciudad_maquinaria`', '`id_ciudad_maquinaria`', 3, -1, FALSE, '`id_ciudad_maquinaria`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->id_ciudad_maquinaria->Sortable = TRUE; // Allow sort
+		$this->id_ciudad_maquinaria->Sortable = FALSE; // Allow sort
 		$this->id_ciudad_maquinaria->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->id_ciudad_maquinaria->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->id_ciudad_maquinaria->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
@@ -299,7 +303,7 @@ class cviewsolicitud extends cTable {
 
 		// id_provincia_maquinaria
 		$this->id_provincia_maquinaria = new cField('viewsolicitud', 'viewsolicitud', 'x_id_provincia_maquinaria', 'id_provincia_maquinaria', '`id_provincia_maquinaria`', '`id_provincia_maquinaria`', 3, -1, FALSE, '`id_provincia_maquinaria`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->id_provincia_maquinaria->Sortable = TRUE; // Allow sort
+		$this->id_provincia_maquinaria->Sortable = FALSE; // Allow sort
 		$this->id_provincia_maquinaria->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->id_provincia_maquinaria->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->id_provincia_maquinaria->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
@@ -327,17 +331,17 @@ class cviewsolicitud extends cTable {
 
 		// imagen_maquinaria05
 		$this->imagen_maquinaria05 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_maquinaria05', 'imagen_maquinaria05', '`imagen_maquinaria05`', '`imagen_maquinaria05`', 205, -1, TRUE, '`imagen_maquinaria05`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_maquinaria05->Sortable = TRUE; // Allow sort
+		$this->imagen_maquinaria05->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_maquinaria05'] = &$this->imagen_maquinaria05;
 
 		// imagen_maquinaria06
 		$this->imagen_maquinaria06 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_maquinaria06', 'imagen_maquinaria06', '`imagen_maquinaria06`', '`imagen_maquinaria06`', 205, -1, TRUE, '`imagen_maquinaria06`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_maquinaria06->Sortable = TRUE; // Allow sort
+		$this->imagen_maquinaria06->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_maquinaria06'] = &$this->imagen_maquinaria06;
 
 		// imagen_maquinaria07
 		$this->imagen_maquinaria07 = new cField('viewsolicitud', 'viewsolicitud', 'x_imagen_maquinaria07', 'imagen_maquinaria07', '`imagen_maquinaria07`', '`imagen_maquinaria07`', 205, -1, TRUE, '`imagen_maquinaria07`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->imagen_maquinaria07->Sortable = TRUE; // Allow sort
+		$this->imagen_maquinaria07->Sortable = FALSE; // Allow sort
 		$this->fields['imagen_maquinaria07'] = &$this->imagen_maquinaria07;
 
 		// imagen_maquinaria08
@@ -359,7 +363,7 @@ class cviewsolicitud extends cTable {
 
 		// documento_mercaderia
 		$this->documento_mercaderia = new cField('viewsolicitud', 'viewsolicitud', 'x_documento_mercaderia', 'documento_mercaderia', '`documento_mercaderia`', '`documento_mercaderia`', 200, -1, FALSE, '`documento_mercaderia`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->documento_mercaderia->Sortable = TRUE; // Allow sort
+		$this->documento_mercaderia->Sortable = FALSE; // Allow sort
 		$this->fields['documento_mercaderia'] = &$this->documento_mercaderia;
 
 		// tipoespecial
@@ -1031,15 +1035,15 @@ class cviewsolicitud extends cTable {
 	function LoadListRowValues(&$rs) {
 		$this->id->setDbValue($rs->fields('id'));
 		$this->name->setDbValue($rs->fields('name'));
-		$this->lastname->setDbValue($rs->fields('lastname'));
+		$this->cell->setDbValue($rs->fields('cell'));
+		$this->phone->setDbValue($rs->fields('phone'));
 		$this->_email->setDbValue($rs->fields('email'));
 		$this->address->setDbValue($rs->fields('address'));
 		$this->nombre_contacto->setDbValue($rs->fields('nombre_contacto'));
 		$this->email_contacto->setDbValue($rs->fields('email_contacto'));
+		$this->lastname->setDbValue($rs->fields('lastname'));
 		$this->latitud->setDbValue($rs->fields('latitud'));
 		$this->longitud->setDbValue($rs->fields('longitud'));
-		$this->phone->setDbValue($rs->fields('phone'));
-		$this->cell->setDbValue($rs->fields('cell'));
 		$this->id_sucursal->setDbValue($rs->fields('id_sucursal'));
 		$this->tipoinmueble->setDbValue($rs->fields('tipoinmueble'));
 		$this->id_ciudad_inmueble->setDbValue($rs->fields('id_ciudad_inmueble'));
@@ -1099,11 +1103,13 @@ class cviewsolicitud extends cTable {
 	// Common render codes
 		// id
 		// name
-		// lastname
+		// cell
+		// phone
 		// email
 		// address
 		// nombre_contacto
 		// email_contacto
+		// lastname
 		// latitud
 
 		$this->latitud->CellCssStyle = "white-space: nowrap;";
@@ -1111,22 +1117,29 @@ class cviewsolicitud extends cTable {
 		// longitud
 		$this->longitud->CellCssStyle = "white-space: nowrap;";
 
-		// phone
-		// cell
 		// id_sucursal
 		// tipoinmueble
 		// id_ciudad_inmueble
 		// id_provincia_inmueble
-		// imagen_inmueble01
 
+		$this->id_provincia_inmueble->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_inmueble01
 		$this->imagen_inmueble01->CellCssStyle = "white-space: nowrap;";
 
 		// imagen_inmueble02
-		// imagen_inmueble03
-		// imagen_inmueble04
-		// imagen_inmueble05
-		// imagen_inmueble06
+		$this->imagen_inmueble02->CellCssStyle = "white-space: nowrap;";
 
+		// imagen_inmueble03
+		$this->imagen_inmueble03->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_inmueble04
+		$this->imagen_inmueble04->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_inmueble05
+		$this->imagen_inmueble05->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_inmueble06
 		$this->imagen_inmueble06->CellCssStyle = "white-space: nowrap;";
 
 		// imagen_inmueble07
@@ -1152,10 +1165,15 @@ class cviewsolicitud extends cTable {
 		$this->imagen_vehiculo04->CellCssStyle = "white-space: nowrap;";
 
 		// imagen_vehiculo05
-		// imagen_vehiculo06
-		// imagen_vehiculo07
-		// imagen_vehiculo08
+		$this->imagen_vehiculo05->CellCssStyle = "white-space: nowrap;";
 
+		// imagen_vehiculo06
+		$this->imagen_vehiculo06->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_vehiculo07
+		$this->imagen_vehiculo07->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_vehiculo08
 		$this->imagen_vehiculo08->CellCssStyle = "white-space: nowrap;";
 
 		// tipomaquinaria
@@ -1175,10 +1193,15 @@ class cviewsolicitud extends cTable {
 		$this->imagen_maquinaria04->CellCssStyle = "white-space: nowrap;";
 
 		// imagen_maquinaria05
-		// imagen_maquinaria06
-		// imagen_maquinaria07
-		// imagen_maquinaria08
+		$this->imagen_maquinaria05->CellCssStyle = "white-space: nowrap;";
 
+		// imagen_maquinaria06
+		$this->imagen_maquinaria06->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_maquinaria07
+		$this->imagen_maquinaria07->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_maquinaria08
 		$this->imagen_maquinaria08->CellCssStyle = "white-space: nowrap;";
 
 		// tipomercaderia
@@ -1196,8 +1219,9 @@ class cviewsolicitud extends cTable {
 		$this->is_active->CellCssStyle = "white-space: nowrap;";
 
 		// documentos
-		// created_at
+		$this->documentos->CellCssStyle = "white-space: nowrap;";
 
+		// created_at
 		$this->created_at->CellCssStyle = "white-space: nowrap;";
 
 		// DateModified
@@ -1223,9 +1247,13 @@ class cviewsolicitud extends cTable {
 		$this->name->ViewValue = $this->name->CurrentValue;
 		$this->name->ViewCustomAttributes = "";
 
-		// lastname
-		$this->lastname->ViewValue = $this->lastname->CurrentValue;
-		$this->lastname->ViewCustomAttributes = "";
+		// cell
+		$this->cell->ViewValue = $this->cell->CurrentValue;
+		$this->cell->ViewCustomAttributes = "";
+
+		// phone
+		$this->phone->ViewValue = $this->phone->CurrentValue;
+		$this->phone->ViewCustomAttributes = "";
 
 		// email
 		$this->_email->ViewValue = $this->_email->CurrentValue;
@@ -1243,6 +1271,10 @@ class cviewsolicitud extends cTable {
 		$this->email_contacto->ViewValue = $this->email_contacto->CurrentValue;
 		$this->email_contacto->ViewCustomAttributes = "";
 
+		// lastname
+		$this->lastname->ViewValue = $this->lastname->CurrentValue;
+		$this->lastname->ViewCustomAttributes = "";
+
 		// latitud
 		$this->latitud->ViewValue = $this->latitud->CurrentValue;
 		$this->latitud->ViewCustomAttributes = "";
@@ -1250,14 +1282,6 @@ class cviewsolicitud extends cTable {
 		// longitud
 		$this->longitud->ViewValue = $this->longitud->CurrentValue;
 		$this->longitud->ViewCustomAttributes = "";
-
-		// phone
-		$this->phone->ViewValue = $this->phone->CurrentValue;
-		$this->phone->ViewCustomAttributes = "";
-
-		// cell
-		$this->cell->ViewValue = $this->cell->CurrentValue;
-		$this->cell->ViewCustomAttributes = "";
 
 		// id_sucursal
 		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
@@ -1271,9 +1295,23 @@ class cviewsolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='INMUEBLE'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1303,9 +1341,23 @@ class cviewsolicitud extends cTable {
 		// id_ciudad_inmueble
 		if (strval($this->id_ciudad_inmueble->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_inmueble->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_inmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_inmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_inmueble->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_ciudad_inmueble, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1326,9 +1378,23 @@ class cviewsolicitud extends cTable {
 		// id_provincia_inmueble
 		if (strval($this->id_provincia_inmueble->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_inmueble->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_inmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_inmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_inmueble->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_provincia_inmueble, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1426,9 +1492,23 @@ class cviewsolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='VEHICULO'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1456,11 +1536,77 @@ class cviewsolicitud extends cTable {
 		$this->tipovehiculo->ViewCustomAttributes = "";
 
 		// id_ciudad_vehiculo
-		$this->id_ciudad_vehiculo->ViewValue = $this->id_ciudad_vehiculo->CurrentValue;
+		if (strval($this->id_ciudad_vehiculo->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_vehiculo->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_vehiculo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_vehiculo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_vehiculo->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_ciudad_vehiculo, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->id_ciudad_vehiculo->ViewValue = $this->id_ciudad_vehiculo->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_ciudad_vehiculo->ViewValue = $this->id_ciudad_vehiculo->CurrentValue;
+			}
+		} else {
+			$this->id_ciudad_vehiculo->ViewValue = NULL;
+		}
 		$this->id_ciudad_vehiculo->ViewCustomAttributes = "";
 
 		// id_provincia_vehiculo
-		$this->id_provincia_vehiculo->ViewValue = $this->id_provincia_vehiculo->CurrentValue;
+		if (strval($this->id_provincia_vehiculo->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_vehiculo->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_vehiculo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_vehiculo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_vehiculo->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_provincia_vehiculo, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->id_provincia_vehiculo->ViewValue = $this->id_provincia_vehiculo->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_provincia_vehiculo->ViewValue = $this->id_provincia_vehiculo->CurrentValue;
+			}
+		} else {
+			$this->id_provincia_vehiculo->ViewValue = NULL;
+		}
 		$this->id_provincia_vehiculo->ViewCustomAttributes = "";
 
 		// imagen_vehiculo01
@@ -1543,9 +1689,23 @@ class cviewsolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='MAQUINARIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1575,9 +1735,23 @@ class cviewsolicitud extends cTable {
 		// id_ciudad_maquinaria
 		if (strval($this->id_ciudad_maquinaria->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_maquinaria->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_maquinaria->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_maquinaria->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_maquinaria->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_ciudad_maquinaria, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1598,9 +1772,23 @@ class cviewsolicitud extends cTable {
 		// id_provincia_maquinaria
 		if (strval($this->id_provincia_maquinaria->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_maquinaria->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_maquinaria->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_maquinaria->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_maquinaria->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_provincia_maquinaria, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1698,9 +1886,23 @@ class cviewsolicitud extends cTable {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 			}
-		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='MERCADERIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1743,9 +1945,23 @@ class cviewsolicitud extends cTable {
 		// tipoespecial
 		if (strval($this->tipoespecial->CurrentValue) <> "") {
 			$sFilterWrk = "`id_tipoinmueble`" . ew_SearchString("=", $this->tipoespecial->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='ESPECIAL'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1819,10 +2035,15 @@ class cviewsolicitud extends cTable {
 		$this->name->HrefValue = "";
 		$this->name->TooltipValue = "";
 
-		// lastname
-		$this->lastname->LinkCustomAttributes = "";
-		$this->lastname->HrefValue = "";
-		$this->lastname->TooltipValue = "";
+		// cell
+		$this->cell->LinkCustomAttributes = "";
+		$this->cell->HrefValue = "";
+		$this->cell->TooltipValue = "";
+
+		// phone
+		$this->phone->LinkCustomAttributes = "";
+		$this->phone->HrefValue = "";
+		$this->phone->TooltipValue = "";
 
 		// email
 		$this->_email->LinkCustomAttributes = "";
@@ -1844,6 +2065,11 @@ class cviewsolicitud extends cTable {
 		$this->email_contacto->HrefValue = "";
 		$this->email_contacto->TooltipValue = "";
 
+		// lastname
+		$this->lastname->LinkCustomAttributes = "";
+		$this->lastname->HrefValue = "";
+		$this->lastname->TooltipValue = "";
+
 		// latitud
 		$this->latitud->LinkCustomAttributes = "";
 		$this->latitud->HrefValue = "";
@@ -1853,16 +2079,6 @@ class cviewsolicitud extends cTable {
 		$this->longitud->LinkCustomAttributes = "";
 		$this->longitud->HrefValue = "";
 		$this->longitud->TooltipValue = "";
-
-		// phone
-		$this->phone->LinkCustomAttributes = "";
-		$this->phone->HrefValue = "";
-		$this->phone->TooltipValue = "";
-
-		// cell
-		$this->cell->LinkCustomAttributes = "";
-		$this->cell->HrefValue = "";
-		$this->cell->TooltipValue = "";
 
 		// id_sucursal
 		$this->id_sucursal->LinkCustomAttributes = "";
@@ -2307,11 +2523,17 @@ class cviewsolicitud extends cTable {
 		$this->name->EditValue = $this->name->CurrentValue;
 		$this->name->PlaceHolder = ew_RemoveHtml($this->name->FldTitle());
 
-		// lastname
-		$this->lastname->EditAttrs["class"] = "form-control";
-		$this->lastname->EditCustomAttributes = "";
-		$this->lastname->EditValue = $this->lastname->CurrentValue;
-		$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
+		// cell
+		$this->cell->EditAttrs["class"] = "form-control";
+		$this->cell->EditCustomAttributes = "";
+		$this->cell->EditValue = $this->cell->CurrentValue;
+		$this->cell->PlaceHolder = ew_RemoveHtml($this->cell->FldTitle());
+
+		// phone
+		$this->phone->EditAttrs["class"] = "form-control";
+		$this->phone->EditCustomAttributes = "";
+		$this->phone->EditValue = $this->phone->CurrentValue;
+		$this->phone->PlaceHolder = ew_RemoveHtml($this->phone->FldTitle());
 
 		// email
 		$this->_email->EditAttrs["class"] = "form-control";
@@ -2329,11 +2551,17 @@ class cviewsolicitud extends cTable {
 		$this->nombre_contacto->EditAttrs["class"] = "form-control";
 		$this->nombre_contacto->EditCustomAttributes = "";
 		$this->nombre_contacto->EditValue = $this->nombre_contacto->CurrentValue;
-		$this->nombre_contacto->PlaceHolder = ew_RemoveHtml($this->nombre_contacto->FldTitle());
+		$this->nombre_contacto->ViewCustomAttributes = "";
 
 		// email_contacto
 		$this->email_contacto->EditAttrs["class"] = "form-control";
 		$this->email_contacto->EditCustomAttributes = "";
+
+		// lastname
+		$this->lastname->EditAttrs["class"] = "form-control";
+		$this->lastname->EditCustomAttributes = "";
+		$this->lastname->EditValue = $this->lastname->CurrentValue;
+		$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
 
 		// latitud
 		$this->latitud->EditAttrs["class"] = "form-control";
@@ -2348,18 +2576,6 @@ class cviewsolicitud extends cTable {
 		$this->longitud->EditValue = $this->longitud->CurrentValue;
 		$this->longitud->PlaceHolder = ew_RemoveHtml($this->longitud->FldTitle());
 		if (strval($this->longitud->EditValue) <> "" && is_numeric($this->longitud->EditValue)) $this->longitud->EditValue = ew_FormatNumber($this->longitud->EditValue, -2, -1, -2, 0);
-
-		// phone
-		$this->phone->EditAttrs["class"] = "form-control";
-		$this->phone->EditCustomAttributes = "";
-		$this->phone->EditValue = $this->phone->CurrentValue;
-		$this->phone->PlaceHolder = ew_RemoveHtml($this->phone->FldTitle());
-
-		// cell
-		$this->cell->EditAttrs["class"] = "form-control";
-		$this->cell->EditCustomAttributes = "";
-		$this->cell->EditValue = $this->cell->CurrentValue;
-		$this->cell->PlaceHolder = ew_RemoveHtml($this->cell->FldTitle());
 
 		// id_sucursal
 		$this->id_sucursal->EditAttrs["class"] = "form-control";
@@ -2464,14 +2680,10 @@ class cviewsolicitud extends cTable {
 		// id_ciudad_vehiculo
 		$this->id_ciudad_vehiculo->EditAttrs["class"] = "form-control";
 		$this->id_ciudad_vehiculo->EditCustomAttributes = "";
-		$this->id_ciudad_vehiculo->EditValue = $this->id_ciudad_vehiculo->CurrentValue;
-		$this->id_ciudad_vehiculo->PlaceHolder = ew_RemoveHtml($this->id_ciudad_vehiculo->FldTitle());
 
 		// id_provincia_vehiculo
 		$this->id_provincia_vehiculo->EditAttrs["class"] = "form-control";
 		$this->id_provincia_vehiculo->EditCustomAttributes = "";
-		$this->id_provincia_vehiculo->EditValue = $this->id_provincia_vehiculo->CurrentValue;
-		$this->id_provincia_vehiculo->PlaceHolder = ew_RemoveHtml($this->id_provincia_vehiculo->FldTitle());
 
 		// imagen_vehiculo01
 		$this->imagen_vehiculo01->EditAttrs["class"] = "form-control";
@@ -2752,59 +2964,38 @@ class cviewsolicitud extends cTable {
 				if ($ExportPageType == "view") {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->name->Exportable) $Doc->ExportCaption($this->name);
-					if ($this->lastname->Exportable) $Doc->ExportCaption($this->lastname);
+					if ($this->cell->Exportable) $Doc->ExportCaption($this->cell);
+					if ($this->phone->Exportable) $Doc->ExportCaption($this->phone);
 					if ($this->_email->Exportable) $Doc->ExportCaption($this->_email);
 					if ($this->address->Exportable) $Doc->ExportCaption($this->address);
 					if ($this->nombre_contacto->Exportable) $Doc->ExportCaption($this->nombre_contacto);
 					if ($this->email_contacto->Exportable) $Doc->ExportCaption($this->email_contacto);
-					if ($this->phone->Exportable) $Doc->ExportCaption($this->phone);
-					if ($this->cell->Exportable) $Doc->ExportCaption($this->cell);
+					if ($this->lastname->Exportable) $Doc->ExportCaption($this->lastname);
 					if ($this->id_sucursal->Exportable) $Doc->ExportCaption($this->id_sucursal);
 					if ($this->tipoinmueble->Exportable) $Doc->ExportCaption($this->tipoinmueble);
 					if ($this->id_ciudad_inmueble->Exportable) $Doc->ExportCaption($this->id_ciudad_inmueble);
-					if ($this->id_provincia_inmueble->Exportable) $Doc->ExportCaption($this->id_provincia_inmueble);
-					if ($this->imagen_inmueble02->Exportable) $Doc->ExportCaption($this->imagen_inmueble02);
-					if ($this->imagen_inmueble03->Exportable) $Doc->ExportCaption($this->imagen_inmueble03);
-					if ($this->imagen_inmueble04->Exportable) $Doc->ExportCaption($this->imagen_inmueble04);
-					if ($this->imagen_inmueble05->Exportable) $Doc->ExportCaption($this->imagen_inmueble05);
 					if ($this->tipovehiculo->Exportable) $Doc->ExportCaption($this->tipovehiculo);
 					if ($this->id_ciudad_vehiculo->Exportable) $Doc->ExportCaption($this->id_ciudad_vehiculo);
 					if ($this->id_provincia_vehiculo->Exportable) $Doc->ExportCaption($this->id_provincia_vehiculo);
-					if ($this->imagen_vehiculo05->Exportable) $Doc->ExportCaption($this->imagen_vehiculo05);
-					if ($this->imagen_vehiculo06->Exportable) $Doc->ExportCaption($this->imagen_vehiculo06);
-					if ($this->imagen_vehiculo07->Exportable) $Doc->ExportCaption($this->imagen_vehiculo07);
 					if ($this->tipomaquinaria->Exportable) $Doc->ExportCaption($this->tipomaquinaria);
 					if ($this->id_ciudad_maquinaria->Exportable) $Doc->ExportCaption($this->id_ciudad_maquinaria);
 					if ($this->id_provincia_maquinaria->Exportable) $Doc->ExportCaption($this->id_provincia_maquinaria);
-					if ($this->imagen_maquinaria05->Exportable) $Doc->ExportCaption($this->imagen_maquinaria05);
-					if ($this->imagen_maquinaria06->Exportable) $Doc->ExportCaption($this->imagen_maquinaria06);
-					if ($this->imagen_maquinaria07->Exportable) $Doc->ExportCaption($this->imagen_maquinaria07);
 					if ($this->tipomercaderia->Exportable) $Doc->ExportCaption($this->tipomercaderia);
 					if ($this->documento_mercaderia->Exportable) $Doc->ExportCaption($this->documento_mercaderia);
 					if ($this->tipoespecial->Exportable) $Doc->ExportCaption($this->tipoespecial);
-					if ($this->documentos->Exportable) $Doc->ExportCaption($this->documentos);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->name->Exportable) $Doc->ExportCaption($this->name);
-					if ($this->lastname->Exportable) $Doc->ExportCaption($this->lastname);
+					if ($this->cell->Exportable) $Doc->ExportCaption($this->cell);
+					if ($this->phone->Exportable) $Doc->ExportCaption($this->phone);
 					if ($this->_email->Exportable) $Doc->ExportCaption($this->_email);
 					if ($this->address->Exportable) $Doc->ExportCaption($this->address);
-					if ($this->nombre_contacto->Exportable) $Doc->ExportCaption($this->nombre_contacto);
 					if ($this->email_contacto->Exportable) $Doc->ExportCaption($this->email_contacto);
-					if ($this->phone->Exportable) $Doc->ExportCaption($this->phone);
-					if ($this->cell->Exportable) $Doc->ExportCaption($this->cell);
+					if ($this->lastname->Exportable) $Doc->ExportCaption($this->lastname);
 					if ($this->id_sucursal->Exportable) $Doc->ExportCaption($this->id_sucursal);
-					if ($this->tipoinmueble->Exportable) $Doc->ExportCaption($this->tipoinmueble);
-					if ($this->id_ciudad_inmueble->Exportable) $Doc->ExportCaption($this->id_ciudad_inmueble);
-					if ($this->id_provincia_inmueble->Exportable) $Doc->ExportCaption($this->id_provincia_inmueble);
 					if ($this->tipovehiculo->Exportable) $Doc->ExportCaption($this->tipovehiculo);
-					if ($this->id_ciudad_vehiculo->Exportable) $Doc->ExportCaption($this->id_ciudad_vehiculo);
-					if ($this->id_provincia_vehiculo->Exportable) $Doc->ExportCaption($this->id_provincia_vehiculo);
 					if ($this->tipomaquinaria->Exportable) $Doc->ExportCaption($this->tipomaquinaria);
-					if ($this->id_ciudad_maquinaria->Exportable) $Doc->ExportCaption($this->id_ciudad_maquinaria);
-					if ($this->id_provincia_maquinaria->Exportable) $Doc->ExportCaption($this->id_provincia_maquinaria);
 					if ($this->tipomercaderia->Exportable) $Doc->ExportCaption($this->tipomercaderia);
-					if ($this->documento_mercaderia->Exportable) $Doc->ExportCaption($this->documento_mercaderia);
 					if ($this->tipoespecial->Exportable) $Doc->ExportCaption($this->tipoespecial);
 					if ($this->documentos->Exportable) $Doc->ExportCaption($this->documentos);
 				}
@@ -2840,59 +3031,38 @@ class cviewsolicitud extends cTable {
 					if ($ExportPageType == "view") {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->name->Exportable) $Doc->ExportField($this->name);
-						if ($this->lastname->Exportable) $Doc->ExportField($this->lastname);
+						if ($this->cell->Exportable) $Doc->ExportField($this->cell);
+						if ($this->phone->Exportable) $Doc->ExportField($this->phone);
 						if ($this->_email->Exportable) $Doc->ExportField($this->_email);
 						if ($this->address->Exportable) $Doc->ExportField($this->address);
 						if ($this->nombre_contacto->Exportable) $Doc->ExportField($this->nombre_contacto);
 						if ($this->email_contacto->Exportable) $Doc->ExportField($this->email_contacto);
-						if ($this->phone->Exportable) $Doc->ExportField($this->phone);
-						if ($this->cell->Exportable) $Doc->ExportField($this->cell);
+						if ($this->lastname->Exportable) $Doc->ExportField($this->lastname);
 						if ($this->id_sucursal->Exportable) $Doc->ExportField($this->id_sucursal);
 						if ($this->tipoinmueble->Exportable) $Doc->ExportField($this->tipoinmueble);
 						if ($this->id_ciudad_inmueble->Exportable) $Doc->ExportField($this->id_ciudad_inmueble);
-						if ($this->id_provincia_inmueble->Exportable) $Doc->ExportField($this->id_provincia_inmueble);
-						if ($this->imagen_inmueble02->Exportable) $Doc->ExportField($this->imagen_inmueble02);
-						if ($this->imagen_inmueble03->Exportable) $Doc->ExportField($this->imagen_inmueble03);
-						if ($this->imagen_inmueble04->Exportable) $Doc->ExportField($this->imagen_inmueble04);
-						if ($this->imagen_inmueble05->Exportable) $Doc->ExportField($this->imagen_inmueble05);
 						if ($this->tipovehiculo->Exportable) $Doc->ExportField($this->tipovehiculo);
 						if ($this->id_ciudad_vehiculo->Exportable) $Doc->ExportField($this->id_ciudad_vehiculo);
 						if ($this->id_provincia_vehiculo->Exportable) $Doc->ExportField($this->id_provincia_vehiculo);
-						if ($this->imagen_vehiculo05->Exportable) $Doc->ExportField($this->imagen_vehiculo05);
-						if ($this->imagen_vehiculo06->Exportable) $Doc->ExportField($this->imagen_vehiculo06);
-						if ($this->imagen_vehiculo07->Exportable) $Doc->ExportField($this->imagen_vehiculo07);
 						if ($this->tipomaquinaria->Exportable) $Doc->ExportField($this->tipomaquinaria);
 						if ($this->id_ciudad_maquinaria->Exportable) $Doc->ExportField($this->id_ciudad_maquinaria);
 						if ($this->id_provincia_maquinaria->Exportable) $Doc->ExportField($this->id_provincia_maquinaria);
-						if ($this->imagen_maquinaria05->Exportable) $Doc->ExportField($this->imagen_maquinaria05);
-						if ($this->imagen_maquinaria06->Exportable) $Doc->ExportField($this->imagen_maquinaria06);
-						if ($this->imagen_maquinaria07->Exportable) $Doc->ExportField($this->imagen_maquinaria07);
 						if ($this->tipomercaderia->Exportable) $Doc->ExportField($this->tipomercaderia);
 						if ($this->documento_mercaderia->Exportable) $Doc->ExportField($this->documento_mercaderia);
 						if ($this->tipoespecial->Exportable) $Doc->ExportField($this->tipoespecial);
-						if ($this->documentos->Exportable) $Doc->ExportField($this->documentos);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->name->Exportable) $Doc->ExportField($this->name);
-						if ($this->lastname->Exportable) $Doc->ExportField($this->lastname);
+						if ($this->cell->Exportable) $Doc->ExportField($this->cell);
+						if ($this->phone->Exportable) $Doc->ExportField($this->phone);
 						if ($this->_email->Exportable) $Doc->ExportField($this->_email);
 						if ($this->address->Exportable) $Doc->ExportField($this->address);
-						if ($this->nombre_contacto->Exportable) $Doc->ExportField($this->nombre_contacto);
 						if ($this->email_contacto->Exportable) $Doc->ExportField($this->email_contacto);
-						if ($this->phone->Exportable) $Doc->ExportField($this->phone);
-						if ($this->cell->Exportable) $Doc->ExportField($this->cell);
+						if ($this->lastname->Exportable) $Doc->ExportField($this->lastname);
 						if ($this->id_sucursal->Exportable) $Doc->ExportField($this->id_sucursal);
-						if ($this->tipoinmueble->Exportable) $Doc->ExportField($this->tipoinmueble);
-						if ($this->id_ciudad_inmueble->Exportable) $Doc->ExportField($this->id_ciudad_inmueble);
-						if ($this->id_provincia_inmueble->Exportable) $Doc->ExportField($this->id_provincia_inmueble);
 						if ($this->tipovehiculo->Exportable) $Doc->ExportField($this->tipovehiculo);
-						if ($this->id_ciudad_vehiculo->Exportable) $Doc->ExportField($this->id_ciudad_vehiculo);
-						if ($this->id_provincia_vehiculo->Exportable) $Doc->ExportField($this->id_provincia_vehiculo);
 						if ($this->tipomaquinaria->Exportable) $Doc->ExportField($this->tipomaquinaria);
-						if ($this->id_ciudad_maquinaria->Exportable) $Doc->ExportField($this->id_ciudad_maquinaria);
-						if ($this->id_provincia_maquinaria->Exportable) $Doc->ExportField($this->id_provincia_maquinaria);
 						if ($this->tipomercaderia->Exportable) $Doc->ExportField($this->tipomercaderia);
-						if ($this->documento_mercaderia->Exportable) $Doc->ExportField($this->documento_mercaderia);
 						if ($this->tipoespecial->Exportable) $Doc->ExportField($this->tipoespecial);
 						if ($this->documentos->Exportable) $Doc->ExportField($this->documentos);
 					}
@@ -2981,6 +3151,9 @@ class cviewsolicitud extends cTable {
 		// Enter your code here
 		// To cancel, set return value to FALSE
 
+		if (isset($rsnew["cell"])){
+			$rsnew["cell"]="591".$rsnew["cell"];
+			}
 		return TRUE;
 	}
 
@@ -2997,34 +3170,81 @@ class cviewsolicitud extends cTable {
 			$tipomaquinaria=explode(",", $rsnew["tipomaquinaria"]);
 			$tipomercaderia=explode(",", $rsnew["tipomercaderia"]);
 			$tipoespecial=explode(",", $rsnew["tipoespecial"]);
-			for($x=0;$x<count($tipoinmueble);$x++)
-			{
-				if ($tipoinmueble[$x]!=null)
+		 $Html="<p>DATOS </p>";
+				for($x=0;$x<count($tipoinmueble);$x++)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipoinmueble[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',0,0,0,NOW())");
+					if ($tipoinmueble[$x]!=null)
+					{
+						$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipoinmueble[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
+						$Html.="<p>".$tipoinmueble[$x]."</p>";
+					}
 				}
-			}
-			for($x=0;$x<count($tipovehiculo);$x++)
-			{
-				if ($tipovehiculo[$x]!=null)
+				for($x=0;$x<count($tipovehiculo);$x++)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipovehiculo[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',0,0,0,NOW())");
+					if ($tipovehiculo[$x]!=null)
+					{
+						$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipovehiculo[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
+						$Html.="<p>".$tipovehiculo[$x]."</p>";
+					}
 				}
-			}
-		  for($x=0;$x<count($tipomaquinaria);$x++)
-			{
-				if ($tipomaquinaria[$x]!=null)
+			  for($x=0;$x<count($tipomaquinaria);$x++)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipomaquinaria[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',0,0,0,NOW())");
+					if ($tipomaquinaria[$x]!=null)
+					{
+						$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipomaquinaria[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
+						$Html.="<p>".$tipomaquinaria[$x]."</p>";
+					}
 				}
-			}
-			 for($x=0;$x<count($tipoespecial);$x++)
-			{
-				if ($tipoespecial[$x]!=null)
+				 for($x=0;$x<count($tipoespecial);$x++)
 				{
-					$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`)  VALUES ('".$tipoespecial[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',0,0,0,NOW())");
+					if ($tipoespecial[$x]!=null)
+					{
+						$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipoespecial[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
+						$Html.="<p>".$tipoespecial[$x]."</p>";
+					}
 				}
-			}
+		 for($x=0;$x<count($tipomercaderia);$x++)
+				{
+					if ($tipomercaderia[$x]!=null)
+					{
+						$avaluo= ew_Execute("INSERT INTO `avaluo`(`tipoinmueble`, `id_solicitud`, `id_oficialcredito`, `id_cliente`, `is_active`, `estado`, `estadointerno`, `created_at`, `id_sucursal`)  VALUES ('".$tipomercaderia[$x]."','".$idcurrent."','".$rsnew["email_contacto"]."','".$new__id."',1,1,1,NOW(),'".$_SESSION["sucursal"]."')");
+						$Html.="<p>".$tipomercaderia[$x]."</p>";
+					}
+				}
+						$Email = new cEmail;
+						$Email->Load(EW_EMAIL_NOTIFY_TEMPLATE);
+						$Email->Sender= $_SESSION["emailnotificaciones"];
+						$secretaria=$_SESSION["secretarias"];
+						if(is_array($secretaria)){
+							foreach($secretaria as $secretarias){
+								$Email->AddCc($secretarias["login"]);
+							}
+						}else{
+							$Email->AddCc($secretaria);
+						}
+						$Email->Subject = "Existe una solicitud por el Oficial de Credito";
+
+						//$Email->Content = "Existe una solicitud por el Oficial de Credito";
+						//$Email->Recipient =  $_SESSION["usr"];
+
+						$nombre_oficial_credito=ew_ExecuteScalar("SELECT CONCAT(`nombre`, ' ', `apellido`) as nombre FROM `usuario` WHERE login='".$_SESSION["usr"]."'");
+						$Email->ReplaceContent("<!--table-->", $nombre_oficial_credito);
+		   		        $Email->ReplaceContent("<!--key-->", $idcurrent);
+						$Email->ReplaceContent("<!--action-->", $Html);
+						$bEmailSent = $Email->Send();
+					if(is_array($secretaria)){
+								foreach($secretaria as $secretarias){
+									$sql_new_email_secretaria="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$secretarias["login"]."', NULL, NULL,'".$Html."', '0', '0', CURRENT_TIMESTAMP)";
+									$sql_new_notificacion_secretaria = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('".$Html."', '" . $_SESSION["usr"] . "', '" . $secretarias["login"] . "', '0', '0', CURRENT_TIMESTAMP)";
+									$MyResult = ew_Execute($sql_new_email_secretaria);
+									$MyResult1 = ew_Execute($sql_new_notificacion_secretaria);
+								}
+							}else{
+								$sql_new_email_secretaria="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$secretaria["login"]."', NULL, NULL,'".$Html."', '0', '0', CURRENT_TIMESTAMP)";
+								$sql_new_notificacion_secretaria = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('".$Html."', '" . $_SESSION["usr"] . "', '" . $secretaria["login"] . "', '0', '0', CURRENT_TIMESTAMP)";
+								$MyResult = ew_Execute($sql_new_email_secretaria);
+								$MyResult1 = ew_Execute($sql_new_notificacion_secretaria);
+							}
 	}
 
 	// Row Updating event

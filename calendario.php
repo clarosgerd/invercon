@@ -344,6 +344,10 @@ $calendario_php->Page_Main();
 Page_Rendering();
 ?>
 <?php include_once "header.php" ?>
+<?php
+if (session_id() == "") session_start(); // Init session data
+ob_start(); // Turn on output buffering
+?>
 <?php echo "<iframe src=\"reservacion.php\" height=\"900\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\"></iframe>"; ?>
 <?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
 <?php include_once "footer.php" ?>

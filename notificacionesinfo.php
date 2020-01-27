@@ -102,7 +102,7 @@ class cnotificaciones extends cTable {
 
 		// id_avaluo
 		$this->id_avaluo = new cField('notificaciones', 'notificaciones', 'x_id_avaluo', 'id_avaluo', '`id_avaluo`', '`id_avaluo`', 3, -1, FALSE, '`id_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->id_avaluo->Sortable = TRUE; // Allow sort
+		$this->id_avaluo->Sortable = FALSE; // Allow sort
 		$this->id_avaluo->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_avaluo'] = &$this->id_avaluo;
 	}
@@ -669,8 +669,10 @@ class cnotificaciones extends cTable {
 
 		// desde
 		// id_avaluo
-		// id
 
+		$this->id_avaluo->CellCssStyle = "white-space: nowrap;";
+
+		// id
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
@@ -786,25 +788,25 @@ class cnotificaciones extends cTable {
 		$this->mensaje->EditAttrs["class"] = "form-control";
 		$this->mensaje->EditCustomAttributes = "";
 		$this->mensaje->EditValue = $this->mensaje->CurrentValue;
-		$this->mensaje->PlaceHolder = ew_RemoveHtml($this->mensaje->FldTitle());
+		$this->mensaje->ViewCustomAttributes = "";
 
 		// creadopor
 		$this->creadopor->EditAttrs["class"] = "form-control";
 		$this->creadopor->EditCustomAttributes = "";
 		$this->creadopor->EditValue = $this->creadopor->CurrentValue;
-		$this->creadopor->PlaceHolder = ew_RemoveHtml($this->creadopor->FldTitle());
+		$this->creadopor->ViewCustomAttributes = "";
 
 		// recibidopor
 		$this->recibidopor->EditAttrs["class"] = "form-control";
 		$this->recibidopor->EditCustomAttributes = "";
 		$this->recibidopor->EditValue = $this->recibidopor->CurrentValue;
-		$this->recibidopor->PlaceHolder = ew_RemoveHtml($this->recibidopor->FldTitle());
+		$this->recibidopor->ViewCustomAttributes = "";
 
 		// leido
 		$this->leido->EditAttrs["class"] = "form-control";
 		$this->leido->EditCustomAttributes = "";
 		$this->leido->EditValue = $this->leido->CurrentValue;
-		$this->leido->PlaceHolder = ew_RemoveHtml($this->leido->FldTitle());
+		$this->leido->ViewCustomAttributes = "";
 
 		// estado
 		$this->estado->EditAttrs["class"] = "form-control";
@@ -863,18 +865,15 @@ class cnotificaciones extends cTable {
 			if ($Doc->Horizontal) { // Horizontal format, write header
 				$Doc->BeginExportRow();
 				if ($ExportPageType == "view") {
-					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->mensaje->Exportable) $Doc->ExportCaption($this->mensaje);
 					if ($this->creadopor->Exportable) $Doc->ExportCaption($this->creadopor);
 					if ($this->recibidopor->Exportable) $Doc->ExportCaption($this->recibidopor);
 					if ($this->leido->Exportable) $Doc->ExportCaption($this->leido);
 					if ($this->desde->Exportable) $Doc->ExportCaption($this->desde);
-					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->leido->Exportable) $Doc->ExportCaption($this->leido);
 					if ($this->desde->Exportable) $Doc->ExportCaption($this->desde);
-					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
 				}
 				$Doc->EndExportRow();
 			}
@@ -906,18 +905,15 @@ class cnotificaciones extends cTable {
 				if (!$Doc->ExportCustom) {
 					$Doc->BeginExportRow($RowCnt); // Allow CSS styles if enabled
 					if ($ExportPageType == "view") {
-						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->mensaje->Exportable) $Doc->ExportField($this->mensaje);
 						if ($this->creadopor->Exportable) $Doc->ExportField($this->creadopor);
 						if ($this->recibidopor->Exportable) $Doc->ExportField($this->recibidopor);
 						if ($this->leido->Exportable) $Doc->ExportField($this->leido);
 						if ($this->desde->Exportable) $Doc->ExportField($this->desde);
-						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->leido->Exportable) $Doc->ExportField($this->leido);
 						if ($this->desde->Exportable) $Doc->ExportField($this->desde);
-						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

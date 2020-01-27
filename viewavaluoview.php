@@ -829,7 +829,26 @@ class cviewavaluo_view extends cviewavaluo {
 		$this->id_cliente->ViewCustomAttributes = "";
 
 		// estado
-		$this->estado->ViewValue = $this->estado->CurrentValue;
+		if (strval($this->estado->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estado->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+		$sWhereWrk = "";
+		$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->estado->ViewValue = $this->estado->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->estado->ViewValue = $this->estado->CurrentValue;
+			}
+		} else {
+			$this->estado->ViewValue = NULL;
+		}
 		$this->estado->ViewCustomAttributes = "";
 
 		// fecha_avaluo
@@ -1107,6 +1126,8 @@ fviewavaluoview.Lists["x_id_solicitud"] = {"LinkField":"x_id","Ajax":true,"AutoF
 fviewavaluoview.Lists["x_id_solicitud"].Data = "<?php echo $viewavaluo_view->id_solicitud->LookupFilterQuery(FALSE, "view") ?>";
 fviewavaluoview.Lists["x_id_oficialcredito"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","x_apellido","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"oficialcredito"};
 fviewavaluoview.Lists["x_id_oficialcredito"].Data = "<?php echo $viewavaluo_view->id_oficialcredito->LookupFilterQuery(FALSE, "view") ?>";
+fviewavaluoview.Lists["x_estado"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estado"};
+fviewavaluoview.Lists["x_estado"].Data = "<?php echo $viewavaluo_view->estado->LookupFilterQuery(FALSE, "view") ?>";
 
 // Form object for search
 </script>

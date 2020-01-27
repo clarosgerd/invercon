@@ -42,12 +42,6 @@ fviewavaluogrid.Validate = function() {
 		var checkrow = (gridinsert) ? !this.EmptyRow(infix) : true;
 		if (checkrow) {
 			addcnt++;
-			elm = this.GetElements("x" + infix + "_id_cliente");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($viewavaluo->id_cliente->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_estado");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($viewavaluo->estado->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_fecha_avaluo");
 			if (elm && !ew_CheckDateDef(elm.value))
 				return this.OnError(elm, "<?php echo ew_JsEncode2($viewavaluo->fecha_avaluo->FldErrMsg()) ?>");
@@ -63,15 +57,15 @@ fviewavaluogrid.Validate = function() {
 // Check empty row
 fviewavaluogrid.EmptyRow = function(infix) {
 	var fobj = this.Form;
-	if (ew_ValueChanged(fobj, infix, "tipoinmueble", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "codigoavaluo", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "tipoinmueble", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "id_solicitud", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "id_oficialcredito", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "id_inspector", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "id_cliente", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "estado", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "estadopago", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "fecha_avaluo", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "informe", false)) return false;
 	return true;
 }
 
@@ -91,8 +85,12 @@ fviewavaluogrid.Lists["x_tipoinmueble"] = {"LinkField":"x_nombre","Ajax":true,"A
 fviewavaluogrid.Lists["x_tipoinmueble"].Data = "<?php echo $viewavaluo_grid->tipoinmueble->LookupFilterQuery(FALSE, "grid") ?>";
 fviewavaluogrid.Lists["x_id_solicitud"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","x__email",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"solicitud"};
 fviewavaluogrid.Lists["x_id_solicitud"].Data = "<?php echo $viewavaluo_grid->id_solicitud->LookupFilterQuery(FALSE, "grid") ?>";
-fviewavaluogrid.Lists["x_id_oficialcredito"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","x_apellido","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"oficialcredito"};
-fviewavaluogrid.Lists["x_id_oficialcredito"].Data = "<?php echo $viewavaluo_grid->id_oficialcredito->LookupFilterQuery(FALSE, "grid") ?>";
+fviewavaluogrid.Lists["x_id_inspector"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","x_apellido","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"inspector"};
+fviewavaluogrid.Lists["x_id_inspector"].Data = "<?php echo $viewavaluo_grid->id_inspector->LookupFilterQuery(FALSE, "grid") ?>";
+fviewavaluogrid.Lists["x_estado"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estado"};
+fviewavaluogrid.Lists["x_estado"].Data = "<?php echo $viewavaluo_grid->estado->LookupFilterQuery(FALSE, "grid") ?>";
+fviewavaluogrid.Lists["x_estadopago"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadopago"};
+fviewavaluogrid.Lists["x_estadopago"].Data = "<?php echo $viewavaluo_grid->estadopago->LookupFilterQuery(FALSE, "grid") ?>";
 
 // Form object for search
 </script>
@@ -165,21 +163,21 @@ $viewavaluo_grid->RenderListOptions();
 // Render list options (header, left)
 $viewavaluo_grid->ListOptions->Render("header", "left");
 ?>
-<?php if ($viewavaluo->tipoinmueble->Visible) { // tipoinmueble ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->tipoinmueble) == "") { ?>
-		<th data-name="tipoinmueble" class="<?php echo $viewavaluo->tipoinmueble->HeaderCellClass() ?>"><div id="elh_viewavaluo_tipoinmueble" class="viewavaluo_tipoinmueble"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->tipoinmueble->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="tipoinmueble" class="<?php echo $viewavaluo->tipoinmueble->HeaderCellClass() ?>"><div><div id="elh_viewavaluo_tipoinmueble" class="viewavaluo_tipoinmueble">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->tipoinmueble->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->tipoinmueble->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->tipoinmueble->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
 <?php if ($viewavaluo->codigoavaluo->Visible) { // codigoavaluo ?>
 	<?php if ($viewavaluo->SortUrl($viewavaluo->codigoavaluo) == "") { ?>
 		<th data-name="codigoavaluo" class="<?php echo $viewavaluo->codigoavaluo->HeaderCellClass() ?>"><div id="elh_viewavaluo_codigoavaluo" class="viewavaluo_codigoavaluo"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->codigoavaluo->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="codigoavaluo" class="<?php echo $viewavaluo->codigoavaluo->HeaderCellClass() ?>"><div><div id="elh_viewavaluo_codigoavaluo" class="viewavaluo_codigoavaluo">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->codigoavaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->codigoavaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->codigoavaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($viewavaluo->tipoinmueble->Visible) { // tipoinmueble ?>
+	<?php if ($viewavaluo->SortUrl($viewavaluo->tipoinmueble) == "") { ?>
+		<th data-name="tipoinmueble" class="<?php echo $viewavaluo->tipoinmueble->HeaderCellClass() ?>"><div id="elh_viewavaluo_tipoinmueble" class="viewavaluo_tipoinmueble"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->tipoinmueble->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="tipoinmueble" class="<?php echo $viewavaluo->tipoinmueble->HeaderCellClass() ?>"><div><div id="elh_viewavaluo_tipoinmueble" class="viewavaluo_tipoinmueble">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->tipoinmueble->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->tipoinmueble->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->tipoinmueble->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -194,37 +192,28 @@ $viewavaluo_grid->ListOptions->Render("header", "left");
 <?php } ?>
 <?php if ($viewavaluo->id_oficialcredito->Visible) { // id_oficialcredito ?>
 	<?php if ($viewavaluo->SortUrl($viewavaluo->id_oficialcredito) == "") { ?>
-		<th data-name="id_oficialcredito" class="<?php echo $viewavaluo->id_oficialcredito->HeaderCellClass() ?>"><div id="elh_viewavaluo_id_oficialcredito" class="viewavaluo_id_oficialcredito"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->id_oficialcredito->FldCaption() ?></div></div></th>
+		<th data-name="id_oficialcredito" class="<?php echo $viewavaluo->id_oficialcredito->HeaderCellClass() ?>"><div id="elh_viewavaluo_id_oficialcredito" class="viewavaluo_id_oficialcredito"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluo->id_oficialcredito->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="id_oficialcredito" class="<?php echo $viewavaluo->id_oficialcredito->HeaderCellClass() ?>"><div><div id="elh_viewavaluo_id_oficialcredito" class="viewavaluo_id_oficialcredito">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->id_oficialcredito->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->id_oficialcredito->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->id_oficialcredito->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->id_oficialcredito->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->id_oficialcredito->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->id_oficialcredito->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
 <?php if ($viewavaluo->id_inspector->Visible) { // id_inspector ?>
 	<?php if ($viewavaluo->SortUrl($viewavaluo->id_inspector) == "") { ?>
-		<th data-name="id_inspector" class="<?php echo $viewavaluo->id_inspector->HeaderCellClass() ?>"><div id="elh_viewavaluo_id_inspector" class="viewavaluo_id_inspector"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->id_inspector->FldCaption() ?></div></div></th>
+		<th data-name="id_inspector" class="<?php echo $viewavaluo->id_inspector->HeaderCellClass() ?>"><div id="elh_viewavaluo_id_inspector" class="viewavaluo_id_inspector"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluo->id_inspector->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="id_inspector" class="<?php echo $viewavaluo->id_inspector->HeaderCellClass() ?>"><div><div id="elh_viewavaluo_id_inspector" class="viewavaluo_id_inspector">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->id_inspector->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->id_inspector->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->id_inspector->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($viewavaluo->id_cliente->Visible) { // id_cliente ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->id_cliente) == "") { ?>
-		<th data-name="id_cliente" class="<?php echo $viewavaluo->id_cliente->HeaderCellClass() ?>"><div id="elh_viewavaluo_id_cliente" class="viewavaluo_id_cliente"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->id_cliente->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id_cliente" class="<?php echo $viewavaluo->id_cliente->HeaderCellClass() ?>"><div><div id="elh_viewavaluo_id_cliente" class="viewavaluo_id_cliente">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->id_cliente->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->id_cliente->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->id_cliente->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->id_inspector->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->id_inspector->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->id_inspector->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
 <?php if ($viewavaluo->estado->Visible) { // estado ?>
 	<?php if ($viewavaluo->SortUrl($viewavaluo->estado) == "") { ?>
-		<th data-name="estado" class="<?php echo $viewavaluo->estado->HeaderCellClass() ?>"><div id="elh_viewavaluo_estado" class="viewavaluo_estado"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->estado->FldCaption() ?></div></div></th>
+		<th data-name="estado" class="<?php echo $viewavaluo->estado->HeaderCellClass() ?>"><div id="elh_viewavaluo_estado" class="viewavaluo_estado"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluo->estado->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="estado" class="<?php echo $viewavaluo->estado->HeaderCellClass() ?>"><div><div id="elh_viewavaluo_estado" class="viewavaluo_estado">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->estado->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->estado->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->estado->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->estado->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->estado->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->estado->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -243,6 +232,15 @@ $viewavaluo_grid->ListOptions->Render("header", "left");
 	<?php } else { ?>
 		<th data-name="fecha_avaluo" class="<?php echo $viewavaluo->fecha_avaluo->HeaderCellClass() ?>"><div><div id="elh_viewavaluo_fecha_avaluo" class="viewavaluo_fecha_avaluo">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->fecha_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->fecha_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->fecha_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($viewavaluo->informe->Visible) { // informe ?>
+	<?php if ($viewavaluo->SortUrl($viewavaluo->informe) == "") { ?>
+		<th data-name="informe" class="<?php echo $viewavaluo->informe->HeaderCellClass() ?>"><div id="elh_viewavaluo_informe" class="viewavaluo_informe"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->informe->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="informe" class="<?php echo $viewavaluo->informe->HeaderCellClass() ?>"><div><div id="elh_viewavaluo_informe" class="viewavaluo_informe">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->informe->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->informe->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->informe->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -355,6 +353,41 @@ while ($viewavaluo_grid->RecCnt < $viewavaluo_grid->StopRec) {
 // Render list options (body, left)
 $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowCnt);
 ?>
+	<?php if ($viewavaluo->codigoavaluo->Visible) { // codigoavaluo ?>
+		<td data-name="codigoavaluo"<?php echo $viewavaluo->codigoavaluo->CellAttributes() ?>>
+<?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_codigoavaluo" class="form-group viewavaluo_codigoavaluo">
+<input type="text" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->codigoavaluo->EditValue ?>"<?php echo $viewavaluo->codigoavaluo->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->OldValue) ?>">
+<?php } ?>
+<?php if ($viewavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_codigoavaluo" class="form-group viewavaluo_codigoavaluo">
+<input type="text" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->codigoavaluo->EditValue ?>"<?php echo $viewavaluo->codigoavaluo->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($viewavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_codigoavaluo" class="viewavaluo_codigoavaluo">
+<span<?php echo $viewavaluo->codigoavaluo->ViewAttributes() ?>>
+<?php echo $viewavaluo->codigoavaluo->ListViewValue() ?></span>
+</span>
+<?php if ($viewavaluo->CurrentAction <> "F") { ?>
+<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->FormValue) ?>">
+<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->OldValue) ?>">
+<?php } else { ?>
+<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="fviewavaluogrid$x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="fviewavaluogrid$x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->FormValue) ?>">
+<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="fviewavaluogrid$o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="fviewavaluogrid$o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+	<?php } ?>
+<?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<input type="hidden" data-table="viewavaluo" data-field="x_id" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($viewavaluo->id->CurrentValue) ?>">
+<input type="hidden" data-table="viewavaluo" data-field="x_id" name="o<?php echo $viewavaluo_grid->RowIndex ?>_id" id="o<?php echo $viewavaluo_grid->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($viewavaluo->id->OldValue) ?>">
+<?php } ?>
+<?php if ($viewavaluo->RowType == EW_ROWTYPE_EDIT || $viewavaluo->CurrentMode == "edit") { ?>
+<input type="hidden" data-table="viewavaluo" data-field="x_id" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($viewavaluo->id->CurrentValue) ?>">
+<?php } ?>
 	<?php if ($viewavaluo->tipoinmueble->Visible) { // tipoinmueble ?>
 		<td data-name="tipoinmueble"<?php echo $viewavaluo->tipoinmueble->CellAttributes() ?>>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
@@ -383,41 +416,6 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowCnt);
 <?php } else { ?>
 <input type="hidden" data-table="viewavaluo" data-field="x_tipoinmueble" name="fviewavaluogrid$x<?php echo $viewavaluo_grid->RowIndex ?>_tipoinmueble" id="fviewavaluogrid$x<?php echo $viewavaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($viewavaluo->tipoinmueble->FormValue) ?>">
 <input type="hidden" data-table="viewavaluo" data-field="x_tipoinmueble" name="fviewavaluogrid$o<?php echo $viewavaluo_grid->RowIndex ?>_tipoinmueble" id="fviewavaluogrid$o<?php echo $viewavaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($viewavaluo->tipoinmueble->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-	<?php } ?>
-<?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<input type="hidden" data-table="viewavaluo" data-field="x_id" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($viewavaluo->id->CurrentValue) ?>">
-<input type="hidden" data-table="viewavaluo" data-field="x_id" name="o<?php echo $viewavaluo_grid->RowIndex ?>_id" id="o<?php echo $viewavaluo_grid->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($viewavaluo->id->OldValue) ?>">
-<?php } ?>
-<?php if ($viewavaluo->RowType == EW_ROWTYPE_EDIT || $viewavaluo->CurrentMode == "edit") { ?>
-<input type="hidden" data-table="viewavaluo" data-field="x_id" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($viewavaluo->id->CurrentValue) ?>">
-<?php } ?>
-	<?php if ($viewavaluo->codigoavaluo->Visible) { // codigoavaluo ?>
-		<td data-name="codigoavaluo"<?php echo $viewavaluo->codigoavaluo->CellAttributes() ?>>
-<?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_codigoavaluo" class="form-group viewavaluo_codigoavaluo">
-<input type="text" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->codigoavaluo->EditValue ?>"<?php echo $viewavaluo->codigoavaluo->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->OldValue) ?>">
-<?php } ?>
-<?php if ($viewavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_codigoavaluo" class="form-group viewavaluo_codigoavaluo">
-<input type="text" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->codigoavaluo->EditValue ?>"<?php echo $viewavaluo->codigoavaluo->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($viewavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_codigoavaluo" class="viewavaluo_codigoavaluo">
-<span<?php echo $viewavaluo->codigoavaluo->ViewAttributes() ?>>
-<?php echo $viewavaluo->codigoavaluo->ListViewValue() ?></span>
-</span>
-<?php if ($viewavaluo->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->FormValue) ?>">
-<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->OldValue) ?>">
-<?php } else { ?>
-<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="fviewavaluogrid$x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="fviewavaluogrid$x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->FormValue) ?>">
-<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="fviewavaluogrid$o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="fviewavaluogrid$o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>
@@ -474,17 +472,13 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowCnt);
 		<td data-name="id_oficialcredito"<?php echo $viewavaluo->id_oficialcredito->CellAttributes() ?>>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_id_oficialcredito" class="form-group viewavaluo_id_oficialcredito">
-<select data-table="viewavaluo" data-field="x_id_oficialcredito" data-value-separator="<?php echo $viewavaluo->id_oficialcredito->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito"<?php echo $viewavaluo->id_oficialcredito->EditAttributes() ?>>
-<?php echo $viewavaluo->id_oficialcredito->SelectOptionListHtml("x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito") ?>
-</select>
+<input type="hidden" data-table="viewavaluo" data-field="x_id_oficialcredito" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" value="<?php echo ew_HtmlEncode($viewavaluo->id_oficialcredito->CurrentValue) ?>">
 </span>
 <input type="hidden" data-table="viewavaluo" data-field="x_id_oficialcredito" name="o<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" id="o<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" value="<?php echo ew_HtmlEncode($viewavaluo->id_oficialcredito->OldValue) ?>">
 <?php } ?>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_id_oficialcredito" class="form-group viewavaluo_id_oficialcredito">
-<select data-table="viewavaluo" data-field="x_id_oficialcredito" data-value-separator="<?php echo $viewavaluo->id_oficialcredito->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito"<?php echo $viewavaluo->id_oficialcredito->EditAttributes() ?>>
-<?php echo $viewavaluo->id_oficialcredito->SelectOptionListHtml("x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito") ?>
-</select>
+<input type="hidden" data-table="viewavaluo" data-field="x_id_oficialcredito" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" value="<?php echo ew_HtmlEncode($viewavaluo->id_oficialcredito->CurrentValue) ?>">
 </span>
 <?php } ?>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -514,10 +508,10 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowCnt);
 <?php } ?>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_id_inspector" class="form-group viewavaluo_id_inspector">
-<select data-table="viewavaluo" data-field="x_id_inspector" data-value-separator="<?php echo $viewavaluo->id_inspector->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_inspector" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_inspector"<?php echo $viewavaluo->id_inspector->EditAttributes() ?>>
-<?php echo $viewavaluo->id_inspector->SelectOptionListHtml("x<?php echo $viewavaluo_grid->RowIndex ?>_id_inspector") ?>
-</select>
+<span<?php echo $viewavaluo->id_inspector->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $viewavaluo->id_inspector->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="viewavaluo" data-field="x_id_inspector" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_inspector" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_inspector" value="<?php echo ew_HtmlEncode($viewavaluo->id_inspector->CurrentValue) ?>">
 <?php } ?>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_id_inspector" class="viewavaluo_id_inspector">
@@ -534,46 +528,24 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowCnt);
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->id_cliente->Visible) { // id_cliente ?>
-		<td data-name="id_cliente"<?php echo $viewavaluo->id_cliente->CellAttributes() ?>>
-<?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_id_cliente" class="form-group viewavaluo_id_cliente">
-<input type="text" data-table="viewavaluo" data-field="x_id_cliente" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" size="30" placeholder="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->id_cliente->EditValue ?>"<?php echo $viewavaluo->id_cliente->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="viewavaluo" data-field="x_id_cliente" name="o<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="o<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" value="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->OldValue) ?>">
-<?php } ?>
-<?php if ($viewavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_id_cliente" class="form-group viewavaluo_id_cliente">
-<input type="text" data-table="viewavaluo" data-field="x_id_cliente" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" size="30" placeholder="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->id_cliente->EditValue ?>"<?php echo $viewavaluo->id_cliente->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($viewavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_id_cliente" class="viewavaluo_id_cliente">
-<span<?php echo $viewavaluo->id_cliente->ViewAttributes() ?>>
-<?php echo $viewavaluo->id_cliente->ListViewValue() ?></span>
-</span>
-<?php if ($viewavaluo->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="viewavaluo" data-field="x_id_cliente" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" value="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->FormValue) ?>">
-<input type="hidden" data-table="viewavaluo" data-field="x_id_cliente" name="o<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="o<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" value="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->OldValue) ?>">
-<?php } else { ?>
-<input type="hidden" data-table="viewavaluo" data-field="x_id_cliente" name="fviewavaluogrid$x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="fviewavaluogrid$x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" value="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->FormValue) ?>">
-<input type="hidden" data-table="viewavaluo" data-field="x_id_cliente" name="fviewavaluogrid$o<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="fviewavaluogrid$o<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" value="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-	<?php } ?>
 	<?php if ($viewavaluo->estado->Visible) { // estado ?>
 		<td data-name="estado"<?php echo $viewavaluo->estado->CellAttributes() ?>>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_estado" class="form-group viewavaluo_estado">
-<input type="text" data-table="viewavaluo" data-field="x_estado" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" size="30" placeholder="<?php echo ew_HtmlEncode($viewavaluo->estado->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->estado->EditValue ?>"<?php echo $viewavaluo->estado->EditAttributes() ?>>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewavaluo_grid->RowIndex ?>_estado"><?php echo (strval($viewavaluo->estado->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewavaluo->estado->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewavaluo->estado->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $viewavaluo_grid->RowIndex ?>_estado',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewavaluo->estado->ReadOnly || $viewavaluo->estado->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="viewavaluo" data-field="x_estado" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewavaluo->estado->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" value="<?php echo $viewavaluo->estado->CurrentValue ?>"<?php echo $viewavaluo->estado->EditAttributes() ?>>
 </span>
 <input type="hidden" data-table="viewavaluo" data-field="x_estado" name="o<?php echo $viewavaluo_grid->RowIndex ?>_estado" id="o<?php echo $viewavaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($viewavaluo->estado->OldValue) ?>">
 <?php } ?>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_estado" class="form-group viewavaluo_estado">
-<input type="text" data-table="viewavaluo" data-field="x_estado" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" size="30" placeholder="<?php echo ew_HtmlEncode($viewavaluo->estado->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->estado->EditValue ?>"<?php echo $viewavaluo->estado->EditAttributes() ?>>
+<span<?php echo $viewavaluo->estado->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $viewavaluo->estado->EditValue ?></p></span>
 </span>
+<input type="hidden" data-table="viewavaluo" data-field="x_estado" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($viewavaluo->estado->CurrentValue) ?>">
 <?php } ?>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_estado" class="viewavaluo_estado">
@@ -594,7 +566,9 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowCnt);
 		<td data-name="estadopago"<?php echo $viewavaluo->estadopago->CellAttributes() ?>>
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_estadopago" class="form-group viewavaluo_estadopago">
-<input type="text" data-table="viewavaluo" data-field="x_estadopago" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago" size="30" placeholder="<?php echo ew_HtmlEncode($viewavaluo->estadopago->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->estadopago->EditValue ?>"<?php echo $viewavaluo->estadopago->EditAttributes() ?>>
+<select data-table="viewavaluo" data-field="x_estadopago" data-value-separator="<?php echo $viewavaluo->estadopago->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago"<?php echo $viewavaluo->estadopago->EditAttributes() ?>>
+<?php echo $viewavaluo->estadopago->SelectOptionListHtml("x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago") ?>
+</select>
 </span>
 <input type="hidden" data-table="viewavaluo" data-field="x_estadopago" name="o<?php echo $viewavaluo_grid->RowIndex ?>_estadopago" id="o<?php echo $viewavaluo_grid->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($viewavaluo->estadopago->OldValue) ?>">
 <?php } ?>
@@ -648,6 +622,40 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowCnt);
 <?php } ?>
 </td>
 	<?php } ?>
+	<?php if ($viewavaluo->informe->Visible) { // informe ?>
+		<td data-name="informe"<?php echo $viewavaluo->informe->CellAttributes() ?>>
+<?php if ($viewavaluo_grid->RowAction == "insert") { // Add record ?>
+<span id="el$rowindex$_viewavaluo_informe" class="form-group viewavaluo_informe">
+<div id="fd_x<?php echo $viewavaluo_grid->RowIndex ?>_informe">
+<span title="<?php echo $viewavaluo->informe->FldTitle() ? $viewavaluo->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluo->informe->ReadOnly || $viewavaluo->informe->Disabled) echo " hide"; ?>" data-trigger="hover">
+	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
+	<input type="file" title=" " data-table="viewavaluo" data-field="x_informe" name="x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id="x<?php echo $viewavaluo_grid->RowIndex ?>_informe"<?php echo $viewavaluo->informe->EditAttributes() ?>>
+</span>
+<input type="hidden" name="fn_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fn_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="<?php echo $viewavaluo->informe->Upload->FileName ?>">
+<input type="hidden" name="fa_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fa_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="0">
+<input type="hidden" name="fs_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fs_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="0">
+<input type="hidden" name="fx_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fx_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="<?php echo $viewavaluo->informe->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fm_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="<?php echo $viewavaluo->informe->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+</span>
+<input type="hidden" data-table="viewavaluo" data-field="x_informe" name="o<?php echo $viewavaluo_grid->RowIndex ?>_informe" id="o<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="<?php echo ew_HtmlEncode($viewavaluo->informe->OldValue) ?>">
+<?php } elseif ($viewavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_informe" class="viewavaluo_informe">
+<span<?php echo $viewavaluo->informe->ViewAttributes() ?>>
+<?php echo ew_GetFileViewTag($viewavaluo->informe, $viewavaluo->informe->ListViewValue()) ?>
+</span>
+</span>
+<?php } else  { // Edit record ?>
+<span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_informe" class="form-group viewavaluo_informe">
+<span<?php echo $viewavaluo->informe->ViewAttributes() ?>>
+<?php echo ew_GetFileViewTag($viewavaluo->informe, $viewavaluo->informe->EditValue) ?>
+</span>
+</span>
+<input type="hidden" data-table="viewavaluo" data-field="x_informe" name="x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id="x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="<?php echo ew_HtmlEncode($viewavaluo->informe->CurrentValue) ?>">
+<?php } ?>
+</td>
+	<?php } ?>
 <?php
 
 // Render list options (body, right)
@@ -690,6 +698,22 @@ fviewavaluogrid.UpdateOpts(<?php echo $viewavaluo_grid->RowIndex ?>);
 // Render list options (body, left)
 $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowIndex);
 ?>
+	<?php if ($viewavaluo->codigoavaluo->Visible) { // codigoavaluo ?>
+		<td data-name="codigoavaluo">
+<?php if ($viewavaluo->CurrentAction <> "F") { ?>
+<span id="el$rowindex$_viewavaluo_codigoavaluo" class="form-group viewavaluo_codigoavaluo">
+<input type="text" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->codigoavaluo->EditValue ?>"<?php echo $viewavaluo->codigoavaluo->EditAttributes() ?>>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_viewavaluo_codigoavaluo" class="form-group viewavaluo_codigoavaluo">
+<span<?php echo $viewavaluo->codigoavaluo->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $viewavaluo->codigoavaluo->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->OldValue) ?>">
+</td>
+	<?php } ?>
 	<?php if ($viewavaluo->tipoinmueble->Visible) { // tipoinmueble ?>
 		<td data-name="tipoinmueble">
 <?php if ($viewavaluo->CurrentAction <> "F") { ?>
@@ -706,22 +730,6 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowIndex
 <input type="hidden" data-table="viewavaluo" data-field="x_tipoinmueble" name="x<?php echo $viewavaluo_grid->RowIndex ?>_tipoinmueble" id="x<?php echo $viewavaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($viewavaluo->tipoinmueble->FormValue) ?>">
 <?php } ?>
 <input type="hidden" data-table="viewavaluo" data-field="x_tipoinmueble" name="o<?php echo $viewavaluo_grid->RowIndex ?>_tipoinmueble" id="o<?php echo $viewavaluo_grid->RowIndex ?>_tipoinmueble" value="<?php echo ew_HtmlEncode($viewavaluo->tipoinmueble->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($viewavaluo->codigoavaluo->Visible) { // codigoavaluo ?>
-		<td data-name="codigoavaluo">
-<?php if ($viewavaluo->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_viewavaluo_codigoavaluo" class="form-group viewavaluo_codigoavaluo">
-<input type="text" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->codigoavaluo->EditValue ?>"<?php echo $viewavaluo->codigoavaluo->EditAttributes() ?>>
-</span>
-<?php } else { ?>
-<span id="el$rowindex$_viewavaluo_codigoavaluo" class="form-group viewavaluo_codigoavaluo">
-<span<?php echo $viewavaluo->codigoavaluo->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $viewavaluo->codigoavaluo->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="viewavaluo" data-field="x_codigoavaluo" name="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" id="o<?php echo $viewavaluo_grid->RowIndex ?>_codigoavaluo" value="<?php echo ew_HtmlEncode($viewavaluo->codigoavaluo->OldValue) ?>">
 </td>
 	<?php } ?>
 	<?php if ($viewavaluo->id_solicitud->Visible) { // id_solicitud ?>
@@ -754,15 +762,9 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowIndex
 		<td data-name="id_oficialcredito">
 <?php if ($viewavaluo->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_viewavaluo_id_oficialcredito" class="form-group viewavaluo_id_oficialcredito">
-<select data-table="viewavaluo" data-field="x_id_oficialcredito" data-value-separator="<?php echo $viewavaluo->id_oficialcredito->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito"<?php echo $viewavaluo->id_oficialcredito->EditAttributes() ?>>
-<?php echo $viewavaluo->id_oficialcredito->SelectOptionListHtml("x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito") ?>
-</select>
+<input type="hidden" data-table="viewavaluo" data-field="x_id_oficialcredito" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" value="<?php echo ew_HtmlEncode($viewavaluo->id_oficialcredito->CurrentValue) ?>">
 </span>
 <?php } else { ?>
-<span id="el$rowindex$_viewavaluo_id_oficialcredito" class="form-group viewavaluo_id_oficialcredito">
-<span<?php echo $viewavaluo->id_oficialcredito->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $viewavaluo->id_oficialcredito->ViewValue ?></p></span>
-</span>
 <input type="hidden" data-table="viewavaluo" data-field="x_id_oficialcredito" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" value="<?php echo ew_HtmlEncode($viewavaluo->id_oficialcredito->FormValue) ?>">
 <?php } ?>
 <input type="hidden" data-table="viewavaluo" data-field="x_id_oficialcredito" name="o<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" id="o<?php echo $viewavaluo_grid->RowIndex ?>_id_oficialcredito" value="<?php echo ew_HtmlEncode($viewavaluo->id_oficialcredito->OldValue) ?>">
@@ -786,27 +788,15 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowIndex
 <input type="hidden" data-table="viewavaluo" data-field="x_id_inspector" name="o<?php echo $viewavaluo_grid->RowIndex ?>_id_inspector" id="o<?php echo $viewavaluo_grid->RowIndex ?>_id_inspector" value="<?php echo ew_HtmlEncode($viewavaluo->id_inspector->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->id_cliente->Visible) { // id_cliente ?>
-		<td data-name="id_cliente">
-<?php if ($viewavaluo->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_viewavaluo_id_cliente" class="form-group viewavaluo_id_cliente">
-<input type="text" data-table="viewavaluo" data-field="x_id_cliente" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" size="30" placeholder="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->id_cliente->EditValue ?>"<?php echo $viewavaluo->id_cliente->EditAttributes() ?>>
-</span>
-<?php } else { ?>
-<span id="el$rowindex$_viewavaluo_id_cliente" class="form-group viewavaluo_id_cliente">
-<span<?php echo $viewavaluo->id_cliente->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $viewavaluo->id_cliente->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="viewavaluo" data-field="x_id_cliente" name="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="x<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" value="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="viewavaluo" data-field="x_id_cliente" name="o<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" id="o<?php echo $viewavaluo_grid->RowIndex ?>_id_cliente" value="<?php echo ew_HtmlEncode($viewavaluo->id_cliente->OldValue) ?>">
-</td>
-	<?php } ?>
 	<?php if ($viewavaluo->estado->Visible) { // estado ?>
 		<td data-name="estado">
 <?php if ($viewavaluo->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_viewavaluo_estado" class="form-group viewavaluo_estado">
-<input type="text" data-table="viewavaluo" data-field="x_estado" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" size="30" placeholder="<?php echo ew_HtmlEncode($viewavaluo->estado->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->estado->EditValue ?>"<?php echo $viewavaluo->estado->EditAttributes() ?>>
+<span class="ewLookupList">
+	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewavaluo_grid->RowIndex ?>_estado"><?php echo (strval($viewavaluo->estado->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewavaluo->estado->ViewValue); ?></span>
+</span>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewavaluo->estado->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $viewavaluo_grid->RowIndex ?>_estado',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewavaluo->estado->ReadOnly || $viewavaluo->estado->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" data-table="viewavaluo" data-field="x_estado" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewavaluo->estado->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" value="<?php echo $viewavaluo->estado->CurrentValue ?>"<?php echo $viewavaluo->estado->EditAttributes() ?>>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_viewavaluo_estado" class="form-group viewavaluo_estado">
@@ -822,7 +812,9 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowIndex
 		<td data-name="estadopago">
 <?php if ($viewavaluo->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_viewavaluo_estadopago" class="form-group viewavaluo_estadopago">
-<input type="text" data-table="viewavaluo" data-field="x_estadopago" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago" size="30" placeholder="<?php echo ew_HtmlEncode($viewavaluo->estadopago->getPlaceHolder()) ?>" value="<?php echo $viewavaluo->estadopago->EditValue ?>"<?php echo $viewavaluo->estadopago->EditAttributes() ?>>
+<select data-table="viewavaluo" data-field="x_estadopago" data-value-separator="<?php echo $viewavaluo->estadopago->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago"<?php echo $viewavaluo->estadopago->EditAttributes() ?>>
+<?php echo $viewavaluo->estadopago->SelectOptionListHtml("x<?php echo $viewavaluo_grid->RowIndex ?>_estadopago") ?>
+</select>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_viewavaluo_estadopago" class="form-group viewavaluo_estadopago">
@@ -848,6 +840,25 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowIndex
 <input type="hidden" data-table="viewavaluo" data-field="x_fecha_avaluo" name="x<?php echo $viewavaluo_grid->RowIndex ?>_fecha_avaluo" id="x<?php echo $viewavaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($viewavaluo->fecha_avaluo->FormValue) ?>">
 <?php } ?>
 <input type="hidden" data-table="viewavaluo" data-field="x_fecha_avaluo" name="o<?php echo $viewavaluo_grid->RowIndex ?>_fecha_avaluo" id="o<?php echo $viewavaluo_grid->RowIndex ?>_fecha_avaluo" value="<?php echo ew_HtmlEncode($viewavaluo->fecha_avaluo->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($viewavaluo->informe->Visible) { // informe ?>
+		<td data-name="informe">
+<span id="el$rowindex$_viewavaluo_informe" class="form-group viewavaluo_informe">
+<div id="fd_x<?php echo $viewavaluo_grid->RowIndex ?>_informe">
+<span title="<?php echo $viewavaluo->informe->FldTitle() ? $viewavaluo->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluo->informe->ReadOnly || $viewavaluo->informe->Disabled) echo " hide"; ?>" data-trigger="hover">
+	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
+	<input type="file" title=" " data-table="viewavaluo" data-field="x_informe" name="x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id="x<?php echo $viewavaluo_grid->RowIndex ?>_informe"<?php echo $viewavaluo->informe->EditAttributes() ?>>
+</span>
+<input type="hidden" name="fn_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fn_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="<?php echo $viewavaluo->informe->Upload->FileName ?>">
+<input type="hidden" name="fa_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fa_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="0">
+<input type="hidden" name="fs_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fs_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="0">
+<input type="hidden" name="fx_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fx_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="<?php echo $viewavaluo->informe->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id= "fm_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="<?php echo $viewavaluo->informe->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x<?php echo $viewavaluo_grid->RowIndex ?>_informe" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+</span>
+<input type="hidden" data-table="viewavaluo" data-field="x_informe" name="o<?php echo $viewavaluo_grid->RowIndex ?>_informe" id="o<?php echo $viewavaluo_grid->RowIndex ?>_informe" value="<?php echo ew_HtmlEncode($viewavaluo->informe->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php

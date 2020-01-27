@@ -450,30 +450,19 @@ class cviewsolicitud_list extends cviewsolicitud {
 
 		// Setup export options
 		$this->SetupExportOptions();
-		$this->id->SetVisibility();
-		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
-			$this->id->Visible = FALSE;
 		$this->name->SetVisibility();
-		$this->lastname->SetVisibility();
+		$this->cell->SetVisibility();
+		$this->phone->SetVisibility();
 		$this->_email->SetVisibility();
 		$this->address->SetVisibility();
-		$this->nombre_contacto->SetVisibility();
 		$this->email_contacto->SetVisibility();
-		$this->phone->SetVisibility();
-		$this->cell->SetVisibility();
+		$this->lastname->SetVisibility();
 		$this->id_sucursal->SetVisibility();
-		$this->id_ciudad_inmueble->SetVisibility();
-		$this->id_provincia_inmueble->SetVisibility();
+		$this->tipoinmueble->SetVisibility();
 		$this->tipovehiculo->SetVisibility();
-		$this->id_ciudad_vehiculo->SetVisibility();
-		$this->id_provincia_vehiculo->SetVisibility();
 		$this->tipomaquinaria->SetVisibility();
-		$this->id_ciudad_maquinaria->SetVisibility();
-		$this->id_provincia_maquinaria->SetVisibility();
 		$this->tipomercaderia->SetVisibility();
-		$this->documento_mercaderia->SetVisibility();
 		$this->tipoespecial->SetVisibility();
-		$this->documentos->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -622,6 +611,7 @@ class cviewsolicitud_list extends cviewsolicitud {
 	var $MultiSelectKey;
 	var $Command;
 	var $RestoreSearch = FALSE;
+	var $viewavaluo_Count;
 	var $DetailPages;
 	var $Recordset;
 	var $OldRecordset;
@@ -679,11 +669,7 @@ class cviewsolicitud_list extends cviewsolicitud {
 			}
 
 			// Get default search criteria
-			ew_AddFilter($this->DefaultSearchWhere, $this->BasicSearchWhere(TRUE));
 			ew_AddFilter($this->DefaultSearchWhere, $this->AdvancedSearchWhere(TRUE));
-
-			// Get basic search values
-			$this->LoadBasicSearchValues();
 
 			// Get and validate search values for advanced search
 			$this->LoadSearchValues(); // Get search values
@@ -703,10 +689,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 			// Set up sorting order
 			$this->SetupSortOrder();
 
-			// Get basic search criteria
-			if ($gsSearchError == "")
-				$sSrchBasic = $this->BasicSearchWhere();
-
 			// Get search criteria for advanced search
 			if ($gsSearchError == "")
 				$sSrchAdvanced = $this->AdvancedSearchWhere();
@@ -725,11 +707,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 
 		// Load search default if no existing search criteria
 		if (!$this->CheckSearchParms()) {
-
-			// Load basic search from default
-			$this->BasicSearch->LoadDefault();
-			if ($this->BasicSearch->Keyword != "")
-				$sSrchBasic = $this->BasicSearchWhere();
 
 			// Load advanced search from default
 			if ($this->LoadAdvancedSearchDefault()) {
@@ -857,19 +834,15 @@ class cviewsolicitud_list extends cviewsolicitud {
 		// Initialize
 		$sFilterList = "";
 		$sSavedFilterList = "";
-
-		// Load server side filters
-		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
-			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "fviewsolicitudlistsrch");
 		$sFilterList = ew_Concat($sFilterList, $this->id->AdvancedSearch->ToJson(), ","); // Field id
 		$sFilterList = ew_Concat($sFilterList, $this->name->AdvancedSearch->ToJson(), ","); // Field name
-		$sFilterList = ew_Concat($sFilterList, $this->lastname->AdvancedSearch->ToJson(), ","); // Field lastname
+		$sFilterList = ew_Concat($sFilterList, $this->cell->AdvancedSearch->ToJson(), ","); // Field cell
+		$sFilterList = ew_Concat($sFilterList, $this->phone->AdvancedSearch->ToJson(), ","); // Field phone
 		$sFilterList = ew_Concat($sFilterList, $this->_email->AdvancedSearch->ToJson(), ","); // Field email
 		$sFilterList = ew_Concat($sFilterList, $this->address->AdvancedSearch->ToJson(), ","); // Field address
 		$sFilterList = ew_Concat($sFilterList, $this->nombre_contacto->AdvancedSearch->ToJson(), ","); // Field nombre_contacto
 		$sFilterList = ew_Concat($sFilterList, $this->email_contacto->AdvancedSearch->ToJson(), ","); // Field email_contacto
-		$sFilterList = ew_Concat($sFilterList, $this->phone->AdvancedSearch->ToJson(), ","); // Field phone
-		$sFilterList = ew_Concat($sFilterList, $this->cell->AdvancedSearch->ToJson(), ","); // Field cell
+		$sFilterList = ew_Concat($sFilterList, $this->lastname->AdvancedSearch->ToJson(), ","); // Field lastname
 		$sFilterList = ew_Concat($sFilterList, $this->id_sucursal->AdvancedSearch->ToJson(), ","); // Field id_sucursal
 		$sFilterList = ew_Concat($sFilterList, $this->tipoinmueble->AdvancedSearch->ToJson(), ","); // Field tipoinmueble
 		$sFilterList = ew_Concat($sFilterList, $this->id_ciudad_inmueble->AdvancedSearch->ToJson(), ","); // Field id_ciudad_inmueble
@@ -885,10 +858,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$sFilterList = ew_Concat($sFilterList, $this->tipoespecial->AdvancedSearch->ToJson(), ","); // Field tipoespecial
 		$sFilterList = ew_Concat($sFilterList, $this->is_active->AdvancedSearch->ToJson(), ","); // Field is_active
 		$sFilterList = ew_Concat($sFilterList, $this->documentos->AdvancedSearch->ToJson(), ","); // Field documentos
-		if ($this->BasicSearch->Keyword <> "") {
-			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
-			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
-		}
 		$sFilterList = preg_replace('/,$/', "", $sFilterList);
 
 		// Return filter list in json
@@ -945,13 +914,21 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->name->AdvancedSearch->SearchOperator2 = @$filter["w_name"];
 		$this->name->AdvancedSearch->Save();
 
-		// Field lastname
-		$this->lastname->AdvancedSearch->SearchValue = @$filter["x_lastname"];
-		$this->lastname->AdvancedSearch->SearchOperator = @$filter["z_lastname"];
-		$this->lastname->AdvancedSearch->SearchCondition = @$filter["v_lastname"];
-		$this->lastname->AdvancedSearch->SearchValue2 = @$filter["y_lastname"];
-		$this->lastname->AdvancedSearch->SearchOperator2 = @$filter["w_lastname"];
-		$this->lastname->AdvancedSearch->Save();
+		// Field cell
+		$this->cell->AdvancedSearch->SearchValue = @$filter["x_cell"];
+		$this->cell->AdvancedSearch->SearchOperator = @$filter["z_cell"];
+		$this->cell->AdvancedSearch->SearchCondition = @$filter["v_cell"];
+		$this->cell->AdvancedSearch->SearchValue2 = @$filter["y_cell"];
+		$this->cell->AdvancedSearch->SearchOperator2 = @$filter["w_cell"];
+		$this->cell->AdvancedSearch->Save();
+
+		// Field phone
+		$this->phone->AdvancedSearch->SearchValue = @$filter["x_phone"];
+		$this->phone->AdvancedSearch->SearchOperator = @$filter["z_phone"];
+		$this->phone->AdvancedSearch->SearchCondition = @$filter["v_phone"];
+		$this->phone->AdvancedSearch->SearchValue2 = @$filter["y_phone"];
+		$this->phone->AdvancedSearch->SearchOperator2 = @$filter["w_phone"];
+		$this->phone->AdvancedSearch->Save();
 
 		// Field email
 		$this->_email->AdvancedSearch->SearchValue = @$filter["x__email"];
@@ -985,21 +962,13 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->email_contacto->AdvancedSearch->SearchOperator2 = @$filter["w_email_contacto"];
 		$this->email_contacto->AdvancedSearch->Save();
 
-		// Field phone
-		$this->phone->AdvancedSearch->SearchValue = @$filter["x_phone"];
-		$this->phone->AdvancedSearch->SearchOperator = @$filter["z_phone"];
-		$this->phone->AdvancedSearch->SearchCondition = @$filter["v_phone"];
-		$this->phone->AdvancedSearch->SearchValue2 = @$filter["y_phone"];
-		$this->phone->AdvancedSearch->SearchOperator2 = @$filter["w_phone"];
-		$this->phone->AdvancedSearch->Save();
-
-		// Field cell
-		$this->cell->AdvancedSearch->SearchValue = @$filter["x_cell"];
-		$this->cell->AdvancedSearch->SearchOperator = @$filter["z_cell"];
-		$this->cell->AdvancedSearch->SearchCondition = @$filter["v_cell"];
-		$this->cell->AdvancedSearch->SearchValue2 = @$filter["y_cell"];
-		$this->cell->AdvancedSearch->SearchOperator2 = @$filter["w_cell"];
-		$this->cell->AdvancedSearch->Save();
+		// Field lastname
+		$this->lastname->AdvancedSearch->SearchValue = @$filter["x_lastname"];
+		$this->lastname->AdvancedSearch->SearchOperator = @$filter["z_lastname"];
+		$this->lastname->AdvancedSearch->SearchCondition = @$filter["v_lastname"];
+		$this->lastname->AdvancedSearch->SearchValue2 = @$filter["y_lastname"];
+		$this->lastname->AdvancedSearch->SearchOperator2 = @$filter["w_lastname"];
+		$this->lastname->AdvancedSearch->Save();
 
 		// Field id_sucursal
 		$this->id_sucursal->AdvancedSearch->SearchValue = @$filter["x_id_sucursal"];
@@ -1120,8 +1089,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->documentos->AdvancedSearch->SearchValue2 = @$filter["y_documentos"];
 		$this->documentos->AdvancedSearch->SearchOperator2 = @$filter["w_documentos"];
 		$this->documentos->AdvancedSearch->Save();
-		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
-		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
 
 	// Advanced search WHERE clause based on QueryString
@@ -1131,13 +1098,13 @@ class cviewsolicitud_list extends cviewsolicitud {
 		if (!$Security->CanSearch()) return "";
 		$this->BuildSearchSql($sWhere, $this->id, $Default, FALSE); // id
 		$this->BuildSearchSql($sWhere, $this->name, $Default, FALSE); // name
-		$this->BuildSearchSql($sWhere, $this->lastname, $Default, FALSE); // lastname
+		$this->BuildSearchSql($sWhere, $this->cell, $Default, FALSE); // cell
+		$this->BuildSearchSql($sWhere, $this->phone, $Default, FALSE); // phone
 		$this->BuildSearchSql($sWhere, $this->_email, $Default, FALSE); // email
 		$this->BuildSearchSql($sWhere, $this->address, $Default, FALSE); // address
 		$this->BuildSearchSql($sWhere, $this->nombre_contacto, $Default, FALSE); // nombre_contacto
 		$this->BuildSearchSql($sWhere, $this->email_contacto, $Default, FALSE); // email_contacto
-		$this->BuildSearchSql($sWhere, $this->phone, $Default, FALSE); // phone
-		$this->BuildSearchSql($sWhere, $this->cell, $Default, FALSE); // cell
+		$this->BuildSearchSql($sWhere, $this->lastname, $Default, FALSE); // lastname
 		$this->BuildSearchSql($sWhere, $this->id_sucursal, $Default, FALSE); // id_sucursal
 		$this->BuildSearchSql($sWhere, $this->tipoinmueble, $Default, TRUE); // tipoinmueble
 		$this->BuildSearchSql($sWhere, $this->id_ciudad_inmueble, $Default, FALSE); // id_ciudad_inmueble
@@ -1161,13 +1128,13 @@ class cviewsolicitud_list extends cviewsolicitud {
 		if (!$Default && $this->Command == "search") {
 			$this->id->AdvancedSearch->Save(); // id
 			$this->name->AdvancedSearch->Save(); // name
-			$this->lastname->AdvancedSearch->Save(); // lastname
+			$this->cell->AdvancedSearch->Save(); // cell
+			$this->phone->AdvancedSearch->Save(); // phone
 			$this->_email->AdvancedSearch->Save(); // email
 			$this->address->AdvancedSearch->Save(); // address
 			$this->nombre_contacto->AdvancedSearch->Save(); // nombre_contacto
 			$this->email_contacto->AdvancedSearch->Save(); // email_contacto
-			$this->phone->AdvancedSearch->Save(); // phone
-			$this->cell->AdvancedSearch->Save(); // cell
+			$this->lastname->AdvancedSearch->Save(); // lastname
 			$this->id_sucursal->AdvancedSearch->Save(); // id_sucursal
 			$this->tipoinmueble->AdvancedSearch->Save(); // tipoinmueble
 			$this->id_ciudad_inmueble->AdvancedSearch->Save(); // id_ciudad_inmueble
@@ -1231,134 +1198,15 @@ class cviewsolicitud_list extends cviewsolicitud {
 		return $Value;
 	}
 
-	// Return basic search SQL
-	function BasicSearchSQL($arKeywords, $type) {
-		$sWhere = "";
-		$this->BuildBasicSearchSQL($sWhere, $this->name, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->lastname, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->_email, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->address, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->nombre_contacto, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->email_contacto, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->phone, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->cell, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->tipoinmueble, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->tipovehiculo, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->tipomaquinaria, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->documento_mercaderia, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->documentos, $arKeywords, $type);
-		return $sWhere;
-	}
-
-	// Build basic search SQL
-	function BuildBasicSearchSQL(&$Where, &$Fld, $arKeywords, $type) {
-		global $EW_BASIC_SEARCH_IGNORE_PATTERN;
-		$sDefCond = ($type == "OR") ? "OR" : "AND";
-		$arSQL = array(); // Array for SQL parts
-		$arCond = array(); // Array for search conditions
-		$cnt = count($arKeywords);
-		$j = 0; // Number of SQL parts
-		for ($i = 0; $i < $cnt; $i++) {
-			$Keyword = $arKeywords[$i];
-			$Keyword = trim($Keyword);
-			if ($EW_BASIC_SEARCH_IGNORE_PATTERN <> "") {
-				$Keyword = preg_replace($EW_BASIC_SEARCH_IGNORE_PATTERN, "\\", $Keyword);
-				$ar = explode("\\", $Keyword);
-			} else {
-				$ar = array($Keyword);
-			}
-			foreach ($ar as $Keyword) {
-				if ($Keyword <> "") {
-					$sWrk = "";
-					if ($Keyword == "OR" && $type == "") {
-						if ($j > 0)
-							$arCond[$j-1] = "OR";
-					} elseif ($Keyword == EW_NULL_VALUE) {
-						$sWrk = $Fld->FldExpression . " IS NULL";
-					} elseif ($Keyword == EW_NOT_NULL_VALUE) {
-						$sWrk = $Fld->FldExpression . " IS NOT NULL";
-					} elseif ($Fld->FldIsVirtual) {
-						$sWrk = $Fld->FldVirtualExpression . ew_Like(ew_QuotedValue("%" . $Keyword . "%", EW_DATATYPE_STRING, $this->DBID), $this->DBID);
-					} elseif ($Fld->FldDataType != EW_DATATYPE_NUMBER || is_numeric($Keyword)) {
-						$sWrk = $Fld->FldBasicSearchExpression . ew_Like(ew_QuotedValue("%" . $Keyword . "%", EW_DATATYPE_STRING, $this->DBID), $this->DBID);
-					}
-					if ($sWrk <> "") {
-						$arSQL[$j] = $sWrk;
-						$arCond[$j] = $sDefCond;
-						$j += 1;
-					}
-				}
-			}
-		}
-		$cnt = count($arSQL);
-		$bQuoted = FALSE;
-		$sSql = "";
-		if ($cnt > 0) {
-			for ($i = 0; $i < $cnt-1; $i++) {
-				if ($arCond[$i] == "OR") {
-					if (!$bQuoted) $sSql .= "(";
-					$bQuoted = TRUE;
-				}
-				$sSql .= $arSQL[$i];
-				if ($bQuoted && $arCond[$i] <> "OR") {
-					$sSql .= ")";
-					$bQuoted = FALSE;
-				}
-				$sSql .= " " . $arCond[$i] . " ";
-			}
-			$sSql .= $arSQL[$cnt-1];
-			if ($bQuoted)
-				$sSql .= ")";
-		}
-		if ($sSql <> "") {
-			if ($Where <> "") $Where .= " OR ";
-			$Where .= "(" . $sSql . ")";
-		}
-	}
-
-	// Return basic search WHERE clause based on search keyword and type
-	function BasicSearchWhere($Default = FALSE) {
-		global $Security;
-		$sSearchStr = "";
-		if (!$Security->CanSearch()) return "";
-		$sSearchKeyword = ($Default) ? $this->BasicSearch->KeywordDefault : $this->BasicSearch->Keyword;
-		$sSearchType = ($Default) ? $this->BasicSearch->TypeDefault : $this->BasicSearch->Type;
-
-		// Get search SQL
-		if ($sSearchKeyword <> "") {
-			$ar = $this->BasicSearch->KeywordList($Default);
-
-			// Search keyword in any fields
-			if (($sSearchType == "OR" || $sSearchType == "AND") && $this->BasicSearch->BasicSearchAnyFields) {
-				foreach ($ar as $sKeyword) {
-					if ($sKeyword <> "") {
-						if ($sSearchStr <> "") $sSearchStr .= " " . $sSearchType . " ";
-						$sSearchStr .= "(" . $this->BasicSearchSQL(array($sKeyword), $sSearchType) . ")";
-					}
-				}
-			} else {
-				$sSearchStr = $this->BasicSearchSQL($ar, $sSearchType);
-			}
-			if (!$Default && in_array($this->Command, array("", "reset", "resetall"))) $this->Command = "search";
-		}
-		if (!$Default && $this->Command == "search") {
-			$this->BasicSearch->setKeyword($sSearchKeyword);
-			$this->BasicSearch->setType($sSearchType);
-		}
-		return $sSearchStr;
-	}
-
 	// Check if search parm exists
 	function CheckSearchParms() {
-
-		// Check basic search
-		if ($this->BasicSearch->IssetSession())
-			return TRUE;
 		if ($this->id->AdvancedSearch->IssetSession())
 			return TRUE;
 		if ($this->name->AdvancedSearch->IssetSession())
 			return TRUE;
-		if ($this->lastname->AdvancedSearch->IssetSession())
+		if ($this->cell->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->phone->AdvancedSearch->IssetSession())
 			return TRUE;
 		if ($this->_email->AdvancedSearch->IssetSession())
 			return TRUE;
@@ -1368,9 +1216,7 @@ class cviewsolicitud_list extends cviewsolicitud {
 			return TRUE;
 		if ($this->email_contacto->AdvancedSearch->IssetSession())
 			return TRUE;
-		if ($this->phone->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->cell->AdvancedSearch->IssetSession())
+		if ($this->lastname->AdvancedSearch->IssetSession())
 			return TRUE;
 		if ($this->id_sucursal->AdvancedSearch->IssetSession())
 			return TRUE;
@@ -1412,9 +1258,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->SearchWhere = "";
 		$this->setSearchWhere($this->SearchWhere);
 
-		// Clear basic search parameters
-		$this->ResetBasicSearchParms();
-
 		// Clear advanced search parameters
 		$this->ResetAdvancedSearchParms();
 	}
@@ -1424,22 +1267,17 @@ class cviewsolicitud_list extends cviewsolicitud {
 		return FALSE;
 	}
 
-	// Clear all basic search parameters
-	function ResetBasicSearchParms() {
-		$this->BasicSearch->UnsetSession();
-	}
-
 	// Clear all advanced search parameters
 	function ResetAdvancedSearchParms() {
 		$this->id->AdvancedSearch->UnsetSession();
 		$this->name->AdvancedSearch->UnsetSession();
-		$this->lastname->AdvancedSearch->UnsetSession();
+		$this->cell->AdvancedSearch->UnsetSession();
+		$this->phone->AdvancedSearch->UnsetSession();
 		$this->_email->AdvancedSearch->UnsetSession();
 		$this->address->AdvancedSearch->UnsetSession();
 		$this->nombre_contacto->AdvancedSearch->UnsetSession();
 		$this->email_contacto->AdvancedSearch->UnsetSession();
-		$this->phone->AdvancedSearch->UnsetSession();
-		$this->cell->AdvancedSearch->UnsetSession();
+		$this->lastname->AdvancedSearch->UnsetSession();
 		$this->id_sucursal->AdvancedSearch->UnsetSession();
 		$this->tipoinmueble->AdvancedSearch->UnsetSession();
 		$this->id_ciudad_inmueble->AdvancedSearch->UnsetSession();
@@ -1461,19 +1299,16 @@ class cviewsolicitud_list extends cviewsolicitud {
 	function RestoreSearchParms() {
 		$this->RestoreSearch = TRUE;
 
-		// Restore basic search values
-		$this->BasicSearch->Load();
-
 		// Restore advanced search values
 		$this->id->AdvancedSearch->Load();
 		$this->name->AdvancedSearch->Load();
-		$this->lastname->AdvancedSearch->Load();
+		$this->cell->AdvancedSearch->Load();
+		$this->phone->AdvancedSearch->Load();
 		$this->_email->AdvancedSearch->Load();
 		$this->address->AdvancedSearch->Load();
 		$this->nombre_contacto->AdvancedSearch->Load();
 		$this->email_contacto->AdvancedSearch->Load();
-		$this->phone->AdvancedSearch->Load();
-		$this->cell->AdvancedSearch->Load();
+		$this->lastname->AdvancedSearch->Load();
 		$this->id_sucursal->AdvancedSearch->Load();
 		$this->tipoinmueble->AdvancedSearch->Load();
 		$this->id_ciudad_inmueble->AdvancedSearch->Load();
@@ -1498,28 +1333,19 @@ class cviewsolicitud_list extends cviewsolicitud {
 		if (@$_GET["order"] <> "") {
 			$this->CurrentOrder = @$_GET["order"];
 			$this->CurrentOrderType = @$_GET["ordertype"];
-			$this->UpdateSort($this->id); // id
 			$this->UpdateSort($this->name); // name
-			$this->UpdateSort($this->lastname); // lastname
+			$this->UpdateSort($this->cell); // cell
+			$this->UpdateSort($this->phone); // phone
 			$this->UpdateSort($this->_email); // email
 			$this->UpdateSort($this->address); // address
-			$this->UpdateSort($this->nombre_contacto); // nombre_contacto
 			$this->UpdateSort($this->email_contacto); // email_contacto
-			$this->UpdateSort($this->phone); // phone
-			$this->UpdateSort($this->cell); // cell
+			$this->UpdateSort($this->lastname); // lastname
 			$this->UpdateSort($this->id_sucursal); // id_sucursal
-			$this->UpdateSort($this->id_ciudad_inmueble); // id_ciudad_inmueble
-			$this->UpdateSort($this->id_provincia_inmueble); // id_provincia_inmueble
+			$this->UpdateSort($this->tipoinmueble); // tipoinmueble
 			$this->UpdateSort($this->tipovehiculo); // tipovehiculo
-			$this->UpdateSort($this->id_ciudad_vehiculo); // id_ciudad_vehiculo
-			$this->UpdateSort($this->id_provincia_vehiculo); // id_provincia_vehiculo
 			$this->UpdateSort($this->tipomaquinaria); // tipomaquinaria
-			$this->UpdateSort($this->id_ciudad_maquinaria); // id_ciudad_maquinaria
-			$this->UpdateSort($this->id_provincia_maquinaria); // id_provincia_maquinaria
 			$this->UpdateSort($this->tipomercaderia); // tipomercaderia
-			$this->UpdateSort($this->documento_mercaderia); // documento_mercaderia
 			$this->UpdateSort($this->tipoespecial); // tipoespecial
-			$this->UpdateSort($this->documentos); // documentos
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1552,28 +1378,19 @@ class cviewsolicitud_list extends cviewsolicitud {
 			if ($this->Command == "resetsort") {
 				$sOrderBy = "";
 				$this->setSessionOrderBy($sOrderBy);
-				$this->id->setSort("");
 				$this->name->setSort("");
-				$this->lastname->setSort("");
+				$this->cell->setSort("");
+				$this->phone->setSort("");
 				$this->_email->setSort("");
 				$this->address->setSort("");
-				$this->nombre_contacto->setSort("");
 				$this->email_contacto->setSort("");
-				$this->phone->setSort("");
-				$this->cell->setSort("");
+				$this->lastname->setSort("");
 				$this->id_sucursal->setSort("");
-				$this->id_ciudad_inmueble->setSort("");
-				$this->id_provincia_inmueble->setSort("");
+				$this->tipoinmueble->setSort("");
 				$this->tipovehiculo->setSort("");
-				$this->id_ciudad_vehiculo->setSort("");
-				$this->id_provincia_vehiculo->setSort("");
 				$this->tipomaquinaria->setSort("");
-				$this->id_ciudad_maquinaria->setSort("");
-				$this->id_provincia_maquinaria->setSort("");
 				$this->tipomercaderia->setSort("");
-				$this->documento_mercaderia->setSort("");
 				$this->tipoespecial->setSort("");
-				$this->documentos->setSort("");
 			}
 
 			// Reset start position
@@ -1639,7 +1456,7 @@ class cviewsolicitud_list extends cviewsolicitud {
 
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
-		$this->ListOptions->UseDropDownButton = TRUE;
+		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
 		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
@@ -1706,6 +1523,7 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$oListOpt = &$this->ListOptions->Items["detail_viewavaluo"];
 		if ($Security->AllowList(CurrentProjectID() . 'viewavaluo')) {
 			$body = $Language->Phrase("DetailLink") . $Language->TablePhrase("viewavaluo", "TblCaption");
+			$body .= "&nbsp;" . str_replace("%c", $this->viewavaluo_Count, $Language->Phrase("DetailCount"));
 			$body = "<a class=\"btn btn-default btn-sm ewRowLink ewDetail\" data-action=\"list\" href=\"" . ew_HtmlEncode("viewavaluolist.php?" . EW_TABLE_SHOW_MASTER . "=viewsolicitud&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "") . "\">" . $body . "</a>";
 			$links = "";
 			if ($GLOBALS["viewavaluo_grid"]->DetailEdit && $Security->CanEdit() && $Security->AllowEdit(CurrentProjectID() . 'viewavaluo')) {
@@ -2017,13 +1835,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 		}
 	}
 
-	// Load basic search values
-	function LoadBasicSearchValues() {
-		$this->BasicSearch->Keyword = @$_GET[EW_TABLE_BASIC_SEARCH];
-		if ($this->BasicSearch->Keyword <> "" && $this->Command == "") $this->Command = "search";
-		$this->BasicSearch->Type = @$_GET[EW_TABLE_BASIC_SEARCH_TYPE];
-	}
-
 	// Load search values for validation
 	function LoadSearchValues() {
 		global $objForm;
@@ -2040,10 +1851,15 @@ class cviewsolicitud_list extends cviewsolicitud {
 		if ($this->name->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
 		$this->name->AdvancedSearch->SearchOperator = @$_GET["z_name"];
 
-		// lastname
-		$this->lastname->AdvancedSearch->SearchValue = @$_GET["x_lastname"];
-		if ($this->lastname->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->lastname->AdvancedSearch->SearchOperator = @$_GET["z_lastname"];
+		// cell
+		$this->cell->AdvancedSearch->SearchValue = @$_GET["x_cell"];
+		if ($this->cell->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->cell->AdvancedSearch->SearchOperator = @$_GET["z_cell"];
+
+		// phone
+		$this->phone->AdvancedSearch->SearchValue = @$_GET["x_phone"];
+		if ($this->phone->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->phone->AdvancedSearch->SearchOperator = @$_GET["z_phone"];
 
 		// email
 		$this->_email->AdvancedSearch->SearchValue = @$_GET["x__email"];
@@ -2065,15 +1881,10 @@ class cviewsolicitud_list extends cviewsolicitud {
 		if ($this->email_contacto->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
 		$this->email_contacto->AdvancedSearch->SearchOperator = @$_GET["z_email_contacto"];
 
-		// phone
-		$this->phone->AdvancedSearch->SearchValue = @$_GET["x_phone"];
-		if ($this->phone->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->phone->AdvancedSearch->SearchOperator = @$_GET["z_phone"];
-
-		// cell
-		$this->cell->AdvancedSearch->SearchValue = @$_GET["x_cell"];
-		if ($this->cell->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->cell->AdvancedSearch->SearchOperator = @$_GET["z_cell"];
+		// lastname
+		$this->lastname->AdvancedSearch->SearchValue = @$_GET["x_lastname"];
+		if ($this->lastname->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->lastname->AdvancedSearch->SearchOperator = @$_GET["z_lastname"];
 
 		// id_sucursal
 		$this->id_sucursal->AdvancedSearch->SearchValue = @$_GET["x_id_sucursal"];
@@ -2220,15 +2031,15 @@ class cviewsolicitud_list extends cviewsolicitud {
 			return;
 		$this->id->setDbValue($row['id']);
 		$this->name->setDbValue($row['name']);
-		$this->lastname->setDbValue($row['lastname']);
+		$this->cell->setDbValue($row['cell']);
+		$this->phone->setDbValue($row['phone']);
 		$this->_email->setDbValue($row['email']);
 		$this->address->setDbValue($row['address']);
 		$this->nombre_contacto->setDbValue($row['nombre_contacto']);
 		$this->email_contacto->setDbValue($row['email_contacto']);
+		$this->lastname->setDbValue($row['lastname']);
 		$this->latitud->setDbValue($row['latitud']);
 		$this->longitud->setDbValue($row['longitud']);
-		$this->phone->setDbValue($row['phone']);
-		$this->cell->setDbValue($row['cell']);
 		$this->id_sucursal->setDbValue($row['id_sucursal']);
 		$this->tipoinmueble->setDbValue($row['tipoinmueble']);
 		$this->id_ciudad_inmueble->setDbValue($row['id_ciudad_inmueble']);
@@ -2328,6 +2139,12 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->CreatedBy->setDbValue($row['CreatedBy']);
 		$this->ModifiedBy->setDbValue($row['ModifiedBy']);
 		$this->DeletedBy->setDbValue($row['DeletedBy']);
+		if (!isset($GLOBALS["viewavaluo_grid"])) $GLOBALS["viewavaluo_grid"] = new cviewavaluo_grid;
+		$sDetailFilter = $GLOBALS["viewavaluo"]->SqlDetailFilter_viewsolicitud();
+		$sDetailFilter = str_replace("@id_solicitud@", ew_AdjustSql($this->id->DbValue, "DB"), $sDetailFilter);
+		$GLOBALS["viewavaluo"]->setCurrentMasterTable("viewsolicitud");
+		$sDetailFilter = $GLOBALS["viewavaluo"]->ApplyUserIDFilters($sDetailFilter);
+		$this->viewavaluo_Count = $GLOBALS["viewavaluo"]->LoadRecordCount($sDetailFilter);
 	}
 
 	// Return a row with default values
@@ -2335,15 +2152,15 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$row = array();
 		$row['id'] = NULL;
 		$row['name'] = NULL;
-		$row['lastname'] = NULL;
+		$row['cell'] = NULL;
+		$row['phone'] = NULL;
 		$row['email'] = NULL;
 		$row['address'] = NULL;
 		$row['nombre_contacto'] = NULL;
 		$row['email_contacto'] = NULL;
+		$row['lastname'] = NULL;
 		$row['latitud'] = NULL;
 		$row['longitud'] = NULL;
-		$row['phone'] = NULL;
-		$row['cell'] = NULL;
 		$row['id_sucursal'] = NULL;
 		$row['tipoinmueble'] = NULL;
 		$row['id_ciudad_inmueble'] = NULL;
@@ -2401,15 +2218,15 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
 		$this->name->DbValue = $row['name'];
-		$this->lastname->DbValue = $row['lastname'];
+		$this->cell->DbValue = $row['cell'];
+		$this->phone->DbValue = $row['phone'];
 		$this->_email->DbValue = $row['email'];
 		$this->address->DbValue = $row['address'];
 		$this->nombre_contacto->DbValue = $row['nombre_contacto'];
 		$this->email_contacto->DbValue = $row['email_contacto'];
+		$this->lastname->DbValue = $row['lastname'];
 		$this->latitud->DbValue = $row['latitud'];
 		$this->longitud->DbValue = $row['longitud'];
-		$this->phone->DbValue = $row['phone'];
-		$this->cell->DbValue = $row['cell'];
 		$this->id_sucursal->DbValue = $row['id_sucursal'];
 		$this->tipoinmueble->DbValue = $row['tipoinmueble'];
 		$this->id_ciudad_inmueble->DbValue = $row['id_ciudad_inmueble'];
@@ -2499,11 +2316,13 @@ class cviewsolicitud_list extends cviewsolicitud {
 		// Common render codes for all row types
 		// id
 		// name
-		// lastname
+		// cell
+		// phone
 		// email
 		// address
 		// nombre_contacto
 		// email_contacto
+		// lastname
 		// latitud
 
 		$this->latitud->CellCssStyle = "white-space: nowrap;";
@@ -2511,22 +2330,29 @@ class cviewsolicitud_list extends cviewsolicitud {
 		// longitud
 		$this->longitud->CellCssStyle = "white-space: nowrap;";
 
-		// phone
-		// cell
 		// id_sucursal
 		// tipoinmueble
 		// id_ciudad_inmueble
 		// id_provincia_inmueble
-		// imagen_inmueble01
 
+		$this->id_provincia_inmueble->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_inmueble01
 		$this->imagen_inmueble01->CellCssStyle = "white-space: nowrap;";
 
 		// imagen_inmueble02
-		// imagen_inmueble03
-		// imagen_inmueble04
-		// imagen_inmueble05
-		// imagen_inmueble06
+		$this->imagen_inmueble02->CellCssStyle = "white-space: nowrap;";
 
+		// imagen_inmueble03
+		$this->imagen_inmueble03->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_inmueble04
+		$this->imagen_inmueble04->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_inmueble05
+		$this->imagen_inmueble05->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_inmueble06
 		$this->imagen_inmueble06->CellCssStyle = "white-space: nowrap;";
 
 		// imagen_inmueble07
@@ -2552,10 +2378,15 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->imagen_vehiculo04->CellCssStyle = "white-space: nowrap;";
 
 		// imagen_vehiculo05
-		// imagen_vehiculo06
-		// imagen_vehiculo07
-		// imagen_vehiculo08
+		$this->imagen_vehiculo05->CellCssStyle = "white-space: nowrap;";
 
+		// imagen_vehiculo06
+		$this->imagen_vehiculo06->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_vehiculo07
+		$this->imagen_vehiculo07->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_vehiculo08
 		$this->imagen_vehiculo08->CellCssStyle = "white-space: nowrap;";
 
 		// tipomaquinaria
@@ -2575,10 +2406,15 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->imagen_maquinaria04->CellCssStyle = "white-space: nowrap;";
 
 		// imagen_maquinaria05
-		// imagen_maquinaria06
-		// imagen_maquinaria07
-		// imagen_maquinaria08
+		$this->imagen_maquinaria05->CellCssStyle = "white-space: nowrap;";
 
+		// imagen_maquinaria06
+		$this->imagen_maquinaria06->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_maquinaria07
+		$this->imagen_maquinaria07->CellCssStyle = "white-space: nowrap;";
+
+		// imagen_maquinaria08
 		$this->imagen_maquinaria08->CellCssStyle = "white-space: nowrap;";
 
 		// tipomercaderia
@@ -2596,8 +2432,9 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->is_active->CellCssStyle = "white-space: nowrap;";
 
 		// documentos
-		// created_at
+		$this->documentos->CellCssStyle = "white-space: nowrap;";
 
+		// created_at
 		$this->created_at->CellCssStyle = "white-space: nowrap;";
 
 		// DateModified
@@ -2624,9 +2461,13 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->name->ViewValue = $this->name->CurrentValue;
 		$this->name->ViewCustomAttributes = "";
 
-		// lastname
-		$this->lastname->ViewValue = $this->lastname->CurrentValue;
-		$this->lastname->ViewCustomAttributes = "";
+		// cell
+		$this->cell->ViewValue = $this->cell->CurrentValue;
+		$this->cell->ViewCustomAttributes = "";
+
+		// phone
+		$this->phone->ViewValue = $this->phone->CurrentValue;
+		$this->phone->ViewCustomAttributes = "";
 
 		// email
 		$this->_email->ViewValue = $this->_email->CurrentValue;
@@ -2636,21 +2477,13 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->address->ViewValue = $this->address->CurrentValue;
 		$this->address->ViewCustomAttributes = "";
 
-		// nombre_contacto
-		$this->nombre_contacto->ViewValue = $this->nombre_contacto->CurrentValue;
-		$this->nombre_contacto->ViewCustomAttributes = "";
-
 		// email_contacto
 		$this->email_contacto->ViewValue = $this->email_contacto->CurrentValue;
 		$this->email_contacto->ViewCustomAttributes = "";
 
-		// phone
-		$this->phone->ViewValue = $this->phone->CurrentValue;
-		$this->phone->ViewCustomAttributes = "";
-
-		// cell
-		$this->cell->ViewValue = $this->cell->CurrentValue;
-		$this->cell->ViewCustomAttributes = "";
+		// lastname
+		$this->lastname->ViewValue = $this->lastname->CurrentValue;
+		$this->lastname->ViewCustomAttributes = "";
 
 		// id_sucursal
 		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
@@ -2664,9 +2497,23 @@ class cviewsolicitud_list extends cviewsolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='INMUEBLE'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2693,52 +2540,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 		}
 		$this->tipoinmueble->ViewCustomAttributes = "";
 
-		// id_ciudad_inmueble
-		if (strval($this->id_ciudad_inmueble->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_inmueble->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_ciudad_inmueble, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->id_ciudad_inmueble->ViewValue = $this->id_ciudad_inmueble->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_ciudad_inmueble->ViewValue = $this->id_ciudad_inmueble->CurrentValue;
-			}
-		} else {
-			$this->id_ciudad_inmueble->ViewValue = NULL;
-		}
-		$this->id_ciudad_inmueble->ViewCustomAttributes = "";
-
-		// id_provincia_inmueble
-		if (strval($this->id_provincia_inmueble->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_inmueble->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_provincia_inmueble, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->id_provincia_inmueble->ViewValue = $this->id_provincia_inmueble->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_provincia_inmueble->ViewValue = $this->id_provincia_inmueble->CurrentValue;
-			}
-		} else {
-			$this->id_provincia_inmueble->ViewValue = NULL;
-		}
-		$this->id_provincia_inmueble->ViewCustomAttributes = "";
-
 		// tipovehiculo
 		if (strval($this->tipovehiculo->CurrentValue) <> "") {
 			$arwrk = explode(",", $this->tipovehiculo->CurrentValue);
@@ -2747,9 +2548,23 @@ class cviewsolicitud_list extends cviewsolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='VEHICULO'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2776,14 +2591,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 		}
 		$this->tipovehiculo->ViewCustomAttributes = "";
 
-		// id_ciudad_vehiculo
-		$this->id_ciudad_vehiculo->ViewValue = $this->id_ciudad_vehiculo->CurrentValue;
-		$this->id_ciudad_vehiculo->ViewCustomAttributes = "";
-
-		// id_provincia_vehiculo
-		$this->id_provincia_vehiculo->ViewValue = $this->id_provincia_vehiculo->CurrentValue;
-		$this->id_provincia_vehiculo->ViewCustomAttributes = "";
-
 		// tipomaquinaria
 		if (strval($this->tipomaquinaria->CurrentValue) <> "") {
 			$arwrk = explode(",", $this->tipomaquinaria->CurrentValue);
@@ -2792,9 +2599,23 @@ class cviewsolicitud_list extends cviewsolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='MAQUINARIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2821,52 +2642,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 		}
 		$this->tipomaquinaria->ViewCustomAttributes = "";
 
-		// id_ciudad_maquinaria
-		if (strval($this->id_ciudad_maquinaria->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_maquinaria->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_ciudad_maquinaria, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->id_ciudad_maquinaria->ViewValue = $this->id_ciudad_maquinaria->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_ciudad_maquinaria->ViewValue = $this->id_ciudad_maquinaria->CurrentValue;
-			}
-		} else {
-			$this->id_ciudad_maquinaria->ViewValue = NULL;
-		}
-		$this->id_ciudad_maquinaria->ViewCustomAttributes = "";
-
-		// id_provincia_maquinaria
-		if (strval($this->id_provincia_maquinaria->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_maquinaria->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_provincia_maquinaria, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->id_provincia_maquinaria->ViewValue = $this->id_provincia_maquinaria->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_provincia_maquinaria->ViewValue = $this->id_provincia_maquinaria->CurrentValue;
-			}
-		} else {
-			$this->id_provincia_maquinaria->ViewValue = NULL;
-		}
-		$this->id_provincia_maquinaria->ViewCustomAttributes = "";
-
 		// tipomercaderia
 		if (strval($this->tipomercaderia->CurrentValue) <> "") {
 			$arwrk = explode(",", $this->tipomercaderia->CurrentValue);
@@ -2875,9 +2650,23 @@ class cviewsolicitud_list extends cviewsolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 			}
-		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='MERCADERIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2904,16 +2693,26 @@ class cviewsolicitud_list extends cviewsolicitud {
 		}
 		$this->tipomercaderia->ViewCustomAttributes = "";
 
-		// documento_mercaderia
-		$this->documento_mercaderia->ViewValue = $this->documento_mercaderia->CurrentValue;
-		$this->documento_mercaderia->ViewCustomAttributes = "";
-
 		// tipoespecial
 		if (strval($this->tipoespecial->CurrentValue) <> "") {
 			$sFilterWrk = "`id_tipoinmueble`" . ew_SearchString("=", $this->tipoespecial->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		$lookuptblfilter = "`tipo`='ESPECIAL'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2937,20 +2736,20 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->documentos->ViewValue = $this->documentos->CurrentValue;
 		$this->documentos->ViewCustomAttributes = "";
 
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
-
 			// name
 			$this->name->LinkCustomAttributes = "";
 			$this->name->HrefValue = "";
 			$this->name->TooltipValue = "";
 
-			// lastname
-			$this->lastname->LinkCustomAttributes = "";
-			$this->lastname->HrefValue = "";
-			$this->lastname->TooltipValue = "";
+			// cell
+			$this->cell->LinkCustomAttributes = "";
+			$this->cell->HrefValue = "";
+			$this->cell->TooltipValue = "";
+
+			// phone
+			$this->phone->LinkCustomAttributes = "";
+			$this->phone->HrefValue = "";
+			$this->phone->TooltipValue = "";
 
 			// email
 			$this->_email->LinkCustomAttributes = "";
@@ -2962,97 +2761,46 @@ class cviewsolicitud_list extends cviewsolicitud {
 			$this->address->HrefValue = "";
 			$this->address->TooltipValue = "";
 
-			// nombre_contacto
-			$this->nombre_contacto->LinkCustomAttributes = "";
-			$this->nombre_contacto->HrefValue = "";
-			$this->nombre_contacto->TooltipValue = "";
-
 			// email_contacto
 			$this->email_contacto->LinkCustomAttributes = "";
 			$this->email_contacto->HrefValue = "";
 			$this->email_contacto->TooltipValue = "";
 
-			// phone
-			$this->phone->LinkCustomAttributes = "";
-			$this->phone->HrefValue = "";
-			$this->phone->TooltipValue = "";
-
-			// cell
-			$this->cell->LinkCustomAttributes = "";
-			$this->cell->HrefValue = "";
-			$this->cell->TooltipValue = "";
+			// lastname
+			$this->lastname->LinkCustomAttributes = "";
+			$this->lastname->HrefValue = "";
+			$this->lastname->TooltipValue = "";
 
 			// id_sucursal
 			$this->id_sucursal->LinkCustomAttributes = "";
 			$this->id_sucursal->HrefValue = "";
 			$this->id_sucursal->TooltipValue = "";
 
-			// id_ciudad_inmueble
-			$this->id_ciudad_inmueble->LinkCustomAttributes = "";
-			$this->id_ciudad_inmueble->HrefValue = "";
-			$this->id_ciudad_inmueble->TooltipValue = "";
-
-			// id_provincia_inmueble
-			$this->id_provincia_inmueble->LinkCustomAttributes = "";
-			$this->id_provincia_inmueble->HrefValue = "";
-			$this->id_provincia_inmueble->TooltipValue = "";
+			// tipoinmueble
+			$this->tipoinmueble->LinkCustomAttributes = "";
+			$this->tipoinmueble->HrefValue = "";
+			$this->tipoinmueble->TooltipValue = "";
 
 			// tipovehiculo
 			$this->tipovehiculo->LinkCustomAttributes = "";
 			$this->tipovehiculo->HrefValue = "";
 			$this->tipovehiculo->TooltipValue = "";
 
-			// id_ciudad_vehiculo
-			$this->id_ciudad_vehiculo->LinkCustomAttributes = "";
-			$this->id_ciudad_vehiculo->HrefValue = "";
-			$this->id_ciudad_vehiculo->TooltipValue = "";
-
-			// id_provincia_vehiculo
-			$this->id_provincia_vehiculo->LinkCustomAttributes = "";
-			$this->id_provincia_vehiculo->HrefValue = "";
-			$this->id_provincia_vehiculo->TooltipValue = "";
-
 			// tipomaquinaria
 			$this->tipomaquinaria->LinkCustomAttributes = "";
 			$this->tipomaquinaria->HrefValue = "";
 			$this->tipomaquinaria->TooltipValue = "";
-
-			// id_ciudad_maquinaria
-			$this->id_ciudad_maquinaria->LinkCustomAttributes = "";
-			$this->id_ciudad_maquinaria->HrefValue = "";
-			$this->id_ciudad_maquinaria->TooltipValue = "";
-
-			// id_provincia_maquinaria
-			$this->id_provincia_maquinaria->LinkCustomAttributes = "";
-			$this->id_provincia_maquinaria->HrefValue = "";
-			$this->id_provincia_maquinaria->TooltipValue = "";
 
 			// tipomercaderia
 			$this->tipomercaderia->LinkCustomAttributes = "";
 			$this->tipomercaderia->HrefValue = "";
 			$this->tipomercaderia->TooltipValue = "";
 
-			// documento_mercaderia
-			$this->documento_mercaderia->LinkCustomAttributes = "";
-			$this->documento_mercaderia->HrefValue = "";
-			$this->documento_mercaderia->TooltipValue = "";
-
 			// tipoespecial
 			$this->tipoespecial->LinkCustomAttributes = "";
 			$this->tipoespecial->HrefValue = "";
 			$this->tipoespecial->TooltipValue = "";
-
-			// documentos
-			$this->documentos->LinkCustomAttributes = "";
-			$this->documentos->HrefValue = "";
-			$this->documentos->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_SEARCH) { // Search row
-
-			// id
-			$this->id->EditAttrs["class"] = "form-control";
-			$this->id->EditCustomAttributes = "";
-			$this->id->EditValue = ew_HtmlEncode($this->id->AdvancedSearch->SearchValue);
-			$this->id->PlaceHolder = ew_RemoveHtml($this->id->FldTitle());
 
 			// name
 			$this->name->EditAttrs["class"] = "form-control";
@@ -3060,11 +2808,17 @@ class cviewsolicitud_list extends cviewsolicitud {
 			$this->name->EditValue = ew_HtmlEncode($this->name->AdvancedSearch->SearchValue);
 			$this->name->PlaceHolder = ew_RemoveHtml($this->name->FldTitle());
 
-			// lastname
-			$this->lastname->EditAttrs["class"] = "form-control";
-			$this->lastname->EditCustomAttributes = "";
-			$this->lastname->EditValue = ew_HtmlEncode($this->lastname->AdvancedSearch->SearchValue);
-			$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
+			// cell
+			$this->cell->EditAttrs["class"] = "form-control";
+			$this->cell->EditCustomAttributes = "";
+			$this->cell->EditValue = ew_HtmlEncode($this->cell->AdvancedSearch->SearchValue);
+			$this->cell->PlaceHolder = ew_RemoveHtml($this->cell->FldTitle());
+
+			// phone
+			$this->phone->EditAttrs["class"] = "form-control";
+			$this->phone->EditCustomAttributes = "";
+			$this->phone->EditValue = ew_HtmlEncode($this->phone->AdvancedSearch->SearchValue);
+			$this->phone->PlaceHolder = ew_RemoveHtml($this->phone->FldTitle());
 
 			// email
 			$this->_email->EditAttrs["class"] = "form-control";
@@ -3078,29 +2832,17 @@ class cviewsolicitud_list extends cviewsolicitud {
 			$this->address->EditValue = ew_HtmlEncode($this->address->AdvancedSearch->SearchValue);
 			$this->address->PlaceHolder = ew_RemoveHtml($this->address->FldTitle());
 
-			// nombre_contacto
-			$this->nombre_contacto->EditAttrs["class"] = "form-control";
-			$this->nombre_contacto->EditCustomAttributes = "";
-			$this->nombre_contacto->EditValue = ew_HtmlEncode($this->nombre_contacto->AdvancedSearch->SearchValue);
-			$this->nombre_contacto->PlaceHolder = ew_RemoveHtml($this->nombre_contacto->FldTitle());
-
 			// email_contacto
 			$this->email_contacto->EditAttrs["class"] = "form-control";
 			$this->email_contacto->EditCustomAttributes = "";
 			$this->email_contacto->EditValue = ew_HtmlEncode($this->email_contacto->AdvancedSearch->SearchValue);
 			$this->email_contacto->PlaceHolder = ew_RemoveHtml($this->email_contacto->FldTitle());
 
-			// phone
-			$this->phone->EditAttrs["class"] = "form-control";
-			$this->phone->EditCustomAttributes = "";
-			$this->phone->EditValue = ew_HtmlEncode($this->phone->AdvancedSearch->SearchValue);
-			$this->phone->PlaceHolder = ew_RemoveHtml($this->phone->FldTitle());
-
-			// cell
-			$this->cell->EditAttrs["class"] = "form-control";
-			$this->cell->EditCustomAttributes = "";
-			$this->cell->EditValue = ew_HtmlEncode($this->cell->AdvancedSearch->SearchValue);
-			$this->cell->PlaceHolder = ew_RemoveHtml($this->cell->FldTitle());
+			// lastname
+			$this->lastname->EditAttrs["class"] = "form-control";
+			$this->lastname->EditCustomAttributes = "";
+			$this->lastname->EditValue = ew_HtmlEncode($this->lastname->AdvancedSearch->SearchValue);
+			$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
 
 			// id_sucursal
 			$this->id_sucursal->EditAttrs["class"] = "form-control";
@@ -3108,61 +2850,25 @@ class cviewsolicitud_list extends cviewsolicitud {
 			$this->id_sucursal->EditValue = ew_HtmlEncode($this->id_sucursal->AdvancedSearch->SearchValue);
 			$this->id_sucursal->PlaceHolder = ew_RemoveHtml($this->id_sucursal->FldTitle());
 
-			// id_ciudad_inmueble
-			$this->id_ciudad_inmueble->EditAttrs["class"] = "form-control";
-			$this->id_ciudad_inmueble->EditCustomAttributes = "";
-
-			// id_provincia_inmueble
-			$this->id_provincia_inmueble->EditAttrs["class"] = "form-control";
-			$this->id_provincia_inmueble->EditCustomAttributes = "";
+			// tipoinmueble
+			$this->tipoinmueble->EditAttrs["class"] = "form-control";
+			$this->tipoinmueble->EditCustomAttributes = "";
 
 			// tipovehiculo
 			$this->tipovehiculo->EditAttrs["class"] = "form-control";
 			$this->tipovehiculo->EditCustomAttributes = "";
 
-			// id_ciudad_vehiculo
-			$this->id_ciudad_vehiculo->EditAttrs["class"] = "form-control";
-			$this->id_ciudad_vehiculo->EditCustomAttributes = "";
-			$this->id_ciudad_vehiculo->EditValue = ew_HtmlEncode($this->id_ciudad_vehiculo->AdvancedSearch->SearchValue);
-			$this->id_ciudad_vehiculo->PlaceHolder = ew_RemoveHtml($this->id_ciudad_vehiculo->FldTitle());
-
-			// id_provincia_vehiculo
-			$this->id_provincia_vehiculo->EditAttrs["class"] = "form-control";
-			$this->id_provincia_vehiculo->EditCustomAttributes = "";
-			$this->id_provincia_vehiculo->EditValue = ew_HtmlEncode($this->id_provincia_vehiculo->AdvancedSearch->SearchValue);
-			$this->id_provincia_vehiculo->PlaceHolder = ew_RemoveHtml($this->id_provincia_vehiculo->FldTitle());
-
 			// tipomaquinaria
 			$this->tipomaquinaria->EditAttrs["class"] = "form-control";
 			$this->tipomaquinaria->EditCustomAttributes = "";
-
-			// id_ciudad_maquinaria
-			$this->id_ciudad_maquinaria->EditAttrs["class"] = "form-control";
-			$this->id_ciudad_maquinaria->EditCustomAttributes = "";
-
-			// id_provincia_maquinaria
-			$this->id_provincia_maquinaria->EditAttrs["class"] = "form-control";
-			$this->id_provincia_maquinaria->EditCustomAttributes = "";
 
 			// tipomercaderia
 			$this->tipomercaderia->EditAttrs["class"] = "form-control";
 			$this->tipomercaderia->EditCustomAttributes = "";
 
-			// documento_mercaderia
-			$this->documento_mercaderia->EditAttrs["class"] = "form-control";
-			$this->documento_mercaderia->EditCustomAttributes = "";
-			$this->documento_mercaderia->EditValue = ew_HtmlEncode($this->documento_mercaderia->AdvancedSearch->SearchValue);
-			$this->documento_mercaderia->PlaceHolder = ew_RemoveHtml($this->documento_mercaderia->FldTitle());
-
 			// tipoespecial
 			$this->tipoespecial->EditAttrs["class"] = "form-control";
 			$this->tipoespecial->EditCustomAttributes = "";
-
-			// documentos
-			$this->documentos->EditAttrs["class"] = "form-control";
-			$this->documentos->EditCustomAttributes = "";
-			$this->documentos->EditValue = ew_HtmlEncode($this->documentos->AdvancedSearch->SearchValue);
-			$this->documentos->PlaceHolder = ew_RemoveHtml($this->documentos->FldTitle());
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -3199,13 +2905,13 @@ class cviewsolicitud_list extends cviewsolicitud {
 	function LoadAdvancedSearch() {
 		$this->id->AdvancedSearch->Load();
 		$this->name->AdvancedSearch->Load();
-		$this->lastname->AdvancedSearch->Load();
+		$this->cell->AdvancedSearch->Load();
+		$this->phone->AdvancedSearch->Load();
 		$this->_email->AdvancedSearch->Load();
 		$this->address->AdvancedSearch->Load();
 		$this->nombre_contacto->AdvancedSearch->Load();
 		$this->email_contacto->AdvancedSearch->Load();
-		$this->phone->AdvancedSearch->Load();
-		$this->cell->AdvancedSearch->Load();
+		$this->lastname->AdvancedSearch->Load();
 		$this->id_sucursal->AdvancedSearch->Load();
 		$this->tipoinmueble->AdvancedSearch->Load();
 		$this->id_ciudad_inmueble->AdvancedSearch->Load();
@@ -3463,18 +3169,15 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$sQry = "export=html";
 
 		// Build QueryString for search
-		if ($this->BasicSearch->getKeyword() <> "") {
-			$sQry .= "&" . EW_TABLE_BASIC_SEARCH . "=" . urlencode($this->BasicSearch->getKeyword()) . "&" . EW_TABLE_BASIC_SEARCH_TYPE . "=" . urlencode($this->BasicSearch->getType());
-		}
 		$this->AddSearchQueryString($sQry, $this->id); // id
 		$this->AddSearchQueryString($sQry, $this->name); // name
-		$this->AddSearchQueryString($sQry, $this->lastname); // lastname
+		$this->AddSearchQueryString($sQry, $this->cell); // cell
+		$this->AddSearchQueryString($sQry, $this->phone); // phone
 		$this->AddSearchQueryString($sQry, $this->_email); // email
 		$this->AddSearchQueryString($sQry, $this->address); // address
 		$this->AddSearchQueryString($sQry, $this->nombre_contacto); // nombre_contacto
 		$this->AddSearchQueryString($sQry, $this->email_contacto); // email_contacto
-		$this->AddSearchQueryString($sQry, $this->phone); // phone
-		$this->AddSearchQueryString($sQry, $this->cell); // cell
+		$this->AddSearchQueryString($sQry, $this->lastname); // lastname
 		$this->AddSearchQueryString($sQry, $this->id_sucursal); // id_sucursal
 		$this->AddSearchQueryString($sQry, $this->tipoinmueble); // tipoinmueble
 		$this->AddSearchQueryString($sQry, $this->id_ciudad_inmueble); // id_ciudad_inmueble
@@ -3640,6 +3343,7 @@ class cviewsolicitud_list extends cviewsolicitud {
 		// Example:
 		//$this->ListOptions->Items["new"]->Body = "xxx";
 
+			$this->ListOptions->Items["edit"]->Visible = FALSE;
 	}
 
 	// Row Custom Action event
@@ -3715,18 +3419,12 @@ fviewsolicitudlist.Form_CustomValidate =
 fviewsolicitudlist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-fviewsolicitudlist.Lists["x_id_ciudad_inmueble"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"departamento"};
-fviewsolicitudlist.Lists["x_id_ciudad_inmueble"].Data = "<?php echo $viewsolicitud_list->id_ciudad_inmueble->LookupFilterQuery(FALSE, "list") ?>";
-fviewsolicitudlist.Lists["x_id_provincia_inmueble"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"provincia"};
-fviewsolicitudlist.Lists["x_id_provincia_inmueble"].Data = "<?php echo $viewsolicitud_list->id_provincia_inmueble->LookupFilterQuery(FALSE, "list") ?>";
+fviewsolicitudlist.Lists["x_tipoinmueble[]"] = {"LinkField":"x_nombre","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
+fviewsolicitudlist.Lists["x_tipoinmueble[]"].Data = "<?php echo $viewsolicitud_list->tipoinmueble->LookupFilterQuery(FALSE, "list") ?>";
 fviewsolicitudlist.Lists["x_tipovehiculo[]"] = {"LinkField":"x_nombre","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
 fviewsolicitudlist.Lists["x_tipovehiculo[]"].Data = "<?php echo $viewsolicitud_list->tipovehiculo->LookupFilterQuery(FALSE, "list") ?>";
 fviewsolicitudlist.Lists["x_tipomaquinaria[]"] = {"LinkField":"x_nombre","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
 fviewsolicitudlist.Lists["x_tipomaquinaria[]"].Data = "<?php echo $viewsolicitud_list->tipomaquinaria->LookupFilterQuery(FALSE, "list") ?>";
-fviewsolicitudlist.Lists["x_id_ciudad_maquinaria"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"departamento"};
-fviewsolicitudlist.Lists["x_id_ciudad_maquinaria"].Data = "<?php echo $viewsolicitud_list->id_ciudad_maquinaria->LookupFilterQuery(FALSE, "list") ?>";
-fviewsolicitudlist.Lists["x_id_provincia_maquinaria"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"provincia"};
-fviewsolicitudlist.Lists["x_id_provincia_maquinaria"].Data = "<?php echo $viewsolicitud_list->id_provincia_maquinaria->LookupFilterQuery(FALSE, "list") ?>";
 fviewsolicitudlist.Lists["x_tipomercaderia[]"] = {"LinkField":"x_id_tipoinmueble","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
 fviewsolicitudlist.Lists["x_tipomercaderia[]"].Data = "<?php echo $viewsolicitud_list->tipomercaderia->LookupFilterQuery(FALSE, "list") ?>";
 fviewsolicitudlist.Lists["x_tipoespecial"] = {"LinkField":"x_id_tipoinmueble","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
@@ -3839,17 +3537,6 @@ $viewsolicitud_list->RenderRow();
 <?php } ?>
 </div>
 <div id="xsr_2" class="ewRow">
-<?php if ($viewsolicitud->lastname->Visible) { // lastname ?>
-	<div id="xsc_lastname" class="ewCell form-group">
-		<label for="x_lastname" class="ewSearchCaption ewLabel"><?php echo $viewsolicitud->lastname->FldCaption() ?></label>
-		<span class="ewSearchOperator"><?php echo $Language->Phrase("LIKE") ?><input type="hidden" name="z_lastname" id="z_lastname" value="LIKE"></span>
-		<span class="ewSearchField">
-<input type="text" data-table="viewsolicitud" data-field="x_lastname" name="x_lastname" id="x_lastname" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewsolicitud->lastname->getPlaceHolder()) ?>" value="<?php echo $viewsolicitud->lastname->EditValue ?>"<?php echo $viewsolicitud->lastname->EditAttributes() ?>>
-</span>
-	</div>
-<?php } ?>
-</div>
-<div id="xsr_3" class="ewRow">
 <?php if ($viewsolicitud->_email->Visible) { // email ?>
 	<div id="xsc__email" class="ewCell form-group">
 		<label for="x__email" class="ewSearchCaption ewLabel"><?php echo $viewsolicitud->_email->FldCaption() ?></label>
@@ -3860,32 +3547,19 @@ $viewsolicitud_list->RenderRow();
 	</div>
 <?php } ?>
 </div>
-<div id="xsr_4" class="ewRow">
-<?php if ($viewsolicitud->nombre_contacto->Visible) { // nombre_contacto ?>
-	<div id="xsc_nombre_contacto" class="ewCell form-group">
-		<label for="x_nombre_contacto" class="ewSearchCaption ewLabel"><?php echo $viewsolicitud->nombre_contacto->FldCaption() ?></label>
-		<span class="ewSearchOperator"><?php echo $Language->Phrase("LIKE") ?><input type="hidden" name="z_nombre_contacto" id="z_nombre_contacto" value="LIKE"></span>
+<div id="xsr_3" class="ewRow">
+<?php if ($viewsolicitud->lastname->Visible) { // lastname ?>
+	<div id="xsc_lastname" class="ewCell form-group">
+		<label for="x_lastname" class="ewSearchCaption ewLabel"><?php echo $viewsolicitud->lastname->FldCaption() ?></label>
+		<span class="ewSearchOperator"><?php echo $Language->Phrase("LIKE") ?><input type="hidden" name="z_lastname" id="z_lastname" value="LIKE"></span>
 		<span class="ewSearchField">
-<input type="text" data-table="viewsolicitud" data-field="x_nombre_contacto" name="x_nombre_contacto" id="x_nombre_contacto" size="30" maxlength="200" placeholder="<?php echo ew_HtmlEncode($viewsolicitud->nombre_contacto->getPlaceHolder()) ?>" value="<?php echo $viewsolicitud->nombre_contacto->EditValue ?>"<?php echo $viewsolicitud->nombre_contacto->EditAttributes() ?>>
+<input type="text" data-table="viewsolicitud" data-field="x_lastname" name="x_lastname" id="x_lastname" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewsolicitud->lastname->getPlaceHolder()) ?>" value="<?php echo $viewsolicitud->lastname->EditValue ?>"<?php echo $viewsolicitud->lastname->EditAttributes() ?>>
 </span>
 	</div>
 <?php } ?>
 </div>
-<div id="xsr_5" class="ewRow">
-	<div class="ewQuickSearch input-group">
-	<input type="text" name="<?php echo EW_TABLE_BASIC_SEARCH ?>" id="<?php echo EW_TABLE_BASIC_SEARCH ?>" class="form-control" value="<?php echo ew_HtmlEncode($viewsolicitud_list->BasicSearch->getKeyword()) ?>">
-	<input type="hidden" name="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" id="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" value="<?php echo ew_HtmlEncode($viewsolicitud_list->BasicSearch->getType()) ?>">
-	<div class="input-group-btn">
-		<button type="button" data-toggle="dropdown" class="btn btn-default"><span id="searchtype"><?php echo $viewsolicitud_list->BasicSearch->getTypeNameShort() ?></span><span class="caret"></span></button>
-		<ul class="dropdown-menu pull-right" role="menu">
-			<li<?php if ($viewsolicitud_list->BasicSearch->getType() == "") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this)"><?php echo $Language->Phrase("QuickSearchAuto") ?></a></li>
-			<li<?php if ($viewsolicitud_list->BasicSearch->getType() == "=") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'=')"><?php echo $Language->Phrase("QuickSearchExact") ?></a></li>
-			<li<?php if ($viewsolicitud_list->BasicSearch->getType() == "AND") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'AND')"><?php echo $Language->Phrase("QuickSearchAll") ?></a></li>
-			<li<?php if ($viewsolicitud_list->BasicSearch->getType() == "OR") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'OR')"><?php echo $Language->Phrase("QuickSearchAny") ?></a></li>
-		</ul>
+<div id="xsr_4" class="ewRow">
 	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("SearchBtn") ?></button>
-	</div>
-	</div>
 </div>
 	</div>
 </div>
@@ -3919,30 +3593,30 @@ $viewsolicitud_list->RenderListOptions();
 // Render list options (header, left)
 $viewsolicitud_list->ListOptions->Render("header", "left");
 ?>
-<?php if ($viewsolicitud->id->Visible) { // id ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->id) == "") { ?>
-		<th data-name="id" class="<?php echo $viewsolicitud->id->HeaderCellClass() ?>"><div id="elh_viewsolicitud_id" class="viewsolicitud_id"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->id->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id" class="<?php echo $viewsolicitud->id->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->id) ?>',1);"><div id="elh_viewsolicitud_id" class="viewsolicitud_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
 <?php if ($viewsolicitud->name->Visible) { // name ?>
 	<?php if ($viewsolicitud->SortUrl($viewsolicitud->name) == "") { ?>
 		<th data-name="name" class="<?php echo $viewsolicitud->name->HeaderCellClass() ?>"><div id="elh_viewsolicitud_name" class="viewsolicitud_name"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->name->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="name" class="<?php echo $viewsolicitud->name->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->name) ?>',1);"><div id="elh_viewsolicitud_name" class="viewsolicitud_name">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->name->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->name->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->name->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->name->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->name->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->name->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewsolicitud->lastname->Visible) { // lastname ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->lastname) == "") { ?>
-		<th data-name="lastname" class="<?php echo $viewsolicitud->lastname->HeaderCellClass() ?>"><div id="elh_viewsolicitud_lastname" class="viewsolicitud_lastname"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->lastname->FldCaption() ?></div></div></th>
+<?php if ($viewsolicitud->cell->Visible) { // cell ?>
+	<?php if ($viewsolicitud->SortUrl($viewsolicitud->cell) == "") { ?>
+		<th data-name="cell" class="<?php echo $viewsolicitud->cell->HeaderCellClass() ?>"><div id="elh_viewsolicitud_cell" class="viewsolicitud_cell"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->cell->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="lastname" class="<?php echo $viewsolicitud->lastname->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->lastname) ?>',1);"><div id="elh_viewsolicitud_lastname" class="viewsolicitud_lastname">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->lastname->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->lastname->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->lastname->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="cell" class="<?php echo $viewsolicitud->cell->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->cell) ?>',1);"><div id="elh_viewsolicitud_cell" class="viewsolicitud_cell">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->cell->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->cell->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->cell->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($viewsolicitud->phone->Visible) { // phone ?>
+	<?php if ($viewsolicitud->SortUrl($viewsolicitud->phone) == "") { ?>
+		<th data-name="phone" class="<?php echo $viewsolicitud->phone->HeaderCellClass() ?>"><div id="elh_viewsolicitud_phone" class="viewsolicitud_phone"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->phone->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="phone" class="<?php echo $viewsolicitud->phone->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->phone) ?>',1);"><div id="elh_viewsolicitud_phone" class="viewsolicitud_phone">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->phone->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->phone->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->phone->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -3951,7 +3625,7 @@ $viewsolicitud_list->ListOptions->Render("header", "left");
 		<th data-name="_email" class="<?php echo $viewsolicitud->_email->HeaderCellClass() ?>"><div id="elh_viewsolicitud__email" class="viewsolicitud__email"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->_email->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="_email" class="<?php echo $viewsolicitud->_email->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->_email) ?>',1);"><div id="elh_viewsolicitud__email" class="viewsolicitud__email">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->_email->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->_email->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->_email->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->_email->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->_email->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->_email->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -3960,16 +3634,7 @@ $viewsolicitud_list->ListOptions->Render("header", "left");
 		<th data-name="address" class="<?php echo $viewsolicitud->address->HeaderCellClass() ?>"><div id="elh_viewsolicitud_address" class="viewsolicitud_address"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->address->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="address" class="<?php echo $viewsolicitud->address->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->address) ?>',1);"><div id="elh_viewsolicitud_address" class="viewsolicitud_address">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->address->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->address->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->address->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($viewsolicitud->nombre_contacto->Visible) { // nombre_contacto ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->nombre_contacto) == "") { ?>
-		<th data-name="nombre_contacto" class="<?php echo $viewsolicitud->nombre_contacto->HeaderCellClass() ?>"><div id="elh_viewsolicitud_nombre_contacto" class="viewsolicitud_nombre_contacto"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->nombre_contacto->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="nombre_contacto" class="<?php echo $viewsolicitud->nombre_contacto->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->nombre_contacto) ?>',1);"><div id="elh_viewsolicitud_nombre_contacto" class="viewsolicitud_nombre_contacto">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->nombre_contacto->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->nombre_contacto->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->nombre_contacto->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->address->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->address->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->address->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -3982,21 +3647,12 @@ $viewsolicitud_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewsolicitud->phone->Visible) { // phone ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->phone) == "") { ?>
-		<th data-name="phone" class="<?php echo $viewsolicitud->phone->HeaderCellClass() ?>"><div id="elh_viewsolicitud_phone" class="viewsolicitud_phone"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->phone->FldCaption() ?></div></div></th>
+<?php if ($viewsolicitud->lastname->Visible) { // lastname ?>
+	<?php if ($viewsolicitud->SortUrl($viewsolicitud->lastname) == "") { ?>
+		<th data-name="lastname" class="<?php echo $viewsolicitud->lastname->HeaderCellClass() ?>"><div id="elh_viewsolicitud_lastname" class="viewsolicitud_lastname"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->lastname->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="phone" class="<?php echo $viewsolicitud->phone->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->phone) ?>',1);"><div id="elh_viewsolicitud_phone" class="viewsolicitud_phone">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->phone->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->phone->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->phone->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($viewsolicitud->cell->Visible) { // cell ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->cell) == "") { ?>
-		<th data-name="cell" class="<?php echo $viewsolicitud->cell->HeaderCellClass() ?>"><div id="elh_viewsolicitud_cell" class="viewsolicitud_cell"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->cell->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="cell" class="<?php echo $viewsolicitud->cell->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->cell) ?>',1);"><div id="elh_viewsolicitud_cell" class="viewsolicitud_cell">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->cell->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->cell->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->cell->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="lastname" class="<?php echo $viewsolicitud->lastname->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->lastname) ?>',1);"><div id="elh_viewsolicitud_lastname" class="viewsolicitud_lastname">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->lastname->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->lastname->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->lastname->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -4009,21 +3665,12 @@ $viewsolicitud_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewsolicitud->id_ciudad_inmueble->Visible) { // id_ciudad_inmueble ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->id_ciudad_inmueble) == "") { ?>
-		<th data-name="id_ciudad_inmueble" class="<?php echo $viewsolicitud->id_ciudad_inmueble->HeaderCellClass() ?>"><div id="elh_viewsolicitud_id_ciudad_inmueble" class="viewsolicitud_id_ciudad_inmueble"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_ciudad_inmueble->FldCaption() ?></div></div></th>
+<?php if ($viewsolicitud->tipoinmueble->Visible) { // tipoinmueble ?>
+	<?php if ($viewsolicitud->SortUrl($viewsolicitud->tipoinmueble) == "") { ?>
+		<th data-name="tipoinmueble" class="<?php echo $viewsolicitud->tipoinmueble->HeaderCellClass() ?>"><div id="elh_viewsolicitud_tipoinmueble" class="viewsolicitud_tipoinmueble"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->tipoinmueble->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_ciudad_inmueble" class="<?php echo $viewsolicitud->id_ciudad_inmueble->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->id_ciudad_inmueble) ?>',1);"><div id="elh_viewsolicitud_id_ciudad_inmueble" class="viewsolicitud_id_ciudad_inmueble">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_ciudad_inmueble->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->id_ciudad_inmueble->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->id_ciudad_inmueble->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($viewsolicitud->id_provincia_inmueble->Visible) { // id_provincia_inmueble ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->id_provincia_inmueble) == "") { ?>
-		<th data-name="id_provincia_inmueble" class="<?php echo $viewsolicitud->id_provincia_inmueble->HeaderCellClass() ?>"><div id="elh_viewsolicitud_id_provincia_inmueble" class="viewsolicitud_id_provincia_inmueble"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_provincia_inmueble->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id_provincia_inmueble" class="<?php echo $viewsolicitud->id_provincia_inmueble->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->id_provincia_inmueble) ?>',1);"><div id="elh_viewsolicitud_id_provincia_inmueble" class="viewsolicitud_id_provincia_inmueble">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_provincia_inmueble->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->id_provincia_inmueble->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->id_provincia_inmueble->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="tipoinmueble" class="<?php echo $viewsolicitud->tipoinmueble->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->tipoinmueble) ?>',1);"><div id="elh_viewsolicitud_tipoinmueble" class="viewsolicitud_tipoinmueble">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->tipoinmueble->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->tipoinmueble->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->tipoinmueble->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -4036,48 +3683,12 @@ $viewsolicitud_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewsolicitud->id_ciudad_vehiculo->Visible) { // id_ciudad_vehiculo ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->id_ciudad_vehiculo) == "") { ?>
-		<th data-name="id_ciudad_vehiculo" class="<?php echo $viewsolicitud->id_ciudad_vehiculo->HeaderCellClass() ?>"><div id="elh_viewsolicitud_id_ciudad_vehiculo" class="viewsolicitud_id_ciudad_vehiculo"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_ciudad_vehiculo->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id_ciudad_vehiculo" class="<?php echo $viewsolicitud->id_ciudad_vehiculo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->id_ciudad_vehiculo) ?>',1);"><div id="elh_viewsolicitud_id_ciudad_vehiculo" class="viewsolicitud_id_ciudad_vehiculo">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_ciudad_vehiculo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->id_ciudad_vehiculo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->id_ciudad_vehiculo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($viewsolicitud->id_provincia_vehiculo->Visible) { // id_provincia_vehiculo ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->id_provincia_vehiculo) == "") { ?>
-		<th data-name="id_provincia_vehiculo" class="<?php echo $viewsolicitud->id_provincia_vehiculo->HeaderCellClass() ?>"><div id="elh_viewsolicitud_id_provincia_vehiculo" class="viewsolicitud_id_provincia_vehiculo"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_provincia_vehiculo->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id_provincia_vehiculo" class="<?php echo $viewsolicitud->id_provincia_vehiculo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->id_provincia_vehiculo) ?>',1);"><div id="elh_viewsolicitud_id_provincia_vehiculo" class="viewsolicitud_id_provincia_vehiculo">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_provincia_vehiculo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->id_provincia_vehiculo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->id_provincia_vehiculo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
 <?php if ($viewsolicitud->tipomaquinaria->Visible) { // tipomaquinaria ?>
 	<?php if ($viewsolicitud->SortUrl($viewsolicitud->tipomaquinaria) == "") { ?>
 		<th data-name="tipomaquinaria" class="<?php echo $viewsolicitud->tipomaquinaria->HeaderCellClass() ?>"><div id="elh_viewsolicitud_tipomaquinaria" class="viewsolicitud_tipomaquinaria"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->tipomaquinaria->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="tipomaquinaria" class="<?php echo $viewsolicitud->tipomaquinaria->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->tipomaquinaria) ?>',1);"><div id="elh_viewsolicitud_tipomaquinaria" class="viewsolicitud_tipomaquinaria">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->tipomaquinaria->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->tipomaquinaria->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->tipomaquinaria->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($viewsolicitud->id_ciudad_maquinaria->Visible) { // id_ciudad_maquinaria ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->id_ciudad_maquinaria) == "") { ?>
-		<th data-name="id_ciudad_maquinaria" class="<?php echo $viewsolicitud->id_ciudad_maquinaria->HeaderCellClass() ?>"><div id="elh_viewsolicitud_id_ciudad_maquinaria" class="viewsolicitud_id_ciudad_maquinaria"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_ciudad_maquinaria->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id_ciudad_maquinaria" class="<?php echo $viewsolicitud->id_ciudad_maquinaria->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->id_ciudad_maquinaria) ?>',1);"><div id="elh_viewsolicitud_id_ciudad_maquinaria" class="viewsolicitud_id_ciudad_maquinaria">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_ciudad_maquinaria->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->id_ciudad_maquinaria->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->id_ciudad_maquinaria->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($viewsolicitud->id_provincia_maquinaria->Visible) { // id_provincia_maquinaria ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->id_provincia_maquinaria) == "") { ?>
-		<th data-name="id_provincia_maquinaria" class="<?php echo $viewsolicitud->id_provincia_maquinaria->HeaderCellClass() ?>"><div id="elh_viewsolicitud_id_provincia_maquinaria" class="viewsolicitud_id_provincia_maquinaria"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_provincia_maquinaria->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id_provincia_maquinaria" class="<?php echo $viewsolicitud->id_provincia_maquinaria->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->id_provincia_maquinaria) ?>',1);"><div id="elh_viewsolicitud_id_provincia_maquinaria" class="viewsolicitud_id_provincia_maquinaria">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_provincia_maquinaria->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->id_provincia_maquinaria->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->id_provincia_maquinaria->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -4090,30 +3701,12 @@ $viewsolicitud_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewsolicitud->documento_mercaderia->Visible) { // documento_mercaderia ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->documento_mercaderia) == "") { ?>
-		<th data-name="documento_mercaderia" class="<?php echo $viewsolicitud->documento_mercaderia->HeaderCellClass() ?>"><div id="elh_viewsolicitud_documento_mercaderia" class="viewsolicitud_documento_mercaderia"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->documento_mercaderia->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="documento_mercaderia" class="<?php echo $viewsolicitud->documento_mercaderia->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->documento_mercaderia) ?>',1);"><div id="elh_viewsolicitud_documento_mercaderia" class="viewsolicitud_documento_mercaderia">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->documento_mercaderia->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->documento_mercaderia->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->documento_mercaderia->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
 <?php if ($viewsolicitud->tipoespecial->Visible) { // tipoespecial ?>
 	<?php if ($viewsolicitud->SortUrl($viewsolicitud->tipoespecial) == "") { ?>
 		<th data-name="tipoespecial" class="<?php echo $viewsolicitud->tipoespecial->HeaderCellClass() ?>"><div id="elh_viewsolicitud_tipoespecial" class="viewsolicitud_tipoespecial"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->tipoespecial->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="tipoespecial" class="<?php echo $viewsolicitud->tipoespecial->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->tipoespecial) ?>',1);"><div id="elh_viewsolicitud_tipoespecial" class="viewsolicitud_tipoespecial">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->tipoespecial->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->tipoespecial->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->tipoespecial->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($viewsolicitud->documentos->Visible) { // documentos ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->documentos) == "") { ?>
-		<th data-name="documentos" class="<?php echo $viewsolicitud->documentos->HeaderCellClass() ?>"><div id="elh_viewsolicitud_documentos" class="viewsolicitud_documentos"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->documentos->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="documentos" class="<?php echo $viewsolicitud->documentos->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->documentos) ?>',1);"><div id="elh_viewsolicitud_documentos" class="viewsolicitud_documentos">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->documentos->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->documentos->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->documentos->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -4182,14 +3775,6 @@ while ($viewsolicitud_list->RecCnt < $viewsolicitud_list->StopRec) {
 // Render list options (body, left)
 $viewsolicitud_list->ListOptions->Render("body", "left", $viewsolicitud_list->RowCnt);
 ?>
-	<?php if ($viewsolicitud->id->Visible) { // id ?>
-		<td data-name="id"<?php echo $viewsolicitud->id->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_id" class="viewsolicitud_id">
-<span<?php echo $viewsolicitud->id->ViewAttributes() ?>>
-<?php echo $viewsolicitud->id->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
 	<?php if ($viewsolicitud->name->Visible) { // name ?>
 		<td data-name="name"<?php echo $viewsolicitud->name->CellAttributes() ?>>
 <span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_name" class="viewsolicitud_name">
@@ -4198,11 +3783,19 @@ $viewsolicitud_list->ListOptions->Render("body", "left", $viewsolicitud_list->Ro
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewsolicitud->lastname->Visible) { // lastname ?>
-		<td data-name="lastname"<?php echo $viewsolicitud->lastname->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_lastname" class="viewsolicitud_lastname">
-<span<?php echo $viewsolicitud->lastname->ViewAttributes() ?>>
-<?php echo $viewsolicitud->lastname->ListViewValue() ?></span>
+	<?php if ($viewsolicitud->cell->Visible) { // cell ?>
+		<td data-name="cell"<?php echo $viewsolicitud->cell->CellAttributes() ?>>
+<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_cell" class="viewsolicitud_cell">
+<span<?php echo $viewsolicitud->cell->ViewAttributes() ?>>
+<?php echo $viewsolicitud->cell->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($viewsolicitud->phone->Visible) { // phone ?>
+		<td data-name="phone"<?php echo $viewsolicitud->phone->CellAttributes() ?>>
+<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_phone" class="viewsolicitud_phone">
+<span<?php echo $viewsolicitud->phone->ViewAttributes() ?>>
+<?php echo $viewsolicitud->phone->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
@@ -4222,14 +3815,6 @@ $viewsolicitud_list->ListOptions->Render("body", "left", $viewsolicitud_list->Ro
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewsolicitud->nombre_contacto->Visible) { // nombre_contacto ?>
-		<td data-name="nombre_contacto"<?php echo $viewsolicitud->nombre_contacto->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_nombre_contacto" class="viewsolicitud_nombre_contacto">
-<span<?php echo $viewsolicitud->nombre_contacto->ViewAttributes() ?>>
-<?php echo $viewsolicitud->nombre_contacto->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
 	<?php if ($viewsolicitud->email_contacto->Visible) { // email_contacto ?>
 		<td data-name="email_contacto"<?php echo $viewsolicitud->email_contacto->CellAttributes() ?>>
 <span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_email_contacto" class="viewsolicitud_email_contacto">
@@ -4238,19 +3823,11 @@ $viewsolicitud_list->ListOptions->Render("body", "left", $viewsolicitud_list->Ro
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewsolicitud->phone->Visible) { // phone ?>
-		<td data-name="phone"<?php echo $viewsolicitud->phone->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_phone" class="viewsolicitud_phone">
-<span<?php echo $viewsolicitud->phone->ViewAttributes() ?>>
-<?php echo $viewsolicitud->phone->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
-	<?php if ($viewsolicitud->cell->Visible) { // cell ?>
-		<td data-name="cell"<?php echo $viewsolicitud->cell->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_cell" class="viewsolicitud_cell">
-<span<?php echo $viewsolicitud->cell->ViewAttributes() ?>>
-<?php echo $viewsolicitud->cell->ListViewValue() ?></span>
+	<?php if ($viewsolicitud->lastname->Visible) { // lastname ?>
+		<td data-name="lastname"<?php echo $viewsolicitud->lastname->CellAttributes() ?>>
+<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_lastname" class="viewsolicitud_lastname">
+<span<?php echo $viewsolicitud->lastname->ViewAttributes() ?>>
+<?php echo $viewsolicitud->lastname->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
@@ -4262,19 +3839,11 @@ $viewsolicitud_list->ListOptions->Render("body", "left", $viewsolicitud_list->Ro
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewsolicitud->id_ciudad_inmueble->Visible) { // id_ciudad_inmueble ?>
-		<td data-name="id_ciudad_inmueble"<?php echo $viewsolicitud->id_ciudad_inmueble->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_id_ciudad_inmueble" class="viewsolicitud_id_ciudad_inmueble">
-<span<?php echo $viewsolicitud->id_ciudad_inmueble->ViewAttributes() ?>>
-<?php echo $viewsolicitud->id_ciudad_inmueble->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
-	<?php if ($viewsolicitud->id_provincia_inmueble->Visible) { // id_provincia_inmueble ?>
-		<td data-name="id_provincia_inmueble"<?php echo $viewsolicitud->id_provincia_inmueble->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_id_provincia_inmueble" class="viewsolicitud_id_provincia_inmueble">
-<span<?php echo $viewsolicitud->id_provincia_inmueble->ViewAttributes() ?>>
-<?php echo $viewsolicitud->id_provincia_inmueble->ListViewValue() ?></span>
+	<?php if ($viewsolicitud->tipoinmueble->Visible) { // tipoinmueble ?>
+		<td data-name="tipoinmueble"<?php echo $viewsolicitud->tipoinmueble->CellAttributes() ?>>
+<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_tipoinmueble" class="viewsolicitud_tipoinmueble">
+<span<?php echo $viewsolicitud->tipoinmueble->ViewAttributes() ?>>
+<?php echo $viewsolicitud->tipoinmueble->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
@@ -4286,43 +3855,11 @@ $viewsolicitud_list->ListOptions->Render("body", "left", $viewsolicitud_list->Ro
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewsolicitud->id_ciudad_vehiculo->Visible) { // id_ciudad_vehiculo ?>
-		<td data-name="id_ciudad_vehiculo"<?php echo $viewsolicitud->id_ciudad_vehiculo->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_id_ciudad_vehiculo" class="viewsolicitud_id_ciudad_vehiculo">
-<span<?php echo $viewsolicitud->id_ciudad_vehiculo->ViewAttributes() ?>>
-<?php echo $viewsolicitud->id_ciudad_vehiculo->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
-	<?php if ($viewsolicitud->id_provincia_vehiculo->Visible) { // id_provincia_vehiculo ?>
-		<td data-name="id_provincia_vehiculo"<?php echo $viewsolicitud->id_provincia_vehiculo->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_id_provincia_vehiculo" class="viewsolicitud_id_provincia_vehiculo">
-<span<?php echo $viewsolicitud->id_provincia_vehiculo->ViewAttributes() ?>>
-<?php echo $viewsolicitud->id_provincia_vehiculo->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
 	<?php if ($viewsolicitud->tipomaquinaria->Visible) { // tipomaquinaria ?>
 		<td data-name="tipomaquinaria"<?php echo $viewsolicitud->tipomaquinaria->CellAttributes() ?>>
 <span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_tipomaquinaria" class="viewsolicitud_tipomaquinaria">
 <span<?php echo $viewsolicitud->tipomaquinaria->ViewAttributes() ?>>
 <?php echo $viewsolicitud->tipomaquinaria->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
-	<?php if ($viewsolicitud->id_ciudad_maquinaria->Visible) { // id_ciudad_maquinaria ?>
-		<td data-name="id_ciudad_maquinaria"<?php echo $viewsolicitud->id_ciudad_maquinaria->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_id_ciudad_maquinaria" class="viewsolicitud_id_ciudad_maquinaria">
-<span<?php echo $viewsolicitud->id_ciudad_maquinaria->ViewAttributes() ?>>
-<?php echo $viewsolicitud->id_ciudad_maquinaria->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
-	<?php if ($viewsolicitud->id_provincia_maquinaria->Visible) { // id_provincia_maquinaria ?>
-		<td data-name="id_provincia_maquinaria"<?php echo $viewsolicitud->id_provincia_maquinaria->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_id_provincia_maquinaria" class="viewsolicitud_id_provincia_maquinaria">
-<span<?php echo $viewsolicitud->id_provincia_maquinaria->ViewAttributes() ?>>
-<?php echo $viewsolicitud->id_provincia_maquinaria->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
@@ -4334,27 +3871,11 @@ $viewsolicitud_list->ListOptions->Render("body", "left", $viewsolicitud_list->Ro
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewsolicitud->documento_mercaderia->Visible) { // documento_mercaderia ?>
-		<td data-name="documento_mercaderia"<?php echo $viewsolicitud->documento_mercaderia->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_documento_mercaderia" class="viewsolicitud_documento_mercaderia">
-<span<?php echo $viewsolicitud->documento_mercaderia->ViewAttributes() ?>>
-<?php echo $viewsolicitud->documento_mercaderia->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
 	<?php if ($viewsolicitud->tipoespecial->Visible) { // tipoespecial ?>
 		<td data-name="tipoespecial"<?php echo $viewsolicitud->tipoespecial->CellAttributes() ?>>
 <span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_tipoespecial" class="viewsolicitud_tipoespecial">
 <span<?php echo $viewsolicitud->tipoespecial->ViewAttributes() ?>>
 <?php echo $viewsolicitud->tipoespecial->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
-	<?php if ($viewsolicitud->documentos->Visible) { // documentos ?>
-		<td data-name="documentos"<?php echo $viewsolicitud->documentos->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_documentos" class="viewsolicitud_documentos">
-<span<?php echo $viewsolicitud->documentos->ViewAttributes() ?>>
-<?php echo $viewsolicitud->documentos->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
