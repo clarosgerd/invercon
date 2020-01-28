@@ -492,7 +492,20 @@ class cviewsolicitudframe extends cTable {
 
 	function getSqlWhere() { // Where
 		$sWhere = ($this->_SqlWhere <> "") ? $this->_SqlWhere : "";
-		$this->TableFilter = "`id`='".$_GET["id"]."'";
+        if (!isset($_GET["solicitud"]))
+        {
+            $this->TableFilter = "`id`='0'";
+
+        }else{
+            $this->TableFilter = "`id`='".$_GET["solicitud"]."'";
+		}
+        if (!isset($_GET["id"]))
+        {
+            $this->TableFilter = "`id`='0'";
+
+        }else{
+            $this->TableFilter = "`id`='".$_GET["id"]."'";
+        }
 		ew_AddFilter($sWhere, $this->TableFilter);
 		return $sWhere;
 	}

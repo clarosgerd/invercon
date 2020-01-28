@@ -2084,7 +2084,7 @@ class cviewavaluosc extends cTable {
 		case 4:
 				$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]." termino el pago");
 				return TRUE;
-				break;
+                break;
 		}
 		}else{
 		if ($rsnew['estadopago']==2)
@@ -2092,7 +2092,7 @@ class cviewavaluosc extends cTable {
 				$MyResult5 = ew_Execute($sql_pago);
 				$this->setFailureMessage("El Avaluo ".$rsold["codigoavaluo"]."tuvo un pago parcial");
 				return TRUE;
-				break;
+				//break;
 		}	
 		return TRUE;
 	}

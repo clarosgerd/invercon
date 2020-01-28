@@ -3888,25 +3888,26 @@ class cviewavaluosc_list extends cviewavaluosc {
 		// Example:
 		//$header = "your header";
 
-		if (isset($_GET["id"]))
+		if (!isset($_GET["id"]))
 		{
+            $var=0;
 		$header = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $header .= "<tr>";
 		 $header .= "<td>";
 		 $header .= "<div class=\"card-body p-0\">";
-		 $header .= "<iframe src=\"viewsolicitudframeedit.php?id=".$_GET["id"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
+		 $header .= "<iframe src=\"viewsolicitudframeedit.php?solicitud=".$var."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
 		 $header .= "</div>";
 		 $header .= "</td>";
 		 $header .= "</tr>";
 		 $header .= "</table>";
 		 }else
 		 {
-		 $var=0;
+
 		 $header = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $header .= "<tr>";
 		 $header .= "<td>";
 		 $header .= "<div class=\"card-body p-0\">";
-		 $header .= "<iframe src=\"viewsolicitudframeedit.php?id=".$var."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
+		 $header .= "<iframe src=\"viewsolicitudframeedit.php?solicitud=".$_GET["id"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
 		 $header .= "</div>";
 		 $header .= "</td>";
 		 $header .= "</tr>";
@@ -4044,7 +4045,7 @@ class cviewavaluosc_list extends cviewavaluosc {
 		$TheQuery=$Sql." WHERE avaluo.id = '" . ew_AdjustSql(CurrentTable()->id->CurrentValue) . "'";
 		$email = ew_ExecuteScalar($TheQuery);
 		$button4="<div class=\"btn-group\" role=\"group\" aria-label=\"Button group with nested dropdown\">";
-		$button4.=	"<button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+		$button4.=	"<button class=\"btn btn-primary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
 		$button4.="Tareas Secretaria";
 		$button4.="</button>";
 		$button4.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
@@ -4052,8 +4053,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 		$button4.="<li><a class=\"dropdown-item\" href=core.php?case=sec&type=pagado&id=".CurrentTable()->id->CurrentValue.">Terminado</a></li>";
 		$button4.="</ul>";
 		$button4.="</div>";
+
 			$button="<div class=\"btn-group\" role=\"group\" aria-label=\"Button group with nested dropdown\">";
-		$button.=	"<button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+		$button.=	"<button class=\"btn btn-danger dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
 		$button.="Notificaciones Pago";
 		$button.="</button>";
 		$button.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
@@ -4068,13 +4070,13 @@ class cviewavaluosc_list extends cviewavaluosc {
 		$button.="</ul>";
 		$button.="</div>";
 		$button2="<div class=\"btn-group\" role=\"group\" aria-label=\"Button group with nested dropdown\">";
-		$button2.=	"<button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+		$button2.=	"<button class=\"btn btn-warning dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
 		$button2.="Historiales";
 		$button2.="</button>";
 		$button2.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
 	   $button2.="<li><a class=\"dropdown-item\" href=historicolist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"frame\">Historial</a></li>";
 	   $button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
-	   $button2.="<li><a class=\"dropdown-item\" href=viewsolicitudframeedit.php?id=".CurrentTable()->id_solicitud->CurrentValue." target=\"framesol\">Datos Solicitud</a></li>";
+	   $button2.="<li><a class=\"dropdown-item\" href=viewsolicitudframelist.php?id=".CurrentTable()->id_solicitud->CurrentValue." target=\"framesol\">Datos Solicitud</a></li>";
 	   $button2.="<li><a class=\"dropdown-item\" href=viewpagoavaluoslist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framepagos\">Historial de Pagos</a></li>";
 		$button2.="</ul>";
 		$button2.="</div>";
