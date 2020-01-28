@@ -343,6 +343,7 @@ class cinspector_edit extends cinspector {
 		$this->especialidad->SetVisibility();
 		$this->status->SetVisibility();
 		$this->color->SetVisibility();
+		$this->codigo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -633,6 +634,9 @@ class cinspector_edit extends cinspector {
 		if (!$this->color->FldIsDetailKey) {
 			$this->color->setFormValue($objForm->GetValue("x_color"));
 		}
+		if (!$this->codigo->FldIsDetailKey) {
+			$this->codigo->setFormValue($objForm->GetValue("x_codigo"));
+		}
 	}
 
 	// Restore form values
@@ -656,6 +660,7 @@ class cinspector_edit extends cinspector {
 		$this->especialidad->CurrentValue = $this->especialidad->FormValue;
 		$this->status->CurrentValue = $this->status->FormValue;
 		$this->color->CurrentValue = $this->color->FormValue;
+		$this->codigo->CurrentValue = $this->codigo->FormValue;
 	}
 
 	// Load row based on key values
@@ -712,6 +717,7 @@ class cinspector_edit extends cinspector {
 		$this->avatar->Upload->DbValue = $row['avatar'];
 		if (is_array($this->avatar->Upload->DbValue) || is_object($this->avatar->Upload->DbValue)) // Byte array
 			$this->avatar->Upload->DbValue = ew_BytesToStr($this->avatar->Upload->DbValue);
+		$this->codigo->setDbValue($row['codigo']);
 	}
 
 	// Return a row with default values
@@ -736,6 +742,7 @@ class cinspector_edit extends cinspector {
 		$row['status'] = NULL;
 		$row['color'] = NULL;
 		$row['avatar'] = NULL;
+		$row['codigo'] = NULL;
 		return $row;
 	}
 
@@ -763,6 +770,7 @@ class cinspector_edit extends cinspector {
 		$this->status->DbValue = $row['status'];
 		$this->color->DbValue = $row['color'];
 		$this->avatar->Upload->DbValue = $row['avatar'];
+		$this->codigo->DbValue = $row['codigo'];
 	}
 
 	// Load old record
@@ -816,6 +824,7 @@ class cinspector_edit extends cinspector {
 		// status
 		// color
 		// avatar
+		// codigo
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -842,9 +851,23 @@ class cinspector_edit extends cinspector {
 		// id_rol
 		if (strval($this->id_rol->CurrentValue) <> "") {
 			$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-		$sWhereWrk = "";
-		$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -865,9 +888,23 @@ class cinspector_edit extends cinspector {
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -928,6 +965,10 @@ class cinspector_edit extends cinspector {
 		// color
 		$this->color->ViewValue = $this->color->CurrentValue;
 		$this->color->ViewCustomAttributes = "";
+
+		// codigo
+		$this->codigo->ViewValue = $this->codigo->CurrentValue;
+		$this->codigo->ViewCustomAttributes = "";
 
 			// nombre
 			$this->nombre->LinkCustomAttributes = "";
@@ -1018,6 +1059,11 @@ class cinspector_edit extends cinspector {
 			$this->color->LinkCustomAttributes = "";
 			$this->color->HrefValue = "";
 			$this->color->TooltipValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
+			$this->codigo->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// nombre
@@ -1055,9 +1101,23 @@ class cinspector_edit extends cinspector {
 			$this->id_rol->EditCustomAttributes = "";
 			if (strval($this->id_rol->CurrentValue) <> "") {
 				$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-			$sWhereWrk = "";
-			$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1082,9 +1142,23 @@ class cinspector_edit extends cinspector {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
-			$sWhereWrk = "";
-			$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1166,6 +1240,12 @@ class cinspector_edit extends cinspector {
 			$this->color->EditValue = ew_HtmlEncode($this->color->CurrentValue);
 			$this->color->PlaceHolder = ew_RemoveHtml($this->color->FldTitle());
 
+			// codigo
+			$this->codigo->EditAttrs["class"] = "form-control";
+			$this->codigo->EditCustomAttributes = "";
+			$this->codigo->EditValue = ew_HtmlEncode($this->codigo->CurrentValue);
+			$this->codigo->PlaceHolder = ew_RemoveHtml($this->codigo->FldTitle());
+
 			// Edit refer script
 			// nombre
 
@@ -1240,6 +1320,10 @@ class cinspector_edit extends cinspector {
 			// color
 			$this->color->LinkCustomAttributes = "";
 			$this->color->HrefValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1378,6 +1462,9 @@ class cinspector_edit extends cinspector {
 			// color
 			$this->color->SetDbValueDef($rsnew, $this->color->CurrentValue, NULL, $this->color->ReadOnly);
 
+			// codigo
+			$this->codigo->SetDbValueDef($rsnew, $this->codigo->CurrentValue, NULL, $this->codigo->ReadOnly);
+
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
 			if ($bUpdateRow) {
@@ -1427,9 +1514,23 @@ class cinspector_edit extends cinspector {
 		switch ($fld->FldVar) {
 		case "x_id_sucursal":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`nombre`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`nombre`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`nombre`');
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
@@ -1801,7 +1902,7 @@ $inspector_edit->ShowMessage();
 		<div class="<?php echo $inspector_edit->RightColumnClass ?>"><div<?php echo $inspector->id_sucursal->CellAttributes() ?>>
 <span id="el_inspector_id_sucursal">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($inspector->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $inspector->id_sucursal->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($inspector->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $inspector->id_sucursal->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($inspector->id_sucursal->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_sucursal',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($inspector->id_sucursal->ReadOnly || $inspector->id_sucursal->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="inspector" data-field="x_id_sucursal" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $inspector->id_sucursal->DisplayValueSeparatorAttribute() ?>" name="x_id_sucursal" id="x_id_sucursal" value="<?php echo $inspector->id_sucursal->CurrentValue ?>"<?php echo $inspector->id_sucursal->EditAttributes() ?>>
@@ -1814,7 +1915,7 @@ $inspector_edit->ShowMessage();
 		<td<?php echo $inspector->id_sucursal->CellAttributes() ?>>
 <span id="el_inspector_id_sucursal">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($inspector->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $inspector->id_sucursal->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($inspector->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $inspector->id_sucursal->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($inspector->id_sucursal->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_sucursal',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($inspector->id_sucursal->ReadOnly || $inspector->id_sucursal->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="inspector" data-field="x_id_sucursal" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $inspector->id_sucursal->DisplayValueSeparatorAttribute() ?>" name="x_id_sucursal" id="x_id_sucursal" value="<?php echo $inspector->id_sucursal->CurrentValue ?>"<?php echo $inspector->id_sucursal->EditAttributes() ?>>
@@ -2061,6 +2162,27 @@ $("#x_color").colorpicker({ format: "hex" });
 
 </span>
 <?php echo $inspector->color->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($inspector->codigo->Visible) { // codigo ?>
+<?php if ($inspector_edit->IsMobileOrModal) { ?>
+	<div id="r_codigo" class="form-group">
+		<label id="elh_inspector_codigo" for="x_codigo" class="<?php echo $inspector_edit->LeftColumnClass ?>"><?php echo $inspector->codigo->FldCaption() ?></label>
+		<div class="<?php echo $inspector_edit->RightColumnClass ?>"><div<?php echo $inspector->codigo->CellAttributes() ?>>
+<span id="el_inspector_codigo">
+<input type="text" data-table="inspector" data-field="x_codigo" name="x_codigo" id="x_codigo" size="30" maxlength="5" placeholder="<?php echo ew_HtmlEncode($inspector->codigo->getPlaceHolder()) ?>" value="<?php echo $inspector->codigo->EditValue ?>"<?php echo $inspector->codigo->EditAttributes() ?>>
+</span>
+<?php echo $inspector->codigo->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_codigo">
+		<td class="col-sm-3"><span id="elh_inspector_codigo"><?php echo $inspector->codigo->FldCaption() ?></span></td>
+		<td<?php echo $inspector->codigo->CellAttributes() ?>>
+<span id="el_inspector_codigo">
+<input type="text" data-table="inspector" data-field="x_codigo" name="x_codigo" id="x_codigo" size="30" maxlength="5" placeholder="<?php echo ew_HtmlEncode($inspector->codigo->getPlaceHolder()) ?>" value="<?php echo $inspector->codigo->EditValue ?>"<?php echo $inspector->codigo->EditAttributes() ?>>
+</span>
+<?php echo $inspector->codigo->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>

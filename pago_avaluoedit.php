@@ -7,6 +7,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "phpfn14.php" ?>
 <?php include_once "pago_avaluoinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
+<?php include_once "avaluoinfo.php" ?>
 <?php include_once "pagoinfo.php" ?>
 <?php include_once "viewavaluoscinfo.php" ?>
 <?php include_once "userfn14.php" ?>
@@ -261,6 +262,9 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		// Table object (usuario)
 		if (!isset($GLOBALS['usuario'])) $GLOBALS['usuario'] = new cusuario();
 
+		// Table object (avaluo)
+		if (!isset($GLOBALS['avaluo'])) $GLOBALS['avaluo'] = new cavaluo();
+
 		// Table object (pago)
 		if (!isset($GLOBALS['pago'])) $GLOBALS['pago'] = new cpago();
 
@@ -339,6 +343,10 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		$this->pago_id->SetVisibility();
 		$this->avaluo_id->SetVisibility();
 		$this->q->SetVisibility();
+		$this->id_metodopago->SetVisibility();
+		$this->monto->SetVisibility();
+		$this->documentopago->SetVisibility();
+		$this->id_banco->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -571,6 +579,8 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		global $objForm, $Language;
 
 		// Get upload data
+		$this->documentopago->Upload->Index = $objForm->Index;
+		$this->documentopago->Upload->UploadFile();
 	}
 
 	// Load form values
@@ -578,6 +588,7 @@ class cpago_avaluo_edit extends cpago_avaluo {
 
 		// Load from form
 		global $objForm;
+		$this->GetUploadFiles(); // Get upload files
 		if (!$this->id->FldIsDetailKey)
 			$this->id->setFormValue($objForm->GetValue("x_id"));
 		if (!$this->pago_id->FldIsDetailKey) {
@@ -589,6 +600,15 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		if (!$this->q->FldIsDetailKey) {
 			$this->q->setFormValue($objForm->GetValue("x_q"));
 		}
+		if (!$this->id_metodopago->FldIsDetailKey) {
+			$this->id_metodopago->setFormValue($objForm->GetValue("x_id_metodopago"));
+		}
+		if (!$this->monto->FldIsDetailKey) {
+			$this->monto->setFormValue($objForm->GetValue("x_monto"));
+		}
+		if (!$this->id_banco->FldIsDetailKey) {
+			$this->id_banco->setFormValue($objForm->GetValue("x_id_banco"));
+		}
 	}
 
 	// Restore form values
@@ -598,6 +618,9 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		$this->pago_id->CurrentValue = $this->pago_id->FormValue;
 		$this->avaluo_id->CurrentValue = $this->avaluo_id->FormValue;
 		$this->q->CurrentValue = $this->q->FormValue;
+		$this->id_metodopago->CurrentValue = $this->id_metodopago->FormValue;
+		$this->monto->CurrentValue = $this->monto->FormValue;
+		$this->id_banco->CurrentValue = $this->id_banco->FormValue;
 	}
 
 	// Load row based on key values
@@ -642,6 +665,12 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			$this->avaluo_id->VirtualValue = ""; // Clear value
 		}
 		$this->q->setDbValue($row['q']);
+		$this->id_metodopago->setDbValue($row['id_metodopago']);
+		$this->monto->setDbValue($row['monto']);
+		$this->documentopago->Upload->DbValue = $row['documentopago'];
+		if (is_array($this->documentopago->Upload->DbValue) || is_object($this->documentopago->Upload->DbValue)) // Byte array
+			$this->documentopago->Upload->DbValue = ew_BytesToStr($this->documentopago->Upload->DbValue);
+		$this->id_banco->setDbValue($row['id_banco']);
 	}
 
 	// Return a row with default values
@@ -651,6 +680,10 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		$row['pago_id'] = NULL;
 		$row['avaluo_id'] = NULL;
 		$row['q'] = NULL;
+		$row['id_metodopago'] = NULL;
+		$row['monto'] = NULL;
+		$row['documentopago'] = NULL;
+		$row['id_banco'] = NULL;
 		return $row;
 	}
 
@@ -663,6 +696,10 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		$this->pago_id->DbValue = $row['pago_id'];
 		$this->avaluo_id->DbValue = $row['avaluo_id'];
 		$this->q->DbValue = $row['q'];
+		$this->id_metodopago->DbValue = $row['id_metodopago'];
+		$this->monto->DbValue = $row['monto'];
+		$this->documentopago->Upload->DbValue = $row['documentopago'];
+		$this->id_banco->DbValue = $row['id_banco'];
 	}
 
 	// Load old record
@@ -692,8 +729,12 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		global $Security, $Language, $gsLanguage;
 
 		// Initialize URLs
-		// Call Row_Rendering event
+		// Convert decimal values if posted back
 
+		if ($this->monto->FormValue == $this->monto->CurrentValue && is_numeric(ew_StrToFloat($this->monto->CurrentValue)))
+			$this->monto->CurrentValue = ew_StrToFloat($this->monto->CurrentValue);
+
+		// Call Row_Rendering event
 		$this->Row_Rendering();
 
 		// Common render codes for all row types
@@ -701,34 +742,52 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		// pago_id
 		// avaluo_id
 		// q
+		// id_metodopago
+		// monto
+		// documentopago
+		// id_banco
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
-		$this->id->ViewValue = $this->id->CurrentValue;
-		$this->id->ViewCustomAttributes = "";
-
-		// pago_id
-		if (strval($this->pago_id->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->pago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
-		$sWhereWrk = "";
-		$this->pago_id->LookupFilters = array();
+		if (strval($this->id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->pago_id, $sWhereWrk); // Call Lookup Selecting
+		$this->Lookup_Selecting($this->id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
 				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->pago_id->ViewValue = $this->pago_id->DisplayValue($arwrk);
+				$this->id->ViewValue = $this->id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
-				$this->pago_id->ViewValue = $this->pago_id->CurrentValue;
+				$this->id->ViewValue = $this->id->CurrentValue;
 			}
 		} else {
-			$this->pago_id->ViewValue = NULL;
+			$this->id->ViewValue = NULL;
 		}
+		$this->id->ViewCustomAttributes = "";
+
+		// pago_id
+		$this->pago_id->ViewValue = $this->pago_id->CurrentValue;
 		$this->pago_id->ViewCustomAttributes = "";
 
 		// avaluo_id
@@ -737,19 +796,30 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		} else {
 		if (strval($this->avaluo_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `codigoavaluo` AS `Disp2Fld`, `id_oficialcredito` AS `Disp3Fld`, `tipoinmueble` AS `Disp4Fld` FROM `avaluo`";
-		$sWhereWrk = "";
-		$this->avaluo_id->LookupFilters = array("dx1" => '`id`', "dx2" => '`codigoavaluo`', "dx3" => '`id_oficialcredito`', "dx4" => '`tipoinmueble`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = ew_FormatNumber($rswrk->fields('Disp2Fld'), 0, 0, 0, 0);
-				$arwrk[3] = $rswrk->fields('Disp3Fld');
-				$arwrk[4] = $rswrk->fields('Disp4Fld');
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0);
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -764,6 +834,60 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		// q
 		$this->q->ViewValue = $this->q->CurrentValue;
 		$this->q->ViewCustomAttributes = "";
+
+		// id_metodopago
+		if (strval($this->id_metodopago->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_metodopago->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id_metodopago->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id_metodopago->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id_metodopago->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_metodopago, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->id_metodopago->ViewValue = $this->id_metodopago->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_metodopago->ViewValue = $this->id_metodopago->CurrentValue;
+			}
+		} else {
+			$this->id_metodopago->ViewValue = NULL;
+		}
+		$this->id_metodopago->ViewCustomAttributes = "";
+
+		// monto
+		$this->monto->ViewValue = $this->monto->CurrentValue;
+		$this->monto->ViewCustomAttributes = "";
+
+		// documentopago
+		if (!ew_Empty($this->documentopago->Upload->DbValue)) {
+			$this->documentopago->ViewValue = "pago_avaluo_documentopago_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->documentopago->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->documentopago->Upload->DbValue, 0, 11)));
+		} else {
+			$this->documentopago->ViewValue = "";
+		}
+		$this->documentopago->ViewCustomAttributes = "";
+
+		// id_banco
+		$this->id_banco->ViewValue = $this->id_banco->CurrentValue;
+		$this->id_banco->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -784,12 +908,72 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			$this->q->LinkCustomAttributes = "";
 			$this->q->HrefValue = "";
 			$this->q->TooltipValue = "";
+
+			// id_metodopago
+			$this->id_metodopago->LinkCustomAttributes = "";
+			$this->id_metodopago->HrefValue = "";
+			$this->id_metodopago->TooltipValue = "";
+
+			// monto
+			$this->monto->LinkCustomAttributes = "";
+			$this->monto->HrefValue = "";
+			$this->monto->TooltipValue = "";
+
+			// documentopago
+			$this->documentopago->LinkCustomAttributes = "";
+			if (!empty($this->documentopago->Upload->DbValue)) {
+				$this->documentopago->HrefValue = "pago_avaluo_documentopago_bv.php?id=" . $this->id->CurrentValue;
+				$this->documentopago->LinkAttrs["target"] = "_blank";
+				if ($this->Export <> "") $this->documentopago->HrefValue = ew_FullUrl($this->documentopago->HrefValue, "href");
+			} else {
+				$this->documentopago->HrefValue = "";
+			}
+			$this->documentopago->HrefValue2 = "pago_avaluo_documentopago_bv.php?id=" . $this->id->CurrentValue;
+			$this->documentopago->TooltipValue = "";
+
+			// id_banco
+			$this->id_banco->LinkCustomAttributes = "";
+			$this->id_banco->HrefValue = "";
+			$this->id_banco->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// id
 			$this->id->EditAttrs["class"] = "form-control";
 			$this->id->EditCustomAttributes = "";
-			$this->id->EditValue = $this->id->CurrentValue;
+			if (strval($this->id->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+					$sWhereWrk = "";
+					$this->id->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+					$sWhereWrk = "";
+					$this->id->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+					$sWhereWrk = "";
+					$this->id->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = $rswrk->fields('DispFld');
+					$this->id->EditValue = $this->id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->id->EditValue = $this->id->CurrentValue;
+				}
+			} else {
+				$this->id->EditValue = NULL;
+			}
 			$this->id->ViewCustomAttributes = "";
 
 			// pago_id
@@ -797,43 +981,9 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			$this->pago_id->EditCustomAttributes = "";
 			if ($this->pago_id->getSessionValue() <> "") {
 				$this->pago_id->CurrentValue = $this->pago_id->getSessionValue();
-			if (strval($this->pago_id->CurrentValue) <> "") {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->pago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
-			$sWhereWrk = "";
-			$this->pago_id->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->pago_id, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-				$rswrk = Conn()->Execute($sSqlWrk);
-				if ($rswrk && !$rswrk->EOF) { // Lookup values found
-					$arwrk = array();
-					$arwrk[1] = $rswrk->fields('DispFld');
-					$this->pago_id->ViewValue = $this->pago_id->DisplayValue($arwrk);
-					$rswrk->Close();
-				} else {
-					$this->pago_id->ViewValue = $this->pago_id->CurrentValue;
-				}
-			} else {
-				$this->pago_id->ViewValue = NULL;
-			}
+			$this->pago_id->ViewValue = $this->pago_id->CurrentValue;
 			$this->pago_id->ViewCustomAttributes = "";
 			} else {
-			if (trim(strval($this->pago_id->CurrentValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->pago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `pago`";
-			$sWhereWrk = "";
-			$this->pago_id->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->pago_id, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->pago_id->EditValue = $arwrk;
 			}
 
 			// avaluo_id
@@ -845,19 +995,30 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			} else {
 			if (strval($this->avaluo_id->CurrentValue) <> "") {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `codigoavaluo` AS `Disp2Fld`, `id_oficialcredito` AS `Disp3Fld`, `tipoinmueble` AS `Disp4Fld` FROM `avaluo`";
-			$sWhereWrk = "";
-			$this->avaluo_id->LookupFilters = array("dx1" => '`id`', "dx2" => '`codigoavaluo`', "dx3" => '`id_oficialcredito`', "dx4" => '`tipoinmueble`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+					$sWhereWrk = "";
+					$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+					$sWhereWrk = "";
+					$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+					$sWhereWrk = "";
+					$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 				$rswrk = Conn()->Execute($sSqlWrk);
 				if ($rswrk && !$rswrk->EOF) { // Lookup values found
 					$arwrk = array();
-					$arwrk[1] = $rswrk->fields('DispFld');
-					$arwrk[2] = ew_FormatNumber($rswrk->fields('Disp2Fld'), 0, 0, 0, 0);
-					$arwrk[3] = $rswrk->fields('Disp3Fld');
-					$arwrk[4] = $rswrk->fields('Disp4Fld');
+					$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0);
 					$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 					$rswrk->Close();
 				} else {
@@ -874,19 +1035,30 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `codigoavaluo` AS `Disp2Fld`, `id_oficialcredito` AS `Disp3Fld`, `tipoinmueble` AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `avaluo`";
-			$sWhereWrk = "";
-			$this->avaluo_id->LookupFilters = array("dx1" => '`id`', "dx2" => '`codigoavaluo`', "dx3" => '`id_oficialcredito`', "dx4" => '`tipoinmueble`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `avaluo`";
+					$sWhereWrk = "";
+					$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `avaluo`";
+					$sWhereWrk = "";
+					$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `avaluo`";
+					$sWhereWrk = "";
+					$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
-				$arwrk[2] = ew_HtmlEncode(ew_FormatNumber($rswrk->fields('Disp2Fld'), 0, 0, 0, 0));
-				$arwrk[3] = ew_HtmlEncode($rswrk->fields('Disp3Fld'));
-				$arwrk[4] = ew_HtmlEncode($rswrk->fields('Disp4Fld'));
+				$arwrk[1] = ew_HtmlEncode(ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0));
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 			} else {
 				$this->avaluo_id->ViewValue = $Language->Phrase("PleaseSelect");
@@ -895,7 +1067,7 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			if ($rswrk) $rswrk->Close();
 			$rowswrk = count($arwrk);
 			for ($rowcntwrk = 0; $rowcntwrk < $rowswrk; $rowcntwrk++) {
-				$arwrk[$rowcntwrk][2] = ew_FormatNumber($arwrk[$rowcntwrk][2], 0, 0, 0, 0);
+				$arwrk[$rowcntwrk][1] = ew_FormatNumber($arwrk[$rowcntwrk][1], 0, 0, 0, 0);
 			}
 			$this->avaluo_id->EditValue = $arwrk;
 			}
@@ -905,6 +1077,63 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			$this->q->EditCustomAttributes = "";
 			$this->q->EditValue = $this->q->CurrentValue;
 			$this->q->ViewCustomAttributes = "";
+
+			// id_metodopago
+			$this->id_metodopago->EditAttrs["class"] = "form-control";
+			$this->id_metodopago->EditCustomAttributes = "";
+			if (trim(strval($this->id_metodopago->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_metodopago->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
+					$sWhereWrk = "";
+					$this->id_metodopago->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
+					$sWhereWrk = "";
+					$this->id_metodopago->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
+					$sWhereWrk = "";
+					$this->id_metodopago->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->id_metodopago, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->id_metodopago->EditValue = $arwrk;
+
+			// monto
+			$this->monto->EditAttrs["class"] = "form-control";
+			$this->monto->EditCustomAttributes = "";
+			$this->monto->EditValue = ew_HtmlEncode($this->monto->CurrentValue);
+			$this->monto->PlaceHolder = ew_RemoveHtml($this->monto->FldTitle());
+			if (strval($this->monto->EditValue) <> "" && is_numeric($this->monto->EditValue)) $this->monto->EditValue = ew_FormatNumber($this->monto->EditValue, -2, -1, -2, 0);
+
+			// documentopago
+			$this->documentopago->EditAttrs["class"] = "form-control";
+			$this->documentopago->EditCustomAttributes = "";
+			if (!ew_Empty($this->documentopago->Upload->DbValue)) {
+				$this->documentopago->EditValue = "pago_avaluo_documentopago_bv.php?" . "id=" . $this->id->CurrentValue;
+				$this->documentopago->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->documentopago->Upload->DbValue, 0, 11)));
+			} else {
+				$this->documentopago->EditValue = "";
+			}
+			if ($this->CurrentAction == "I" && !$this->EventCancelled) ew_RenderUploadField($this->documentopago);
+
+			// id_banco
+			$this->id_banco->EditAttrs["class"] = "form-control";
+			$this->id_banco->EditCustomAttributes = "";
+			$this->id_banco->EditValue = ew_HtmlEncode($this->id_banco->CurrentValue);
+			$this->id_banco->PlaceHolder = ew_RemoveHtml($this->id_banco->FldTitle());
 
 			// Edit refer script
 			// id
@@ -924,6 +1153,29 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			$this->q->LinkCustomAttributes = "";
 			$this->q->HrefValue = "";
 			$this->q->TooltipValue = "";
+
+			// id_metodopago
+			$this->id_metodopago->LinkCustomAttributes = "";
+			$this->id_metodopago->HrefValue = "";
+
+			// monto
+			$this->monto->LinkCustomAttributes = "";
+			$this->monto->HrefValue = "";
+
+			// documentopago
+			$this->documentopago->LinkCustomAttributes = "";
+			if (!empty($this->documentopago->Upload->DbValue)) {
+				$this->documentopago->HrefValue = "pago_avaluo_documentopago_bv.php?id=" . $this->id->CurrentValue;
+				$this->documentopago->LinkAttrs["target"] = "_blank";
+				if ($this->Export <> "") $this->documentopago->HrefValue = ew_FullUrl($this->documentopago->HrefValue, "href");
+			} else {
+				$this->documentopago->HrefValue = "";
+			}
+			$this->documentopago->HrefValue2 = "pago_avaluo_documentopago_bv.php?id=" . $this->id->CurrentValue;
+
+			// id_banco
+			$this->id_banco->LinkCustomAttributes = "";
+			$this->id_banco->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -943,6 +1195,21 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		// Check if validation required
 		if (!EW_SERVER_VALIDATE)
 			return ($gsFormError == "");
+		if (!$this->id_metodopago->FldIsDetailKey && !is_null($this->id_metodopago->FormValue) && $this->id_metodopago->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->id_metodopago->FldCaption(), $this->id_metodopago->ReqErrMsg));
+		}
+		if (!$this->monto->FldIsDetailKey && !is_null($this->monto->FormValue) && $this->monto->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->monto->FldCaption(), $this->monto->ReqErrMsg));
+		}
+		if (!ew_CheckNumber($this->monto->FormValue)) {
+			ew_AddMessage($gsFormError, $this->monto->FldErrMsg());
+		}
+		if ($this->documentopago->Upload->FileName == "" && !$this->documentopago->Upload->KeepFile) {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->documentopago->FldCaption(), $this->documentopago->ReqErrMsg));
+		}
+		if (!ew_CheckInteger($this->id_banco->FormValue)) {
+			ew_AddMessage($gsFormError, $this->id_banco->FldErrMsg());
+		}
 
 		// Return validate result
 		$ValidateForm = ($gsFormError == "");
@@ -985,6 +1252,24 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			// avaluo_id
 			$this->avaluo_id->SetDbValueDef($rsnew, $this->avaluo_id->CurrentValue, NULL, $this->avaluo_id->ReadOnly);
 
+			// id_metodopago
+			$this->id_metodopago->SetDbValueDef($rsnew, $this->id_metodopago->CurrentValue, 0, $this->id_metodopago->ReadOnly);
+
+			// monto
+			$this->monto->SetDbValueDef($rsnew, $this->monto->CurrentValue, 0, $this->monto->ReadOnly);
+
+			// documentopago
+			if ($this->documentopago->Visible && !$this->documentopago->ReadOnly && !$this->documentopago->Upload->KeepFile) {
+				if (is_null($this->documentopago->Upload->Value)) {
+					$rsnew['documentopago'] = NULL;
+				} else {
+					$rsnew['documentopago'] = $this->documentopago->Upload->Value;
+				}
+			}
+
+			// id_banco
+			$this->id_banco->SetDbValueDef($rsnew, $this->id_banco->CurrentValue, NULL, $this->id_banco->ReadOnly);
+
 			// Check referential integrity for master table 'pago'
 			$bValidMasterRecord = TRUE;
 			$sMasterFilter = $this->SqlMasterFilter_pago();
@@ -1002,6 +1287,50 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			}
 			if (!$bValidMasterRecord) {
 				$sRelatedRecordMsg = str_replace("%t", "pago", $Language->Phrase("RelatedRecordRequired"));
+				$this->setFailureMessage($sRelatedRecordMsg);
+				$rs->Close();
+				return FALSE;
+			}
+
+			// Check referential integrity for master table 'avaluo'
+			$bValidMasterRecord = TRUE;
+			$sMasterFilter = $this->SqlMasterFilter_avaluo();
+			$KeyValue = isset($rsnew['avaluo_id']) ? $rsnew['avaluo_id'] : $rsold['avaluo_id'];
+			if (strval($KeyValue) <> "") {
+				$sMasterFilter = str_replace("@id@", ew_AdjustSql($KeyValue), $sMasterFilter);
+			} else {
+				$bValidMasterRecord = FALSE;
+			}
+			if ($bValidMasterRecord) {
+				if (!isset($GLOBALS["avaluo"])) $GLOBALS["avaluo"] = new cavaluo();
+				$rsmaster = $GLOBALS["avaluo"]->LoadRs($sMasterFilter);
+				$bValidMasterRecord = ($rsmaster && !$rsmaster->EOF);
+				$rsmaster->Close();
+			}
+			if (!$bValidMasterRecord) {
+				$sRelatedRecordMsg = str_replace("%t", "avaluo", $Language->Phrase("RelatedRecordRequired"));
+				$this->setFailureMessage($sRelatedRecordMsg);
+				$rs->Close();
+				return FALSE;
+			}
+
+			// Check referential integrity for master table 'viewavaluosc'
+			$bValidMasterRecord = TRUE;
+			$sMasterFilter = $this->SqlMasterFilter_viewavaluosc();
+			$KeyValue = isset($rsnew['avaluo_id']) ? $rsnew['avaluo_id'] : $rsold['avaluo_id'];
+			if (strval($KeyValue) <> "") {
+				$sMasterFilter = str_replace("@id@", ew_AdjustSql($KeyValue), $sMasterFilter);
+			} else {
+				$bValidMasterRecord = FALSE;
+			}
+			if ($bValidMasterRecord) {
+				if (!isset($GLOBALS["viewavaluosc"])) $GLOBALS["viewavaluosc"] = new cviewavaluosc();
+				$rsmaster = $GLOBALS["viewavaluosc"]->LoadRs($sMasterFilter);
+				$bValidMasterRecord = ($rsmaster && !$rsmaster->EOF);
+				$rsmaster->Close();
+			}
+			if (!$bValidMasterRecord) {
+				$sRelatedRecordMsg = str_replace("%t", "viewavaluosc", $Language->Phrase("RelatedRecordRequired"));
 				$this->setFailureMessage($sRelatedRecordMsg);
 				$rs->Close();
 				return FALSE;
@@ -1036,6 +1365,9 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		if ($EditRow)
 			$this->Row_Updated($rsold, $rsnew);
 		$rs->Close();
+
+		// documentopago
+		ew_CleanUploadTempPath($this->documentopago, $this->documentopago->Upload->Index);
 		return $EditRow;
 	}
 
@@ -1058,6 +1390,17 @@ class cpago_avaluo_edit extends cpago_avaluo {
 					$this->pago_id->setQueryStringValue($GLOBALS["pago"]->id->QueryStringValue);
 					$this->pago_id->setSessionValue($this->pago_id->QueryStringValue);
 					if (!is_numeric($GLOBALS["pago"]->id->QueryStringValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
+			if ($sMasterTblVar == "avaluo") {
+				$bValidMaster = TRUE;
+				if (@$_GET["fk_id"] <> "") {
+					$GLOBALS["avaluo"]->id->setQueryStringValue($_GET["fk_id"]);
+					$this->avaluo_id->setQueryStringValue($GLOBALS["avaluo"]->id->QueryStringValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->QueryStringValue);
+					if (!is_numeric($GLOBALS["avaluo"]->id->QueryStringValue)) $bValidMaster = FALSE;
 				} else {
 					$bValidMaster = FALSE;
 				}
@@ -1091,6 +1434,17 @@ class cpago_avaluo_edit extends cpago_avaluo {
 					$bValidMaster = FALSE;
 				}
 			}
+			if ($sMasterTblVar == "avaluo") {
+				$bValidMaster = TRUE;
+				if (@$_POST["fk_id"] <> "") {
+					$GLOBALS["avaluo"]->id->setFormValue($_POST["fk_id"]);
+					$this->avaluo_id->setFormValue($GLOBALS["avaluo"]->id->FormValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->FormValue);
+					if (!is_numeric($GLOBALS["avaluo"]->id->FormValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
 			if ($sMasterTblVar == "viewavaluosc") {
 				$bValidMaster = TRUE;
 				if (@$_POST["fk_id"] <> "") {
@@ -1119,6 +1473,9 @@ class cpago_avaluo_edit extends cpago_avaluo {
 			if ($sMasterTblVar <> "pago") {
 				if ($this->pago_id->CurrentValue == "") $this->pago_id->setSessionValue("");
 			}
+			if ($sMasterTblVar <> "avaluo") {
+				if ($this->avaluo_id->CurrentValue == "") $this->avaluo_id->setSessionValue("");
+			}
 			if ($sMasterTblVar <> "viewavaluosc") {
 				if ($this->avaluo_id->CurrentValue == "") $this->avaluo_id->setSessionValue("");
 			}
@@ -1142,26 +1499,54 @@ class cpago_avaluo_edit extends cpago_avaluo {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
-		case "x_pago_id":
+		case "x_avaluo_id":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `id` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`codigoavaluo`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`codigoavaluo`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`codigoavaluo`');
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
-			$this->Lookup_Selecting($this->pago_id, $sWhereWrk); // Call Lookup Selecting
+			$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			if ($sSqlWrk <> "")
 				$fld->LookupFilters["s"] .= $sSqlWrk;
 			break;
-		case "x_avaluo_id":
+		case "x_id_metodopago":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `id` AS `DispFld`, `codigoavaluo` AS `Disp2Fld`, `id_oficialcredito` AS `Disp3Fld`, `tipoinmueble` AS `Disp4Fld` FROM `avaluo`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`id`', "dx2" => '`codigoavaluo`', "dx3" => '`id_oficialcredito`', "dx4" => '`tipoinmueble`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
-			$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
+			$this->Lookup_Selecting($this->id_metodopago, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			if ($sSqlWrk <> "")
 				$fld->LookupFilters["s"] .= $sSqlWrk;
@@ -1285,6 +1670,22 @@ fpago_avaluoedit.Validate = function() {
 	for (var i = startcnt; i <= rowcnt; i++) {
 		var infix = ($k[0]) ? String(i) : "";
 		$fobj.data("rowindex", infix);
+			elm = this.GetElements("x" + infix + "_id_metodopago");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $pago_avaluo->id_metodopago->FldCaption(), $pago_avaluo->id_metodopago->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_monto");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $pago_avaluo->monto->FldCaption(), $pago_avaluo->monto->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_monto");
+			if (elm && !ew_CheckNumber(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($pago_avaluo->monto->FldErrMsg()) ?>");
+			felm = this.GetElements("x" + infix + "_documentopago");
+			elm = this.GetElements("fn_x" + infix + "_documentopago");
+			if (felm && elm && !ew_HasValue(elm))
+				return this.OnError(felm, "<?php echo ew_JsEncode2(str_replace("%s", $pago_avaluo->documentopago->FldCaption(), $pago_avaluo->documentopago->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_id_banco");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($pago_avaluo->id_banco->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -1314,10 +1715,12 @@ fpago_avaluoedit.Form_CustomValidate =
 fpago_avaluoedit.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-fpago_avaluoedit.Lists["x_pago_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"pago"};
-fpago_avaluoedit.Lists["x_pago_id"].Data = "<?php echo $pago_avaluo_edit->pago_id->LookupFilterQuery(FALSE, "edit") ?>";
-fpago_avaluoedit.Lists["x_avaluo_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","x_codigoavaluo","x_id_oficialcredito","x_tipoinmueble"],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
+fpago_avaluoedit.Lists["x_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"metodopago"};
+fpago_avaluoedit.Lists["x_id"].Data = "<?php echo $pago_avaluo_edit->id->LookupFilterQuery(FALSE, "edit") ?>";
+fpago_avaluoedit.Lists["x_avaluo_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_codigoavaluo","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
 fpago_avaluoedit.Lists["x_avaluo_id"].Data = "<?php echo $pago_avaluo_edit->avaluo_id->LookupFilterQuery(FALSE, "edit") ?>";
+fpago_avaluoedit.Lists["x_id_metodopago"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"metodopago"};
+fpago_avaluoedit.Lists["x_id_metodopago"].Data = "<?php echo $pago_avaluo_edit->id_metodopago->LookupFilterQuery(FALSE, "edit") ?>";
 
 // Form object for search
 </script>
@@ -1340,6 +1743,10 @@ $pago_avaluo_edit->ShowMessage();
 <input type="hidden" name="<?php echo EW_TABLE_SHOW_MASTER ?>" value="pago">
 <input type="hidden" name="fk_id" value="<?php echo $pago_avaluo->pago_id->getSessionValue() ?>">
 <?php } ?>
+<?php if ($pago_avaluo->getCurrentMasterTable() == "avaluo") { ?>
+<input type="hidden" name="<?php echo EW_TABLE_SHOW_MASTER ?>" value="avaluo">
+<input type="hidden" name="fk_id" value="<?php echo $pago_avaluo->avaluo_id->getSessionValue() ?>">
+<?php } ?>
 <?php if ($pago_avaluo->getCurrentMasterTable() == "viewavaluosc") { ?>
 <input type="hidden" name="<?php echo EW_TABLE_SHOW_MASTER ?>" value="viewavaluosc">
 <input type="hidden" name="fk_id" value="<?php echo $pago_avaluo->avaluo_id->getSessionValue() ?>">
@@ -1355,7 +1762,7 @@ $pago_avaluo_edit->ShowMessage();
 <?php if ($pago_avaluo->id->Visible) { // id ?>
 <?php if ($pago_avaluo_edit->IsMobileOrModal) { ?>
 	<div id="r_id" class="form-group">
-		<label id="elh_pago_avaluo_id" class="<?php echo $pago_avaluo_edit->LeftColumnClass ?>"><?php echo $pago_avaluo->id->FldCaption() ?></label>
+		<label id="elh_pago_avaluo_id" for="x_id" class="<?php echo $pago_avaluo_edit->LeftColumnClass ?>"><?php echo $pago_avaluo->id->FldCaption() ?></label>
 		<div class="<?php echo $pago_avaluo_edit->RightColumnClass ?>"><div<?php echo $pago_avaluo->id->CellAttributes() ?>>
 <span id="el_pago_avaluo_id">
 <span<?php echo $pago_avaluo->id->ViewAttributes() ?>>
@@ -1377,47 +1784,6 @@ $pago_avaluo_edit->ShowMessage();
 	</tr>
 <?php } ?>
 <?php } ?>
-<?php if ($pago_avaluo->pago_id->Visible) { // pago_id ?>
-<?php if ($pago_avaluo_edit->IsMobileOrModal) { ?>
-	<div id="r_pago_id" class="form-group">
-		<label id="elh_pago_avaluo_pago_id" for="x_pago_id" class="<?php echo $pago_avaluo_edit->LeftColumnClass ?>"><?php echo $pago_avaluo->pago_id->FldCaption() ?></label>
-		<div class="<?php echo $pago_avaluo_edit->RightColumnClass ?>"><div<?php echo $pago_avaluo->pago_id->CellAttributes() ?>>
-<?php if ($pago_avaluo->pago_id->getSessionValue() <> "") { ?>
-<span id="el_pago_avaluo_pago_id">
-<span<?php echo $pago_avaluo->pago_id->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $pago_avaluo->pago_id->ViewValue ?></p></span>
-</span>
-<input type="hidden" id="x_pago_id" name="x_pago_id" value="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->CurrentValue) ?>">
-<?php } else { ?>
-<span id="el_pago_avaluo_pago_id">
-<select data-table="pago_avaluo" data-field="x_pago_id" data-value-separator="<?php echo $pago_avaluo->pago_id->DisplayValueSeparatorAttribute() ?>" id="x_pago_id" name="x_pago_id"<?php echo $pago_avaluo->pago_id->EditAttributes() ?>>
-<?php echo $pago_avaluo->pago_id->SelectOptionListHtml("x_pago_id") ?>
-</select>
-</span>
-<?php } ?>
-<?php echo $pago_avaluo->pago_id->CustomMsg ?></div></div>
-	</div>
-<?php } else { ?>
-	<tr id="r_pago_id">
-		<td class="col-sm-3"><span id="elh_pago_avaluo_pago_id"><?php echo $pago_avaluo->pago_id->FldCaption() ?></span></td>
-		<td<?php echo $pago_avaluo->pago_id->CellAttributes() ?>>
-<?php if ($pago_avaluo->pago_id->getSessionValue() <> "") { ?>
-<span id="el_pago_avaluo_pago_id">
-<span<?php echo $pago_avaluo->pago_id->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $pago_avaluo->pago_id->ViewValue ?></p></span>
-</span>
-<input type="hidden" id="x_pago_id" name="x_pago_id" value="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->CurrentValue) ?>">
-<?php } else { ?>
-<span id="el_pago_avaluo_pago_id">
-<select data-table="pago_avaluo" data-field="x_pago_id" data-value-separator="<?php echo $pago_avaluo->pago_id->DisplayValueSeparatorAttribute() ?>" id="x_pago_id" name="x_pago_id"<?php echo $pago_avaluo->pago_id->EditAttributes() ?>>
-<?php echo $pago_avaluo->pago_id->SelectOptionListHtml("x_pago_id") ?>
-</select>
-</span>
-<?php } ?>
-<?php echo $pago_avaluo->pago_id->CustomMsg ?></td>
-	</tr>
-<?php } ?>
-<?php } ?>
 <?php if ($pago_avaluo->avaluo_id->Visible) { // avaluo_id ?>
 <?php if ($pago_avaluo_edit->IsMobileOrModal) { ?>
 	<div id="r_avaluo_id" class="form-group">
@@ -1432,7 +1798,7 @@ $pago_avaluo_edit->ShowMessage();
 <?php } else { ?>
 <span id="el_pago_avaluo_avaluo_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_avaluo_id"><?php echo (strval($pago_avaluo->avaluo_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago_avaluo->avaluo_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_avaluo_id"><?php echo (strval($pago_avaluo->avaluo_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago_avaluo->avaluo_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago_avaluo->avaluo_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_avaluo_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago_avaluo->avaluo_id->ReadOnly || $pago_avaluo->avaluo_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago_avaluo" data-field="x_avaluo_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" name="x_avaluo_id" id="x_avaluo_id" value="<?php echo $pago_avaluo->avaluo_id->CurrentValue ?>"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
@@ -1453,7 +1819,7 @@ $pago_avaluo_edit->ShowMessage();
 <?php } else { ?>
 <span id="el_pago_avaluo_avaluo_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_avaluo_id"><?php echo (strval($pago_avaluo->avaluo_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago_avaluo->avaluo_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_avaluo_id"><?php echo (strval($pago_avaluo->avaluo_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago_avaluo->avaluo_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago_avaluo->avaluo_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_avaluo_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago_avaluo->avaluo_id->ReadOnly || $pago_avaluo->avaluo_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago_avaluo" data-field="x_avaluo_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" name="x_avaluo_id" id="x_avaluo_id" value="<?php echo $pago_avaluo->avaluo_id->CurrentValue ?>"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
@@ -1488,10 +1854,135 @@ $pago_avaluo_edit->ShowMessage();
 	</tr>
 <?php } ?>
 <?php } ?>
+<?php if ($pago_avaluo->id_metodopago->Visible) { // id_metodopago ?>
+<?php if ($pago_avaluo_edit->IsMobileOrModal) { ?>
+	<div id="r_id_metodopago" class="form-group">
+		<label id="elh_pago_avaluo_id_metodopago" for="x_id_metodopago" class="<?php echo $pago_avaluo_edit->LeftColumnClass ?>"><?php echo $pago_avaluo->id_metodopago->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<div class="<?php echo $pago_avaluo_edit->RightColumnClass ?>"><div<?php echo $pago_avaluo->id_metodopago->CellAttributes() ?>>
+<span id="el_pago_avaluo_id_metodopago">
+<select data-table="pago_avaluo" data-field="x_id_metodopago" data-value-separator="<?php echo $pago_avaluo->id_metodopago->DisplayValueSeparatorAttribute() ?>" id="x_id_metodopago" name="x_id_metodopago"<?php echo $pago_avaluo->id_metodopago->EditAttributes() ?>>
+<?php echo $pago_avaluo->id_metodopago->SelectOptionListHtml("x_id_metodopago") ?>
+</select>
+</span>
+<?php echo $pago_avaluo->id_metodopago->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_id_metodopago">
+		<td class="col-sm-3"><span id="elh_pago_avaluo_id_metodopago"><?php echo $pago_avaluo->id_metodopago->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
+		<td<?php echo $pago_avaluo->id_metodopago->CellAttributes() ?>>
+<span id="el_pago_avaluo_id_metodopago">
+<select data-table="pago_avaluo" data-field="x_id_metodopago" data-value-separator="<?php echo $pago_avaluo->id_metodopago->DisplayValueSeparatorAttribute() ?>" id="x_id_metodopago" name="x_id_metodopago"<?php echo $pago_avaluo->id_metodopago->EditAttributes() ?>>
+<?php echo $pago_avaluo->id_metodopago->SelectOptionListHtml("x_id_metodopago") ?>
+</select>
+</span>
+<?php echo $pago_avaluo->id_metodopago->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($pago_avaluo->monto->Visible) { // monto ?>
+<?php if ($pago_avaluo_edit->IsMobileOrModal) { ?>
+	<div id="r_monto" class="form-group">
+		<label id="elh_pago_avaluo_monto" for="x_monto" class="<?php echo $pago_avaluo_edit->LeftColumnClass ?>"><?php echo $pago_avaluo->monto->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<div class="<?php echo $pago_avaluo_edit->RightColumnClass ?>"><div<?php echo $pago_avaluo->monto->CellAttributes() ?>>
+<span id="el_pago_avaluo_monto">
+<input type="text" data-table="pago_avaluo" data-field="x_monto" name="x_monto" id="x_monto" size="10" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->monto->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->monto->EditValue ?>"<?php echo $pago_avaluo->monto->EditAttributes() ?>>
+</span>
+<?php echo $pago_avaluo->monto->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_monto">
+		<td class="col-sm-3"><span id="elh_pago_avaluo_monto"><?php echo $pago_avaluo->monto->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
+		<td<?php echo $pago_avaluo->monto->CellAttributes() ?>>
+<span id="el_pago_avaluo_monto">
+<input type="text" data-table="pago_avaluo" data-field="x_monto" name="x_monto" id="x_monto" size="10" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->monto->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->monto->EditValue ?>"<?php echo $pago_avaluo->monto->EditAttributes() ?>>
+</span>
+<?php echo $pago_avaluo->monto->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($pago_avaluo->documentopago->Visible) { // documentopago ?>
+<?php if ($pago_avaluo_edit->IsMobileOrModal) { ?>
+	<div id="r_documentopago" class="form-group">
+		<label id="elh_pago_avaluo_documentopago" class="<?php echo $pago_avaluo_edit->LeftColumnClass ?>"><?php echo $pago_avaluo->documentopago->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<div class="<?php echo $pago_avaluo_edit->RightColumnClass ?>"><div<?php echo $pago_avaluo->documentopago->CellAttributes() ?>>
+<span id="el_pago_avaluo_documentopago">
+<div id="fd_x_documentopago">
+<span title="<?php echo $pago_avaluo->documentopago->FldTitle() ? $pago_avaluo->documentopago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($pago_avaluo->documentopago->ReadOnly || $pago_avaluo->documentopago->Disabled) echo " hide"; ?>">
+	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
+	<input type="file" title=" " data-table="pago_avaluo" data-field="x_documentopago" name="x_documentopago" id="x_documentopago"<?php echo $pago_avaluo->documentopago->EditAttributes() ?>>
+</span>
+<input type="hidden" name="fn_x_documentopago" id= "fn_x_documentopago" value="<?php echo $pago_avaluo->documentopago->Upload->FileName ?>">
+<?php if (@$_POST["fa_x_documentopago"] == "0") { ?>
+<input type="hidden" name="fa_x_documentopago" id= "fa_x_documentopago" value="0">
+<?php } else { ?>
+<input type="hidden" name="fa_x_documentopago" id= "fa_x_documentopago" value="1">
+<?php } ?>
+<input type="hidden" name="fs_x_documentopago" id= "fs_x_documentopago" value="0">
+<input type="hidden" name="fx_x_documentopago" id= "fx_x_documentopago" value="<?php echo $pago_avaluo->documentopago->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x_documentopago" id= "fm_x_documentopago" value="<?php echo $pago_avaluo->documentopago->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x_documentopago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+</span>
+<?php echo $pago_avaluo->documentopago->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_documentopago">
+		<td class="col-sm-3"><span id="elh_pago_avaluo_documentopago"><?php echo $pago_avaluo->documentopago->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
+		<td<?php echo $pago_avaluo->documentopago->CellAttributes() ?>>
+<span id="el_pago_avaluo_documentopago">
+<div id="fd_x_documentopago">
+<span title="<?php echo $pago_avaluo->documentopago->FldTitle() ? $pago_avaluo->documentopago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($pago_avaluo->documentopago->ReadOnly || $pago_avaluo->documentopago->Disabled) echo " hide"; ?>">
+	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
+	<input type="file" title=" " data-table="pago_avaluo" data-field="x_documentopago" name="x_documentopago" id="x_documentopago"<?php echo $pago_avaluo->documentopago->EditAttributes() ?>>
+</span>
+<input type="hidden" name="fn_x_documentopago" id= "fn_x_documentopago" value="<?php echo $pago_avaluo->documentopago->Upload->FileName ?>">
+<?php if (@$_POST["fa_x_documentopago"] == "0") { ?>
+<input type="hidden" name="fa_x_documentopago" id= "fa_x_documentopago" value="0">
+<?php } else { ?>
+<input type="hidden" name="fa_x_documentopago" id= "fa_x_documentopago" value="1">
+<?php } ?>
+<input type="hidden" name="fs_x_documentopago" id= "fs_x_documentopago" value="0">
+<input type="hidden" name="fx_x_documentopago" id= "fx_x_documentopago" value="<?php echo $pago_avaluo->documentopago->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x_documentopago" id= "fm_x_documentopago" value="<?php echo $pago_avaluo->documentopago->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x_documentopago" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+</span>
+<?php echo $pago_avaluo->documentopago->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($pago_avaluo->id_banco->Visible) { // id_banco ?>
+<?php if ($pago_avaluo_edit->IsMobileOrModal) { ?>
+	<div id="r_id_banco" class="form-group">
+		<label id="elh_pago_avaluo_id_banco" for="x_id_banco" class="<?php echo $pago_avaluo_edit->LeftColumnClass ?>"><?php echo $pago_avaluo->id_banco->FldCaption() ?></label>
+		<div class="<?php echo $pago_avaluo_edit->RightColumnClass ?>"><div<?php echo $pago_avaluo->id_banco->CellAttributes() ?>>
+<span id="el_pago_avaluo_id_banco">
+<input type="text" data-table="pago_avaluo" data-field="x_id_banco" name="x_id_banco" id="x_id_banco" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->id_banco->EditValue ?>"<?php echo $pago_avaluo->id_banco->EditAttributes() ?>>
+</span>
+<?php echo $pago_avaluo->id_banco->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_id_banco">
+		<td class="col-sm-3"><span id="elh_pago_avaluo_id_banco"><?php echo $pago_avaluo->id_banco->FldCaption() ?></span></td>
+		<td<?php echo $pago_avaluo->id_banco->CellAttributes() ?>>
+<span id="el_pago_avaluo_id_banco">
+<input type="text" data-table="pago_avaluo" data-field="x_id_banco" name="x_id_banco" id="x_id_banco" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->id_banco->EditValue ?>"<?php echo $pago_avaluo->id_banco->EditAttributes() ?>>
+</span>
+<?php echo $pago_avaluo->id_banco->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
 <?php if ($pago_avaluo_edit->IsMobileOrModal) { ?>
 </div><!-- /page* -->
 <?php } else { ?>
 </table><!-- /table* -->
+<?php } ?>
+<?php if ($pago_avaluo->pago_id->getSessionValue() <> "") { ?>
+<input type="hidden" id="x_pago_id" name="x_pago_id" value="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->CurrentValue) ?>">
+<?php } else { ?>
+<span id="el_pago_avaluo_pago_id">
+<input type="hidden" data-table="pago_avaluo" data-field="x_pago_id" name="x_pago_id" id="x_pago_id" value="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->CurrentValue) ?>">
+</span>
 <?php } ?>
 <?php if (!$pago_avaluo_edit->IsModal) { ?>
 <div class="form-group"><!-- buttons .form-group -->

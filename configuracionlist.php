@@ -2960,7 +2960,7 @@ $configuracion_list->ListOptions->Render("body", "left", $configuracion_list->Ro
 <?php
 
 // Render list options (body, right)
-$configuracion_list->ListOptions->Render("body", "right", $configuracion_list->RowIndex);
+$configuracion_list->ListOptions->Render("body", "right", $configuracion_list->RowCnt);
 ?>
 <script type="text/javascript">
 fconfiguracionlist.UpdateOpts(<?php echo $configuracion_list->RowIndex ?>);

@@ -341,6 +341,7 @@ class csupervisor_edit extends csupervisor {
 		$this->cargo->SetVisibility();
 		$this->id_institucion->SetVisibility();
 		$this->especialidad->SetVisibility();
+		$this->codigo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -625,6 +626,9 @@ class csupervisor_edit extends csupervisor {
 		if (!$this->especialidad->FldIsDetailKey) {
 			$this->especialidad->setFormValue($objForm->GetValue("x_especialidad"));
 		}
+		if (!$this->codigo->FldIsDetailKey) {
+			$this->codigo->setFormValue($objForm->GetValue("x_codigo"));
+		}
 	}
 
 	// Restore form values
@@ -646,6 +650,7 @@ class csupervisor_edit extends csupervisor {
 		$this->cargo->CurrentValue = $this->cargo->FormValue;
 		$this->id_institucion->CurrentValue = $this->id_institucion->FormValue;
 		$this->especialidad->CurrentValue = $this->especialidad->FormValue;
+		$this->codigo->CurrentValue = $this->codigo->FormValue;
 	}
 
 	// Load row based on key values
@@ -702,6 +707,7 @@ class csupervisor_edit extends csupervisor {
 		if (is_array($this->avatar->Upload->DbValue) || is_object($this->avatar->Upload->DbValue)) // Byte array
 			$this->avatar->Upload->DbValue = ew_BytesToStr($this->avatar->Upload->DbValue);
 		$this->color->setDbValue($row['color']);
+		$this->codigo->setDbValue($row['codigo']);
 	}
 
 	// Return a row with default values
@@ -726,6 +732,7 @@ class csupervisor_edit extends csupervisor {
 		$row['status'] = NULL;
 		$row['avatar'] = NULL;
 		$row['color'] = NULL;
+		$row['codigo'] = NULL;
 		return $row;
 	}
 
@@ -753,6 +760,7 @@ class csupervisor_edit extends csupervisor {
 		$this->status->DbValue = $row['status'];
 		$this->avatar->Upload->DbValue = $row['avatar'];
 		$this->color->DbValue = $row['color'];
+		$this->codigo->DbValue = $row['codigo'];
 	}
 
 	// Load old record
@@ -806,6 +814,7 @@ class csupervisor_edit extends csupervisor {
 		// status
 		// avatar
 		// color
+		// codigo
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -832,9 +841,23 @@ class csupervisor_edit extends csupervisor {
 		// id_rol
 		if (strval($this->id_rol->CurrentValue) <> "") {
 			$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-		$sWhereWrk = "";
-		$this->id_rol->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -855,9 +878,23 @@ class csupervisor_edit extends csupervisor {
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -914,6 +951,10 @@ class csupervisor_edit extends csupervisor {
 		// status
 		$this->status->ViewValue = $this->status->CurrentValue;
 		$this->status->ViewCustomAttributes = "";
+
+		// codigo
+		$this->codigo->ViewValue = $this->codigo->CurrentValue;
+		$this->codigo->ViewCustomAttributes = "";
 
 			// nombre
 			$this->nombre->LinkCustomAttributes = "";
@@ -994,6 +1035,11 @@ class csupervisor_edit extends csupervisor {
 			$this->especialidad->LinkCustomAttributes = "";
 			$this->especialidad->HrefValue = "";
 			$this->especialidad->TooltipValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
+			$this->codigo->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// nombre
@@ -1031,9 +1077,23 @@ class csupervisor_edit extends csupervisor {
 			$this->id_rol->EditCustomAttributes = "";
 			if (strval($this->id_rol->CurrentValue) <> "") {
 				$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-			$sWhereWrk = "";
-			$this->id_rol->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1059,9 +1119,23 @@ class csupervisor_edit extends csupervisor {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
-			$sWhereWrk = "";
-			$this->id_sucursal->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1123,6 +1197,12 @@ class csupervisor_edit extends csupervisor {
 			$this->especialidad->EditCustomAttributes = "";
 			$this->especialidad->EditValue = ew_HtmlEncode($this->especialidad->CurrentValue);
 			$this->especialidad->PlaceHolder = ew_RemoveHtml($this->especialidad->FldTitle());
+
+			// codigo
+			$this->codigo->EditAttrs["class"] = "form-control";
+			$this->codigo->EditCustomAttributes = "";
+			$this->codigo->EditValue = ew_HtmlEncode($this->codigo->CurrentValue);
+			$this->codigo->PlaceHolder = ew_RemoveHtml($this->codigo->FldTitle());
 
 			// Edit refer script
 			// nombre
@@ -1190,6 +1270,10 @@ class csupervisor_edit extends csupervisor {
 			// especialidad
 			$this->especialidad->LinkCustomAttributes = "";
 			$this->especialidad->HrefValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1319,6 +1403,9 @@ class csupervisor_edit extends csupervisor {
 			// especialidad
 			$this->especialidad->SetDbValueDef($rsnew, $this->especialidad->CurrentValue, NULL, $this->especialidad->ReadOnly);
 
+			// codigo
+			$this->codigo->SetDbValueDef($rsnew, $this->codigo->CurrentValue, NULL, $this->codigo->ReadOnly);
+
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
 			if ($bUpdateRow) {
@@ -1368,9 +1455,23 @@ class csupervisor_edit extends csupervisor {
 		switch ($fld->FldVar) {
 		case "x_id_sucursal":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
@@ -1943,6 +2044,27 @@ $supervisor_edit->ShowMessage();
 <input type="text" data-table="supervisor" data-field="x_especialidad" name="x_especialidad" id="x_especialidad" size="30" maxlength="100" placeholder="<?php echo ew_HtmlEncode($supervisor->especialidad->getPlaceHolder()) ?>" value="<?php echo $supervisor->especialidad->EditValue ?>"<?php echo $supervisor->especialidad->EditAttributes() ?>>
 </span>
 <?php echo $supervisor->especialidad->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($supervisor->codigo->Visible) { // codigo ?>
+<?php if ($supervisor_edit->IsMobileOrModal) { ?>
+	<div id="r_codigo" class="form-group">
+		<label id="elh_supervisor_codigo" for="x_codigo" class="<?php echo $supervisor_edit->LeftColumnClass ?>"><?php echo $supervisor->codigo->FldCaption() ?></label>
+		<div class="<?php echo $supervisor_edit->RightColumnClass ?>"><div<?php echo $supervisor->codigo->CellAttributes() ?>>
+<span id="el_supervisor_codigo">
+<input type="text" data-table="supervisor" data-field="x_codigo" name="x_codigo" id="x_codigo" size="30" maxlength="5" placeholder="<?php echo ew_HtmlEncode($supervisor->codigo->getPlaceHolder()) ?>" value="<?php echo $supervisor->codigo->EditValue ?>"<?php echo $supervisor->codigo->EditAttributes() ?>>
+</span>
+<?php echo $supervisor->codigo->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_codigo">
+		<td class="col-sm-3"><span id="elh_supervisor_codigo"><?php echo $supervisor->codigo->FldCaption() ?></span></td>
+		<td<?php echo $supervisor->codigo->CellAttributes() ?>>
+<span id="el_supervisor_codigo">
+<input type="text" data-table="supervisor" data-field="x_codigo" name="x_codigo" id="x_codigo" size="30" maxlength="5" placeholder="<?php echo ew_HtmlEncode($supervisor->codigo->getPlaceHolder()) ?>" value="<?php echo $supervisor->codigo->EditValue ?>"<?php echo $supervisor->codigo->EditAttributes() ?>>
+</span>
+<?php echo $supervisor->codigo->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>

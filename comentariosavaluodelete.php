@@ -7,6 +7,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "phpfn14.php" ?>
 <?php include_once "comentariosavaluoinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
+<?php include_once "avaluoinfo.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -259,6 +260,9 @@ class ccomentariosavaluo_delete extends ccomentariosavaluo {
 		// Table object (usuario)
 		if (!isset($GLOBALS['usuario'])) $GLOBALS['usuario'] = new cusuario();
 
+		// Table object (avaluo)
+		if (!isset($GLOBALS['avaluo'])) $GLOBALS['avaluo'] = new cavaluo();
+
 		// Page ID
 		if (!defined("EW_PAGE_ID"))
 			define("EW_PAGE_ID", 'delete', TRUE);
@@ -320,11 +324,13 @@ class ccomentariosavaluo_delete extends ccomentariosavaluo {
 		// 
 
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbOldSkipHeaderFooter = $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = TRUE;
 		$this->id->SetVisibility();
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
-		$this->id_avaluo->SetVisibility();
-		$this->created_at->SetVisibility();
+		$this->descripcion->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -348,6 +354,8 @@ class ccomentariosavaluo_delete extends ccomentariosavaluo {
 	//
 	function Page_Terminate($url = "") {
 		global $gsExportFile, $gTmpImages;
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = $gbOldSkipHeaderFooter;
 
 		// Page Unload event
 		$this->Page_Unload();
@@ -384,7 +392,6 @@ class ccomentariosavaluo_delete extends ccomentariosavaluo {
 			ew_SaveDebugMsg();
 			header("Location: " . $url);
 		}
-		exit();
 	}
 	var $DbMasterFilter = "";
 	var $DbDetailFilter = "";
@@ -401,6 +408,9 @@ class ccomentariosavaluo_delete extends ccomentariosavaluo {
 	//
 	function Page_Main() {
 		global $Language;
+
+		// Set up master/detail parameters
+		$this->SetupMasterParms();
 
 		// Set up Breadcrumb
 		$this->SetupBreadcrumb();
@@ -552,8 +562,45 @@ class ccomentariosavaluo_delete extends ccomentariosavaluo {
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
+		// descripcion
+		$this->descripcion->ViewValue = $this->descripcion->CurrentValue;
+		$this->descripcion->ViewCustomAttributes = "";
+
 		// id_avaluo
-		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		if (strval($this->id_avaluo->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_avaluo, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0);
+				$this->id_avaluo->ViewValue = $this->id_avaluo->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+			}
+		} else {
+			$this->id_avaluo->ViewValue = NULL;
+		}
 		$this->id_avaluo->ViewCustomAttributes = "";
 
 		// created_at
@@ -566,15 +613,10 @@ class ccomentariosavaluo_delete extends ccomentariosavaluo {
 			$this->id->HrefValue = "";
 			$this->id->TooltipValue = "";
 
-			// id_avaluo
-			$this->id_avaluo->LinkCustomAttributes = "";
-			$this->id_avaluo->HrefValue = "";
-			$this->id_avaluo->TooltipValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
+			// descripcion
+			$this->descripcion->LinkCustomAttributes = "";
+			$this->descripcion->HrefValue = "";
+			$this->descripcion->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -660,6 +702,68 @@ class ccomentariosavaluo_delete extends ccomentariosavaluo {
 			}
 		}
 		return $DeleteRows;
+	}
+
+	// Set up master/detail based on QueryString
+	function SetupMasterParms() {
+		$bValidMaster = FALSE;
+
+		// Get the keys for master table
+		if (isset($_GET[EW_TABLE_SHOW_MASTER])) {
+			$sMasterTblVar = $_GET[EW_TABLE_SHOW_MASTER];
+			if ($sMasterTblVar == "") {
+				$bValidMaster = TRUE;
+				$this->DbMasterFilter = "";
+				$this->DbDetailFilter = "";
+			}
+			if ($sMasterTblVar == "avaluo") {
+				$bValidMaster = TRUE;
+				if (@$_GET["fk_id"] <> "") {
+					$GLOBALS["avaluo"]->id->setQueryStringValue($_GET["fk_id"]);
+					$this->id_avaluo->setQueryStringValue($GLOBALS["avaluo"]->id->QueryStringValue);
+					$this->id_avaluo->setSessionValue($this->id_avaluo->QueryStringValue);
+					if (!is_numeric($GLOBALS["avaluo"]->id->QueryStringValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
+		} elseif (isset($_POST[EW_TABLE_SHOW_MASTER])) {
+			$sMasterTblVar = $_POST[EW_TABLE_SHOW_MASTER];
+			if ($sMasterTblVar == "") {
+				$bValidMaster = TRUE;
+				$this->DbMasterFilter = "";
+				$this->DbDetailFilter = "";
+			}
+			if ($sMasterTblVar == "avaluo") {
+				$bValidMaster = TRUE;
+				if (@$_POST["fk_id"] <> "") {
+					$GLOBALS["avaluo"]->id->setFormValue($_POST["fk_id"]);
+					$this->id_avaluo->setFormValue($GLOBALS["avaluo"]->id->FormValue);
+					$this->id_avaluo->setSessionValue($this->id_avaluo->FormValue);
+					if (!is_numeric($GLOBALS["avaluo"]->id->FormValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
+		}
+		if ($bValidMaster) {
+
+			// Save current master table
+			$this->setCurrentMasterTable($sMasterTblVar);
+
+			// Reset start record counter (new master key)
+			if (!$this->IsAddOrEdit()) {
+				$this->StartRec = 1;
+				$this->setStartRecordNumber($this->StartRec);
+			}
+
+			// Clear previous master key from Session
+			if ($sMasterTblVar <> "avaluo") {
+				if ($this->id_avaluo->CurrentValue == "") $this->id_avaluo->setSessionValue("");
+			}
+		}
+		$this->DbMasterFilter = $this->GetMasterFilter(); // Get master filter
+		$this->DbDetailFilter = $this->GetDetailFilter(); // Get detail filter
 	}
 
 	// Set up Breadcrumb
@@ -815,11 +919,8 @@ $comentariosavaluo_delete->ShowMessage();
 <?php if ($comentariosavaluo->id->Visible) { // id ?>
 		<th class="<?php echo $comentariosavaluo->id->HeaderCellClass() ?>"><span id="elh_comentariosavaluo_id" class="comentariosavaluo_id"><?php echo $comentariosavaluo->id->FldCaption() ?></span></th>
 <?php } ?>
-<?php if ($comentariosavaluo->id_avaluo->Visible) { // id_avaluo ?>
-		<th class="<?php echo $comentariosavaluo->id_avaluo->HeaderCellClass() ?>"><span id="elh_comentariosavaluo_id_avaluo" class="comentariosavaluo_id_avaluo"><?php echo $comentariosavaluo->id_avaluo->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($comentariosavaluo->created_at->Visible) { // created_at ?>
-		<th class="<?php echo $comentariosavaluo->created_at->HeaderCellClass() ?>"><span id="elh_comentariosavaluo_created_at" class="comentariosavaluo_created_at"><?php echo $comentariosavaluo->created_at->FldCaption() ?></span></th>
+<?php if ($comentariosavaluo->descripcion->Visible) { // descripcion ?>
+		<th class="<?php echo $comentariosavaluo->descripcion->HeaderCellClass() ?>"><span id="elh_comentariosavaluo_descripcion" class="comentariosavaluo_descripcion"><?php echo $comentariosavaluo->descripcion->FldCaption() ?></span></th>
 <?php } ?>
 	</tr>
 	</thead>
@@ -850,19 +951,11 @@ while (!$comentariosavaluo_delete->Recordset->EOF) {
 </span>
 </td>
 <?php } ?>
-<?php if ($comentariosavaluo->id_avaluo->Visible) { // id_avaluo ?>
-		<td<?php echo $comentariosavaluo->id_avaluo->CellAttributes() ?>>
-<span id="el<?php echo $comentariosavaluo_delete->RowCnt ?>_comentariosavaluo_id_avaluo" class="comentariosavaluo_id_avaluo">
-<span<?php echo $comentariosavaluo->id_avaluo->ViewAttributes() ?>>
-<?php echo $comentariosavaluo->id_avaluo->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($comentariosavaluo->created_at->Visible) { // created_at ?>
-		<td<?php echo $comentariosavaluo->created_at->CellAttributes() ?>>
-<span id="el<?php echo $comentariosavaluo_delete->RowCnt ?>_comentariosavaluo_created_at" class="comentariosavaluo_created_at">
-<span<?php echo $comentariosavaluo->created_at->ViewAttributes() ?>>
-<?php echo $comentariosavaluo->created_at->ListViewValue() ?></span>
+<?php if ($comentariosavaluo->descripcion->Visible) { // descripcion ?>
+		<td<?php echo $comentariosavaluo->descripcion->CellAttributes() ?>>
+<span id="el<?php echo $comentariosavaluo_delete->RowCnt ?>_comentariosavaluo_descripcion" class="comentariosavaluo_descripcion">
+<span<?php echo $comentariosavaluo->descripcion->ViewAttributes() ?>>
+<?php echo $comentariosavaluo->descripcion->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

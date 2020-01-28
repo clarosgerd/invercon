@@ -1,6 +1,5 @@
 <?php
 
-// id
 // name
 // lastname
 // email
@@ -20,19 +19,6 @@
 <div class="ewMasterDiv">
 <table id="tbl_viewsolicitudinspectormaster" class="table ewViewTable ewMasterTable ewVertical hidden">
 	<tbody>
-<?php if ($viewsolicitudinspector->id->Visible) { // id ?>
-		<tr id="r_id">
-			<td class="col-sm-3"><script id="tpc_viewsolicitudinspector_id" class="viewsolicitudinspectormaster" type="text/html"><span><?php echo $viewsolicitudinspector->id->FldCaption() ?></span></script></td>
-			<td<?php echo $viewsolicitudinspector->id->CellAttributes() ?>>
-<script id="tpx_viewsolicitudinspector_id" class="viewsolicitudinspectormaster" type="text/html">
-<span id="el_viewsolicitudinspector_id">
-<span<?php echo $viewsolicitudinspector->id->ViewAttributes() ?>>
-<?php echo $viewsolicitudinspector->id->ListViewValue() ?></span>
-</span>
-</script>
-</td>
-		</tr>
-<?php } ?>
 <?php if ($viewsolicitudinspector->name->Visible) { // name ?>
 		<tr id="r_name">
 			<td class="col-sm-3"><script id="tpc_viewsolicitudinspector_name" class="viewsolicitudinspectormaster" type="text/html"><span><?php echo $viewsolicitudinspector->name->FldCaption() ?></span></script></td>
@@ -211,11 +197,7 @@
 <div class="nav-tabs-custom" id="solicitud_edit"><!-- multi-page .nav-tabs-custom -->
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="#tab_solicitud1" data-toggle="tab">DATOS GENERALES</a></li>
-		<li><a href="#tab_solicitud2" data-toggle="tab">DATOS INMUEBLE</a></li>
-		<li><a href="#tab_solicitud3" data-toggle="tab">DATOS VEHICULO</a></li>
-		<li><a href="#tab_solicitud4" data-toggle="tab">DATOS MAQUINARIA</a></li>
-		<li><a href="#tab_solicitud5" data-toggle="tab">DATOS MERCADERIA</a></li>
-		<li><a href="#tab_solicitud6" data-toggle="tab">DATOS ESPECIAL</a></li>
+		<li><a href="#tab_solicitud2" data-toggle="tab">Disponibilidad</a></li>
 	</ul>
 	<div class="tab-content"><!-- multi-page .nav-tabs-custom .tab-content -->
 		<div class="tab-pane active" id="tab_solicitud1"><!-- multi-page .tab-pane -->
@@ -262,11 +244,6 @@
 </span>
 </td>
 	</tr>
-	<tr id="r_id_sucursal">
-		<td>
-{{include tmpl="#tpc_viewsolicitudinspector_id_sucursal"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudinspector_id_sucursal"/}}
-</td>
-	</tr>
 	<tr id="r_nombre_contacto">
 		<td>
 <span id="el_solicitud_nombre_contacto">
@@ -284,99 +261,7 @@
 </table><!-- /table* -->
 		</div><!-- /multi-page .tab-pane -->
 		<div class="tab-pane" id="tab_solicitud2"><!-- multi-page .tab-pane -->
-<table id="tbl_solicitudedit2" class="table table-striped table-bordered table-hover table-condensed ewDesktopTable"><!-- table* -->
-	<tr id="r_tipoinmueble">
-		<td>{{include tmpl="#tpc_viewsolicitudinspector_tipoinmueble"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudinspector_tipoinmueble"/}}</td>
-	</tr>
-	<tr id="r_id_ciudad_inmueble">
-		<td>{{include tmpl="#tpc_viewsolicitudinspector_id_ciudad_inmueble"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudinspector_id_ciudad_inmueble"/}}</td>
-	</tr>
-	<tr id="r_id_provincia_inmueble">
-	<td>{{include tmpl="#tpc_viewsolicitudinspector_id_provincia_inmueble"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudinspector_id_provincia_inmueble"/}} </td>
-	</tr>
-	<tr id="r_imagen_inmueble02">
-		<td>{{include tmpl="#tpc_viewsolicitudinspector_imagen_inmueble02"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudinspector_imagen_inmueble02"/}} </td>
-	</tr>
-	<tr id="r_imagen_inmueble03">
-		<td>{{include tmpl="#tpc_viewsolicitudinspector_imagen_inmueble03"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudinspector_imagen_inmueble03"/}}</td>
-	</tr>
-	<tr id="r_imagen_inmueble04">
-		<td>{{include tmpl="#tpc_viewsolicitudinspector_imagen_inmueble04"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudinspector_imagen_inmueble04"/}}</td>
-	</tr>
-	<tr id="r_imagen_inmueble05">
-		<td>{{include tmpl="#tpc_viewsolicitudinspector_imagen_inmueble05"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudinspector_imagen_inmueble05"/}}</td>
-	</tr>
-</table><!-- /table* -->
-		</div><!-- /multi-page .tab-pane -->
-		<div class="tab-pane" id="tab_solicitud3"><!-- multi-page .tab-pane -->
-<table id="tbl_solicitudedit3" class="table table-striped table-bordered table-hover table-condensed ewDesktopTable"><!-- table* -->
-	<tr id="r_tipovehiculo">
-	<td></td>
-	</tr>
-	<tr id="r_id_provincia_vehiculo">
-	<td></td>
-	</tr>
-	<tr id="r_imagen_vehiculo02">
-	<td></td>
-	</tr>
-	<tr id="r_imagen_vehiculo03">
-	<td></td>
-	</tr>
-	<tr id="r_imagen_vehiculo05">
-	<td></td>
-	</tr>
-	<tr id="r_imagen_vehiculo06">
-	<td></td>
-	</tr>
-	<tr id="r_imagen_vehiculo07">
-	<td></td>
-	</tr>
-</table><!-- /table* -->
-		</div><!-- /multi-page .tab-pane -->
-		<div class="tab-pane" id="tab_solicitud4"><!-- multi-page .tab-pane -->
-<table id="tbl_solicitudedit4" class="table table-striped table-bordered table-hover table-condensed ewDesktopTable"><!-- table* -->
-	<tr id="r_tipomaquinaria">
-	<td></td>
-	</tr>
-	<tr id="r_id_provincia_maquinaria">
-	<td></td>
-	</tr>
-	<tr id="r_imagen_maquinaria02">
-	<td>
-</td>
-	</tr>
-	<tr id="r_imagen_maquinaria03">
- <td></td>
-	</tr>
-	<tr id="r_imagen_maquinaria05">
- <td>
-</td>
-	</tr>
-	<tr id="r_imagen_maquinaria06">
-<td>
-</td>
-	</tr>
-	<tr id="r_imagen_maquinaria07">
-	<td>
-</td>
-	</tr>
-</table><!-- /table* -->
-		</div><!-- /multi-page .tab-pane -->
-		<div class="tab-pane" id="tab_solicitud5"><!-- multi-page .tab-pane -->
-<table id="tbl_solicitudedit5" class="table table-striped table-bordered table-hover table-condensed ewDesktopTable"><!-- table* -->
-	<tr id="r_tipomercaderia">
-	<td>
-</td>
-	</tr>
-	<tr id="r_documento_mercaderia">
-	<td>
-</td>
-	</tr>
-	<tr id="r_imagen_tipoespecial01">
-	<td>
-</td>
-	</tr>
-</table><!-- /table* -->
+<iframe src="reservacionesviewsecretaria.php" height="500" width="100%" style="border:none;" scrolling="yes"></iframe>
 		</div><!-- /multi-page .tab-pane -->
 	</div><!-- /multi-page .nav-tabs-custom .tab-content -->
 </div><!-- /multi-page .nav-tabs-custom -->

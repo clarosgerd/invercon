@@ -8,6 +8,7 @@ $comentariosavaluo = NULL;
 //
 class ccomentariosavaluo extends cTable {
 	var $id;
+	var $usuario;
 	var $descripcion;
 	var $id_avaluo;
 	var $created_at;
@@ -50,14 +51,23 @@ class ccomentariosavaluo extends cTable {
 		$this->id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id'] = &$this->id;
 
+		// usuario
+		$this->usuario = new cField('comentariosavaluo', 'comentariosavaluo', 'x_usuario', 'usuario', '`usuario`', '`usuario`', 200, -1, FALSE, '`usuario`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->usuario->Sortable = TRUE; // Allow sort
+		$this->usuario->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->usuario->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
+		$this->fields['usuario'] = &$this->usuario;
+
 		// descripcion
 		$this->descripcion = new cField('comentariosavaluo', 'comentariosavaluo', 'x_descripcion', 'descripcion', '`descripcion`', '`descripcion`', 201, -1, FALSE, '`descripcion`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
 		$this->descripcion->Sortable = TRUE; // Allow sort
 		$this->fields['descripcion'] = &$this->descripcion;
 
 		// id_avaluo
-		$this->id_avaluo = new cField('comentariosavaluo', 'comentariosavaluo', 'x_id_avaluo', 'id_avaluo', '`id_avaluo`', '`id_avaluo`', 3, -1, FALSE, '`id_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->id_avaluo = new cField('comentariosavaluo', 'comentariosavaluo', 'x_id_avaluo', 'id_avaluo', '`id_avaluo`', '`id_avaluo`', 3, -1, FALSE, '`id_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->id_avaluo->Sortable = TRUE; // Allow sort
+		$this->id_avaluo->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->id_avaluo->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->id_avaluo->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_avaluo'] = &$this->id_avaluo;
 
@@ -103,6 +113,53 @@ class ccomentariosavaluo extends cTable {
 		} else {
 			$ofld->setSort("");
 		}
+	}
+
+	// Current master table name
+	function getCurrentMasterTable() {
+		return @$_SESSION[EW_PROJECT_NAME . "_" . $this->TableVar . "_" . EW_TABLE_MASTER_TABLE];
+	}
+
+	function setCurrentMasterTable($v) {
+		$_SESSION[EW_PROJECT_NAME . "_" . $this->TableVar . "_" . EW_TABLE_MASTER_TABLE] = $v;
+	}
+
+	// Session master WHERE clause
+	function GetMasterFilter() {
+
+		// Master filter
+		$sMasterFilter = "";
+		if ($this->getCurrentMasterTable() == "avaluo") {
+			if ($this->id_avaluo->getSessionValue() <> "")
+				$sMasterFilter .= "`id`=" . ew_QuotedValue($this->id_avaluo->getSessionValue(), EW_DATATYPE_NUMBER, "DB");
+			else
+				return "";
+		}
+		return $sMasterFilter;
+	}
+
+	// Session detail WHERE clause
+	function GetDetailFilter() {
+
+		// Detail filter
+		$sDetailFilter = "";
+		if ($this->getCurrentMasterTable() == "avaluo") {
+			if ($this->id_avaluo->getSessionValue() <> "")
+				$sDetailFilter .= "`id_avaluo`=" . ew_QuotedValue($this->id_avaluo->getSessionValue(), EW_DATATYPE_NUMBER, "DB");
+			else
+				return "";
+		}
+		return $sDetailFilter;
+	}
+
+	// Master filter
+	function SqlMasterFilter_avaluo() {
+		return "`id`=@id@";
+	}
+
+	// Detail filter
+	function SqlDetailFilter_avaluo() {
+		return "`id_avaluo`=@id_avaluo@";
 	}
 
 	// Table level SQL
@@ -497,6 +554,10 @@ class ccomentariosavaluo extends cTable {
 
 	// Add master url
 	function AddMasterUrl($url) {
+		if ($this->getCurrentMasterTable() == "avaluo" && strpos($url, EW_TABLE_SHOW_MASTER . "=") === FALSE) {
+			$url .= (strpos($url, "?") !== FALSE ? "&" : "?") . EW_TABLE_SHOW_MASTER . "=" . $this->getCurrentMasterTable();
+			$url .= "&fk_id=" . urlencode($this->id_avaluo->CurrentValue);
+		}
 		return $url;
 	}
 
@@ -594,6 +655,7 @@ class ccomentariosavaluo extends cTable {
 	// Load row values from recordset
 	function LoadListRowValues(&$rs) {
 		$this->id->setDbValue($rs->fields('id'));
+		$this->usuario->setDbValue($rs->fields('usuario'));
 		$this->descripcion->setDbValue($rs->fields('descripcion'));
 		$this->id_avaluo->setDbValue($rs->fields('id_avaluo'));
 		$this->created_at->setDbValue($rs->fields('created_at'));
@@ -608,6 +670,7 @@ class ccomentariosavaluo extends cTable {
 
 	// Common render codes
 		// id
+		// usuario
 		// descripcion
 		// id_avaluo
 		// created_at
@@ -616,12 +679,82 @@ class ccomentariosavaluo extends cTable {
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
+		// usuario
+		if (strval($this->usuario->CurrentValue) <> "") {
+			$sFilterWrk = "`login`" . ew_SearchString("=", $this->usuario->CurrentValue, EW_DATATYPE_STRING, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+				$sWhereWrk = "";
+				$this->usuario->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+				$sWhereWrk = "";
+				$this->usuario->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+				$sWhereWrk = "";
+				$this->usuario->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->usuario->ViewValue = $this->usuario->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->usuario->ViewValue = $this->usuario->CurrentValue;
+			}
+		} else {
+			$this->usuario->ViewValue = NULL;
+		}
+		$this->usuario->ViewCustomAttributes = "";
+
 		// descripcion
 		$this->descripcion->ViewValue = $this->descripcion->CurrentValue;
 		$this->descripcion->ViewCustomAttributes = "";
 
 		// id_avaluo
-		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		if (strval($this->id_avaluo->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_avaluo, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0);
+				$this->id_avaluo->ViewValue = $this->id_avaluo->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+			}
+		} else {
+			$this->id_avaluo->ViewValue = NULL;
+		}
 		$this->id_avaluo->ViewCustomAttributes = "";
 
 		// created_at
@@ -633,6 +766,11 @@ class ccomentariosavaluo extends cTable {
 		$this->id->LinkCustomAttributes = "";
 		$this->id->HrefValue = "";
 		$this->id->TooltipValue = "";
+
+		// usuario
+		$this->usuario->LinkCustomAttributes = "";
+		$this->usuario->HrefValue = "";
+		$this->usuario->TooltipValue = "";
 
 		// descripcion
 		$this->descripcion->LinkCustomAttributes = "";
@@ -669,6 +807,10 @@ class ccomentariosavaluo extends cTable {
 		$this->id->EditValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
+		// usuario
+		$this->usuario->EditAttrs["class"] = "form-control";
+		$this->usuario->EditCustomAttributes = "";
+
 		// descripcion
 		$this->descripcion->EditAttrs["class"] = "form-control";
 		$this->descripcion->EditCustomAttributes = "";
@@ -678,8 +820,45 @@ class ccomentariosavaluo extends cTable {
 		// id_avaluo
 		$this->id_avaluo->EditAttrs["class"] = "form-control";
 		$this->id_avaluo->EditCustomAttributes = "";
-		$this->id_avaluo->EditValue = $this->id_avaluo->CurrentValue;
-		$this->id_avaluo->PlaceHolder = ew_RemoveHtml($this->id_avaluo->FldTitle());
+		if ($this->id_avaluo->getSessionValue() <> "") {
+			$this->id_avaluo->CurrentValue = $this->id_avaluo->getSessionValue();
+		if (strval($this->id_avaluo->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_avaluo, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0);
+				$this->id_avaluo->ViewValue = $this->id_avaluo->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+			}
+		} else {
+			$this->id_avaluo->ViewValue = NULL;
+		}
+		$this->id_avaluo->ViewCustomAttributes = "";
+		} else {
+		}
 
 		// created_at
 		$this->created_at->EditAttrs["class"] = "form-control";
@@ -714,12 +893,10 @@ class ccomentariosavaluo extends cTable {
 			if ($Doc->Horizontal) { // Horizontal format, write header
 				$Doc->BeginExportRow();
 				if ($ExportPageType == "view") {
-					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
-					if ($this->descripcion->Exportable) $Doc->ExportCaption($this->descripcion);
-					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
+					if ($this->usuario->Exportable) $Doc->ExportCaption($this->usuario);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
+					if ($this->usuario->Exportable) $Doc->ExportCaption($this->usuario);
 					if ($this->id_avaluo->Exportable) $Doc->ExportCaption($this->id_avaluo);
 					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
 				}
@@ -753,12 +930,10 @@ class ccomentariosavaluo extends cTable {
 				if (!$Doc->ExportCustom) {
 					$Doc->BeginExportRow($RowCnt); // Allow CSS styles if enabled
 					if ($ExportPageType == "view") {
-						if ($this->id->Exportable) $Doc->ExportField($this->id);
-						if ($this->descripcion->Exportable) $Doc->ExportField($this->descripcion);
-						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
+						if ($this->usuario->Exportable) $Doc->ExportField($this->usuario);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
+						if ($this->usuario->Exportable) $Doc->ExportField($this->usuario);
 						if ($this->id_avaluo->Exportable) $Doc->ExportField($this->id_avaluo);
 						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
 					}

@@ -1697,7 +1697,7 @@ $viewavaluosupervisorhistorial_update->ShowMessage();
 		<div class="<?php echo $viewavaluosupervisorhistorial_update->RightColumnClass ?>"><div<?php echo $viewavaluosupervisorhistorial->informe->CellAttributes() ?>>
 <span id="el_viewavaluosupervisorhistorial_informe">
 <div id="fd_x_informe">
-<span title="<?php echo $viewavaluosupervisorhistorial->informe->FldTitle() ? $viewavaluosupervisorhistorial->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluosupervisorhistorial->informe->ReadOnly || $viewavaluosupervisorhistorial->informe->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewavaluosupervisorhistorial->informe->FldTitle() ? $viewavaluosupervisorhistorial->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluosupervisorhistorial->informe->ReadOnly || $viewavaluosupervisorhistorial->informe->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewavaluosupervisorhistorial" data-field="x_informe" name="x_informe" id="x_informe"<?php echo $viewavaluosupervisorhistorial->informe->EditAttributes() ?>>
 </span>
@@ -1723,7 +1723,7 @@ $viewavaluosupervisorhistorial_update->ShowMessage();
 		<td<?php echo $viewavaluosupervisorhistorial->informe->CellAttributes() ?>>
 <span id="el_viewavaluosupervisorhistorial_informe">
 <div id="fd_x_informe">
-<span title="<?php echo $viewavaluosupervisorhistorial->informe->FldTitle() ? $viewavaluosupervisorhistorial->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluosupervisorhistorial->informe->ReadOnly || $viewavaluosupervisorhistorial->informe->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewavaluosupervisorhistorial->informe->FldTitle() ? $viewavaluosupervisorhistorial->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluosupervisorhistorial->informe->ReadOnly || $viewavaluosupervisorhistorial->informe->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewavaluosupervisorhistorial" data-field="x_informe" name="x_informe" id="x_informe"<?php echo $viewavaluosupervisorhistorial->informe->EditAttributes() ?>>
 </span>

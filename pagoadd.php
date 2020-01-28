@@ -745,9 +745,23 @@ class cpago_add extends cpago {
 		// cliente_id
 		if (strval($this->cliente_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->cliente_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-		$sWhereWrk = "";
-		$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+				$sWhereWrk = "";
+				$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+				$sWhereWrk = "";
+				$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+				$sWhereWrk = "";
+				$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -769,9 +783,23 @@ class cpago_add extends cpago {
 		// status_id
 		if (strval($this->status_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->status_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-		$sWhereWrk = "";
-		$this->status_id->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->status_id->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->status_id->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->status_id->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->status_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -797,9 +825,23 @@ class cpago_add extends cpago {
 		// metodopago_id
 		if (strval($this->metodopago_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->metodopago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-		$sWhereWrk = "";
-		$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -866,9 +908,23 @@ class cpago_add extends cpago {
 				$this->cliente_id->CurrentValue = $this->cliente_id->getSessionValue();
 			if (strval($this->cliente_id->CurrentValue) <> "") {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->cliente_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-			$sWhereWrk = "";
-			$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+					$sWhereWrk = "";
+					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+					$sWhereWrk = "";
+					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+					$sWhereWrk = "";
+					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -892,9 +948,23 @@ class cpago_add extends cpago {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->cliente_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-			$sWhereWrk = "";
-			$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
+					$sWhereWrk = "";
+					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
+					$sWhereWrk = "";
+					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
+					$sWhereWrk = "";
+					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -919,9 +989,23 @@ class cpago_add extends cpago {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->metodopago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
-			$sWhereWrk = "";
-			$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
+					$sWhereWrk = "";
+					$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
+					$sWhereWrk = "";
+					$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
+					$sWhereWrk = "";
+					$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1259,9 +1343,23 @@ class cpago_add extends cpago {
 		switch ($fld->FldVar) {
 		case "x_cliente_id":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
@@ -1271,9 +1369,23 @@ class cpago_add extends cpago {
 			break;
 		case "x_metodopago_id":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`short_name`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`short_name`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`short_name`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`short_name`');
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
@@ -1520,7 +1632,7 @@ $pago_add->ShowMessage();
 <?php } else { ?>
 <span id="el_pago_cliente_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->cliente_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_cliente_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->cliente_id->ReadOnly || $pago->cliente_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_cliente_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->cliente_id->DisplayValueSeparatorAttribute() ?>" name="x_cliente_id" id="x_cliente_id" value="<?php echo $pago->cliente_id->CurrentValue ?>"<?php echo $pago->cliente_id->EditAttributes() ?>>
@@ -1552,7 +1664,7 @@ $pago_add->ShowMessage();
 <?php } else { ?>
 <span id="el_pago_cliente_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->cliente_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_cliente_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->cliente_id->ReadOnly || $pago->cliente_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_cliente_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->cliente_id->DisplayValueSeparatorAttribute() ?>" name="x_cliente_id" id="x_cliente_id" value="<?php echo $pago->cliente_id->CurrentValue ?>"<?php echo $pago->cliente_id->EditAttributes() ?>>
@@ -1580,7 +1692,7 @@ $pago_add->ShowMessage();
 <?php if ($pago->CurrentAction <> "F") { ?>
 <span id="el_pago_metodopago_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->metodopago_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_metodopago_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->metodopago_id->ReadOnly || $pago->metodopago_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_metodopago_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" name="x_metodopago_id" id="x_metodopago_id" value="<?php echo $pago->metodopago_id->CurrentValue ?>"<?php echo $pago->metodopago_id->EditAttributes() ?>>
@@ -1601,7 +1713,7 @@ $pago_add->ShowMessage();
 <?php if ($pago->CurrentAction <> "F") { ?>
 <span id="el_pago_metodopago_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->metodopago_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_metodopago_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->metodopago_id->ReadOnly || $pago->metodopago_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_metodopago_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" name="x_metodopago_id" id="x_metodopago_id" value="<?php echo $pago->metodopago_id->CurrentValue ?>"<?php echo $pago->metodopago_id->EditAttributes() ?>>
@@ -1624,7 +1736,7 @@ $pago_add->ShowMessage();
 		<div class="<?php echo $pago_add->RightColumnClass ?>"><div<?php echo $pago->documento_pago->CellAttributes() ?>>
 <span id="el_pago_documento_pago">
 <div id="fd_x_documento_pago">
-<span title="<?php echo $pago->documento_pago->FldTitle() ? $pago->documento_pago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($pago->documento_pago->ReadOnly || $pago->documento_pago->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $pago->documento_pago->FldTitle() ? $pago->documento_pago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($pago->documento_pago->ReadOnly || $pago->documento_pago->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="pago" data-field="x_documento_pago" name="x_documento_pago" id="x_documento_pago"<?php echo $pago->documento_pago->EditAttributes() ?>>
 </span>
@@ -1644,7 +1756,7 @@ $pago_add->ShowMessage();
 		<td<?php echo $pago->documento_pago->CellAttributes() ?>>
 <span id="el_pago_documento_pago">
 <div id="fd_x_documento_pago">
-<span title="<?php echo $pago->documento_pago->FldTitle() ? $pago->documento_pago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($pago->documento_pago->ReadOnly || $pago->documento_pago->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $pago->documento_pago->FldTitle() ? $pago->documento_pago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($pago->documento_pago->ReadOnly || $pago->documento_pago->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="pago" data-field="x_documento_pago" name="x_documento_pago" id="x_documento_pago"<?php echo $pago->documento_pago->EditAttributes() ?>>
 </span>

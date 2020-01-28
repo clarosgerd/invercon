@@ -3365,17 +3365,17 @@ class cviewavaluosupervisorhistorial_list extends cviewavaluosupervisorhistorial
 			switch (@$gsLanguage) {
 				case "en":
 					$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
-					$sWhereWrk = "`id` LIKE '{query_value}%' OR CONCAT(COALESCE(`id`, ''),'" . ew_ValueSeparator(1, $this->id_solicitud) . "',COALESCE(`name`,''),'" . ew_ValueSeparator(2, $this->id_solicitud) . "',COALESCE(`lastname`,''),'" . ew_ValueSeparator(3, $this->id_solicitud) . "',COALESCE(`email`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`id` LIKE '{query_value}%' OR CONCAT(`id`,'" . ew_ValueSeparator(1, $this->id_solicitud) . "',`name`,'" . ew_ValueSeparator(2, $this->id_solicitud) . "',`lastname`,'" . ew_ValueSeparator(3, $this->id_solicitud) . "',`email`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
 					break;
 				case "es":
 					$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
-					$sWhereWrk = "`id` LIKE '{query_value}%' OR CONCAT(COALESCE(`id`, ''),'" . ew_ValueSeparator(1, $this->id_solicitud) . "',COALESCE(`name`,''),'" . ew_ValueSeparator(2, $this->id_solicitud) . "',COALESCE(`lastname`,''),'" . ew_ValueSeparator(3, $this->id_solicitud) . "',COALESCE(`email`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`id` LIKE '{query_value}%' OR CONCAT(`id`,'" . ew_ValueSeparator(1, $this->id_solicitud) . "',`name`,'" . ew_ValueSeparator(2, $this->id_solicitud) . "',`lastname`,'" . ew_ValueSeparator(3, $this->id_solicitud) . "',`email`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
 					break;
 				default:
 					$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
-					$sWhereWrk = "`id` LIKE '{query_value}%' OR CONCAT(COALESCE(`id`, ''),'" . ew_ValueSeparator(1, $this->id_solicitud) . "',COALESCE(`name`,''),'" . ew_ValueSeparator(2, $this->id_solicitud) . "',COALESCE(`lastname`,''),'" . ew_ValueSeparator(3, $this->id_solicitud) . "',COALESCE(`email`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`id` LIKE '{query_value}%' OR CONCAT(`id`,'" . ew_ValueSeparator(1, $this->id_solicitud) . "',`name`,'" . ew_ValueSeparator(2, $this->id_solicitud) . "',`lastname`,'" . ew_ValueSeparator(3, $this->id_solicitud) . "',`email`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
 					break;
 			}
@@ -4098,7 +4098,7 @@ $viewavaluosupervisorhistorial_list->ListOptions->Render("body", "left", $viewav
 <?php if ($viewavaluosupervisorhistorial->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $viewavaluosupervisorhistorial_list->RowCnt ?>_viewavaluosupervisorhistorial_informe" class="form-group viewavaluosupervisorhistorial_informe">
 <div id="fd_x<?php echo $viewavaluosupervisorhistorial_list->RowIndex ?>_informe">
-<span title="<?php echo $viewavaluosupervisorhistorial->informe->FldTitle() ? $viewavaluosupervisorhistorial->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluosupervisorhistorial->informe->ReadOnly || $viewavaluosupervisorhistorial->informe->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewavaluosupervisorhistorial->informe->FldTitle() ? $viewavaluosupervisorhistorial->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluosupervisorhistorial->informe->ReadOnly || $viewavaluosupervisorhistorial->informe->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewavaluosupervisorhistorial" data-field="x_informe" name="x<?php echo $viewavaluosupervisorhistorial_list->RowIndex ?>_informe" id="x<?php echo $viewavaluosupervisorhistorial_list->RowIndex ?>_informe"<?php echo $viewavaluosupervisorhistorial->informe->EditAttributes() ?>>
 </span>

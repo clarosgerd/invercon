@@ -814,6 +814,10 @@ class cemailnotificaciones_list extends cemailnotificaciones {
 		// Initialize
 		$sFilterList = "";
 		$sSavedFilterList = "";
+
+		// Load server side filters
+		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
+			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "femailnotificacioneslistsrch");
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -2601,7 +2605,7 @@ while ($emailnotificaciones_list->RecCnt < $emailnotificaciones_list->StopRec) {
 <?php
 
 // Render list options (body, bottom)
-$emailnotificaciones_list->ListOptions->Render("body", "bottom", $emailnotificaciones_list->RowCnt);
+$emailnotificaciones_list->ListOptions->Render("body", "", $emailnotificaciones_list->RowCnt);
 ?>
 </div>
 <div class="clearfix"></div>

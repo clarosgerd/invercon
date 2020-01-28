@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2019/4/10" version="14.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2020/1/27" version="14.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -616,42 +616,241 @@
     <!-- v2017 -->
   </global>
   <project>
-    <phrase id="footertext" value="&amp;copy;2017 e.World Technology Ltd. All rights reserved." />
-    <menu id="9">
-      <phrase id="menutext" value="agente" />
+    <phrase id="bodytitle" value="Invercon" />
+    <phrase id="footertext" value="&amp;copy;2019 Invercon. All rights reserved." />
+    <menu id="335">
+      <phrase id="menutext" value="estado sms" />
     </menu>
-    <menu id="10">
-      <phrase id="menutext" value="avaluo" />
+    <menu id="336">
+      <phrase id="menutext" value="mensaje" />
     </menu>
-    <menu id="11">
-      <phrase id="menutext" value="inspector" />
+    <menu id="337">
+      <phrase id="menutext" value="sms data" />
     </menu>
-    <menu id="7">
-      <phrase id="menutext" value="userlevelpermissions" />
+    <menu id="331">
+      <phrase id="menutext" value="SOLICITUD FRAME" />
     </menu>
-    <menu id="8">
-      <phrase id="menutext" value="userlevels" />
+    <menu id="327">
+      <phrase id="menutext" value="reservacionesviewsecretaria" />
     </menu>
-    <menu id="6">
-      <phrase id="menutext" value="solicitud" />
+    <menu id="325">
+      <phrase id="menutext" value="Dashboard" />
     </menu>
-    <menu id="1">
-      <phrase id="menutext" value="departamento" />
+    <menu id="269">
+      <phrase id="menutext" value="Dashboard v1" />
     </menu>
-    <menu id="2">
-      <phrase id="menutext" value="provincia" />
+    <menu id="326">
+      <phrase id="menutext" value="Dashboard v2" />
+    </menu>
+    <menu id="332">
+      <phrase id="menutext" value="Historial de Pagos" />
+    </menu>
+    <menu id="263">
+      <phrase id="menutext" value="configuracion" />
+    </menu>
+    <menu id="105">
+      <phrase id="menutext" value="GESTION DE AVALUO" />
+    </menu>
+    <menu id="257">
+      <phrase id="menutext" value="ADJUNTOS" />
+    </menu>
+    <menu id="61">
+      <phrase id="menutext" value="AVALUOS" />
+    </menu>
+    <menu id="259">
+      <phrase id="menutext" value="AVALUOS ASIGNADOS INSPECTOR" />
+    </menu>
+    <menu id="55">
+      <phrase id="menutext" value="PAGO" />
+    </menu>
+    <menu id="58">
+      <phrase id="menutext" value="SOLICITUD" />
+    </menu>
+    <menu id="258">
+      <phrase id="menutext" value="SOLICITUD INSPECTOR" />
+    </menu>
+    <menu id="266">
+      <phrase id="menutext" value="AVALUO" />
+    </menu>
+    <menu id="333">
+      <phrase id="menutext" value="AVALUOS PROCESADOS INSPECTOR" />
+    </menu>
+    <menu id="260">
+      <phrase id="menutext" value="DOCUMENTOS AVALUO INSPECTOR" />
+    </menu>
+    <menu id="56">
+      <phrase id="menutext" value="viewpagoavaluos" />
+    </menu>
+    <menu id="268">
+      <phrase id="menutext" value="ADJUNTOS" />
+    </menu>
+    <menu id="57">
+      <phrase id="menutext" value="AVALUO" />
+    </menu>
+    <menu id="267">
+      <phrase id="menutext" value="ADJUNTOS" />
+    </menu>
+    <menu id="265">
+      <phrase id="menutext" value="SOLICITUD" />
+    </menu>
+    <menu id="334">
+      <phrase id="menutext" value="AVALUO SUPERVISOR HISTORIAL" />
+    </menu>
+    <menu id="237">
+      <phrase id="menutext" value="GESTION SOLICITUD" />
     </menu>
     <menu id="3">
-      <phrase id="menutext" value="solicitud" />
+      <phrase id="menutext" value="SOLICITUD" />
     </menu>
-    <menu id="4">
-      <phrase id="menutext" value="cliente" />
+    <menu id="10">
+      <phrase id="menutext" value="SOLICITUD DETALLE" />
+    </menu>
+    <menu id="330">
+      <phrase id="menutext" value="ADJUNTOS HISTORIAL" />
+    </menu>
+    <menu id="150">
+      <phrase id="menutext" value="GESTION CLIENTE" />
+    </menu>
+    <menu id="23">
+      <phrase id="menutext" value="CLIENTE" />
+    </menu>
+    <menu id="194">
+      <phrase id="menutext" value="GESTION USUARIOS" />
+    </menu>
+    <menu id="38">
+      <phrase id="menutext" value="INSPECTOR" />
+    </menu>
+    <menu id="39">
+      <phrase id="menutext" value="OFICIAL CREDITO" />
+    </menu>
+    <menu id="40">
+      <phrase id="menutext" value="SUPERVISOR" />
+    </menu>
+    <menu id="9">
+      <phrase id="menutext" value="ASESOR FINANCIERO" />
+    </menu>
+    <menu id="256">
+      <phrase id="menutext" value="GESTION MENSAJES" />
+    </menu>
+    <menu id="54">
+      <phrase id="menutext" value="EMAILNOTIFICACIONES" />
+    </menu>
+    <menu id="43">
+      <phrase id="menutext" value="NOTIFICACIONES" />
+    </menu>
+    <menu id="239">
+      <phrase id="menutext" value="MENSAJES CHAT" />
+    </menu>
+    <menu id="329">
+      <phrase id="menutext" value="historico" />
+    </menu>
+    <menu id="48">
+      <phrase id="menutext" value="CALENDARIO RESERVACION" />
+    </menu>
+    <menu id="20">
+      <phrase id="menutext" value="ADMINISTRACION" />
     </menu>
     <menu id="5">
-      <phrase id="menutext" value="usuario" />
+      <phrase id="menutext" value="USUARIO" />
+    </menu>
+    <menu id="2">
+      <phrase id="menutext" value="PROVINCIA" />
+    </menu>
+    <menu id="1">
+      <phrase id="menutext" value="DEPARTAMENTO" />
+    </menu>
+    <menu id="26">
+      <phrase id="menutext" value="ESTADO INTERNO" />
+    </menu>
+    <menu id="25">
+      <phrase id="menutext" value="ESTADO PAGO" />
+    </menu>
+    <menu id="24">
+      <phrase id="menutext" value="ESTADO" />
+    </menu>
+    <menu id="32">
+      <phrase id="menutext" value="TIPO INMUEBLE" />
+    </menu>
+    <menu id="35">
+      <phrase id="menutext" value="BANCO" />
+    </menu>
+    <menu id="36">
+      <phrase id="menutext" value="METODO DE PAGO" />
+    </menu>
+    <menu id="31">
+      <phrase id="menutext" value="SUCURSAL" />
+    </menu>
+    <menu id="46">
+      <phrase id="menutext" value="PERMISOS" />
+    </menu>
+    <menu id="47">
+      <phrase id="menutext" value="ROLES" />
+    </menu>
+    <menu id="60">
+      <phrase id="menutext" value="TIPO DOCUMENTO" />
+    </menu>
+    <menu id="27">
+      <phrase id="menutext" value="ADJUNTOS" />
+    </menu>
+    <menu id="238">
+      <phrase id="menutext" value="getApiRestWordPress" />
+    </menu>
+    <menu id="328">
+      <phrase id="menutext" value="HISTORICO" />
+    </menu>
+    <menu id="261">
+      <phrase id="menutext" value="areas" />
+    </menu>
+    <menu id="262">
+      <phrase id="menutext" value="companies" />
+    </menu>
+    <menu id="264">
+      <phrase id="menutext" value="streets" />
+    </menu>
+    <menu id="59">
+      <phrase id="menutext" value="core" />
+    </menu>
+    <menu id="49">
+      <phrase id="menutext" value="especial" />
+    </menu>
+    <menu id="50">
+      <phrase id="menutext" value="inmueble" />
+    </menu>
+    <menu id="51">
+      <phrase id="menutext" value="maquinaria" />
+    </menu>
+    <menu id="52">
+      <phrase id="menutext" value="mercaderia" />
+    </menu>
+    <menu id="53">
+      <phrase id="menutext" value="vehiculo" />
+    </menu>
+    <menu id="41">
+      <phrase id="menutext" value="table 19" />
+    </menu>
+    <menu id="42">
+      <phrase id="menutext" value="audittrail" />
+    </menu>
+    <menu id="45">
+      <phrase id="menutext" value="corenotificacion" />
+    </menu>
+    <menu id="21">
+      <phrase id="menutext" value="CALENDARIO RESERVACION" />
+    </menu>
+    <menu id="37">
+      <phrase id="menutext" value="COMENTARIOS" />
+    </menu>
+    <menu id="29">
+      <phrase id="menutext" value="datossolicitud" />
+    </menu>
+    <menu id="34">
+      <phrase id="menutext" value="avaluocore" />
+    </menu>
+    <menu id="6">
+      <phrase id="menutext" value="SOLICITUD PAGINA" />
     </menu>
     <table id="departamento">
-      <phrase id="tblcaption" value="departamento" />
+      <phrase id="tblcaption" value="DEPARTAMENTO" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
@@ -660,7 +859,7 @@
       </field>
     </table>
     <table id="provincia">
-      <phrase id="tblcaption" value="provincia" />
+      <phrase id="tblcaption" value="PROVINCIA" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
@@ -672,15 +871,18 @@
       </field>
     </table>
     <table id="solicitud">
-      <phrase id="tblcaption" value="solicitud" />
+      <phrase id="tblcaption" value="SOLICITUD" />
+      <phrase id="tblpagecaption1" value="DATOS GENERALES" />
+      <phrase id="tblpagecaption2" value="DATOS INMUEBLE" />
+      <phrase id="tblpagecaption3" value="DATOS VEHICULO" />
+      <phrase id="tblpagecaption4" value="DATOS MAQUINARIA" />
+      <phrase id="tblpagecaption5" value="DATOS MERCADERIA" />
+      <phrase id="tblpagecaption6" value="DATOS ESPECIAL" />
       <field id="id">
-        <phrase id="fldcaption" value="id" />
+        <phrase id="fldcaption" value="CODIGO DE SOLICITUD" />
       </field>
       <field id="name">
-        <phrase id="fldcaption" value="NOMBRE" />
-      </field>
-      <field id="lastname">
-        <phrase id="fldcaption" value="APELLIDO" />
+        <phrase id="fldcaption" value="NOMBRE CONTACTO/INSTITUCION" />
       </field>
       <field id="_email">
         <phrase id="fldcaption" value="EMAIL" />
@@ -693,6 +895,43 @@
       </field>
       <field id="cell">
         <phrase id="fldcaption" value="CELULAR" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREATE_AT" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="documentos">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
       </field>
       <field id="tipoinmueble">
         <phrase id="fldcaption" value="TIPO INMUEBLE" />
@@ -721,74 +960,149 @@
         <phrase id="fldtagvalue12" value="12" />
         <phrase id="fldtagcaption12" value="Supermercados / Strip Center" />
       </field>
-      <field id="id_ciudad">
-        <phrase id="fldcaption" value="CIUDAD" />
+      <field id="id_ciudad_inmueble">
+        <phrase id="fldcaption" value="CIUDAD INMUEBLE" />
       </field>
-      <field id="id_provincia">
-        <phrase id="fldcaption" value="PROVINCIA" />
+      <field id="id_provincia_inmueble">
+        <phrase id="fldcaption" value="PROVINCIA INMUEBLE" />
       </field>
-      <field id="is_active">
-        <phrase id="fldcaption" value="is active" />
+      <field id="imagen_inmueble01">
+        <phrase id="fldcaption" value="UBICACION" />
       </field>
-      <field id="created_at">
-        <phrase id="fldcaption" value="created at" />
+      <field id="imagen_inmueble02">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
       </field>
-    </table>
-    <table id="persona">
-      <phrase id="tblcaption" value="cliente" />
-      <field id="id">
-        <phrase id="fldcaption" value="id" />
+      <field id="imagen_inmueble03">
+        <phrase id="fldcaption" value="FOLIO REAL" />
       </field>
-      <field id="name">
-        <phrase id="fldcaption" value="NOMBRE" />
+      <field id="imagen_inmueble04">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_inmueble05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_inmueble06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_inmueble07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_inmueble08">
+        <phrase id="fldcaption" value="Inventario" />
+      </field>
+      <field id="tipovehiculo">
+        <phrase id="fldcaption" value="TIPO VEHICULO" />
+      </field>
+      <field id="id_ciudad_vehiculo">
+        <phrase id="fldcaption" value="CIUDAD VEHICULO" />
+      </field>
+      <field id="id_provincia_vehiculo">
+        <phrase id="fldcaption" value="PROVINCIA VEHICULO" />
+      </field>
+      <field id="imagen_vehiculo01">
+        <phrase id="fldcaption" value="UBICACION" />
+      </field>
+      <field id="imagen_vehiculo02">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="imagen_vehiculo03">
+        <phrase id="fldcaption" value="FOLIO REAL" />
+      </field>
+      <field id="imagen_vehiculo04">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_vehiculo05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_vehiculo06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_vehiculo07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_vehiculo08">
+        <phrase id="fldcaption" value="Inventario" />
+      </field>
+      <field id="tipomaquinaria">
+        <phrase id="fldcaption" value="TIPO MAQUINARIA" />
+      </field>
+      <field id="id_ciudad_maquinaria">
+        <phrase id="fldcaption" value="CUIDAD MAQUINARIA" />
+      </field>
+      <field id="id_provincia_maquinaria">
+        <phrase id="fldcaption" value="PROVINCIA MAQUINARIA" />
+      </field>
+      <field id="imagen_maquinaria01">
+        <phrase id="fldcaption" value="UBICACION" />
+      </field>
+      <field id="imagen_maquinaria02">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="imagen_maquinaria03">
+        <phrase id="fldcaption" value="FOLIO REAL" />
+      </field>
+      <field id="imagen_maquinaria04">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_maquinaria05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_maquinaria06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_maquinaria07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_maquinaria08">
+        <phrase id="fldcaption" value="Inventario" />
+      </field>
+      <field id="tipomercaderia">
+        <phrase id="fldcaption" value="MERCADERIA" />
+      </field>
+      <field id="imagen_mercaderia01">
+        <phrase id="fldcaption" value="IMAGEN MERCADERIA" />
+      </field>
+      <field id="documento_mercaderia">
+        <phrase id="fldcaption" value="DOCUMENTO MERCADERIA" />
+      </field>
+      <field id="tipoespecial">
+        <phrase id="fldcaption" value="ESPECIAL" />
+      </field>
+      <field id="imagen_tipoespecial01">
+        <phrase id="fldcaption" value="IMAGEN ESPECIAL" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="EMAIL OFICIAL CREDITO" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="NOMBRE CONTACTO" />
       </field>
       <field id="lastname">
-        <phrase id="fldcaption" value="APELLIDO" />
+        <phrase id="fldcaption" value="CELULAR CONTACTO" />
       </field>
-      <field id="day_of_birth">
-        <phrase id="fldcaption" value="FECHA DE NACIMIENTO" />
-      </field>
-      <field id="_email">
-        <phrase id="fldcaption" value="EMAIL" />
-      </field>
-      <field id="address">
-        <phrase id="fldcaption" value="ADDRESS" />
-      </field>
-      <field id="phone">
-        <phrase id="fldcaption" value="PHONE" />
-      </field>
-      <field id="id_tipo">
-        <phrase id="fldcaption" value="TIPO" />
-      </field>
-      <field id="is_active">
-        <phrase id="fldcaption" value="ACTIVO" />
-      </field>
-      <field id="created_at">
-        <phrase id="fldcaption" value="created at" />
-      </field>
-      <field id="category_id">
-        <phrase id="fldcaption" value="category id" />
+      <field id="monto_inicial">
+        <phrase id="fldcaption" value="MONTO A CUENTA" />
       </field>
     </table>
     <table id="usuario">
-      <phrase id="tblcaption" value="usuario" />
+      <phrase id="tblcaption" value="USUARIO" />
       <field id="nombre">
-        <phrase id="fldcaption" value="nombre" />
+        <phrase id="fldcaption" value="NOMBRE" />
       </field>
       <field id="apellido">
-        <phrase id="fldcaption" value="apellido" />
+        <phrase id="fldcaption" value="APELLIDO" />
       </field>
       <field id="_login">
-        <phrase id="fldcaption" value="login" />
+        <phrase id="fldcaption" value="LOGIN" />
       </field>
       <field id="password">
-        <phrase id="fldcaption" value="password" />
+        <phrase id="fldcaption" value="CONTRASEÑA" />
       </field>
       <field id="ci">
-        <phrase id="fldcaption" value="ci" />
+        <phrase id="fldcaption" value="CI" />
       </field>
       <field id="id_rol">
-        <phrase id="fldcaption" value="id rol" />
+        <phrase id="fldcaption" value="ROL" />
         <phrase id="fldtagvalue1" value="-2" />
         <phrase id="fldtagcaption1" value="Anonymous" />
         <phrase id="fldtagvalue2" value="-1" />
@@ -797,8 +1111,699 @@
         <phrase id="fldtagcaption3" value="Default" />
       </field>
       <field id="status">
-        <phrase id="fldcaption" value="status" />
+        <phrase id="fldcaption" value="STATUS" />
       </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="EMAIL" />
+      </field>
+      <field id="telefono_fijo01">
+        <phrase id="fldcaption" value="TELEFONO FIJO 1" />
+      </field>
+      <field id="telefono_fijo02">
+        <phrase id="fldcaption" value="TELEFONO FIJO 2" />
+      </field>
+      <field id="celular">
+        <phrase id="fldcaption" value="CELULAR" />
+      </field>
+      <field id="cargo">
+        <phrase id="fldcaption" value="CARGO" />
+      </field>
+      <field id="id_institucion">
+        <phrase id="fldcaption" value="INSTITUCION" />
+      </field>
+      <field id="celular2">
+        <phrase id="fldcaption" value="CELULAR 2" />
+      </field>
+      <field id="direccion">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="especialidad">
+        <phrase id="fldcaption" value="ESPECIALIDAD" />
+      </field>
+      <field id="avatar">
+        <phrase id="fldcaption" value="AVATAR" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREATE AT" />
+      </field>
+      <field id="color">
+        <phrase id="fldcaption" value="COLOR" />
+      </field>
+      <field id="codigo">
+        <phrase id="fldcaption" value="codigo" />
+      </field>
+    </table>
+    <table id="solicitudcore_php">
+      <phrase id="tblcaption" value="SOLICITUD PAGINA" />
+    </table>
+    <table id="asesor">
+      <phrase id="tblcaption" value="ASESOR" />
+      <field id="nombre">
+        <phrase id="fldcaption" value="NOMBRE" />
+      </field>
+      <field id="apellido">
+        <phrase id="fldcaption" value="APELLIDO" />
+      </field>
+      <field id="_login">
+        <phrase id="fldcaption" value="LOGIN" />
+      </field>
+      <field id="password">
+        <phrase id="fldcaption" value="PASSWORD" />
+      </field>
+      <field id="ci">
+        <phrase id="fldcaption" value="CI" />
+      </field>
+      <field id="id_rol">
+        <phrase id="fldcaption" value="ROL" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="EMAIL" />
+      </field>
+      <field id="telefono_fijo01">
+        <phrase id="fldcaption" value="TELEFONO FIJO 01" />
+      </field>
+      <field id="telefono_fijo02">
+        <phrase id="fldcaption" value="TELEFONO FIJO 02" />
+      </field>
+      <field id="celular">
+        <phrase id="fldcaption" value="CELULAR 1" />
+      </field>
+      <field id="celular2">
+        <phrase id="fldcaption" value="CELULAR 2" />
+      </field>
+      <field id="direccion">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="cargo">
+        <phrase id="fldcaption" value="CARGO" />
+      </field>
+      <field id="id_institucion">
+        <phrase id="fldcaption" value="INSTITUCION" />
+      </field>
+      <field id="especialidad">
+        <phrase id="fldcaption" value="ESPECIALIDAD" />
+      </field>
+      <field id="status">
+        <phrase id="fldcaption" value="ESTADO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="codigo">
+        <phrase id="fldcaption" value="codigo" />
+      </field>
+    </table>
+    <table id="avaluo">
+      <phrase id="tblcaption" value="SOLICITUD DETALLE" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="codigoavaluo">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO INMUEBLE" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="SOLICITUD" />
+      </field>
+      <field id="id_oficialcredito">
+        <phrase id="fldcaption" value="OFICIAL CREDITO" />
+      </field>
+      <field id="id_inspector">
+        <phrase id="fldcaption" value="INSPECTOR" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+      <field id="id_cliente">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="estadointerno">
+        <phrase id="fldcaption" value="ESTADO INTERNO" />
+      </field>
+      <field id="estadopago">
+        <phrase id="fldcaption" value="ESTADO PAGO" />
+      </field>
+      <field id="fecha_avaluo">
+        <phrase id="fldcaption" value="FECHA AVALUO" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO PAGO" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="informe">
+        <phrase id="fldcaption" value="informe" />
+      </field>
+      <field id="monto_pago">
+        <phrase id="fldcaption" value="MONTO ADELANTO" />
+      </field>
+      <field id="montoincial">
+        <phrase id="fldcaption" value="MONTO POR COBRAR" />
+      </field>
+      <field id="comentario">
+        <phrase id="fldcaption" value="COMENTARIO" />
+      </field>
+      <field id="documento_pago">
+        <phrase id="fldcaption" value="documento pago" />
+      </field>
+    </table>
+    <table id="reservacion_php">
+      <phrase id="tblcaption" value="RESERVACION" />
+    </table>
+    <table id="cliente">
+      <phrase id="tblcaption" value="CLIENTE" />
+      <field id="id">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="NOMBRE" />
+      </field>
+      <field id="lastname">
+        <phrase id="fldcaption" value="LASTNAME" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="EMAIL" />
+      </field>
+      <field id="address">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="phone">
+        <phrase id="fldcaption" value="TELEFONO" />
+      </field>
+      <field id="phone_cell">
+        <phrase id="fldcaption" value="CELULAR" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="created at" />
+      </field>
+    </table>
+    <table id="estado">
+      <phrase id="tblcaption" value="ESTADO" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="descripcion" />
+      </field>
+    </table>
+    <table id="estadointerno">
+      <phrase id="tblcaption" value="ESTADO INTERNO" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="descripcion" />
+      </field>
+      <field id="owner">
+        <phrase id="fldcaption" value="owner" />
+      </field>
+      <field id="time">
+        <phrase id="fldcaption" value="time" />
+      </field>
+    </table>
+    <table id="estadopago">
+      <phrase id="tblcaption" value="ESTADO DE PAGO" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="descripcion" />
+      </field>
+    </table>
+    <table id="documentosavaluo">
+      <phrase id="tblcaption" value="ADJUNTOS" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="DESCRIPCION" />
+      </field>
+      <field id="imagen">
+        <phrase id="fldcaption" value="DOCUMENTO" />
+      </field>
+      <field id="avaluo">
+        <phrase id="fldcaption" value="AVALUO" />
+      </field>
+      <field id="path_drive">
+        <phrase id="fldcaption" value="DRIVE" />
+      </field>
+      <field id="id_tipodocumento">
+        <phrase id="fldcaption" value="TIPO DOCUMENTO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+    </table>
+    <table id="datossolicitud">
+      <phrase id="tblcaption" value="datossolicitud" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="nombre">
+        <phrase id="fldcaption" value="nombre" />
+      </field>
+      <field id="id_tipoinmueble">
+        <phrase id="fldcaption" value="id tipoinmueble" />
+      </field>
+      <field id="estatus">
+        <phrase id="fldcaption" value="estatus" />
+      </field>
+    </table>
+    <table id="sucursal">
+      <phrase id="tblcaption" value="SUCURSAL" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="nombre">
+        <phrase id="fldcaption" value="nombre" />
+      </field>
+      <field id="direccion">
+        <phrase id="fldcaption" value="direccion" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="nombre contacto" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="email contacto" />
+      </field>
+    </table>
+    <table id="tipoinmueble">
+      <phrase id="tblcaption" value="TIPO" />
+      <field id="id_tipoinmueble">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="nombre">
+        <phrase id="fldcaption" value="NOMBRE" />
+      </field>
+      <field id="tipo">
+        <phrase id="fldcaption" value="TIPO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+    </table>
+    <table id="avaluocore_php">
+      <phrase id="tblcaption" value="avaluocore" />
+    </table>
+    <table id="metodopago">
+      <phrase id="tblcaption" value="METODO DE PAGO" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="short_name">
+        <phrase id="fldcaption" value="NOMBRE CORTO" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="NOMBRE" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+      </field>
+      <field id="datemodified" />
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+    </table>
+    <table id="banco">
+      <phrase id="tblcaption" value="BANCO" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="short_name">
+        <phrase id="fldcaption" value="NOMBRE CORTO" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="BANCO" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="IS ACTIVO" />
+      </field>
+    </table>
+    <table id="table_19">
+      <phrase id="tblcaption" value="table 19" />
+      <field id="col_1">
+        <phrase id="fldcaption" value="COL 1" />
+      </field>
+      <field id="col_2">
+        <phrase id="fldcaption" value="COL 2" />
+      </field>
+      <field id="col_3">
+        <phrase id="fldcaption" value="COL 3" />
+      </field>
+      <field id="col_4">
+        <phrase id="fldcaption" value="COL 4" />
+      </field>
+      <field id="col_5">
+        <phrase id="fldcaption" value="COL 5" />
+      </field>
+      <field id="col_6">
+        <phrase id="fldcaption" value="COL 6" />
+      </field>
+      <field id="col_7">
+        <phrase id="fldcaption" value="COL 7" />
+      </field>
+      <field id="col_8">
+        <phrase id="fldcaption" value="COL 8" />
+      </field>
+      <field id="col_9">
+        <phrase id="fldcaption" value="COL 9" />
+      </field>
+      <field id="col_10">
+        <phrase id="fldcaption" value="COL 10" />
+      </field>
+      <field id="col_11">
+        <phrase id="fldcaption" value="COL 11" />
+      </field>
+      <field id="col_12">
+        <phrase id="fldcaption" value="COL 12" />
+      </field>
+      <field id="col_13">
+        <phrase id="fldcaption" value="COL 13" />
+      </field>
+    </table>
+    <table id="comentariosavaluo">
+      <phrase id="tblcaption" value="COMENTARIOS" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="usuario">
+        <phrase id="fldcaption" value="usuario" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="descripcion" />
+      </field>
+      <field id="id_avaluo">
+        <phrase id="fldcaption" value="id avaluo" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="created at" />
+      </field>
+    </table>
+    <table id="inspector">
+      <phrase id="tblcaption" value="INSPECTOR" />
+      <field id="nombre">
+        <phrase id="fldcaption" value="NOMBRE" />
+      </field>
+      <field id="apellido">
+        <phrase id="fldcaption" value="APELLIDO" />
+      </field>
+      <field id="_login">
+        <phrase id="fldcaption" value="LOGIN" />
+      </field>
+      <field id="password">
+        <phrase id="fldcaption" value="PASSWORD" />
+      </field>
+      <field id="ci">
+        <phrase id="fldcaption" value="CI" />
+      </field>
+      <field id="id_rol">
+        <phrase id="fldcaption" value="ROL" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="EMAIL" />
+      </field>
+      <field id="telefono_fijo01">
+        <phrase id="fldcaption" value="TELEFONO FIJO 01" />
+      </field>
+      <field id="telefono_fijo02">
+        <phrase id="fldcaption" value="TELEFONO FIJO 2" />
+      </field>
+      <field id="celular">
+        <phrase id="fldcaption" value="CELULAR 1" />
+      </field>
+      <field id="celular2">
+        <phrase id="fldcaption" value="CELULAR 2" />
+      </field>
+      <field id="direccion">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="cargo">
+        <phrase id="fldcaption" value="CARGO" />
+      </field>
+      <field id="id_institucion">
+        <phrase id="fldcaption" value="INSTITUCION" />
+      </field>
+      <field id="especialidad">
+        <phrase id="fldcaption" value="ESPECIALIDAD" />
+      </field>
+      <field id="status">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="color">
+        <phrase id="fldcaption" value="COLOR " />
+      </field>
+      <field id="avatar">
+        <phrase id="fldcaption" value="AVATAR" />
+      </field>
+      <field id="codigo">
+        <phrase id="fldcaption" value="CODIGO" />
+      </field>
+    </table>
+    <table id="oficialcredito">
+      <phrase id="tblcaption" value="OFICIAL CREDITO" />
+      <field id="nombre">
+        <phrase id="fldcaption" value="NOMBRE" />
+      </field>
+      <field id="apellido">
+        <phrase id="fldcaption" value="APELLIDO" />
+      </field>
+      <field id="_login">
+        <phrase id="fldcaption" value="LOGIN" />
+      </field>
+      <field id="password">
+        <phrase id="fldcaption" value="PASSWORD" />
+      </field>
+      <field id="ci">
+        <phrase id="fldcaption" value="CI" />
+      </field>
+      <field id="id_rol">
+        <phrase id="fldcaption" value="ROL" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="EMAIL 2" />
+      </field>
+      <field id="telefono_fijo01">
+        <phrase id="fldcaption" value="TELEFONO FIJO 1" />
+      </field>
+      <field id="telefono_fijo02">
+        <phrase id="fldcaption" value="TELEFONO FIJO 2" />
+      </field>
+      <field id="celular">
+        <phrase id="fldcaption" value="CELULAR" />
+      </field>
+      <field id="celular2">
+        <phrase id="fldcaption" value="CELULAR 23" />
+      </field>
+      <field id="direccion">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="cargo">
+        <phrase id="fldcaption" value="CARGO" />
+      </field>
+      <field id="id_institucion">
+        <phrase id="fldcaption" value="INSTITUCION" />
+      </field>
+      <field id="especialidad">
+        <phrase id="fldcaption" value="ESPECIALIDAD" />
+      </field>
+      <field id="status">
+        <phrase id="fldcaption" value="ESTADO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="avatar">
+        <phrase id="fldcaption" value="AVATAR" />
+      </field>
+      <field id="codigo">
+        <phrase id="fldcaption" value="codigo" />
+      </field>
+    </table>
+    <table id="supervisor">
+      <phrase id="tblcaption" value="SUPERVISOR" />
+      <field id="nombre">
+        <phrase id="fldcaption" value="NOMBRE" />
+      </field>
+      <field id="apellido">
+        <phrase id="fldcaption" value="APELLIDOS" />
+      </field>
+      <field id="_login">
+        <phrase id="fldcaption" value="LOGIN" />
+      </field>
+      <field id="password">
+        <phrase id="fldcaption" value="PASSWORD" />
+      </field>
+      <field id="ci">
+        <phrase id="fldcaption" value="CI" />
+      </field>
+      <field id="id_rol">
+        <phrase id="fldcaption" value="ROL" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="EMAIL" />
+      </field>
+      <field id="telefono_fijo01">
+        <phrase id="fldcaption" value="TELEFONO FIJO 1" />
+      </field>
+      <field id="telefono_fijo02">
+        <phrase id="fldcaption" value="TELEFONO FIJO 2" />
+      </field>
+      <field id="celular">
+        <phrase id="fldcaption" value="CELULAR" />
+      </field>
+      <field id="celular2">
+        <phrase id="fldcaption" value="CELULAR 2" />
+      </field>
+      <field id="direccion">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="cargo">
+        <phrase id="fldcaption" value="CARGO" />
+      </field>
+      <field id="id_institucion">
+        <phrase id="fldcaption" value="INSTITUCION" />
+      </field>
+      <field id="especialidad">
+        <phrase id="fldcaption" value="ESPECIALIDAD" />
+      </field>
+      <field id="status">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="avatar">
+        <phrase id="fldcaption" value="AVATAR" />
+      </field>
+      <field id="color">
+        <phrase id="fldcaption" value="COLOR" />
+      </field>
+      <field id="codigo">
+        <phrase id="fldcaption" value="codigo" />
+      </field>
+    </table>
+    <table id="audittrail">
+      <phrase id="tblcaption" value="audittrail" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="datetime">
+        <phrase id="fldcaption" value="datetime" />
+      </field>
+      <field id="script">
+        <phrase id="fldcaption" value="script" />
+      </field>
+      <field id="user">
+        <phrase id="fldcaption" value="user" />
+      </field>
+      <field id="action">
+        <phrase id="fldcaption" value="action" />
+      </field>
+      <field id="_table">
+        <phrase id="fldcaption" value="table" />
+      </field>
+      <field id="_field">
+        <phrase id="fldcaption" value="field" />
+      </field>
+      <field id="keyvalue">
+        <phrase id="fldcaption" value="keyvalue" />
+      </field>
+      <field id="oldvalue">
+        <phrase id="fldcaption" value="oldvalue" />
+      </field>
+      <field id="newvalue">
+        <phrase id="fldcaption" value="newvalue" />
+      </field>
+    </table>
+    <table id="notificaciones">
+      <phrase id="tblcaption" value="NOTIFICACIONES" />
+      <field id="id">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="mensaje">
+        <phrase id="fldcaption" value="MENSAJE" />
+      </field>
+      <field id="creadopor">
+        <phrase id="fldcaption" value="CREADO POR" />
+      </field>
+      <field id="recibidopor">
+        <phrase id="fldcaption" value="RECIBIDO POR" />
+      </field>
+      <field id="leido">
+        <phrase id="fldcaption" value="LEIDO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="fecha">
+        <phrase id="fldcaption" value="FECHA ENVIO" />
+      </field>
+      <field id="fechaleido">
+        <phrase id="fldcaption" value="FECHA LEIDO" />
+      </field>
+      <field id="desde">
+        <phrase id="fldcaption" value="DESDE" />
+      </field>
+      <field id="id_avaluo">
+        <phrase id="fldcaption" value="id avaluo" />
+      </field>
+    </table>
+    <table id="corenotificacion_php">
+      <phrase id="tblcaption" value="corenotificacion" />
     </table>
     <table id="userlevelpermissions">
       <phrase id="tblcaption" value="userlevelpermissions" />
@@ -821,22 +1826,16 @@
         <phrase id="fldcaption" value="userlevelname" />
       </field>
     </table>
-    <table id="solicitud_php">
-      <phrase id="tblcaption" value="solicitud" />
-    </table>
-    <table id="agente">
-      <phrase id="tblcaption" value="agente" />
-      <field id="id">
-        <phrase id="fldcaption" value="id" />
-      </field>
+    <table id="especial">
+      <phrase id="tblcaption" value="especial" />
       <field id="name">
         <phrase id="fldcaption" value="name" />
       </field>
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
       <field id="lastname">
         <phrase id="fldcaption" value="lastname" />
-      </field>
-      <field id="day_of_birth">
-        <phrase id="fldcaption" value="day of birth" />
       </field>
       <field id="_email">
         <phrase id="fldcaption" value="email" />
@@ -847,59 +1846,41 @@
       <field id="phone">
         <phrase id="fldcaption" value="phone" />
       </field>
-      <field id="phone_cell">
-        <phrase id="fldcaption" value="phone cell" />
+      <field id="cell">
+        <phrase id="fldcaption" value="cell" />
       </field>
-      <field id="is_active">
-        <phrase id="fldcaption" value="is active" />
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="id sucursal" />
       </field>
-      <field id="created_at">
-        <phrase id="fldcaption" value="created at" />
+      <field id="tipoespecial">
+        <phrase id="fldcaption" value="tipoespecial" />
       </field>
-    </table>
-    <table id="avaluo">
-      <phrase id="tblcaption" value="avaluo" />
-      <field id="id">
-        <phrase id="fldcaption" value="id" />
+      <field id="imagen_tipoespecial01">
+        <phrase id="fldcaption" value="imagen tipoespecial 01" />
+      </field>
+      <field id="documentos">
+        <phrase id="fldcaption" value="documentos" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
       </field>
       <field id="tipoinmueble">
         <phrase id="fldcaption" value="tipoinmueble" />
       </field>
-      <field id="id_solicitud">
-        <phrase id="fldcaption" value="id solicitud" />
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="nombre contacto" />
       </field>
-      <field id="id_agente">
-        <phrase id="fldcaption" value="id agente" />
-      </field>
-      <field id="id_inspector">
-        <phrase id="fldcaption" value="id inspector" />
-      </field>
-      <field id="is_active">
-        <phrase id="fldcaption" value="is active" />
-      </field>
-      <field id="estado">
-        <phrase id="fldcaption" value="estado" />
-      </field>
-      <field id="created_at">
-        <phrase id="fldcaption" value="created at" />
-      </field>
-      <field id="id_cliente">
-        <phrase id="fldcaption" value="id cliente" />
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="email contacto" />
       </field>
     </table>
-    <table id="inspector">
-      <phrase id="tblcaption" value="inspector" />
-      <field id="id">
-        <phrase id="fldcaption" value="id" />
-      </field>
-      <field id="name">
-        <phrase id="fldcaption" value="name" />
-      </field>
+    <table id="inmueble">
+      <phrase id="tblcaption" value="inmueble" />
       <field id="lastname">
         <phrase id="fldcaption" value="lastname" />
-      </field>
-      <field id="day_of_birth">
-        <phrase id="fldcaption" value="day of birth" />
       </field>
       <field id="_email">
         <phrase id="fldcaption" value="email" />
@@ -910,14 +1891,1833 @@
       <field id="phone">
         <phrase id="fldcaption" value="phone" />
       </field>
-      <field id="phone_cell">
-        <phrase id="fldcaption" value="phone cell" />
+      <field id="cell">
+        <phrase id="fldcaption" value="cell" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="tipoinmueble" />
+      </field>
+      <field id="id_ciudad_inmueble">
+        <phrase id="fldcaption" value="id ciudad inmueble" />
+      </field>
+      <field id="id_provincia_inmueble">
+        <phrase id="fldcaption" value="id provincia inmueble" />
+      </field>
+      <field id="imagen_inmueble01">
+        <phrase id="fldcaption" value="imagen inmueble 01" />
+      </field>
+      <field id="imagen_inmueble02">
+        <phrase id="fldcaption" value="imagen inmueble 02" />
+      </field>
+      <field id="imagen_inmueble03">
+        <phrase id="fldcaption" value="imagen inmueble 03" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="name" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="id sucursal" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="created at" />
+      </field>
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="nombre contacto" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="email contacto" />
+      </field>
+    </table>
+    <table id="maquinaria">
+      <phrase id="tblcaption" value="maquinaria" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="name" />
+      </field>
+      <field id="lastname">
+        <phrase id="fldcaption" value="lastname" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="email" />
+      </field>
+      <field id="address">
+        <phrase id="fldcaption" value="address" />
+      </field>
+      <field id="cell">
+        <phrase id="fldcaption" value="cell" />
+      </field>
+      <field id="phone">
+        <phrase id="fldcaption" value="phone" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="id sucursal" />
+      </field>
+      <field id="tipomaquinaria">
+        <phrase id="fldcaption" value="tipomaquinaria" />
+      </field>
+      <field id="id_ciudad_maquinaria">
+        <phrase id="fldcaption" value="id ciudad maquinaria" />
+      </field>
+      <field id="id_provincia_maquinaria">
+        <phrase id="fldcaption" value="id provincia maquinaria" />
+      </field>
+      <field id="imagen_maquinaria01">
+        <phrase id="fldcaption" value="imagen maquinaria 01" />
+      </field>
+      <field id="imagen_maquinaria02">
+        <phrase id="fldcaption" value="imagen maquinaria 02" />
+      </field>
+      <field id="imagen_maquinaria03">
+        <phrase id="fldcaption" value="imagen maquinaria 03" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="tipoinmueble" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="nombre contacto" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="email contacto" />
+      </field>
+    </table>
+    <table id="mercaderia">
+      <phrase id="tblcaption" value="mercaderia" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="name" />
+      </field>
+      <field id="lastname">
+        <phrase id="fldcaption" value="lastname" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="email" />
+      </field>
+      <field id="address">
+        <phrase id="fldcaption" value="address" />
+      </field>
+      <field id="phone">
+        <phrase id="fldcaption" value="phone" />
+      </field>
+      <field id="cell">
+        <phrase id="fldcaption" value="cell" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="id sucursal" />
+      </field>
+      <field id="tipomercaderia">
+        <phrase id="fldcaption" value="tipomercaderia" />
+      </field>
+      <field id="imagen_mercaderia01">
+        <phrase id="fldcaption" value="imagen mercaderia 01" />
+      </field>
+      <field id="documento_mercaderia">
+        <phrase id="fldcaption" value="documento mercaderia" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="tipoinmueble" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="nombre contacto" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="email contacto" />
+      </field>
+    </table>
+    <table id="vehiculo">
+      <phrase id="tblcaption" value="vehiculo" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="name" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="email" />
+      </field>
+      <field id="lastname">
+        <phrase id="fldcaption" value="lastname" />
+      </field>
+      <field id="address">
+        <phrase id="fldcaption" value="address" />
+      </field>
+      <field id="phone">
+        <phrase id="fldcaption" value="phone" />
+      </field>
+      <field id="cell">
+        <phrase id="fldcaption" value="cell" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="id sucursal" />
+      </field>
+      <field id="tipovehiculo">
+        <phrase id="fldcaption" value="tipovehiculo" />
+      </field>
+      <field id="id_ciudad_vehiculo">
+        <phrase id="fldcaption" value="id ciudad vehiculo" />
+      </field>
+      <field id="id_provincia_vehiculo">
+        <phrase id="fldcaption" value="id provincia vehiculo" />
+      </field>
+      <field id="imagen_vehiculo01">
+        <phrase id="fldcaption" value="imagen vehiculo 01" />
+      </field>
+      <field id="imagen_vehiculo02">
+        <phrase id="fldcaption" value="imagen vehiculo 02" />
+      </field>
+      <field id="imagen_vehiculo03">
+        <phrase id="fldcaption" value="imagen vehiculo 03" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="nombre contacto" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="email contacto" />
+      </field>
+    </table>
+    <table id="calendario_php">
+      <phrase id="tblcaption" value="calendario" />
+    </table>
+    <table id="emailnotificaciones">
+      <phrase id="tblcaption" value="EMAIL NOTIFICACIONES" />
+      <field id="id">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="enviadopor">
+        <phrase id="fldcaption" value="ENVIADO POR" />
+      </field>
+      <field id="recibidopor">
+        <phrase id="fldcaption" value="RECIIDO POR" />
+      </field>
+      <field id="cc">
+        <phrase id="fldcaption" value="CC" />
+      </field>
+      <field id="bcc">
+        <phrase id="fldcaption" value="BCC" />
+      </field>
+      <field id="mensaje">
+        <phrase id="fldcaption" value="MENSAJE" />
+      </field>
+      <field id="leido">
+        <phrase id="fldcaption" value="LEIDO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="fechaenvio">
+        <phrase id="fldcaption" value="FECHA ENVIO" />
+      </field>
+      <field id="fecharecibido">
+        <phrase id="fldcaption" value="FECHA RECIBIDO" />
+      </field>
+      <field id="id_avaluo">
+        <phrase id="fldcaption" value="id avaluo" />
+      </field>
+    </table>
+    <table id="pago">
+      <phrase id="tblcaption" value="PAGO" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="k">
+        <phrase id="fldcaption" value="k" />
+      </field>
+      <field id="code">
+        <phrase id="fldcaption" value="CODIGO PAGO" />
+      </field>
+      <field id="cliente_id">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="status_id">
+        <phrase id="fldcaption" value="ESTADO" />
+        <phrase id="fldtagvalue1" value="" />
+        <phrase id="fldtagcaption1" value="" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="FECHA DE CREACION" />
+      </field>
+      <field id="metodopago_id">
+        <phrase id="fldcaption" value="METODO DE PAGO" />
+      </field>
+      <field id="documento_pago">
+        <phrase id="fldcaption" value="DOCUMENTO DE PAGO" />
+      </field>
+    </table>
+    <table id="pago_avaluo">
+      <phrase id="tblcaption" value="viewpagoavaluos" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="pago_id">
+        <phrase id="fldcaption" value="pago id" />
+      </field>
+      <field id="avaluo_id">
+        <phrase id="fldcaption" value="avaluo id" />
+      </field>
+      <field id="q">
+        <phrase id="fldcaption" value="q" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="id metodopago" />
+      </field>
+      <field id="monto">
+        <phrase id="fldcaption" value="monto" />
+      </field>
+      <field id="documentopago">
+        <phrase id="fldcaption" value="documentopago" />
+      </field>
+      <field id="id_banco">
+        <phrase id="fldcaption" value="id banco" />
+      </field>
+    </table>
+    <table id="viewavaluo">
+      <phrase id="tblcaption" value="AVALUO OF" />
+      <field id="id">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="codigoavaluo">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO AVALUO" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="SOLICITUD" />
+      </field>
+      <field id="id_oficialcredito">
+        <phrase id="fldcaption" value="OFICIAL CREDITO" />
+      </field>
+      <field id="id_inspector">
+        <phrase id="fldcaption" value="INSPECTOR" />
+      </field>
+      <field id="id_cliente">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO AVALUO" />
+      </field>
+      <field id="estadointerno">
+        <phrase id="fldcaption" value="ESTADO INTERNO" />
+      </field>
+      <field id="estadopago">
+        <phrase id="fldcaption" value="ESTADO PAGO" />
+      </field>
+      <field id="fecha_avaluo">
+        <phrase id="fldcaption" value="FECHA AVALUO" />
+      </field>
+      <field id="montoincial">
+        <phrase id="fldcaption" value="MONTO AVALUO" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO DE PAGO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="created at" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="informe">
+        <phrase id="fldcaption" value="INFORME" />
+      </field>
+      <field id="comentario">
+        <phrase id="fldcaption" value="comentario" />
+      </field>
+    </table>
+    <table id="viewsolicitud">
+      <phrase id="tblcaption" value="SOLICITUD OFICIAL CREDITO" />
+      <phrase id="tblpagecaption1" value="DATOS GENERALES" />
+      <phrase id="tblpagecaption2" value="DATOS INMUEBLE" />
+      <phrase id="tblpagecaption3" value="DATOS VEHICULO" />
+      <phrase id="tblpagecaption4" value="DATOS MAQUINARIA" />
+      <phrase id="tblpagecaption5" value="DATOS MERCADERIA" />
+      <phrase id="tblpagecaption6" value="DATOS ESPECIAL" />
+      <field id="id">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="NOMBRE DEL SOLICTANTE/ INTITUCION" />
+      </field>
+      <field id="cell">
+        <phrase id="fldcaption" value="CELULAR " />
+      </field>
+      <field id="phone">
+        <phrase id="fldcaption" value="TELEFONO FIJO" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="CORREO ELECTRONICO" />
+      </field>
+      <field id="address">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="NOMBRE CONTACTO" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="EMAIL CONTACTO" />
+      </field>
+      <field id="lastname">
+        <phrase id="fldcaption" value="CELULAR CONTACTO" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO INMUEBLE" />
+      </field>
+      <field id="id_ciudad_inmueble">
+        <phrase id="fldcaption" value="CIUDAD INMUEBLE" />
+      </field>
+      <field id="id_provincia_inmueble">
+        <phrase id="fldcaption" value="PROVINCIA INMUEBLE" />
+      </field>
+      <field id="imagen_inmueble01">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_inmueble02">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="imagen_inmueble03">
+        <phrase id="fldcaption" value="FOLIO REAL" />
+      </field>
+      <field id="imagen_inmueble04">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_inmueble05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_inmueble06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_inmueble07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_inmueble08">
+        <phrase id="fldcaption" value="imagen inmueble 08" />
+      </field>
+      <field id="tipovehiculo">
+        <phrase id="fldcaption" value="VEHICULO" />
+      </field>
+      <field id="id_ciudad_vehiculo">
+        <phrase id="fldcaption" value="CIUDAD VEHICULO" />
+      </field>
+      <field id="id_provincia_vehiculo">
+        <phrase id="fldcaption" value="PROVINCIA VEHICULO" />
+      </field>
+      <field id="imagen_vehiculo01">
+        <phrase id="fldcaption" value="imagen vehiculo 01" />
+      </field>
+      <field id="imagen_vehiculo02">
+        <phrase id="fldcaption" value="imagen vehiculo 02" />
+      </field>
+      <field id="imagen_vehiculo03">
+        <phrase id="fldcaption" value="imagen vehiculo 03" />
+      </field>
+      <field id="imagen_vehiculo04">
+        <phrase id="fldcaption" value="imagen vehiculo 04" />
+      </field>
+      <field id="imagen_vehiculo05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_vehiculo06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_vehiculo07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_vehiculo08">
+        <phrase id="fldcaption" value="imagen vehiculo 08" />
+      </field>
+      <field id="tipomaquinaria">
+        <phrase id="fldcaption" value="MAQUINARIA" />
+      </field>
+      <field id="id_ciudad_maquinaria">
+        <phrase id="fldcaption" value="CIUDAD MAQUINARIA" />
+      </field>
+      <field id="id_provincia_maquinaria">
+        <phrase id="fldcaption" value="PROVINCIA MAQUINARIA" />
+      </field>
+      <field id="imagen_maquinaria01">
+        <phrase id="fldcaption" value="imagen maquinaria 01" />
+      </field>
+      <field id="imagen_maquinaria02">
+        <phrase id="fldcaption" value="imagen maquinaria 02" />
+      </field>
+      <field id="imagen_maquinaria03">
+        <phrase id="fldcaption" value="imagen maquinaria 03" />
+      </field>
+      <field id="imagen_maquinaria04">
+        <phrase id="fldcaption" value="imagen maquinaria 04" />
+      </field>
+      <field id="imagen_maquinaria05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_maquinaria06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_maquinaria07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_maquinaria08">
+        <phrase id="fldcaption" value="imagen maquinaria 08" />
+      </field>
+      <field id="tipomercaderia">
+        <phrase id="fldcaption" value="MERCADERIA" />
+      </field>
+      <field id="imagen_mercaderia01">
+        <phrase id="fldcaption" value="imagen mercaderia 01" />
+      </field>
+      <field id="documento_mercaderia">
+        <phrase id="fldcaption" value="DOCUMENTO MERCADERIA" />
+      </field>
+      <field id="tipoespecial">
+        <phrase id="fldcaption" value="ESPECIAL" />
+      </field>
+      <field id="imagen_tipoespecial01">
+        <phrase id="fldcaption" value="imagen tipoespecial 01" />
       </field>
       <field id="is_active">
         <phrase id="fldcaption" value="is active" />
       </field>
+      <field id="documentos">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
       <field id="created_at">
         <phrase id="fldcaption" value="created at" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+    </table>
+    <table id="core_php">
+      <phrase id="tblcaption" value="core" />
+    </table>
+    <table id="tipodocumento">
+      <phrase id="tblcaption" value="tipodocumento" />
+      <field id="id">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="nombre">
+        <phrase id="fldcaption" value="NOMBRE" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+    </table>
+    <table id="viewavaluosc">
+      <phrase id="tblcaption" value="AVALUO SEC" />
+      <field id="id">
+        <phrase id="fldcaption" value="CODIGO DE SOLICITUD" />
+      </field>
+      <field id="codigoavaluo">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO INMUEBLE" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="SOLICITUD" />
+      </field>
+      <field id="id_oficialcredito">
+        <phrase id="fldcaption" value="OFICIAL CREDITO" />
+      </field>
+      <field id="id_inspector">
+        <phrase id="fldcaption" value="INSPECTOR" />
+      </field>
+      <field id="id_cliente">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="estadointerno">
+        <phrase id="fldcaption" value="ESTADO INTERNO" />
+      </field>
+      <field id="estadopago">
+        <phrase id="fldcaption" value="ESTADO PAGO" />
+      </field>
+      <field id="fecha_avaluo">
+        <phrase id="fldcaption" value="FECHA AVALUO" />
+      </field>
+      <field id="montoincial">
+        <phrase id="fldcaption" value="MONTO INCIAL" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO PAGO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+      <field id="monto_pago">
+        <phrase id="fldcaption" value="monto pago" />
+      </field>
+      <field id="comentario">
+        <phrase id="fldcaption" value="comentario" />
+      </field>
+      <field id="documento_pago">
+        <phrase id="fldcaption" value="documento pago" />
+      </field>
+    </table>
+    <table id="getapirestwordpress_php">
+      <phrase id="tblcaption" value="getApiRestWordPress" />
+    </table>
+    <table id="offline_messages">
+      <phrase id="tblcaption" value="offline messages" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="timestamp">
+        <phrase id="fldcaption" value="timestamp" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="name" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="email" />
+      </field>
+      <field id="message">
+        <phrase id="fldcaption" value="message" />
+      </field>
+      <field id="ip">
+        <phrase id="fldcaption" value="ip" />
+      </field>
+      <field id="user_agent">
+        <phrase id="fldcaption" value="user agent" />
+      </field>
+    </table>
+    <table id="areas">
+      <phrase id="tblcaption" value="areas" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="name" />
+      </field>
+      <field id="geolocations">
+        <phrase id="fldcaption" value="geolocations" />
+      </field>
+      <field id="keywords">
+        <phrase id="fldcaption" value="keywords" />
+      </field>
+    </table>
+    <table id="companies">
+      <phrase id="tblcaption" value="companies" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="company">
+        <phrase id="fldcaption" value="company" />
+      </field>
+      <field id="details">
+        <phrase id="fldcaption" value="details" />
+      </field>
+      <field id="latitude">
+        <phrase id="fldcaption" value="latitude" />
+      </field>
+      <field id="longitude">
+        <phrase id="fldcaption" value="longitude" />
+      </field>
+      <field id="telephone">
+        <phrase id="fldcaption" value="telephone" />
+      </field>
+      <field id="keywords">
+        <phrase id="fldcaption" value="keywords" />
+      </field>
+    </table>
+    <table id="configuracion">
+      <phrase id="tblcaption" value="configuracion" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="tipo">
+        <phrase id="fldcaption" value="tipo" />
+      </field>
+      <field id="detalle">
+        <phrase id="fldcaption" value="detalle" />
+      </field>
+      <field id="keywords">
+        <phrase id="fldcaption" value="keywords" />
+      </field>
+    </table>
+    <table id="streets">
+      <phrase id="tblcaption" value="streets" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="name" />
+      </field>
+      <field id="geolocations">
+        <phrase id="fldcaption" value="geolocations" />
+      </field>
+      <field id="keywords">
+        <phrase id="fldcaption" value="keywords" />
+      </field>
+    </table>
+    <table id="viewdocumentosavaluosc">
+      <phrase id="tblcaption" value="ADJUNTOS SEC" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="DESCRIPCION" />
+      </field>
+      <field id="imagen">
+        <phrase id="fldcaption" value="DOCUMENTO" />
+      </field>
+      <field id="avaluo">
+        <phrase id="fldcaption" value="TIPO AVALUO" />
+      </field>
+      <field id="path_drive">
+        <phrase id="fldcaption" value="DRIVE" />
+      </field>
+      <field id="id_tipodocumento">
+        <phrase id="fldcaption" value="TIPO DOCUMENTO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+    </table>
+    <table id="viewsolicitudinspector">
+      <phrase id="tblcaption" value="SOLICITUD INSPECTOR" />
+      <phrase id="tblpagecaption1" value="DATOS GENERALES" />
+      <phrase id="tblpagecaption2" value="DATOS INMUEBLE" />
+      <phrase id="tblpagecaption3" value="DATOS VEHICULO" />
+      <phrase id="tblpagecaption4" value="DATOS MAQUINARIA" />
+      <phrase id="tblpagecaption5" value="DATOS MERCADERIA" />
+      <phrase id="tblpagecaption6" value="DATOS ESPECIAL" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="NOMBRES" />
+      </field>
+      <field id="lastname">
+        <phrase id="fldcaption" value="APELLIDOS" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="CORREO ELECTRONICO" />
+      </field>
+      <field id="address">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="NOMBRE CONTACTO" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="EMAIL CONTACTO" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
+      </field>
+      <field id="phone">
+        <phrase id="fldcaption" value="TELEOFONO" />
+      </field>
+      <field id="cell">
+        <phrase id="fldcaption" value="CELULAR" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="tipoinmueble" />
+      </field>
+      <field id="id_ciudad_inmueble">
+        <phrase id="fldcaption" value="CIUDAD INMUEBLE" />
+      </field>
+      <field id="id_provincia_inmueble">
+        <phrase id="fldcaption" value="PROVINCIA INMUEBLE" />
+      </field>
+      <field id="imagen_inmueble01">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_inmueble02">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="imagen_inmueble03">
+        <phrase id="fldcaption" value="FOLIO REAL" />
+      </field>
+      <field id="imagen_inmueble04">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_inmueble05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_inmueble06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_inmueble07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_inmueble08">
+        <phrase id="fldcaption" value="imagen inmueble 08" />
+      </field>
+      <field id="tipovehiculo">
+        <phrase id="fldcaption" value="VEHICULO" />
+      </field>
+      <field id="id_ciudad_vehiculo">
+        <phrase id="fldcaption" value="CIUDAD VEHICULO" />
+      </field>
+      <field id="id_provincia_vehiculo">
+        <phrase id="fldcaption" value="PROVINCIA VEHICULO" />
+      </field>
+      <field id="imagen_vehiculo01">
+        <phrase id="fldcaption" value="imagen vehiculo 01" />
+      </field>
+      <field id="imagen_vehiculo02">
+        <phrase id="fldcaption" value="imagen vehiculo 02" />
+      </field>
+      <field id="imagen_vehiculo03">
+        <phrase id="fldcaption" value="imagen vehiculo 03" />
+      </field>
+      <field id="imagen_vehiculo04">
+        <phrase id="fldcaption" value="imagen vehiculo 04" />
+      </field>
+      <field id="imagen_vehiculo05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_vehiculo06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_vehiculo07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_vehiculo08">
+        <phrase id="fldcaption" value="imagen vehiculo 08" />
+      </field>
+      <field id="tipomaquinaria">
+        <phrase id="fldcaption" value="MAQUINARIA" />
+      </field>
+      <field id="id_ciudad_maquinaria">
+        <phrase id="fldcaption" value="CIUDAD MAQUINARIA" />
+      </field>
+      <field id="id_provincia_maquinaria">
+        <phrase id="fldcaption" value="PROVINCIA MAQUINARIA" />
+      </field>
+      <field id="imagen_maquinaria01">
+        <phrase id="fldcaption" value="imagen maquinaria 01" />
+      </field>
+      <field id="imagen_maquinaria02">
+        <phrase id="fldcaption" value="imagen maquinaria 02" />
+      </field>
+      <field id="imagen_maquinaria03">
+        <phrase id="fldcaption" value="imagen maquinaria 03" />
+      </field>
+      <field id="imagen_maquinaria04">
+        <phrase id="fldcaption" value="imagen maquinaria 04" />
+      </field>
+      <field id="imagen_maquinaria05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_maquinaria06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_maquinaria07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_maquinaria08">
+        <phrase id="fldcaption" value="imagen maquinaria 08" />
+      </field>
+      <field id="tipomercaderia">
+        <phrase id="fldcaption" value="MERCADERIA" />
+      </field>
+      <field id="imagen_mercaderia01">
+        <phrase id="fldcaption" value="imagen mercaderia 01" />
+      </field>
+      <field id="documento_mercaderia">
+        <phrase id="fldcaption" value="DOCUMENTO MERCADERIA" />
+      </field>
+      <field id="tipoespecial">
+        <phrase id="fldcaption" value="ESPECIAL" />
+      </field>
+      <field id="imagen_tipoespecial01">
+        <phrase id="fldcaption" value="imagen tipoespecial 01" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="is active" />
+      </field>
+      <field id="documentos">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="created at" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+    </table>
+    <table id="viewavaluoinspector">
+      <phrase id="tblcaption" value="AVALUO INSPECTOR" />
+      <field id="id">
+        <phrase id="fldcaption" value="CODIGO DE SOLICITUD" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO INMUEBLE" />
+      </field>
+      <field id="codigoavaluo">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="SOLICITUD" />
+      </field>
+      <field id="id_oficialcredito">
+        <phrase id="fldcaption" value="OFICIAL CREDITO" />
+      </field>
+      <field id="id_inspector">
+        <phrase id="fldcaption" value="INSPECTOR" />
+      </field>
+      <field id="id_cliente">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="estadointerno">
+        <phrase id="fldcaption" value="ESTADO INTERNO" />
+      </field>
+      <field id="estadopago">
+        <phrase id="fldcaption" value="ESTADO PAGO" />
+      </field>
+      <field id="fecha_avaluo">
+        <phrase id="fldcaption" value="FECHA AVALUO" />
+      </field>
+      <field id="montoincial">
+        <phrase id="fldcaption" value="MONTO INCIAL" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO PAGO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+      <field id="comentario">
+        <phrase id="fldcaption" value="comentario" />
+      </field>
+    </table>
+    <table id="viewdocumentoinspector">
+      <phrase id="tblcaption" value="ADJUNTOS INSPECTOR" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="DESCRIPCION" />
+      </field>
+      <field id="imagen">
+        <phrase id="fldcaption" value="DOCUMENTO" />
+      </field>
+      <field id="avaluo">
+        <phrase id="fldcaption" value="TIPO AVALUO" />
+      </field>
+      <field id="path_drive">
+        <phrase id="fldcaption" value="DRIVE" />
+      </field>
+      <field id="id_tipodocumento">
+        <phrase id="fldcaption" value="TIPO DOCUMENTO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+    </table>
+    <table id="viewsolicitudsupervisor">
+      <phrase id="tblcaption" value="SOLICITUD SUPERVISOR" />
+      <phrase id="tblpagecaption1" value="DATOS GENERALES" />
+      <phrase id="tblpagecaption2" value="DATOS INMUEBLE" />
+      <phrase id="tblpagecaption3" value="DATOS VEHICULO" />
+      <phrase id="tblpagecaption4" value="DATOS MAQUINARIA" />
+      <phrase id="tblpagecaption5" value="DATOS MERCADERIA" />
+      <phrase id="tblpagecaption6" value="DATOS ESPECIAL" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="NOMBRES" />
+      </field>
+      <field id="lastname">
+        <phrase id="fldcaption" value="APELLIDOS" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="CORREO ELECTRONICO" />
+      </field>
+      <field id="address">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="NOMBRE CONTACTO" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="EMAIL CONTACTO" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
+      </field>
+      <field id="phone">
+        <phrase id="fldcaption" value="TELEOFONO" />
+      </field>
+      <field id="cell">
+        <phrase id="fldcaption" value="CELULAR" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="tipoinmueble" />
+      </field>
+      <field id="id_ciudad_inmueble">
+        <phrase id="fldcaption" value="CIUDAD INMUEBLE" />
+      </field>
+      <field id="id_provincia_inmueble">
+        <phrase id="fldcaption" value="PROVINCIA INMUEBLE" />
+      </field>
+      <field id="imagen_inmueble01">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_inmueble02">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="imagen_inmueble03">
+        <phrase id="fldcaption" value="FOLIO REAL" />
+      </field>
+      <field id="imagen_inmueble04">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_inmueble05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_inmueble06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_inmueble07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_inmueble08">
+        <phrase id="fldcaption" value="imagen inmueble 08" />
+      </field>
+      <field id="tipovehiculo">
+        <phrase id="fldcaption" value="VEHICULO" />
+      </field>
+      <field id="id_ciudad_vehiculo">
+        <phrase id="fldcaption" value="CIUDAD VEHICULO" />
+      </field>
+      <field id="id_provincia_vehiculo">
+        <phrase id="fldcaption" value="PROVINCIA VEHICULO" />
+      </field>
+      <field id="imagen_vehiculo01">
+        <phrase id="fldcaption" value="imagen vehiculo 01" />
+      </field>
+      <field id="imagen_vehiculo02">
+        <phrase id="fldcaption" value="imagen vehiculo 02" />
+      </field>
+      <field id="imagen_vehiculo03">
+        <phrase id="fldcaption" value="imagen vehiculo 03" />
+      </field>
+      <field id="imagen_vehiculo04">
+        <phrase id="fldcaption" value="imagen vehiculo 04" />
+      </field>
+      <field id="imagen_vehiculo05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_vehiculo06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_vehiculo07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_vehiculo08">
+        <phrase id="fldcaption" value="imagen vehiculo 08" />
+      </field>
+      <field id="tipomaquinaria">
+        <phrase id="fldcaption" value="MAQUINARIA" />
+      </field>
+      <field id="id_ciudad_maquinaria">
+        <phrase id="fldcaption" value="CIUDAD MAQUINARIA" />
+      </field>
+      <field id="id_provincia_maquinaria">
+        <phrase id="fldcaption" value="PROVINCIA MAQUINARIA" />
+      </field>
+      <field id="imagen_maquinaria01">
+        <phrase id="fldcaption" value="imagen maquinaria 01" />
+      </field>
+      <field id="imagen_maquinaria02">
+        <phrase id="fldcaption" value="imagen maquinaria 02" />
+      </field>
+      <field id="imagen_maquinaria03">
+        <phrase id="fldcaption" value="imagen maquinaria 03" />
+      </field>
+      <field id="imagen_maquinaria04">
+        <phrase id="fldcaption" value="imagen maquinaria 04" />
+      </field>
+      <field id="imagen_maquinaria05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_maquinaria06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_maquinaria07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_maquinaria08">
+        <phrase id="fldcaption" value="imagen maquinaria 08" />
+      </field>
+      <field id="tipomercaderia">
+        <phrase id="fldcaption" value="MERCADERIA" />
+      </field>
+      <field id="imagen_mercaderia01">
+        <phrase id="fldcaption" value="imagen mercaderia 01" />
+      </field>
+      <field id="documento_mercaderia">
+        <phrase id="fldcaption" value="DOCUMENTO MERCADERIA" />
+      </field>
+      <field id="tipoespecial">
+        <phrase id="fldcaption" value="ESPECIAL" />
+      </field>
+      <field id="imagen_tipoespecial01">
+        <phrase id="fldcaption" value="imagen tipoespecial 01" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="is active" />
+      </field>
+      <field id="documentos">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="created at" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+    </table>
+    <table id="viewavaluosupervisor">
+      <phrase id="tblcaption" value="AVALUO SUPERVISOR" />
+      <field id="id">
+        <phrase id="fldcaption" value="CODIGO DE SOLICITUD" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO INMUEBLE" />
+      </field>
+      <field id="codigoavaluo">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="SOLICITUD" />
+      </field>
+      <field id="id_oficialcredito">
+        <phrase id="fldcaption" value="OFICIAL CREDITO" />
+      </field>
+      <field id="id_inspector">
+        <phrase id="fldcaption" value="INSPECTOR" />
+      </field>
+      <field id="id_cliente">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="estadointerno">
+        <phrase id="fldcaption" value="ESTADO INTERNO" />
+      </field>
+      <field id="estadopago">
+        <phrase id="fldcaption" value="ESTADO PAGO" />
+      </field>
+      <field id="fecha_avaluo">
+        <phrase id="fldcaption" value="FECHA AVALUO" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO PAGO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="id sucursal" />
+      </field>
+      <field id="informe">
+        <phrase id="fldcaption" value="RESUMEN EJECUTIVO" />
+      </field>
+      <field id="monto_pago">
+        <phrase id="fldcaption" value="MONTO ADELANTO" />
+      </field>
+      <field id="montoincial">
+        <phrase id="fldcaption" value="MONTO POR COBRAR" />
+      </field>
+      <field id="comentario">
+        <phrase id="fldcaption" value="COMENTARIOS" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="TIEMPO" />
+      </field>
+    </table>
+    <table id="viewdocumentosupervisor">
+      <phrase id="tblcaption" value="ADJUNTOS SUPERVISOR" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="DESCRIPCION" />
+      </field>
+      <field id="imagen">
+        <phrase id="fldcaption" value="DOCUMENTO" />
+      </field>
+      <field id="avaluo">
+        <phrase id="fldcaption" value="TIPO AVALUO" />
+      </field>
+      <field id="path_drive">
+        <phrase id="fldcaption" value="DRIVE" />
+      </field>
+      <field id="id_tipodocumento">
+        <phrase id="fldcaption" value="TIPO DOCUMENTO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+    </table>
+    <table id="viewdocumentooficialcredito">
+      <phrase id="tblcaption" value="ADJUNTOS OF" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="DESCRIPCION" />
+      </field>
+      <field id="imagen">
+        <phrase id="fldcaption" value="DOCUMENTO" />
+      </field>
+      <field id="avaluo">
+        <phrase id="fldcaption" value="TIPO AVALUO" />
+      </field>
+      <field id="path_drive">
+        <phrase id="fldcaption" value="DRIVE" />
+      </field>
+      <field id="id_tipodocumento">
+        <phrase id="fldcaption" value="TIPO DOCUMENTO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+    </table>
+    <table id="dashboardv1_php">
+      <phrase id="tblcaption" value="Dashboard v1" />
+    </table>
+    <table id="dashboardv2_php">
+      <phrase id="tblcaption" value="dashboardv2" />
+    </table>
+    <table id="reservacionesviewsecretaria_php">
+      <phrase id="tblcaption" value="reservacionesviewsecretaria" />
+    </table>
+    <table id="historico">
+      <phrase id="tblcaption" value="HISTORICO" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="proceso">
+        <phrase id="fldcaption" value="proceso" />
+      </field>
+      <field id="responsable">
+        <phrase id="fldcaption" value="responsable" />
+      </field>
+      <field id="ingreso">
+        <phrase id="fldcaption" value="ingreso" />
+      </field>
+      <field id="salida">
+        <phrase id="fldcaption" value="salida" />
+      </field>
+      <field id="comentario">
+        <phrase id="fldcaption" value="comentario" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="id solicitud" />
+      </field>
+      <field id="id_avaluo">
+        <phrase id="fldcaption" value="id avaluo" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="id sucursal" />
+      </field>
+    </table>
+    <table id="historicoview_php">
+      <phrase id="tblcaption" value="historico" />
+    </table>
+    <table id="viewdocumentosavaluoframe">
+      <phrase id="tblcaption" value="ADJUNTOS HISTORIAL" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="DESCRIPCION" />
+      </field>
+      <field id="imagen">
+        <phrase id="fldcaption" value="DOCUMENTO" />
+      </field>
+      <field id="avaluo">
+        <phrase id="fldcaption" value="TIPO AVALUO" />
+      </field>
+      <field id="path_drive">
+        <phrase id="fldcaption" value="DRIVE" />
+      </field>
+      <field id="id_tipodocumento">
+        <phrase id="fldcaption" value="TIPO DOCUMENTO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+    </table>
+    <table id="viewsolicitudframe">
+      <phrase id="tblcaption" value="SOLICITUD FRAME" />
+      <phrase id="tblpagecaption1" value="DATOS GENERALES" />
+      <phrase id="tblpagecaption2" value="DATOS INMUEBLE" />
+      <phrase id="tblpagecaption3" value="DATOS VEHICULO" />
+      <phrase id="tblpagecaption4" value="DATOS MAQUINARIA" />
+      <phrase id="tblpagecaption5" value="DATOS MERCADERIA" />
+      <phrase id="tblpagecaption6" value="DATOS ESPECIAL" />
+      <field id="id">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="name">
+        <phrase id="fldcaption" value="NOMBRE DEL SOLICTANTE/ INTITUCION" />
+      </field>
+      <field id="lastname">
+        <phrase id="fldcaption" value="CELULAR CONTACTO" />
+      </field>
+      <field id="_email">
+        <phrase id="fldcaption" value="CORREO ELECTRONICO" />
+      </field>
+      <field id="address">
+        <phrase id="fldcaption" value="DIRECCION" />
+      </field>
+      <field id="nombre_contacto">
+        <phrase id="fldcaption" value="NOMBRE CONTACTO" />
+      </field>
+      <field id="email_contacto">
+        <phrase id="fldcaption" value="EMAIL CONTACTO" />
+      </field>
+      <field id="latitud">
+        <phrase id="fldcaption" value="latitud" />
+      </field>
+      <field id="longitud">
+        <phrase id="fldcaption" value="longitud" />
+      </field>
+      <field id="phone">
+        <phrase id="fldcaption" value="TELEFONO FIJO" />
+      </field>
+      <field id="cell">
+        <phrase id="fldcaption" value="CELULAR " />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO INMUEBLE" />
+      </field>
+      <field id="id_ciudad_inmueble">
+        <phrase id="fldcaption" value="CIUDAD INMUEBLE" />
+      </field>
+      <field id="id_provincia_inmueble">
+        <phrase id="fldcaption" value="PROVINCIA INMUEBLE" />
+      </field>
+      <field id="imagen_inmueble01">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_inmueble02">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="imagen_inmueble03">
+        <phrase id="fldcaption" value="FOLIO REAL" />
+      </field>
+      <field id="imagen_inmueble04">
+        <phrase id="fldcaption" value="PLANO" />
+      </field>
+      <field id="imagen_inmueble05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_inmueble06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_inmueble07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_inmueble08">
+        <phrase id="fldcaption" value="imagen inmueble 08" />
+      </field>
+      <field id="tipovehiculo">
+        <phrase id="fldcaption" value="VEHICULO" />
+      </field>
+      <field id="id_ciudad_vehiculo">
+        <phrase id="fldcaption" value="CIUDAD VEHICULO" />
+      </field>
+      <field id="id_provincia_vehiculo">
+        <phrase id="fldcaption" value="PROVINCIA VEHICULO" />
+      </field>
+      <field id="imagen_vehiculo01">
+        <phrase id="fldcaption" value="imagen vehiculo 01" />
+      </field>
+      <field id="imagen_vehiculo02">
+        <phrase id="fldcaption" value="imagen vehiculo 02" />
+      </field>
+      <field id="imagen_vehiculo03">
+        <phrase id="fldcaption" value="imagen vehiculo 03" />
+      </field>
+      <field id="imagen_vehiculo04">
+        <phrase id="fldcaption" value="imagen vehiculo 04" />
+      </field>
+      <field id="imagen_vehiculo05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_vehiculo06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_vehiculo07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_vehiculo08">
+        <phrase id="fldcaption" value="imagen vehiculo 08" />
+      </field>
+      <field id="tipomaquinaria">
+        <phrase id="fldcaption" value="MAQUINARIA" />
+      </field>
+      <field id="id_ciudad_maquinaria">
+        <phrase id="fldcaption" value="CIUDAD MAQUINARIA" />
+      </field>
+      <field id="id_provincia_maquinaria">
+        <phrase id="fldcaption" value="PROVINCIA MAQUINARIA" />
+      </field>
+      <field id="imagen_maquinaria01">
+        <phrase id="fldcaption" value="imagen maquinaria 01" />
+      </field>
+      <field id="imagen_maquinaria02">
+        <phrase id="fldcaption" value="imagen maquinaria 02" />
+      </field>
+      <field id="imagen_maquinaria03">
+        <phrase id="fldcaption" value="imagen maquinaria 03" />
+      </field>
+      <field id="imagen_maquinaria04">
+        <phrase id="fldcaption" value="imagen maquinaria 04" />
+      </field>
+      <field id="imagen_maquinaria05">
+        <phrase id="fldcaption" value="IMPUESTOS" />
+      </field>
+      <field id="imagen_maquinaria06">
+        <phrase id="fldcaption" value="RUAT" />
+      </field>
+      <field id="imagen_maquinaria07">
+        <phrase id="fldcaption" value="POLIZA" />
+      </field>
+      <field id="imagen_maquinaria08">
+        <phrase id="fldcaption" value="imagen maquinaria 08" />
+      </field>
+      <field id="tipomercaderia">
+        <phrase id="fldcaption" value="MERCADERIA" />
+      </field>
+      <field id="imagen_mercaderia01">
+        <phrase id="fldcaption" value="imagen mercaderia 01" />
+      </field>
+      <field id="documento_mercaderia">
+        <phrase id="fldcaption" value="DOCUMENTO MERCADERIA" />
+      </field>
+      <field id="tipoespecial">
+        <phrase id="fldcaption" value="ESPECIAL" />
+      </field>
+      <field id="imagen_tipoespecial01">
+        <phrase id="fldcaption" value="imagen tipoespecial 01" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="is active" />
+      </field>
+      <field id="documentos">
+        <phrase id="fldcaption" value="DOCUMENTOS" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="created at" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+    </table>
+    <table id="viewpagoavaluos">
+      <phrase id="tblcaption" value="Historial de Pagos" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="pago_id">
+        <phrase id="fldcaption" value="pago id" />
+      </field>
+      <field id="avaluo_id">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="q">
+        <phrase id="fldcaption" value="CANTIDAD" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO DE PAGO" />
+      </field>
+      <field id="id_banco">
+        <phrase id="fldcaption" value="BANCO" />
+      </field>
+      <field id="monto">
+        <phrase id="fldcaption" value="MONTO" />
+      </field>
+      <field id="documentopago">
+        <phrase id="fldcaption" value="DOCUMENTO DE PAGO" />
+      </field>
+    </table>
+    <table id="viewavaluoinspectorhistorico">
+      <phrase id="tblcaption" value="AVALUOS HISTORIAL INSPECTOR" />
+      <field id="id">
+        <phrase id="fldcaption" value="CODIGO DE SOLICITUD" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO INMUEBLE" />
+      </field>
+      <field id="codigoavaluo">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="SOLICITUD" />
+      </field>
+      <field id="id_oficialcredito">
+        <phrase id="fldcaption" value="OFICIAL CREDITO" />
+      </field>
+      <field id="id_inspector">
+        <phrase id="fldcaption" value="INSPECTOR" />
+      </field>
+      <field id="id_cliente">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="estadointerno">
+        <phrase id="fldcaption" value="ESTADO INTERNO" />
+      </field>
+      <field id="estadopago">
+        <phrase id="fldcaption" value="ESTADO PAGO" />
+      </field>
+      <field id="fecha_avaluo">
+        <phrase id="fldcaption" value="FECHA AVALUO" />
+      </field>
+      <field id="montoincial">
+        <phrase id="fldcaption" value="MONTO INCIAL" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO PAGO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+      <field id="comentario">
+        <phrase id="fldcaption" value="comentario" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="id sucursal" />
+      </field>
+    </table>
+    <table id="viewavaluosupervisorhistorial">
+      <phrase id="tblcaption" value="AVALUO SUPERVISOR HISTORIAL" />
+      <field id="id">
+        <phrase id="fldcaption" value="CODIGO DE SOLICITUD" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO INMUEBLE" />
+      </field>
+      <field id="codigoavaluo">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="SOLICITUD" />
+      </field>
+      <field id="id_oficialcredito">
+        <phrase id="fldcaption" value="OFICIAL CREDITO" />
+      </field>
+      <field id="id_inspector">
+        <phrase id="fldcaption" value="INSPECTOR" />
+      </field>
+      <field id="id_cliente">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="INACTIVO" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="ACTIVO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="estadointerno">
+        <phrase id="fldcaption" value="ESTADO INTERNO" />
+      </field>
+      <field id="estadopago">
+        <phrase id="fldcaption" value="ESTADO PAGO" />
+      </field>
+      <field id="fecha_avaluo">
+        <phrase id="fldcaption" value="FECHA AVALUO" />
+      </field>
+      <field id="montoincial">
+        <phrase id="fldcaption" value="MONTO POR COBRAR" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO PAGO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="CREADO" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="id sucursal" />
+      </field>
+      <field id="informe">
+        <phrase id="fldcaption" value="resumen ejecutivo" />
+      </field>
+      <field id="monto_pago">
+        <phrase id="fldcaption" value="MONTO ADELANTO" />
+      </field>
+      <field id="comentario">
+        <phrase id="fldcaption" value="COMENTARIOS" />
+      </field>
+    </table>
+    <table id="estado_sms">
+      <phrase id="tblcaption" value="estado sms" />
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="descripcion">
+        <phrase id="fldcaption" value="DESCRIPCION" />
+      </field>
+    </table>
+    <table id="mensaje">
+      <phrase id="tblcaption" value="mensaje" />
+      <field id="mensaje_id">
+        <phrase id="fldcaption" value="MENSAJE ID" />
+      </field>
+      <field id="telefonos">
+        <phrase id="fldcaption" value="TELEFONOS" />
+      </field>
+      <field id="mensaje">
+        <phrase id="fldcaption" value="MENSAJE" />
+      </field>
+    </table>
+    <table id="sms_data">
+      <phrase id="tblcaption" value="sms data" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="celular">
+        <phrase id="fldcaption" value="CELULAR" />
+      </field>
+      <field id="mensaje">
+        <phrase id="fldcaption" value="MENSAJE" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO" />
+      </field>
+      <field id="fecha">
+        <phrase id="fldcaption" value="FECHA" />
       </field>
     </table>
   </project>

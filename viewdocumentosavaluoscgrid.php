@@ -337,7 +337,7 @@ $viewdocumentosavaluosc_grid->ListOptions->Render("body", "left", $viewdocumento
 <?php if ($viewdocumentosavaluosc_grid->RowAction == "insert") { // Add record ?>
 <span id="el$rowindex$_viewdocumentosavaluosc_imagen" class="form-group viewdocumentosavaluosc_imagen">
 <div id="fd_x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_imagen">
-<span title="<?php echo $viewdocumentosavaluosc->imagen->FldTitle() ? $viewdocumentosavaluosc->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentosavaluosc->imagen->ReadOnly || $viewdocumentosavaluosc->imagen->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewdocumentosavaluosc->imagen->FldTitle() ? $viewdocumentosavaluosc->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentosavaluosc->imagen->ReadOnly || $viewdocumentosavaluosc->imagen->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewdocumentosavaluosc" data-field="x_imagen" name="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_imagen" id="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_imagen"<?php echo $viewdocumentosavaluosc->imagen->EditAttributes() ?>>
 </span>
@@ -359,7 +359,7 @@ $viewdocumentosavaluosc_grid->ListOptions->Render("body", "left", $viewdocumento
 <?php } else  { // Edit record ?>
 <span id="el<?php echo $viewdocumentosavaluosc_grid->RowCnt ?>_viewdocumentosavaluosc_imagen" class="form-group viewdocumentosavaluosc_imagen">
 <div id="fd_x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_imagen">
-<span title="<?php echo $viewdocumentosavaluosc->imagen->FldTitle() ? $viewdocumentosavaluosc->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentosavaluosc->imagen->ReadOnly || $viewdocumentosavaluosc->imagen->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewdocumentosavaluosc->imagen->FldTitle() ? $viewdocumentosavaluosc->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentosavaluosc->imagen->ReadOnly || $viewdocumentosavaluosc->imagen->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewdocumentosavaluosc" data-field="x_imagen" name="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_imagen" id="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_imagen"<?php echo $viewdocumentosavaluosc->imagen->EditAttributes() ?>>
 </span>
@@ -431,7 +431,7 @@ $viewdocumentosavaluosc_grid->ListOptions->Render("body", "left", $viewdocumento
 <?php if ($viewdocumentosavaluosc->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $viewdocumentosavaluosc_grid->RowCnt ?>_viewdocumentosavaluosc_id_tipodocumento" class="form-group viewdocumentosavaluosc_id_tipodocumento">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento"><?php echo (strval($viewdocumentosavaluosc->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentosavaluosc->id_tipodocumento->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento"><?php echo (strval($viewdocumentosavaluosc->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentosavaluosc->id_tipodocumento->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewdocumentosavaluosc->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewdocumentosavaluosc->id_tipodocumento->ReadOnly || $viewdocumentosavaluosc->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewdocumentosavaluosc" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewdocumentosavaluosc->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento" id="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento" value="<?php echo $viewdocumentosavaluosc->id_tipodocumento->CurrentValue ?>"<?php echo $viewdocumentosavaluosc->id_tipodocumento->EditAttributes() ?>>
@@ -444,7 +444,7 @@ $viewdocumentosavaluosc_grid->ListOptions->Render("body", "left", $viewdocumento
 <?php if ($viewdocumentosavaluosc->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $viewdocumentosavaluosc_grid->RowCnt ?>_viewdocumentosavaluosc_id_tipodocumento" class="form-group viewdocumentosavaluosc_id_tipodocumento">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento"><?php echo (strval($viewdocumentosavaluosc->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentosavaluosc->id_tipodocumento->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento"><?php echo (strval($viewdocumentosavaluosc->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentosavaluosc->id_tipodocumento->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewdocumentosavaluosc->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewdocumentosavaluosc->id_tipodocumento->ReadOnly || $viewdocumentosavaluosc->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewdocumentosavaluosc" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewdocumentosavaluosc->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento" id="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento" value="<?php echo $viewdocumentosavaluosc->id_tipodocumento->CurrentValue ?>"<?php echo $viewdocumentosavaluosc->id_tipodocumento->EditAttributes() ?>>
@@ -530,7 +530,7 @@ $viewdocumentosavaluosc_grid->ListOptions->Render("body", "left", $viewdocumento
 		<td data-name="imagen">
 <span id="el$rowindex$_viewdocumentosavaluosc_imagen" class="form-group viewdocumentosavaluosc_imagen">
 <div id="fd_x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_imagen">
-<span title="<?php echo $viewdocumentosavaluosc->imagen->FldTitle() ? $viewdocumentosavaluosc->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentosavaluosc->imagen->ReadOnly || $viewdocumentosavaluosc->imagen->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewdocumentosavaluosc->imagen->FldTitle() ? $viewdocumentosavaluosc->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentosavaluosc->imagen->ReadOnly || $viewdocumentosavaluosc->imagen->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewdocumentosavaluosc" data-field="x_imagen" name="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_imagen" id="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_imagen"<?php echo $viewdocumentosavaluosc->imagen->EditAttributes() ?>>
 </span>
@@ -576,7 +576,7 @@ $viewdocumentosavaluosc_grid->ListOptions->Render("body", "left", $viewdocumento
 <?php if ($viewdocumentosavaluosc->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_viewdocumentosavaluosc_id_tipodocumento" class="form-group viewdocumentosavaluosc_id_tipodocumento">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento"><?php echo (strval($viewdocumentosavaluosc->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentosavaluosc->id_tipodocumento->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento"><?php echo (strval($viewdocumentosavaluosc->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentosavaluosc->id_tipodocumento->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewdocumentosavaluosc->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewdocumentosavaluosc->id_tipodocumento->ReadOnly || $viewdocumentosavaluosc->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewdocumentosavaluosc" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewdocumentosavaluosc->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento" id="x<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>_id_tipodocumento" value="<?php echo $viewdocumentosavaluosc->id_tipodocumento->CurrentValue ?>"<?php echo $viewdocumentosavaluosc->id_tipodocumento->EditAttributes() ?>>
@@ -597,7 +597,7 @@ $viewdocumentosavaluosc_grid->ListOptions->Render("body", "left", $viewdocumento
 <?php
 
 // Render list options (body, right)
-$viewdocumentosavaluosc_grid->ListOptions->Render("body", "right", $viewdocumentosavaluosc_grid->RowIndex);
+$viewdocumentosavaluosc_grid->ListOptions->Render("body", "right", $viewdocumentosavaluosc_grid->RowCnt);
 ?>
 <script type="text/javascript">
 fviewdocumentosavaluoscgrid.UpdateOpts(<?php echo $viewdocumentosavaluosc_grid->RowIndex ?>);

@@ -1,7 +1,5 @@
 <?php
 
-// id
-// codigoavaluo
 // id_solicitud
 // id_oficialcredito
 // id_inspector
@@ -10,34 +8,13 @@
 // estadointerno
 // estadopago
 // fecha_avaluo
+// comentario
 
 ?>
 <?php if ($viewavaluoinspector->Visible) { ?>
 <div class="ewMasterDiv">
 <table id="tbl_viewavaluoinspectormaster" class="table ewViewTable ewMasterTable ewVertical">
 	<tbody>
-<?php if ($viewavaluoinspector->id->Visible) { // id ?>
-		<tr id="r_id">
-			<td class="col-sm-3"><?php echo $viewavaluoinspector->id->FldCaption() ?></td>
-			<td<?php echo $viewavaluoinspector->id->CellAttributes() ?>>
-<span id="el_viewavaluoinspector_id">
-<span<?php echo $viewavaluoinspector->id->ViewAttributes() ?>>
-<?php echo $viewavaluoinspector->id->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($viewavaluoinspector->codigoavaluo->Visible) { // codigoavaluo ?>
-		<tr id="r_codigoavaluo">
-			<td class="col-sm-3"><?php echo $viewavaluoinspector->codigoavaluo->FldCaption() ?></td>
-			<td<?php echo $viewavaluoinspector->codigoavaluo->CellAttributes() ?>>
-<span id="el_viewavaluoinspector_codigoavaluo">
-<span<?php echo $viewavaluoinspector->codigoavaluo->ViewAttributes() ?>>
-<?php echo $viewavaluoinspector->codigoavaluo->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
 <?php if ($viewavaluoinspector->id_solicitud->Visible) { // id_solicitud ?>
 		<tr id="r_id_solicitud">
 			<td class="col-sm-3"><?php echo $viewavaluoinspector->id_solicitud->FldCaption() ?></td>
@@ -122,6 +99,17 @@
 <span id="el_viewavaluoinspector_fecha_avaluo">
 <span<?php echo $viewavaluoinspector->fecha_avaluo->ViewAttributes() ?>>
 <?php echo $viewavaluoinspector->fecha_avaluo->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($viewavaluoinspector->comentario->Visible) { // comentario ?>
+		<tr id="r_comentario">
+			<td class="col-sm-3"><?php echo $viewavaluoinspector->comentario->FldCaption() ?></td>
+			<td<?php echo $viewavaluoinspector->comentario->CellAttributes() ?>>
+<span id="el_viewavaluoinspector_comentario">
+<span<?php echo $viewavaluoinspector->comentario->ViewAttributes() ?>>
+<?php echo $viewavaluoinspector->comentario->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>

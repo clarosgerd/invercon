@@ -2049,7 +2049,7 @@ ew_CreateDateTimePicker("favaluoupdate", "x_fecha_avaluo", {"ignoreReadonly":tru
 		<div class="<?php echo $avaluo_update->RightColumnClass ?>"><div<?php echo $avaluo->documento_pago->CellAttributes() ?>>
 <span id="el_avaluo_documento_pago">
 <div id="fd_x_documento_pago">
-<span title="<?php echo $avaluo->documento_pago->FldTitle() ? $avaluo->documento_pago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($avaluo->documento_pago->ReadOnly || $avaluo->documento_pago->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $avaluo->documento_pago->FldTitle() ? $avaluo->documento_pago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($avaluo->documento_pago->ReadOnly || $avaluo->documento_pago->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="avaluo" data-field="x_documento_pago" name="x_documento_pago" id="x_documento_pago"<?php echo $avaluo->documento_pago->EditAttributes() ?>>
 </span>
@@ -2075,7 +2075,7 @@ ew_CreateDateTimePicker("favaluoupdate", "x_fecha_avaluo", {"ignoreReadonly":tru
 		<td<?php echo $avaluo->documento_pago->CellAttributes() ?>>
 <span id="el_avaluo_documento_pago">
 <div id="fd_x_documento_pago">
-<span title="<?php echo $avaluo->documento_pago->FldTitle() ? $avaluo->documento_pago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($avaluo->documento_pago->ReadOnly || $avaluo->documento_pago->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $avaluo->documento_pago->FldTitle() ? $avaluo->documento_pago->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($avaluo->documento_pago->ReadOnly || $avaluo->documento_pago->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="avaluo" data-field="x_documento_pago" name="x_documento_pago" id="x_documento_pago"<?php echo $avaluo->documento_pago->EditAttributes() ?>>
 </span>

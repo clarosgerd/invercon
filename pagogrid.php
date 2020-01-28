@@ -381,7 +381,7 @@ $pago_grid->ListOptions->Render("body", "left", $pago_grid->RowCnt);
 <?php } else { ?>
 <span id="el<?php echo $pago_grid->RowCnt ?>_pago_cliente_id" class="form-group pago_cliente_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->cliente_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $pago_grid->RowIndex ?>_cliente_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->cliente_id->ReadOnly || $pago->cliente_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_cliente_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->cliente_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $pago_grid->RowIndex ?>_cliente_id" id="x<?php echo $pago_grid->RowIndex ?>_cliente_id" value="<?php echo $pago->cliente_id->CurrentValue ?>"<?php echo $pago->cliente_id->EditAttributes() ?>>
@@ -402,7 +402,7 @@ $pago_grid->ListOptions->Render("body", "left", $pago_grid->RowCnt);
 <?php } else { ?>
 <span id="el<?php echo $pago_grid->RowCnt ?>_pago_cliente_id" class="form-group pago_cliente_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->cliente_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $pago_grid->RowIndex ?>_cliente_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->cliente_id->ReadOnly || $pago->cliente_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_cliente_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->cliente_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $pago_grid->RowIndex ?>_cliente_id" id="x<?php echo $pago_grid->RowIndex ?>_cliente_id" value="<?php echo $pago->cliente_id->CurrentValue ?>"<?php echo $pago->cliente_id->EditAttributes() ?>>
@@ -486,7 +486,7 @@ $pago_grid->ListOptions->Render("body", "left", $pago_grid->RowCnt);
 <?php if ($pago->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $pago_grid->RowCnt ?>_pago_metodopago_id" class="form-group pago_metodopago_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->metodopago_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $pago_grid->RowIndex ?>_metodopago_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->metodopago_id->ReadOnly || $pago->metodopago_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_metodopago_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $pago_grid->RowIndex ?>_metodopago_id" id="x<?php echo $pago_grid->RowIndex ?>_metodopago_id" value="<?php echo $pago->metodopago_id->CurrentValue ?>"<?php echo $pago->metodopago_id->EditAttributes() ?>>
@@ -496,7 +496,7 @@ $pago_grid->ListOptions->Render("body", "left", $pago_grid->RowCnt);
 <?php if ($pago->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $pago_grid->RowCnt ?>_pago_metodopago_id" class="form-group pago_metodopago_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->metodopago_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $pago_grid->RowIndex ?>_metodopago_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->metodopago_id->ReadOnly || $pago->metodopago_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_metodopago_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $pago_grid->RowIndex ?>_metodopago_id" id="x<?php echo $pago_grid->RowIndex ?>_metodopago_id" value="<?php echo $pago->metodopago_id->CurrentValue ?>"<?php echo $pago->metodopago_id->EditAttributes() ?>>
@@ -600,7 +600,7 @@ $pago_grid->ListOptions->Render("body", "left", $pago_grid->RowIndex);
 <?php } else { ?>
 <span id="el$rowindex$_pago_cliente_id" class="form-group pago_cliente_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_cliente_id"><?php echo (strval($pago->cliente_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->cliente_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->cliente_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $pago_grid->RowIndex ?>_cliente_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->cliente_id->ReadOnly || $pago->cliente_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_cliente_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->cliente_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $pago_grid->RowIndex ?>_cliente_id" id="x<?php echo $pago_grid->RowIndex ?>_cliente_id" value="<?php echo $pago->cliente_id->CurrentValue ?>"<?php echo $pago->cliente_id->EditAttributes() ?>>
@@ -655,7 +655,7 @@ $pago_grid->ListOptions->Render("body", "left", $pago_grid->RowIndex);
 <?php if ($pago->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_pago_metodopago_id" class="form-group pago_metodopago_id">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_grid->RowIndex ?>_metodopago_id"><?php echo (strval($pago->metodopago_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago->metodopago_id->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago->metodopago_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $pago_grid->RowIndex ?>_metodopago_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago->metodopago_id->ReadOnly || $pago->metodopago_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="pago" data-field="x_metodopago_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago->metodopago_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $pago_grid->RowIndex ?>_metodopago_id" id="x<?php echo $pago_grid->RowIndex ?>_metodopago_id" value="<?php echo $pago->metodopago_id->CurrentValue ?>"<?php echo $pago->metodopago_id->EditAttributes() ?>>
@@ -673,7 +673,7 @@ $pago_grid->ListOptions->Render("body", "left", $pago_grid->RowIndex);
 <?php
 
 // Render list options (body, right)
-$pago_grid->ListOptions->Render("body", "right", $pago_grid->RowIndex);
+$pago_grid->ListOptions->Render("body", "right", $pago_grid->RowCnt);
 ?>
 <script type="text/javascript">
 fpagogrid.UpdateOpts(<?php echo $pago_grid->RowIndex ?>);

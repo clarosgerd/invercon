@@ -408,6 +408,9 @@ class chistorico_list extends chistorico {
 
 		// Set up list options
 		$this->SetupListOptions();
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbOldSkipHeaderFooter = $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = TRUE;
 		$this->id->SetVisibility();
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
@@ -468,6 +471,8 @@ class chistorico_list extends chistorico {
 	//
 	function Page_Terminate($url = "") {
 		global $gsExportFile, $gTmpImages;
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = $gbOldSkipHeaderFooter;
 
 		// Page Unload event
 		$this->Page_Unload();
@@ -504,7 +509,6 @@ class chistorico_list extends chistorico {
 			ew_SaveDebugMsg();
 			header("Location: " . $url);
 		}
-		exit();
 	}
 
 	// Class variables

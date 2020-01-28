@@ -402,45 +402,7 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// 
 		// Security = null;
 		// 
-		// Get export parameters
 
-		$custom = "";
-		if (@$_GET["export"] <> "") {
-			$this->Export = $_GET["export"];
-			$custom = @$_GET["custom"];
-		} elseif (@$_POST["export"] <> "") {
-			$this->Export = $_POST["export"];
-			$custom = @$_POST["custom"];
-		} elseif (ew_IsPost()) {
-			if (@$_POST["exporttype"] <> "")
-				$this->Export = $_POST["exporttype"];
-			$custom = @$_POST["custom"];
-		} elseif (@$_GET["cmd"] == "json") {
-			$this->Export = $_GET["cmd"];
-		} else {
-			$this->setExportReturnUrl(ew_CurrentUrl());
-		}
-		$gsExportFile = $this->TableVar; // Get export file, used in header
-
-		// Get custom export parameters
-		if ($this->Export <> "" && $custom <> "") {
-			$this->CustomExport = $this->Export;
-			$this->Export = "print";
-		}
-		$gsCustomExport = $this->CustomExport;
-		$gsExport = $this->Export; // Get export parameter, used in header
-
-		// Update Export URLs
-		if (defined("EW_USE_PHPEXCEL"))
-			$this->ExportExcelCustom = FALSE;
-		if ($this->ExportExcelCustom)
-			$this->ExportExcelUrl .= "&amp;custom=1";
-		if (defined("EW_USE_PHPWORD"))
-			$this->ExportWordCustom = FALSE;
-		if ($this->ExportWordCustom)
-			$this->ExportWordUrl .= "&amp;custom=1";
-		if ($this->ExportPdfCustom)
-			$this->ExportPdfUrl .= "&amp;custom=1";
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
 
 		// Get grid add count
@@ -450,9 +412,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 
 		// Set up list options
 		$this->SetupListOptions();
-
-		// Setup export options
-		$this->SetupExportOptions();
 		$this->descripcion->SetVisibility();
 		$this->imagen->SetVisibility();
 		$this->avaluo->SetVisibility();
@@ -649,8 +608,30 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 					$option->HideAllOptions();
 			}
 
+			// Get default search criteria
+			ew_AddFilter($this->DefaultSearchWhere, $this->AdvancedSearchWhere(TRUE));
+
+			// Get and validate search values for advanced search
+			$this->LoadSearchValues(); // Get search values
+
+			// Process filter list
+			$this->ProcessFilterList();
+			if (!$this->ValidateSearch())
+				$this->setFailureMessage($gsSearchError);
+
+			// Restore search parms from Session if not searching / reset / export
+			if (($this->Export <> "" || $this->Command <> "search" && $this->Command <> "reset" && $this->Command <> "resetall") && $this->Command <> "json" && $this->CheckSearchParms())
+				$this->RestoreSearchParms();
+
+			// Call Recordset SearchValidated event
+			$this->Recordset_SearchValidated();
+
 			// Set up sorting order
 			$this->SetupSortOrder();
+
+			// Get search criteria for advanced search
+			if ($gsSearchError == "")
+				$sSrchAdvanced = $this->AdvancedSearchWhere();
 		}
 
 		// Restore display records
@@ -663,6 +644,31 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// Load Sorting Order
 		if ($this->Command <> "json")
 			$this->LoadSortOrder();
+
+		// Load search default if no existing search criteria
+		if (!$this->CheckSearchParms()) {
+
+			// Load advanced search from default
+			if ($this->LoadAdvancedSearchDefault()) {
+				$sSrchAdvanced = $this->AdvancedSearchWhere();
+			}
+		}
+
+		// Build search criteria
+		ew_AddFilter($this->SearchWhere, $sSrchAdvanced);
+		ew_AddFilter($this->SearchWhere, $sSrchBasic);
+
+		// Call Recordset_Searching event
+		$this->Recordset_Searching($this->SearchWhere);
+
+		// Save search criteria
+		if ($this->Command == "search" && !$this->RestoreSearch) {
+			$this->setSearchWhere($this->SearchWhere); // Save to Session
+			$this->StartRec = 1; // Reset start record counter
+			$this->setStartRecordNumber($this->StartRec);
+		} elseif ($this->Command <> "json") {
+			$this->SearchWhere = $this->getSearchWhere();
+		}
 
 		// Build filter
 		$sFilter = "";
@@ -698,13 +704,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		} else {
 			$this->setSessionWhere($sFilter);
 			$this->CurrentFilter = "";
-		}
-
-		// Export data only
-		if ($this->CustomExport == "" && in_array($this->Export, array_keys($EW_EXPORT))) {
-			$this->ExportData();
-			$this->Page_Terminate(); // Terminate response
-			exit();
 		}
 
 		// Load record count first
@@ -781,6 +780,164 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		return TRUE;
 	}
 
+	// Get list of filters
+	function GetFilterList() {
+		global $UserProfile;
+
+		// Initialize
+		$sFilterList = "";
+		$sSavedFilterList = "";
+
+		// Load server side filters
+		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
+			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "fdocumentosavaluolistsrch");
+		$sFilterList = ew_Concat($sFilterList, $this->avaluo->AdvancedSearch->ToJson(), ","); // Field avaluo
+		$sFilterList = preg_replace('/,$/', "", $sFilterList);
+
+		// Return filter list in json
+		if ($sFilterList <> "")
+			$sFilterList = "\"data\":{" . $sFilterList . "}";
+		if ($sSavedFilterList <> "") {
+			if ($sFilterList <> "")
+				$sFilterList .= ",";
+			$sFilterList .= "\"filters\":" . $sSavedFilterList;
+		}
+		return ($sFilterList <> "") ? "{" . $sFilterList . "}" : "null";
+	}
+
+	// Process filter list
+	function ProcessFilterList() {
+		global $UserProfile;
+		if (@$_POST["ajax"] == "savefilters") { // Save filter request (Ajax)
+			$filters = @$_POST["filters"];
+			$UserProfile->SetSearchFilters(CurrentUserName(), "fdocumentosavaluolistsrch", $filters);
+
+			// Clean output buffer
+			if (!EW_DEBUG_ENABLED && ob_get_length())
+				ob_end_clean();
+			echo ew_ArrayToJson(array(array("success" => TRUE))); // Success
+			$this->Page_Terminate();
+			exit();
+		} elseif (@$_POST["cmd"] == "resetfilter") {
+			$this->RestoreFilterList();
+		}
+	}
+
+	// Restore list of filters
+	function RestoreFilterList() {
+
+		// Return if not reset filter
+		if (@$_POST["cmd"] <> "resetfilter")
+			return FALSE;
+		$filter = json_decode(@$_POST["filter"], TRUE);
+		$this->Command = "search";
+
+		// Field avaluo
+		$this->avaluo->AdvancedSearch->SearchValue = @$filter["x_avaluo"];
+		$this->avaluo->AdvancedSearch->SearchOperator = @$filter["z_avaluo"];
+		$this->avaluo->AdvancedSearch->SearchCondition = @$filter["v_avaluo"];
+		$this->avaluo->AdvancedSearch->SearchValue2 = @$filter["y_avaluo"];
+		$this->avaluo->AdvancedSearch->SearchOperator2 = @$filter["w_avaluo"];
+		$this->avaluo->AdvancedSearch->Save();
+	}
+
+	// Advanced search WHERE clause based on QueryString
+	function AdvancedSearchWhere($Default = FALSE) {
+		global $Security;
+		$sWhere = "";
+		if (!$Security->CanSearch()) return "";
+		$this->BuildSearchSql($sWhere, $this->avaluo, $Default, FALSE); // avaluo
+
+		// Set up search parm
+		if (!$Default && $sWhere <> "" && in_array($this->Command, array("", "reset", "resetall"))) {
+			$this->Command = "search";
+		}
+		if (!$Default && $this->Command == "search") {
+			$this->avaluo->AdvancedSearch->Save(); // avaluo
+		}
+		return $sWhere;
+	}
+
+	// Build search SQL
+	function BuildSearchSql(&$Where, &$Fld, $Default, $MultiValue) {
+		$FldParm = $Fld->FldParm();
+		$FldVal = ($Default) ? $Fld->AdvancedSearch->SearchValueDefault : $Fld->AdvancedSearch->SearchValue; // @$_GET["x_$FldParm"]
+		$FldOpr = ($Default) ? $Fld->AdvancedSearch->SearchOperatorDefault : $Fld->AdvancedSearch->SearchOperator; // @$_GET["z_$FldParm"]
+		$FldCond = ($Default) ? $Fld->AdvancedSearch->SearchConditionDefault : $Fld->AdvancedSearch->SearchCondition; // @$_GET["v_$FldParm"]
+		$FldVal2 = ($Default) ? $Fld->AdvancedSearch->SearchValue2Default : $Fld->AdvancedSearch->SearchValue2; // @$_GET["y_$FldParm"]
+		$FldOpr2 = ($Default) ? $Fld->AdvancedSearch->SearchOperator2Default : $Fld->AdvancedSearch->SearchOperator2; // @$_GET["w_$FldParm"]
+		$sWrk = "";
+		if (is_array($FldVal)) $FldVal = implode(",", $FldVal);
+		if (is_array($FldVal2)) $FldVal2 = implode(",", $FldVal2);
+		$FldOpr = strtoupper(trim($FldOpr));
+		if ($FldOpr == "") $FldOpr = "=";
+		$FldOpr2 = strtoupper(trim($FldOpr2));
+		if ($FldOpr2 == "") $FldOpr2 = "=";
+		if (EW_SEARCH_MULTI_VALUE_OPTION == 1)
+			$MultiValue = FALSE;
+		if ($MultiValue) {
+			$sWrk1 = ($FldVal <> "") ? ew_GetMultiSearchSql($Fld, $FldOpr, $FldVal, $this->DBID) : ""; // Field value 1
+			$sWrk2 = ($FldVal2 <> "") ? ew_GetMultiSearchSql($Fld, $FldOpr2, $FldVal2, $this->DBID) : ""; // Field value 2
+			$sWrk = $sWrk1; // Build final SQL
+			if ($sWrk2 <> "")
+				$sWrk = ($sWrk <> "") ? "($sWrk) $FldCond ($sWrk2)" : $sWrk2;
+		} else {
+			$FldVal = $this->ConvertSearchValue($Fld, $FldVal);
+			$FldVal2 = $this->ConvertSearchValue($Fld, $FldVal2);
+			$sWrk = ew_GetSearchSql($Fld, $FldVal, $FldOpr, $FldCond, $FldVal2, $FldOpr2, $this->DBID);
+		}
+		ew_AddFilter($Where, $sWrk);
+	}
+
+	// Convert search value
+	function ConvertSearchValue(&$Fld, $FldVal) {
+		if ($FldVal == EW_NULL_VALUE || $FldVal == EW_NOT_NULL_VALUE)
+			return $FldVal;
+		$Value = $FldVal;
+		if ($Fld->FldDataType == EW_DATATYPE_BOOLEAN) {
+			if ($FldVal <> "") $Value = ($FldVal == "1" || strtolower(strval($FldVal)) == "y" || strtolower(strval($FldVal)) == "t") ? $Fld->TrueValue : $Fld->FalseValue;
+		} elseif ($Fld->FldDataType == EW_DATATYPE_DATE || $Fld->FldDataType == EW_DATATYPE_TIME) {
+			if ($FldVal <> "") $Value = ew_UnFormatDateTime($FldVal, $Fld->FldDateTimeFormat);
+		}
+		return $Value;
+	}
+
+	// Check if search parm exists
+	function CheckSearchParms() {
+		if ($this->avaluo->AdvancedSearch->IssetSession())
+			return TRUE;
+		return FALSE;
+	}
+
+	// Clear all search parameters
+	function ResetSearchParms() {
+
+		// Clear search WHERE clause
+		$this->SearchWhere = "";
+		$this->setSearchWhere($this->SearchWhere);
+
+		// Clear advanced search parameters
+		$this->ResetAdvancedSearchParms();
+	}
+
+	// Load advanced search default values
+	function LoadAdvancedSearchDefault() {
+		return FALSE;
+	}
+
+	// Clear all advanced search parameters
+	function ResetAdvancedSearchParms() {
+		$this->avaluo->AdvancedSearch->UnsetSession();
+	}
+
+	// Restore all search parameters
+	function RestoreSearchParms() {
+		$this->RestoreSearch = TRUE;
+
+		// Restore advanced search values
+		$this->avaluo->AdvancedSearch->Load();
+	}
+
 	// Set up sort parameters
 	function SetupSortOrder() {
 
@@ -816,6 +973,10 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// Check if reset command
 		if (substr($this->Command,0,5) == "reset") {
 
+			// Reset search criteria
+			if ($this->Command == "reset" || $this->Command == "resetall")
+				$this->ResetSearchParms();
+
 			// Reset master/detail keys
 			if ($this->Command == "resetall") {
 				$this->setCurrentMasterTable(""); // Clear master table
@@ -850,12 +1011,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		$item->OnLeft = TRUE;
 		$item->Visible = FALSE;
 
-		// "view"
-		$item = &$this->ListOptions->Add("view");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->CanView();
-		$item->OnLeft = TRUE;
-
 		// "edit"
 		$item = &$this->ListOptions->Add("edit");
 		$item->CssClass = "text-nowrap";
@@ -881,7 +1036,7 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
-		$this->ListOptions->UseDropDownButton = TRUE;
+		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
 		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
@@ -902,18 +1057,6 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 
 		// Call ListOptions_Rendering event
 		$this->ListOptions_Rendering();
-
-		// "view"
-		$oListOpt = &$this->ListOptions->Items["view"];
-		$viewcaption = ew_HtmlTitle($Language->Phrase("ViewLink"));
-		if ($Security->CanView()) {
-			if (ew_IsMobile())
-				$oListOpt->Body = "<a class=\"ewRowLink ewView\" title=\"" . $viewcaption . "\" data-caption=\"" . $viewcaption . "\" href=\"" . ew_HtmlEncode($this->ViewUrl) . "\">" . $Language->Phrase("ViewLink") . "</a>";
-			else
-				$oListOpt->Body = "<a class=\"ewRowLink ewView\" title=\"" . $viewcaption . "\" data-table=\"documentosavaluo\" data-caption=\"" . $viewcaption . "\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,url:'" . ew_HtmlEncode($this->ViewUrl) . "',btn:null});\">" . $Language->Phrase("ViewLink") . "</a>";
-		} else {
-			$oListOpt->Body = "";
-		}
 
 		// "edit"
 		$oListOpt = &$this->ListOptions->Items["edit"];
@@ -989,7 +1132,7 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// Set up options default
 		foreach ($options as &$option) {
 			$option->UseImageAndText = TRUE;
-			$option->UseDropDownButton = TRUE;
+			$option->UseDropDownButton = FALSE;
 			$option->UseButtonGroup = TRUE;
 			$option->ButtonClass = "btn-sm"; // Class for button group
 			$item = &$option->Add($option->GroupOptionName);
@@ -1003,10 +1146,10 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// Filter button
 		$item = &$this->FilterOptions->Add("savecurrentfilter");
 		$item->Body = "<a class=\"ewSaveFilter\" data-form=\"fdocumentosavaluolistsrch\" href=\"#\">" . $Language->Phrase("SaveCurrentFilter") . "</a>";
-		$item->Visible = FALSE;
+		$item->Visible = TRUE;
 		$item = &$this->FilterOptions->Add("deletefilter");
 		$item->Body = "<a class=\"ewDeleteFilter\" data-form=\"fdocumentosavaluolistsrch\" href=\"#\">" . $Language->Phrase("DeleteFilter") . "</a>";
-		$item->Visible = FALSE;
+		$item->Visible = TRUE;
 		$this->FilterOptions->UseDropDownButton = TRUE;
 		$this->FilterOptions->UseButtonGroup = !$this->FilterOptions->UseDropDownButton;
 		$this->FilterOptions->DropDownButtonPhrase = $Language->Phrase("Filters");
@@ -1130,6 +1273,17 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		$this->SearchOptions->Tag = "div";
 		$this->SearchOptions->TagClassName = "ewSearchOption";
 
+		// Search button
+		$item = &$this->SearchOptions->Add("searchtoggle");
+		$SearchToggleClass = ($this->SearchWhere <> "") ? " active" : " active";
+		$item->Body = "<button type=\"button\" class=\"btn btn-default ewSearchToggle" . $SearchToggleClass . "\" title=\"" . $Language->Phrase("SearchPanel") . "\" data-caption=\"" . $Language->Phrase("SearchPanel") . "\" data-toggle=\"button\" data-form=\"fdocumentosavaluolistsrch\">" . $Language->Phrase("SearchLink") . "</button>";
+		$item->Visible = TRUE;
+
+		// Show all button
+		$item = &$this->SearchOptions->Add("showall");
+		$item->Body = "<a class=\"btn btn-default ewShowAll\" title=\"" . $Language->Phrase("ShowAll") . "\" data-caption=\"" . $Language->Phrase("ShowAll") . "\" href=\"" . $this->PageUrl() . "cmd=reset\">" . $Language->Phrase("ShowAllBtn") . "</a>";
+		$item->Visible = ($this->SearchWhere <> $this->DefaultSearchWhere && $this->SearchWhere <> "0=101");
+
 		// Button group for search
 		$this->SearchOptions->UseDropDownButton = FALSE;
 		$this->SearchOptions->UseImageAndText = TRUE;
@@ -1193,6 +1347,18 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 			$this->StartRec = intval(($this->StartRec-1)/$this->DisplayRecs)*$this->DisplayRecs+1; // Point to page boundary
 			$this->setStartRecordNumber($this->StartRec);
 		}
+	}
+
+	// Load search values for validation
+	function LoadSearchValues() {
+		global $objForm;
+
+		// Load search values
+		// avaluo
+
+		$this->avaluo->AdvancedSearch->SearchValue = @$_GET["x_avaluo"];
+		if ($this->avaluo->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->avaluo->AdvancedSearch->SearchOperator = @$_GET["z_avaluo"];
 	}
 
 	// Load recordset
@@ -1360,16 +1526,30 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// avaluo
 		if (strval($this->avaluo->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `tipoinmueble` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-		$sWhereWrk = "";
-		$this->avaluo->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->avaluo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->avaluo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->avaluo->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->avaluo, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0);
 				$this->avaluo->ViewValue = $this->avaluo->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -1383,9 +1563,23 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 		// id_tipodocumento
 		if (strval($this->id_tipodocumento->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_tipodocumento->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipodocumento`";
-		$sWhereWrk = "";
-		$this->id_tipodocumento->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipodocumento`";
+				$sWhereWrk = "";
+				$this->id_tipodocumento->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipodocumento`";
+				$sWhereWrk = "";
+				$this->id_tipodocumento->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipodocumento`";
+				$sWhereWrk = "";
+				$this->id_tipodocumento->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_tipodocumento, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1439,292 +1633,105 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 			$this->created_at->LinkCustomAttributes = "";
 			$this->created_at->HrefValue = "";
 			$this->created_at->TooltipValue = "";
+		} elseif ($this->RowType == EW_ROWTYPE_SEARCH) { // Search row
+
+			// descripcion
+			$this->descripcion->EditAttrs["class"] = "form-control";
+			$this->descripcion->EditCustomAttributes = "";
+			$this->descripcion->EditValue = ew_HtmlEncode($this->descripcion->AdvancedSearch->SearchValue);
+			$this->descripcion->PlaceHolder = ew_RemoveHtml($this->descripcion->FldTitle());
+
+			// imagen
+			$this->imagen->EditAttrs["class"] = "form-control";
+			$this->imagen->EditCustomAttributes = "";
+			if (!ew_Empty($this->imagen->Upload->DbValue)) {
+				$this->imagen->EditValue = "documentosavaluo_imagen_bv.php?" . "id=" . $this->id->CurrentValue;
+				$this->imagen->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->imagen->Upload->DbValue, 0, 11)));
+			} else {
+				$this->imagen->EditValue = "";
+			}
+
+			// avaluo
+			$this->avaluo->EditAttrs["class"] = "form-control";
+			$this->avaluo->EditCustomAttributes = "";
+			if (trim(strval($this->avaluo->AdvancedSearch->SearchValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo->AdvancedSearch->SearchValue, EW_DATATYPE_NUMBER, "");
+			}
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `avaluo`";
+					$sWhereWrk = "";
+					$this->avaluo->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `avaluo`";
+					$sWhereWrk = "";
+					$this->avaluo->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `avaluo`";
+					$sWhereWrk = "";
+					$this->avaluo->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->avaluo, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$rowswrk = count($arwrk);
+			for ($rowcntwrk = 0; $rowcntwrk < $rowswrk; $rowcntwrk++) {
+				$arwrk[$rowcntwrk][1] = ew_FormatNumber($arwrk[$rowcntwrk][1], 0, 0, 0, 0);
+			}
+			$this->avaluo->EditValue = $arwrk;
+
+			// id_tipodocumento
+			$this->id_tipodocumento->EditAttrs["class"] = "form-control";
+			$this->id_tipodocumento->EditCustomAttributes = "";
+
+			// created_at
+			$this->created_at->EditAttrs["class"] = "form-control";
+			$this->created_at->EditCustomAttributes = "";
+			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime(ew_UnFormatDateTime($this->created_at->AdvancedSearch->SearchValue, 0), 8));
+			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldTitle());
 		}
+		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
+			$this->SetupFieldTitles();
 
 		// Call Row Rendered event
 		if ($this->RowType <> EW_ROWTYPE_AGGREGATEINIT)
 			$this->Row_Rendered();
 	}
 
-	// Set up export options
-	function SetupExportOptions() {
-		global $Language;
-
-		// Printer friendly
-		$item = &$this->ExportOptions->Add("print");
-		$item->Body = "<a href=\"" . $this->ExportPrintUrl . "\" class=\"ewExportLink ewPrint\" title=\"" . ew_HtmlEncode($Language->Phrase("PrinterFriendlyText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("PrinterFriendlyText")) . "\">" . $Language->Phrase("PrinterFriendly") . "</a>";
-		$item->Visible = TRUE;
-
-		// Export to Excel
-		$item = &$this->ExportOptions->Add("excel");
-		$item->Body = "<a href=\"" . $this->ExportExcelUrl . "\" class=\"ewExportLink ewExcel\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToExcelText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToExcelText")) . "\">" . $Language->Phrase("ExportToExcel") . "</a>";
-		$item->Visible = TRUE;
-
-		// Export to Word
-		$item = &$this->ExportOptions->Add("word");
-		$item->Body = "<a href=\"" . $this->ExportWordUrl . "\" class=\"ewExportLink ewWord\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToWordText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToWordText")) . "\">" . $Language->Phrase("ExportToWord") . "</a>";
-		$item->Visible = TRUE;
-
-		// Export to Html
-		$item = &$this->ExportOptions->Add("html");
-		$item->Body = "<a href=\"" . $this->ExportHtmlUrl . "\" class=\"ewExportLink ewHtml\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToHtmlText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToHtmlText")) . "\">" . $Language->Phrase("ExportToHtml") . "</a>";
-		$item->Visible = FALSE;
-
-		// Export to Xml
-		$item = &$this->ExportOptions->Add("xml");
-		$item->Body = "<a href=\"" . $this->ExportXmlUrl . "\" class=\"ewExportLink ewXml\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToXmlText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToXmlText")) . "\">" . $Language->Phrase("ExportToXml") . "</a>";
-		$item->Visible = FALSE;
-
-		// Export to Csv
-		$item = &$this->ExportOptions->Add("csv");
-		$item->Body = "<a href=\"" . $this->ExportCsvUrl . "\" class=\"ewExportLink ewCsv\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToCsvText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToCsvText")) . "\">" . $Language->Phrase("ExportToCsv") . "</a>";
-		$item->Visible = FALSE;
-
-		// Export to Pdf
-		$item = &$this->ExportOptions->Add("pdf");
-		$item->Body = "<a href=\"" . $this->ExportPdfUrl . "\" class=\"ewExportLink ewPdf\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToPDFText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToPDFText")) . "\">" . $Language->Phrase("ExportToPDF") . "</a>";
-		$item->Visible = FALSE;
-
-		// Export to Email
-		$item = &$this->ExportOptions->Add("email");
-		$url = "";
-		$item->Body = "<button id=\"emf_documentosavaluo\" class=\"ewExportLink ewEmail\" title=\"" . $Language->Phrase("ExportToEmailText") . "\" data-caption=\"" . $Language->Phrase("ExportToEmailText") . "\" onclick=\"ew_EmailDialogShow({lnk:'emf_documentosavaluo',hdr:ewLanguage.Phrase('ExportToEmailText'),f:document.fdocumentosavaluolist,sel:false" . $url . "});\">" . $Language->Phrase("ExportToEmail") . "</button>";
-		$item->Visible = TRUE;
-
-		// Drop down button for export
-		$this->ExportOptions->UseButtonGroup = TRUE;
-		$this->ExportOptions->UseImageAndText = TRUE;
-		$this->ExportOptions->UseDropDownButton = TRUE;
-		if ($this->ExportOptions->UseButtonGroup && ew_IsMobile())
-			$this->ExportOptions->UseDropDownButton = TRUE;
-		$this->ExportOptions->DropDownButtonPhrase = $Language->Phrase("ButtonExport");
-
-		// Add group option item
-		$item = &$this->ExportOptions->Add($this->ExportOptions->GroupOptionName);
-		$item->Body = "";
-		$item->Visible = FALSE;
-	}
-
-	// Export data in HTML/CSV/Word/Excel/XML/Email/PDF format
-	function ExportData() {
-		$utf8 = (strtolower(EW_CHARSET) == "utf-8");
-		$bSelectLimit = $this->UseSelectLimit;
-
-		// Load recordset
-		if ($bSelectLimit) {
-			$this->TotalRecs = $this->ListRecordCount();
-		} else {
-			if (!$this->Recordset)
-				$this->Recordset = $this->LoadRecordset();
-			$rs = &$this->Recordset;
-			if ($rs)
-				$this->TotalRecs = $rs->RecordCount();
-		}
-		$this->StartRec = 1;
-
-		// Export all
-		if ($this->ExportAll) {
-			set_time_limit(EW_EXPORT_ALL_TIME_LIMIT);
-			$this->DisplayRecs = $this->TotalRecs;
-			$this->StopRec = $this->TotalRecs;
-		} else { // Export one page only
-			$this->SetupStartRec(); // Set up start record position
-
-			// Set the last record to display
-			if ($this->DisplayRecs <= 0) {
-				$this->StopRec = $this->TotalRecs;
-			} else {
-				$this->StopRec = $this->StartRec + $this->DisplayRecs - 1;
-			}
-		}
-		if ($bSelectLimit)
-			$rs = $this->LoadRecordset($this->StartRec-1, $this->DisplayRecs <= 0 ? $this->TotalRecs : $this->DisplayRecs);
-		if (!$rs) {
-			header("Content-Type:"); // Remove header
-			header("Content-Disposition:");
-			$this->ShowMessage();
-			return;
-		}
-		$this->ExportDoc = ew_ExportDocument($this, "h");
-		$Doc = &$this->ExportDoc;
-		if ($bSelectLimit) {
-			$this->StartRec = 1;
-			$this->StopRec = $this->DisplayRecs <= 0 ? $this->TotalRecs : $this->DisplayRecs;
-		} else {
-
-			//$this->StartRec = $this->StartRec;
-			//$this->StopRec = $this->StopRec;
-
-		}
-
-		// Call Page Exporting server event
-		$this->ExportDoc->ExportCustom = !$this->Page_Exporting();
-		$ParentTable = "";
-
-		// Export master record
-		if (EW_EXPORT_MASTER_RECORD && $this->GetMasterFilter() <> "" && $this->getCurrentMasterTable() == "avaluo") {
-			global $avaluo;
-			if (!isset($avaluo)) $avaluo = new cavaluo;
-			$rsmaster = $avaluo->LoadRs($this->DbMasterFilter); // Load master record
-			if ($rsmaster && !$rsmaster->EOF) {
-				$ExportStyle = $Doc->Style;
-				$Doc->SetStyle("v"); // Change to vertical
-				if ($this->Export <> "csv" || EW_EXPORT_MASTER_RECORD_FOR_CSV) {
-					$Doc->Table = &$avaluo;
-					$avaluo->ExportDocument($Doc, $rsmaster, 1, 1);
-					$Doc->ExportEmptyRow();
-					$Doc->Table = &$this;
-				}
-				$Doc->SetStyle($ExportStyle); // Restore
-				$rsmaster->Close();
-			}
-		}
-		$sHeader = $this->PageHeader;
-		$this->Page_DataRendering($sHeader);
-		$Doc->Text .= $sHeader;
-		$this->ExportDocument($Doc, $rs, $this->StartRec, $this->StopRec, "");
-		$sFooter = $this->PageFooter;
-		$this->Page_DataRendered($sFooter);
-		$Doc->Text .= $sFooter;
-
-		// Close recordset
-		$rs->Close();
-
-		// Call Page Exported server event
-		$this->Page_Exported();
-
-		// Export header and footer
-		$Doc->ExportHeaderAndFooter();
-
-		// Clean output buffer
-		if (!EW_DEBUG_ENABLED && ob_get_length())
-			ob_end_clean();
-
-		// Write debug message if enabled
-		if (EW_DEBUG_ENABLED && $this->Export <> "pdf")
-			echo ew_DebugMsg();
-
-		// Output data
-		if ($this->Export == "email") {
-			echo $this->ExportEmail($Doc->Text);
-		} else {
-			$Doc->Export();
-		}
-	}
-
-	// Export email
-	function ExportEmail($EmailContent) {
-		global $gTmpImages, $Language;
-		$sSender = @$_POST["sender"];
-		$sRecipient = @$_POST["recipient"];
-		$sCc = @$_POST["cc"];
-		$sBcc = @$_POST["bcc"];
-
-		// Subject
-		$sSubject = @$_POST["subject"];
-		$sEmailSubject = $sSubject;
-
-		// Message
-		$sContent = @$_POST["message"];
-		$sEmailMessage = $sContent;
-
-		// Check sender
-		if ($sSender == "") {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterSenderEmail") . "</p>";
-		}
-		if (!ew_CheckEmail($sSender)) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperSenderEmail") . "</p>";
-		}
-
-		// Check recipient
-		if (!ew_CheckEmailList($sRecipient, EW_MAX_EMAIL_RECIPIENT)) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperRecipientEmail") . "</p>";
-		}
-
-		// Check cc
-		if (!ew_CheckEmailList($sCc, EW_MAX_EMAIL_RECIPIENT)) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperCcEmail") . "</p>";
-		}
-
-		// Check bcc
-		if (!ew_CheckEmailList($sBcc, EW_MAX_EMAIL_RECIPIENT)) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperBccEmail") . "</p>";
-		}
-
-		// Check email sent count
-		if (!isset($_SESSION[EW_EXPORT_EMAIL_COUNTER]))
-			$_SESSION[EW_EXPORT_EMAIL_COUNTER] = 0;
-		if (intval($_SESSION[EW_EXPORT_EMAIL_COUNTER]) > EW_MAX_EMAIL_SENT_COUNT) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("ExceedMaxEmailExport") . "</p>";
-		}
-
-		// Send email
-		$Email = new cEmail();
-		$Email->Sender = $sSender; // Sender
-		$Email->Recipient = $sRecipient; // Recipient
-		$Email->Cc = $sCc; // Cc
-		$Email->Bcc = $sBcc; // Bcc
-		$Email->Subject = $sEmailSubject; // Subject
-		$Email->Format = "html";
-		if ($sEmailMessage <> "")
-			$sEmailMessage = ew_RemoveXSS($sEmailMessage) . "<br><br>";
-		foreach ($gTmpImages as $tmpimage)
-			$Email->AddEmbeddedImage($tmpimage);
-		$Email->Content = $sEmailMessage . ew_CleanEmailContent($EmailContent); // Content
-		$EventArgs = array();
-		if ($this->Recordset) {
-			$this->RecCnt = $this->StartRec - 1;
-			$this->Recordset->MoveFirst();
-			if ($this->StartRec > 1)
-				$this->Recordset->Move($this->StartRec - 1);
-			$EventArgs["rs"] = &$this->Recordset;
-		}
-		$bEmailSent = FALSE;
-		if ($this->Email_Sending($Email, $EventArgs))
-			$bEmailSent = $Email->Send();
-
-		// Check email sent status
-		if ($bEmailSent) {
-
-			// Update email sent count
-			$_SESSION[EW_EXPORT_EMAIL_COUNTER]++;
-
-			// Sent email success
-			return "<p class=\"text-success\">" . $Language->Phrase("SendEmailSuccess") . "</p>"; // Set up success message
-		} else {
-
-			// Sent email failure
-			return "<p class=\"text-danger\">" . $Email->SendErrDescription . "</p>";
-		}
-	}
-
-	// Export QueryString
-	function ExportQueryString() {
+	// Validate search
+	function ValidateSearch() {
+		global $gsSearchError;
 
 		// Initialize
-		$sQry = "export=html";
+		$gsSearchError = "";
 
-		// Build QueryString for search
-		// Build QueryString for pager
+		// Check if validation required
+		if (!EW_SERVER_VALIDATE)
+			return TRUE;
 
-		$sQry .= "&" . EW_TABLE_REC_PER_PAGE . "=" . urlencode($this->getRecordsPerPage()) . "&" . EW_TABLE_START_REC . "=" . urlencode($this->getStartRecordNumber());
-		return $sQry;
+		// Return validate result
+		$ValidateSearch = ($gsSearchError == "");
+
+		// Call Form_CustomValidate event
+		$sFormCustomError = "";
+		$ValidateSearch = $ValidateSearch && $this->Form_CustomValidate($sFormCustomError);
+		if ($sFormCustomError <> "") {
+			ew_AddMessage($gsSearchError, $sFormCustomError);
+		}
+		return $ValidateSearch;
 	}
 
-	// Add search QueryString
-	function AddSearchQueryString(&$Qry, &$Fld) {
-		$FldSearchValue = $Fld->AdvancedSearch->getValue("x");
-		$FldParm = substr($Fld->FldVar,2);
-		if (strval($FldSearchValue) <> "") {
-			$Qry .= "&x_" . $FldParm . "=" . urlencode($FldSearchValue) .
-				"&z_" . $FldParm . "=" . urlencode($Fld->AdvancedSearch->getValue("z"));
-		}
-		$FldSearchValue2 = $Fld->AdvancedSearch->getValue("y");
-		if (strval($FldSearchValue2) <> "") {
-			$Qry .= "&v_" . $FldParm . "=" . urlencode($Fld->AdvancedSearch->getValue("v")) .
-				"&y_" . $FldParm . "=" . urlencode($FldSearchValue2) .
-				"&w_" . $FldParm . "=" . urlencode($Fld->AdvancedSearch->getValue("w"));
-		}
+	// Load advanced search
+	function LoadAdvancedSearch() {
+		$this->avaluo->AdvancedSearch->Load();
 	}
 
 	// Set up master/detail based on QueryString
@@ -1808,7 +1815,38 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 	function SetupLookupFilters($fld, $pageId = null) {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
-		switch ($fld->FldVar) {
+		if ($pageId == "list") {
+			switch ($fld->FldVar) {
+			}
+		} elseif ($pageId == "extbs") {
+			switch ($fld->FldVar) {
+		case "x_avaluo":
+			$sSqlWrk = "";
+				switch (@$gsLanguage) {
+					case "en":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+					case "es":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+					default:
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+				}
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
+			$sSqlWrk = "";
+				$this->Lookup_Selecting($this->avaluo, $sWhereWrk); // Call Lookup Selecting
+				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+			}
 		}
 	}
 
@@ -1816,7 +1854,12 @@ class cdocumentosavaluo_list extends cdocumentosavaluo {
 	function SetupAutoSuggestFilters($fld, $pageId = null) {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
-		switch ($fld->FldVar) {
+		if ($pageId == "list") {
+			switch ($fld->FldVar) {
+			}
+		} elseif ($pageId == "extbs") {
+			switch ($fld->FldVar) {
+			}
 		}
 	}
 
@@ -1968,7 +2011,6 @@ Page_Rendering();
 $documentosavaluo_list->Page_Render();
 ?>
 <?php include_once "header.php" ?>
-<?php if ($documentosavaluo->Export == "") { ?>
 <script type="text/javascript">
 
 // Form object
@@ -1988,26 +2030,58 @@ fdocumentosavaluolist.Form_CustomValidate =
 fdocumentosavaluolist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-fdocumentosavaluolist.Lists["x_avaluo"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_tipoinmueble","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
+fdocumentosavaluolist.Lists["x_avaluo"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_codigoavaluo","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
 fdocumentosavaluolist.Lists["x_avaluo"].Data = "<?php echo $documentosavaluo_list->avaluo->LookupFilterQuery(FALSE, "list") ?>";
 fdocumentosavaluolist.Lists["x_id_tipodocumento"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipodocumento"};
 fdocumentosavaluolist.Lists["x_id_tipodocumento"].Data = "<?php echo $documentosavaluo_list->id_tipodocumento->LookupFilterQuery(FALSE, "list") ?>";
 
 // Form object for search
+var CurrentSearchForm = fdocumentosavaluolistsrch = new ew_Form("fdocumentosavaluolistsrch");
+
+// Validate function for search
+fdocumentosavaluolistsrch.Validate = function(fobj) {
+	if (!this.ValidateRequired)
+		return true; // Ignore validation
+	fobj = fobj || this.Form;
+	var infix = "";
+
+	// Fire Form_CustomValidate event
+	if (!this.Form_CustomValidate(fobj))
+		return false;
+	return true;
+}
+
+// Form_CustomValidate event
+fdocumentosavaluolistsrch.Form_CustomValidate = 
+ function(fobj) { // DO NOT CHANGE THIS LINE!
+
+ 	// Your custom validation code here, return false if invalid.
+ 	return true;
+ }
+
+// Use JavaScript validation or not
+fdocumentosavaluolistsrch.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
+
+// Dynamic selection lists
+fdocumentosavaluolistsrch.Lists["x_avaluo"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_codigoavaluo","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
+fdocumentosavaluolistsrch.Lists["x_avaluo"].Data = "<?php echo $documentosavaluo_list->avaluo->LookupFilterQuery(FALSE, "extbs") ?>";
 </script>
 <script type="text/javascript">
 
 // Write your client script here, no need to add script tags.
 </script>
-<?php } ?>
-<?php if ($documentosavaluo->Export == "") { ?>
 <div class="ewToolbar">
 <?php if ($documentosavaluo_list->TotalRecs > 0 && $documentosavaluo_list->ExportOptions->Visible()) { ?>
 <?php $documentosavaluo_list->ExportOptions->Render("body") ?>
 <?php } ?>
+<?php if ($documentosavaluo_list->SearchOptions->Visible()) { ?>
+<?php $documentosavaluo_list->SearchOptions->Render("body") ?>
+<?php } ?>
+<?php if ($documentosavaluo_list->FilterOptions->Visible()) { ?>
+<?php $documentosavaluo_list->FilterOptions->Render("body") ?>
+<?php } ?>
 <div class="clearfix"></div>
 </div>
-<?php } ?>
 <?php if (($documentosavaluo->Export == "") || (EW_EXPORT_MASTER_RECORD && $documentosavaluo->Export == "print")) { ?>
 <?php
 if ($documentosavaluo_list->DbMasterFilter <> "" && $documentosavaluo->getCurrentMasterTable() == "avaluo") {
@@ -2047,6 +2121,46 @@ if ($documentosavaluo_list->DbMasterFilter <> "" && $documentosavaluo->getCurren
 	}
 $documentosavaluo_list->RenderOtherOptions();
 ?>
+<?php if ($Security->CanSearch()) { ?>
+<?php if ($documentosavaluo->Export == "" && $documentosavaluo->CurrentAction == "") { ?>
+<form name="fdocumentosavaluolistsrch" id="fdocumentosavaluolistsrch" class="form-inline ewForm ewExtSearchForm" action="<?php echo ew_CurrentPage() ?>">
+<?php $SearchPanelClass = ($documentosavaluo_list->SearchWhere <> "") ? " in" : " in"; ?>
+<div id="fdocumentosavaluolistsrch_SearchPanel" class="ewSearchPanel collapse<?php echo $SearchPanelClass ?>">
+<input type="hidden" name="cmd" value="search">
+<input type="hidden" name="t" value="documentosavaluo">
+	<div class="ewBasicSearch">
+<?php
+if ($gsSearchError == "")
+	$documentosavaluo_list->LoadAdvancedSearch(); // Load advanced search
+
+// Render for search
+$documentosavaluo->RowType = EW_ROWTYPE_SEARCH;
+
+// Render row
+$documentosavaluo->ResetAttrs();
+$documentosavaluo_list->RenderRow();
+?>
+<div id="xsr_1" class="ewRow">
+<?php if ($documentosavaluo->avaluo->Visible) { // avaluo ?>
+	<div id="xsc_avaluo" class="ewCell form-group">
+		<label for="x_avaluo" class="ewSearchCaption ewLabel"><?php echo $documentosavaluo->avaluo->FldCaption() ?></label>
+		<span class="ewSearchOperator"><?php echo $Language->Phrase("=") ?><input type="hidden" name="z_avaluo" id="z_avaluo" value="="></span>
+		<span class="ewSearchField">
+<select data-table="documentosavaluo" data-field="x_avaluo" data-value-separator="<?php echo $documentosavaluo->avaluo->DisplayValueSeparatorAttribute() ?>" id="x_avaluo" name="x_avaluo"<?php echo $documentosavaluo->avaluo->EditAttributes() ?>>
+<?php echo $documentosavaluo->avaluo->SelectOptionListHtml("x_avaluo") ?>
+</select>
+</span>
+	</div>
+<?php } ?>
+</div>
+<div id="xsr_2" class="ewRow">
+	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("SearchBtn") ?></button>
+</div>
+	</div>
+</div>
+</form>
+<?php } ?>
+<?php } ?>
 <?php $documentosavaluo_list->ShowPageHeader(); ?>
 <?php
 $documentosavaluo_list->ShowMessage();
@@ -2255,7 +2369,6 @@ $documentosavaluo_list->ListOptions->Render("body", "right", $documentosavaluo_l
 if ($documentosavaluo_list->Recordset)
 	$documentosavaluo_list->Recordset->Close();
 ?>
-<?php if ($documentosavaluo->Export == "") { ?>
 <div class="box-footer ewGridLowerPanel">
 <?php if ($documentosavaluo->CurrentAction <> "gridadd" && $documentosavaluo->CurrentAction <> "gridedit") { ?>
 <form name="ewPagerForm" class="ewForm form-inline ewPagerForm" action="<?php echo ew_CurrentPage() ?>">
@@ -2307,7 +2420,6 @@ if ($documentosavaluo_list->Recordset)
 </div>
 <div class="clearfix"></div>
 </div>
-<?php } ?>
 </div>
 <?php } ?>
 <?php if ($documentosavaluo_list->TotalRecs == 0 && $documentosavaluo->CurrentAction == "") { // Show other options ?>
@@ -2321,24 +2433,22 @@ if ($documentosavaluo_list->Recordset)
 </div>
 <div class="clearfix"></div>
 <?php } ?>
-<?php if ($documentosavaluo->Export == "") { ?>
 <script type="text/javascript">
+fdocumentosavaluolistsrch.FilterList = <?php echo $documentosavaluo_list->GetFilterList() ?>;
+fdocumentosavaluolistsrch.Init();
 fdocumentosavaluolist.Init();
 </script>
-<?php } ?>
 <?php
 $documentosavaluo_list->ShowPageFooter();
 if (EW_DEBUG_ENABLED)
 	echo ew_DebugMsg();
 ?>
-<?php if ($documentosavaluo->Export == "") { ?>
 <script type="text/javascript">
 
 // Write your table-specific startup script here
 // document.write("page loaded");
 
 </script>
-<?php } ?>
 <?php include_once "footer.php" ?>
 <?php
 $documentosavaluo_list->Page_Terminate();

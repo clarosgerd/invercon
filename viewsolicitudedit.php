@@ -3119,7 +3119,7 @@ $viewsolicitud_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitud_edit->RightColumnClass ?>"><div<?php echo $viewsolicitud->tipoinmueble->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipoinmueble">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($viewsolicitud->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipoinmueble->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($viewsolicitud->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipoinmueble->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipoinmueble->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoinmueble[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipoinmueble->ReadOnly || $viewsolicitud->tipoinmueble->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipoinmueble" data-page="1" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipoinmueble->DisplayValueSeparatorAttribute() ?>" name="x_tipoinmueble[]" id="x_tipoinmueble[]" value="<?php echo $viewsolicitud->tipoinmueble->CurrentValue ?>"<?php echo $viewsolicitud->tipoinmueble->EditAttributes() ?>>
@@ -3132,7 +3132,7 @@ $viewsolicitud_edit->ShowMessage();
 		<td<?php echo $viewsolicitud->tipoinmueble->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipoinmueble">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($viewsolicitud->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipoinmueble->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($viewsolicitud->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipoinmueble->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipoinmueble->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoinmueble[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipoinmueble->ReadOnly || $viewsolicitud->tipoinmueble->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipoinmueble" data-page="1" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipoinmueble->DisplayValueSeparatorAttribute() ?>" name="x_tipoinmueble[]" id="x_tipoinmueble[]" value="<?php echo $viewsolicitud->tipoinmueble->CurrentValue ?>"<?php echo $viewsolicitud->tipoinmueble->EditAttributes() ?>>
@@ -3173,7 +3173,7 @@ $viewsolicitud_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitud_edit->RightColumnClass ?>"><div<?php echo $viewsolicitud->tipovehiculo->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipovehiculo">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($viewsolicitud->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipovehiculo->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($viewsolicitud->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipovehiculo->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipovehiculo->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipovehiculo[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipovehiculo->ReadOnly || $viewsolicitud->tipovehiculo->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipovehiculo" data-page="1" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipovehiculo->DisplayValueSeparatorAttribute() ?>" name="x_tipovehiculo[]" id="x_tipovehiculo[]" value="<?php echo $viewsolicitud->tipovehiculo->CurrentValue ?>"<?php echo $viewsolicitud->tipovehiculo->EditAttributes() ?>>
@@ -3186,7 +3186,7 @@ $viewsolicitud_edit->ShowMessage();
 		<td<?php echo $viewsolicitud->tipovehiculo->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipovehiculo">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($viewsolicitud->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipovehiculo->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($viewsolicitud->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipovehiculo->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipovehiculo->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipovehiculo[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipovehiculo->ReadOnly || $viewsolicitud->tipovehiculo->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipovehiculo" data-page="1" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipovehiculo->DisplayValueSeparatorAttribute() ?>" name="x_tipovehiculo[]" id="x_tipovehiculo[]" value="<?php echo $viewsolicitud->tipovehiculo->CurrentValue ?>"<?php echo $viewsolicitud->tipovehiculo->EditAttributes() ?>>
@@ -3252,7 +3252,7 @@ $viewsolicitud_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitud_edit->RightColumnClass ?>"><div<?php echo $viewsolicitud->tipomaquinaria->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipomaquinaria">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($viewsolicitud->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipomaquinaria->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($viewsolicitud->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipomaquinaria->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipomaquinaria->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomaquinaria[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipomaquinaria->ReadOnly || $viewsolicitud->tipomaquinaria->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipomaquinaria" data-page="1" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipomaquinaria->DisplayValueSeparatorAttribute() ?>" name="x_tipomaquinaria[]" id="x_tipomaquinaria[]" value="<?php echo $viewsolicitud->tipomaquinaria->CurrentValue ?>"<?php echo $viewsolicitud->tipomaquinaria->EditAttributes() ?>>
@@ -3265,7 +3265,7 @@ $viewsolicitud_edit->ShowMessage();
 		<td<?php echo $viewsolicitud->tipomaquinaria->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipomaquinaria">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($viewsolicitud->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipomaquinaria->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($viewsolicitud->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipomaquinaria->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipomaquinaria->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomaquinaria[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipomaquinaria->ReadOnly || $viewsolicitud->tipomaquinaria->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipomaquinaria" data-page="1" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipomaquinaria->DisplayValueSeparatorAttribute() ?>" name="x_tipomaquinaria[]" id="x_tipomaquinaria[]" value="<?php echo $viewsolicitud->tipomaquinaria->CurrentValue ?>"<?php echo $viewsolicitud->tipomaquinaria->EditAttributes() ?>>
@@ -3331,7 +3331,7 @@ $viewsolicitud_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitud_edit->RightColumnClass ?>"><div<?php echo $viewsolicitud->tipomercaderia->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipomercaderia">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($viewsolicitud->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipomercaderia->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($viewsolicitud->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipomercaderia->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipomercaderia->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomercaderia[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipomercaderia->ReadOnly || $viewsolicitud->tipomercaderia->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipomercaderia" data-page="1" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipomercaderia->DisplayValueSeparatorAttribute() ?>" name="x_tipomercaderia[]" id="x_tipomercaderia[]" value="<?php echo $viewsolicitud->tipomercaderia->CurrentValue ?>"<?php echo $viewsolicitud->tipomercaderia->EditAttributes() ?>>
@@ -3344,7 +3344,7 @@ $viewsolicitud_edit->ShowMessage();
 		<td<?php echo $viewsolicitud->tipomercaderia->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipomercaderia">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($viewsolicitud->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipomercaderia->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($viewsolicitud->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipomercaderia->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipomercaderia->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomercaderia[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipomercaderia->ReadOnly || $viewsolicitud->tipomercaderia->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipomercaderia" data-page="1" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipomercaderia->DisplayValueSeparatorAttribute() ?>" name="x_tipomercaderia[]" id="x_tipomercaderia[]" value="<?php echo $viewsolicitud->tipomercaderia->CurrentValue ?>"<?php echo $viewsolicitud->tipomercaderia->EditAttributes() ?>>
@@ -3381,7 +3381,7 @@ $viewsolicitud_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitud_edit->RightColumnClass ?>"><div<?php echo $viewsolicitud->tipoespecial->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipoespecial">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($viewsolicitud->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipoespecial->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($viewsolicitud->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipoespecial->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipoespecial->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoespecial',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipoespecial->ReadOnly || $viewsolicitud->tipoespecial->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipoespecial" data-page="1" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipoespecial->DisplayValueSeparatorAttribute() ?>" name="x_tipoespecial" id="x_tipoespecial" value="<?php echo $viewsolicitud->tipoespecial->CurrentValue ?>"<?php echo $viewsolicitud->tipoespecial->EditAttributes() ?>>
@@ -3394,7 +3394,7 @@ $viewsolicitud_edit->ShowMessage();
 		<td<?php echo $viewsolicitud->tipoespecial->CellAttributes() ?>>
 <span id="el_viewsolicitud_tipoespecial">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($viewsolicitud->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipoespecial->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($viewsolicitud->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitud->tipoespecial->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitud->tipoespecial->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoespecial',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitud->tipoespecial->ReadOnly || $viewsolicitud->tipoespecial->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitud" data-field="x_tipoespecial" data-page="1" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewsolicitud->tipoespecial->DisplayValueSeparatorAttribute() ?>" name="x_tipoespecial" id="x_tipoespecial" value="<?php echo $viewsolicitud->tipoespecial->CurrentValue ?>"<?php echo $viewsolicitud->tipoespecial->EditAttributes() ?>>

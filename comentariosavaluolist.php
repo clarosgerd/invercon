@@ -7,6 +7,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "phpfn14.php" ?>
 <?php include_once "comentariosavaluoinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
+<?php include_once "avaluoinfo.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -314,6 +315,9 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		// Table object (usuario)
 		if (!isset($GLOBALS['usuario'])) $GLOBALS['usuario'] = new cusuario();
 
+		// Table object (avaluo)
+		if (!isset($GLOBALS['avaluo'])) $GLOBALS['avaluo'] = new cavaluo();
+
 		// Page ID
 		if (!defined("EW_PAGE_ID"))
 			define("EW_PAGE_ID", 'list', TRUE);
@@ -398,45 +402,7 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		// 
 		// Security = null;
 		// 
-		// Get export parameters
 
-		$custom = "";
-		if (@$_GET["export"] <> "") {
-			$this->Export = $_GET["export"];
-			$custom = @$_GET["custom"];
-		} elseif (@$_POST["export"] <> "") {
-			$this->Export = $_POST["export"];
-			$custom = @$_POST["custom"];
-		} elseif (ew_IsPost()) {
-			if (@$_POST["exporttype"] <> "")
-				$this->Export = $_POST["exporttype"];
-			$custom = @$_POST["custom"];
-		} elseif (@$_GET["cmd"] == "json") {
-			$this->Export = $_GET["cmd"];
-		} else {
-			$this->setExportReturnUrl(ew_CurrentUrl());
-		}
-		$gsExportFile = $this->TableVar; // Get export file, used in header
-
-		// Get custom export parameters
-		if ($this->Export <> "" && $custom <> "") {
-			$this->CustomExport = $this->Export;
-			$this->Export = "print";
-		}
-		$gsCustomExport = $this->CustomExport;
-		$gsExport = $this->Export; // Get export parameter, used in header
-
-		// Update Export URLs
-		if (defined("EW_USE_PHPEXCEL"))
-			$this->ExportExcelCustom = FALSE;
-		if ($this->ExportExcelCustom)
-			$this->ExportExcelUrl .= "&amp;custom=1";
-		if (defined("EW_USE_PHPWORD"))
-			$this->ExportWordCustom = FALSE;
-		if ($this->ExportWordCustom)
-			$this->ExportWordUrl .= "&amp;custom=1";
-		if ($this->ExportPdfCustom)
-			$this->ExportPdfUrl .= "&amp;custom=1";
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
 
 		// Get grid add count
@@ -446,14 +412,14 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 
 		// Set up list options
 		$this->SetupListOptions();
-
-		// Setup export options
-		$this->SetupExportOptions();
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbOldSkipHeaderFooter = $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = TRUE;
 		$this->id->SetVisibility();
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
-		$this->id_avaluo->SetVisibility();
-		$this->created_at->SetVisibility();
+		$this->usuario->SetVisibility();
+		$this->descripcion->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -485,6 +451,9 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		// Create Token
 		$this->CreateToken();
 
+		// Set up master detail parameters
+		$this->SetupMasterParms();
+
 		// Setup other options
 		$this->SetupOtherOptions();
 
@@ -506,6 +475,8 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 	//
 	function Page_Terminate($url = "") {
 		global $gsExportFile, $gTmpImages;
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = $gbOldSkipHeaderFooter;
 
 		// Page Unload event
 		$this->Page_Unload();
@@ -542,7 +513,6 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 			ew_SaveDebugMsg();
 			header("Location: " . $url);
 		}
-		exit();
 	}
 
 	// Class variables
@@ -661,8 +631,28 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		$sFilter = "";
 		if (!$Security->CanList())
 			$sFilter = "(0=1)"; // Filter all records
+
+		// Restore master/detail filter
+		$this->DbMasterFilter = $this->GetMasterFilter(); // Restore master filter
+		$this->DbDetailFilter = $this->GetDetailFilter(); // Restore detail filter
 		ew_AddFilter($sFilter, $this->DbDetailFilter);
 		ew_AddFilter($sFilter, $this->SearchWhere);
+
+		// Load master record
+		if ($this->CurrentMode <> "add" && $this->GetMasterFilter() <> "" && $this->getCurrentMasterTable() == "avaluo") {
+			global $avaluo;
+			$rsmaster = $avaluo->LoadRs($this->DbMasterFilter);
+			$this->MasterRecordExists = ($rsmaster && !$rsmaster->EOF);
+			if (!$this->MasterRecordExists) {
+				$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record found
+				$this->Page_Terminate("avaluolist.php"); // Return to master page
+			} else {
+				$avaluo->LoadListRowValues($rsmaster);
+				$avaluo->RowType = EW_ROWTYPE_MASTER; // Master row
+				$avaluo->RenderListRow();
+				$rsmaster->Close();
+			}
+		}
 
 		// Set up filter
 		if ($this->Command == "json") {
@@ -671,13 +661,6 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		} else {
 			$this->setSessionWhere($sFilter);
 			$this->CurrentFilter = "";
-		}
-
-		// Export data only
-		if ($this->CustomExport == "" && in_array($this->Export, array_keys($EW_EXPORT))) {
-			$this->ExportData();
-			$this->Page_Terminate(); // Terminate response
-			exit();
 		}
 
 		// Load record count first
@@ -762,8 +745,8 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 			$this->CurrentOrder = @$_GET["order"];
 			$this->CurrentOrderType = @$_GET["ordertype"];
 			$this->UpdateSort($this->id); // id
-			$this->UpdateSort($this->id_avaluo); // id_avaluo
-			$this->UpdateSort($this->created_at); // created_at
+			$this->UpdateSort($this->usuario); // usuario
+			$this->UpdateSort($this->descripcion); // descripcion
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -788,13 +771,21 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		// Check if reset command
 		if (substr($this->Command,0,5) == "reset") {
 
+			// Reset master/detail keys
+			if ($this->Command == "resetall") {
+				$this->setCurrentMasterTable(""); // Clear master table
+				$this->DbMasterFilter = "";
+				$this->DbDetailFilter = "";
+				$this->id_avaluo->setSessionValue("");
+			}
+
 			// Reset sorting order
 			if ($this->Command == "resetsort") {
 				$sOrderBy = "";
 				$this->setSessionOrderBy($sOrderBy);
 				$this->id->setSort("");
-				$this->id_avaluo->setSort("");
-				$this->created_at->setSort("");
+				$this->usuario->setSort("");
+				$this->descripcion->setSort("");
 			}
 
 			// Reset start position
@@ -810,25 +801,13 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		// Add group option item
 		$item = &$this->ListOptions->Add($this->ListOptions->GroupOptionName);
 		$item->Body = "";
-		$item->OnLeft = TRUE;
+		$item->OnLeft = FALSE;
 		$item->Visible = FALSE;
-
-		// "edit"
-		$item = &$this->ListOptions->Add("edit");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->CanEdit();
-		$item->OnLeft = TRUE;
-
-		// "delete"
-		$item = &$this->ListOptions->Add("delete");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->CanDelete();
-		$item->OnLeft = TRUE;
 
 		// List actions
 		$item = &$this->ListOptions->Add("listactions");
 		$item->CssClass = "text-nowrap";
-		$item->OnLeft = TRUE;
+		$item->OnLeft = FALSE;
 		$item->Visible = FALSE;
 		$item->ShowInButtonGroup = FALSE;
 		$item->ShowInDropDown = FALSE;
@@ -836,15 +815,14 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		// "checkbox"
 		$item = &$this->ListOptions->Add("checkbox");
 		$item->Visible = FALSE;
-		$item->OnLeft = TRUE;
+		$item->OnLeft = FALSE;
 		$item->Header = "<input type=\"checkbox\" name=\"key\" id=\"key\" onclick=\"ew_SelectAllKey(this);\">";
-		$item->MoveTo(0);
 		$item->ShowInDropDown = FALSE;
 		$item->ShowInButtonGroup = FALSE;
 
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
-		$this->ListOptions->UseDropDownButton = TRUE;
+		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
 		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
@@ -865,22 +843,6 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 
 		// Call ListOptions_Rendering event
 		$this->ListOptions_Rendering();
-
-		// "edit"
-		$oListOpt = &$this->ListOptions->Items["edit"];
-		$editcaption = ew_HtmlTitle($Language->Phrase("EditLink"));
-		if ($Security->CanEdit()) {
-			$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
-		} else {
-			$oListOpt->Body = "";
-		}
-
-		// "delete"
-		$oListOpt = &$this->ListOptions->Items["delete"];
-		if ($Security->CanDelete())
-			$oListOpt->Body = "<a class=\"ewRowLink ewDelete\"" . "" . " title=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" href=\"" . ew_HtmlEncode($this->DeleteUrl) . "\">" . $Language->Phrase("DeleteLink") . "</a>";
-		else
-			$oListOpt->Body = "";
 
 		// Set up list action buttons
 		$oListOpt = &$this->ListOptions->GetItem("listactions");
@@ -924,22 +886,12 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 	function SetupOtherOptions() {
 		global $Language, $Security;
 		$options = &$this->OtherOptions;
-		$option = $options["addedit"];
-
-		// Add
-		$item = &$option->Add("add");
-		$addcaption = ew_HtmlTitle($Language->Phrase("AddLink"));
-		if (ew_IsMobile())
-			$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . ew_HtmlEncode($this->AddUrl) . "\">" . $Language->Phrase("AddLink") . "</a>";
-		else
-			$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-table=\"comentariosavaluo\" data-caption=\"" . $addcaption . "\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'AddBtn',url:'" . ew_HtmlEncode($this->AddUrl) . "'});\">" . $Language->Phrase("AddLink") . "</a>";
-		$item->Visible = ($this->AddUrl <> "" && $Security->CanAdd());
 		$option = $options["action"];
 
 		// Set up options default
 		foreach ($options as &$option) {
 			$option->UseImageAndText = TRUE;
-			$option->UseDropDownButton = TRUE;
+			$option->UseDropDownButton = FALSE;
 			$option->UseButtonGroup = TRUE;
 			$option->ButtonClass = "btn-sm"; // Class for button group
 			$item = &$option->Add($option->GroupOptionName);
@@ -1205,6 +1157,7 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		if (!$rs || $rs->EOF)
 			return;
 		$this->id->setDbValue($row['id']);
+		$this->usuario->setDbValue($row['usuario']);
 		$this->descripcion->setDbValue($row['descripcion']);
 		$this->id_avaluo->setDbValue($row['id_avaluo']);
 		$this->created_at->setDbValue($row['created_at']);
@@ -1214,6 +1167,7 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 	function NewRow() {
 		$row = array();
 		$row['id'] = NULL;
+		$row['usuario'] = NULL;
 		$row['descripcion'] = NULL;
 		$row['id_avaluo'] = NULL;
 		$row['created_at'] = NULL;
@@ -1226,6 +1180,7 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 			return;
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
+		$this->usuario->DbValue = $row['usuario'];
 		$this->descripcion->DbValue = $row['descripcion'];
 		$this->id_avaluo->DbValue = $row['id_avaluo'];
 		$this->created_at->DbValue = $row['created_at'];
@@ -1270,6 +1225,7 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 
 		// Common render codes for all row types
 		// id
+		// usuario
 		// descripcion
 		// id_avaluo
 		// created_at
@@ -1280,8 +1236,82 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
+		// usuario
+		if (strval($this->usuario->CurrentValue) <> "") {
+			$sFilterWrk = "`login`" . ew_SearchString("=", $this->usuario->CurrentValue, EW_DATATYPE_STRING, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+				$sWhereWrk = "";
+				$this->usuario->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+				$sWhereWrk = "";
+				$this->usuario->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+				$sWhereWrk = "";
+				$this->usuario->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->usuario->ViewValue = $this->usuario->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->usuario->ViewValue = $this->usuario->CurrentValue;
+			}
+		} else {
+			$this->usuario->ViewValue = NULL;
+		}
+		$this->usuario->ViewCustomAttributes = "";
+
+		// descripcion
+		$this->descripcion->ViewValue = $this->descripcion->CurrentValue;
+		$this->descripcion->ViewCustomAttributes = "";
+
 		// id_avaluo
-		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		if (strval($this->id_avaluo->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_avaluo, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0);
+				$this->id_avaluo->ViewValue = $this->id_avaluo->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+			}
+		} else {
+			$this->id_avaluo->ViewValue = NULL;
+		}
 		$this->id_avaluo->ViewCustomAttributes = "";
 
 		// created_at
@@ -1294,15 +1324,15 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 			$this->id->HrefValue = "";
 			$this->id->TooltipValue = "";
 
-			// id_avaluo
-			$this->id_avaluo->LinkCustomAttributes = "";
-			$this->id_avaluo->HrefValue = "";
-			$this->id_avaluo->TooltipValue = "";
+			// usuario
+			$this->usuario->LinkCustomAttributes = "";
+			$this->usuario->HrefValue = "";
+			$this->usuario->TooltipValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
+			// descripcion
+			$this->descripcion->LinkCustomAttributes = "";
+			$this->descripcion->HrefValue = "";
+			$this->descripcion->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -1310,266 +1340,72 @@ class ccomentariosavaluo_list extends ccomentariosavaluo {
 			$this->Row_Rendered();
 	}
 
-	// Set up export options
-	function SetupExportOptions() {
-		global $Language;
+	// Set up master/detail based on QueryString
+	function SetupMasterParms() {
+		$bValidMaster = FALSE;
 
-		// Printer friendly
-		$item = &$this->ExportOptions->Add("print");
-		$item->Body = "<a href=\"" . $this->ExportPrintUrl . "\" class=\"ewExportLink ewPrint\" title=\"" . ew_HtmlEncode($Language->Phrase("PrinterFriendlyText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("PrinterFriendlyText")) . "\">" . $Language->Phrase("PrinterFriendly") . "</a>";
-		$item->Visible = TRUE;
-
-		// Export to Excel
-		$item = &$this->ExportOptions->Add("excel");
-		$item->Body = "<a href=\"" . $this->ExportExcelUrl . "\" class=\"ewExportLink ewExcel\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToExcelText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToExcelText")) . "\">" . $Language->Phrase("ExportToExcel") . "</a>";
-		$item->Visible = TRUE;
-
-		// Export to Word
-		$item = &$this->ExportOptions->Add("word");
-		$item->Body = "<a href=\"" . $this->ExportWordUrl . "\" class=\"ewExportLink ewWord\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToWordText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToWordText")) . "\">" . $Language->Phrase("ExportToWord") . "</a>";
-		$item->Visible = TRUE;
-
-		// Export to Html
-		$item = &$this->ExportOptions->Add("html");
-		$item->Body = "<a href=\"" . $this->ExportHtmlUrl . "\" class=\"ewExportLink ewHtml\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToHtmlText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToHtmlText")) . "\">" . $Language->Phrase("ExportToHtml") . "</a>";
-		$item->Visible = FALSE;
-
-		// Export to Xml
-		$item = &$this->ExportOptions->Add("xml");
-		$item->Body = "<a href=\"" . $this->ExportXmlUrl . "\" class=\"ewExportLink ewXml\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToXmlText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToXmlText")) . "\">" . $Language->Phrase("ExportToXml") . "</a>";
-		$item->Visible = FALSE;
-
-		// Export to Csv
-		$item = &$this->ExportOptions->Add("csv");
-		$item->Body = "<a href=\"" . $this->ExportCsvUrl . "\" class=\"ewExportLink ewCsv\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToCsvText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToCsvText")) . "\">" . $Language->Phrase("ExportToCsv") . "</a>";
-		$item->Visible = FALSE;
-
-		// Export to Pdf
-		$item = &$this->ExportOptions->Add("pdf");
-		$item->Body = "<a href=\"" . $this->ExportPdfUrl . "\" class=\"ewExportLink ewPdf\" title=\"" . ew_HtmlEncode($Language->Phrase("ExportToPDFText")) . "\" data-caption=\"" . ew_HtmlEncode($Language->Phrase("ExportToPDFText")) . "\">" . $Language->Phrase("ExportToPDF") . "</a>";
-		$item->Visible = FALSE;
-
-		// Export to Email
-		$item = &$this->ExportOptions->Add("email");
-		$url = "";
-		$item->Body = "<button id=\"emf_comentariosavaluo\" class=\"ewExportLink ewEmail\" title=\"" . $Language->Phrase("ExportToEmailText") . "\" data-caption=\"" . $Language->Phrase("ExportToEmailText") . "\" onclick=\"ew_EmailDialogShow({lnk:'emf_comentariosavaluo',hdr:ewLanguage.Phrase('ExportToEmailText'),f:document.fcomentariosavaluolist,sel:false" . $url . "});\">" . $Language->Phrase("ExportToEmail") . "</button>";
-		$item->Visible = TRUE;
-
-		// Drop down button for export
-		$this->ExportOptions->UseButtonGroup = TRUE;
-		$this->ExportOptions->UseImageAndText = TRUE;
-		$this->ExportOptions->UseDropDownButton = TRUE;
-		if ($this->ExportOptions->UseButtonGroup && ew_IsMobile())
-			$this->ExportOptions->UseDropDownButton = TRUE;
-		$this->ExportOptions->DropDownButtonPhrase = $Language->Phrase("ButtonExport");
-
-		// Add group option item
-		$item = &$this->ExportOptions->Add($this->ExportOptions->GroupOptionName);
-		$item->Body = "";
-		$item->Visible = FALSE;
-	}
-
-	// Export data in HTML/CSV/Word/Excel/XML/Email/PDF format
-	function ExportData() {
-		$utf8 = (strtolower(EW_CHARSET) == "utf-8");
-		$bSelectLimit = $this->UseSelectLimit;
-
-		// Load recordset
-		if ($bSelectLimit) {
-			$this->TotalRecs = $this->ListRecordCount();
-		} else {
-			if (!$this->Recordset)
-				$this->Recordset = $this->LoadRecordset();
-			$rs = &$this->Recordset;
-			if ($rs)
-				$this->TotalRecs = $rs->RecordCount();
-		}
-		$this->StartRec = 1;
-
-		// Export all
-		if ($this->ExportAll) {
-			set_time_limit(EW_EXPORT_ALL_TIME_LIMIT);
-			$this->DisplayRecs = $this->TotalRecs;
-			$this->StopRec = $this->TotalRecs;
-		} else { // Export one page only
-			$this->SetupStartRec(); // Set up start record position
-
-			// Set the last record to display
-			if ($this->DisplayRecs <= 0) {
-				$this->StopRec = $this->TotalRecs;
-			} else {
-				$this->StopRec = $this->StartRec + $this->DisplayRecs - 1;
+		// Get the keys for master table
+		if (isset($_GET[EW_TABLE_SHOW_MASTER])) {
+			$sMasterTblVar = $_GET[EW_TABLE_SHOW_MASTER];
+			if ($sMasterTblVar == "") {
+				$bValidMaster = TRUE;
+				$this->DbMasterFilter = "";
+				$this->DbDetailFilter = "";
+			}
+			if ($sMasterTblVar == "avaluo") {
+				$bValidMaster = TRUE;
+				if (@$_GET["fk_id"] <> "") {
+					$GLOBALS["avaluo"]->id->setQueryStringValue($_GET["fk_id"]);
+					$this->id_avaluo->setQueryStringValue($GLOBALS["avaluo"]->id->QueryStringValue);
+					$this->id_avaluo->setSessionValue($this->id_avaluo->QueryStringValue);
+					if (!is_numeric($GLOBALS["avaluo"]->id->QueryStringValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
+		} elseif (isset($_POST[EW_TABLE_SHOW_MASTER])) {
+			$sMasterTblVar = $_POST[EW_TABLE_SHOW_MASTER];
+			if ($sMasterTblVar == "") {
+				$bValidMaster = TRUE;
+				$this->DbMasterFilter = "";
+				$this->DbDetailFilter = "";
+			}
+			if ($sMasterTblVar == "avaluo") {
+				$bValidMaster = TRUE;
+				if (@$_POST["fk_id"] <> "") {
+					$GLOBALS["avaluo"]->id->setFormValue($_POST["fk_id"]);
+					$this->id_avaluo->setFormValue($GLOBALS["avaluo"]->id->FormValue);
+					$this->id_avaluo->setSessionValue($this->id_avaluo->FormValue);
+					if (!is_numeric($GLOBALS["avaluo"]->id->FormValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
 			}
 		}
-		if ($bSelectLimit)
-			$rs = $this->LoadRecordset($this->StartRec-1, $this->DisplayRecs <= 0 ? $this->TotalRecs : $this->DisplayRecs);
-		if (!$rs) {
-			header("Content-Type:"); // Remove header
-			header("Content-Disposition:");
-			$this->ShowMessage();
-			return;
+		if ($bValidMaster) {
+
+			// Update URL
+			$this->AddUrl = $this->AddMasterUrl($this->AddUrl);
+			$this->InlineAddUrl = $this->AddMasterUrl($this->InlineAddUrl);
+			$this->GridAddUrl = $this->AddMasterUrl($this->GridAddUrl);
+			$this->GridEditUrl = $this->AddMasterUrl($this->GridEditUrl);
+
+			// Save current master table
+			$this->setCurrentMasterTable($sMasterTblVar);
+
+			// Reset start record counter (new master key)
+			if (!$this->IsAddOrEdit()) {
+				$this->StartRec = 1;
+				$this->setStartRecordNumber($this->StartRec);
+			}
+
+			// Clear previous master key from Session
+			if ($sMasterTblVar <> "avaluo") {
+				if ($this->id_avaluo->CurrentValue == "") $this->id_avaluo->setSessionValue("");
+			}
 		}
-		$this->ExportDoc = ew_ExportDocument($this, "h");
-		$Doc = &$this->ExportDoc;
-		if ($bSelectLimit) {
-			$this->StartRec = 1;
-			$this->StopRec = $this->DisplayRecs <= 0 ? $this->TotalRecs : $this->DisplayRecs;
-		} else {
-
-			//$this->StartRec = $this->StartRec;
-			//$this->StopRec = $this->StopRec;
-
-		}
-
-		// Call Page Exporting server event
-		$this->ExportDoc->ExportCustom = !$this->Page_Exporting();
-		$ParentTable = "";
-		$sHeader = $this->PageHeader;
-		$this->Page_DataRendering($sHeader);
-		$Doc->Text .= $sHeader;
-		$this->ExportDocument($Doc, $rs, $this->StartRec, $this->StopRec, "");
-		$sFooter = $this->PageFooter;
-		$this->Page_DataRendered($sFooter);
-		$Doc->Text .= $sFooter;
-
-		// Close recordset
-		$rs->Close();
-
-		// Call Page Exported server event
-		$this->Page_Exported();
-
-		// Export header and footer
-		$Doc->ExportHeaderAndFooter();
-
-		// Clean output buffer
-		if (!EW_DEBUG_ENABLED && ob_get_length())
-			ob_end_clean();
-
-		// Write debug message if enabled
-		if (EW_DEBUG_ENABLED && $this->Export <> "pdf")
-			echo ew_DebugMsg();
-
-		// Output data
-		if ($this->Export == "email") {
-			echo $this->ExportEmail($Doc->Text);
-		} else {
-			$Doc->Export();
-		}
-	}
-
-	// Export email
-	function ExportEmail($EmailContent) {
-		global $gTmpImages, $Language;
-		$sSender = @$_POST["sender"];
-		$sRecipient = @$_POST["recipient"];
-		$sCc = @$_POST["cc"];
-		$sBcc = @$_POST["bcc"];
-
-		// Subject
-		$sSubject = @$_POST["subject"];
-		$sEmailSubject = $sSubject;
-
-		// Message
-		$sContent = @$_POST["message"];
-		$sEmailMessage = $sContent;
-
-		// Check sender
-		if ($sSender == "") {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterSenderEmail") . "</p>";
-		}
-		if (!ew_CheckEmail($sSender)) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperSenderEmail") . "</p>";
-		}
-
-		// Check recipient
-		if (!ew_CheckEmailList($sRecipient, EW_MAX_EMAIL_RECIPIENT)) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperRecipientEmail") . "</p>";
-		}
-
-		// Check cc
-		if (!ew_CheckEmailList($sCc, EW_MAX_EMAIL_RECIPIENT)) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperCcEmail") . "</p>";
-		}
-
-		// Check bcc
-		if (!ew_CheckEmailList($sBcc, EW_MAX_EMAIL_RECIPIENT)) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("EnterProperBccEmail") . "</p>";
-		}
-
-		// Check email sent count
-		if (!isset($_SESSION[EW_EXPORT_EMAIL_COUNTER]))
-			$_SESSION[EW_EXPORT_EMAIL_COUNTER] = 0;
-		if (intval($_SESSION[EW_EXPORT_EMAIL_COUNTER]) > EW_MAX_EMAIL_SENT_COUNT) {
-			return "<p class=\"text-danger\">" . $Language->Phrase("ExceedMaxEmailExport") . "</p>";
-		}
-
-		// Send email
-		$Email = new cEmail();
-		$Email->Sender = $sSender; // Sender
-		$Email->Recipient = $sRecipient; // Recipient
-		$Email->Cc = $sCc; // Cc
-		$Email->Bcc = $sBcc; // Bcc
-		$Email->Subject = $sEmailSubject; // Subject
-		$Email->Format = "html";
-		if ($sEmailMessage <> "")
-			$sEmailMessage = ew_RemoveXSS($sEmailMessage) . "<br><br>";
-		foreach ($gTmpImages as $tmpimage)
-			$Email->AddEmbeddedImage($tmpimage);
-		$Email->Content = $sEmailMessage . ew_CleanEmailContent($EmailContent); // Content
-		$EventArgs = array();
-		if ($this->Recordset) {
-			$this->RecCnt = $this->StartRec - 1;
-			$this->Recordset->MoveFirst();
-			if ($this->StartRec > 1)
-				$this->Recordset->Move($this->StartRec - 1);
-			$EventArgs["rs"] = &$this->Recordset;
-		}
-		$bEmailSent = FALSE;
-		if ($this->Email_Sending($Email, $EventArgs))
-			$bEmailSent = $Email->Send();
-
-		// Check email sent status
-		if ($bEmailSent) {
-
-			// Update email sent count
-			$_SESSION[EW_EXPORT_EMAIL_COUNTER]++;
-
-			// Sent email success
-			return "<p class=\"text-success\">" . $Language->Phrase("SendEmailSuccess") . "</p>"; // Set up success message
-		} else {
-
-			// Sent email failure
-			return "<p class=\"text-danger\">" . $Email->SendErrDescription . "</p>";
-		}
-	}
-
-	// Export QueryString
-	function ExportQueryString() {
-
-		// Initialize
-		$sQry = "export=html";
-
-		// Build QueryString for search
-		// Build QueryString for pager
-
-		$sQry .= "&" . EW_TABLE_REC_PER_PAGE . "=" . urlencode($this->getRecordsPerPage()) . "&" . EW_TABLE_START_REC . "=" . urlencode($this->getStartRecordNumber());
-		return $sQry;
-	}
-
-	// Add search QueryString
-	function AddSearchQueryString(&$Qry, &$Fld) {
-		$FldSearchValue = $Fld->AdvancedSearch->getValue("x");
-		$FldParm = substr($Fld->FldVar,2);
-		if (strval($FldSearchValue) <> "") {
-			$Qry .= "&x_" . $FldParm . "=" . urlencode($FldSearchValue) .
-				"&z_" . $FldParm . "=" . urlencode($Fld->AdvancedSearch->getValue("z"));
-		}
-		$FldSearchValue2 = $Fld->AdvancedSearch->getValue("y");
-		if (strval($FldSearchValue2) <> "") {
-			$Qry .= "&v_" . $FldParm . "=" . urlencode($Fld->AdvancedSearch->getValue("v")) .
-				"&y_" . $FldParm . "=" . urlencode($FldSearchValue2) .
-				"&w_" . $FldParm . "=" . urlencode($Fld->AdvancedSearch->getValue("w"));
-		}
+		$this->DbMasterFilter = $this->GetMasterFilter(); // Get master filter
+		$this->DbDetailFilter = $this->GetDetailFilter(); // Get detail filter
 	}
 
 	// Set up Breadcrumb
@@ -1745,7 +1581,6 @@ Page_Rendering();
 $comentariosavaluo_list->Page_Render();
 ?>
 <?php include_once "header.php" ?>
-<?php if ($comentariosavaluo->Export == "") { ?>
 <script type="text/javascript">
 
 // Form object
@@ -1765,21 +1600,31 @@ fcomentariosavaluolist.Form_CustomValidate =
 fcomentariosavaluolist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+fcomentariosavaluolist.Lists["x_usuario"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_codigo","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"usuario"};
+fcomentariosavaluolist.Lists["x_usuario"].Data = "<?php echo $comentariosavaluo_list->usuario->LookupFilterQuery(FALSE, "list") ?>";
 
+// Form object for search
 </script>
 <script type="text/javascript">
 
 // Write your client script here, no need to add script tags.
 </script>
-<?php } ?>
-<?php if ($comentariosavaluo->Export == "") { ?>
 <div class="ewToolbar">
 <?php if ($comentariosavaluo_list->TotalRecs > 0 && $comentariosavaluo_list->ExportOptions->Visible()) { ?>
 <?php $comentariosavaluo_list->ExportOptions->Render("body") ?>
 <?php } ?>
 <div class="clearfix"></div>
 </div>
+<?php if (($comentariosavaluo->Export == "") || (EW_EXPORT_MASTER_RECORD && $comentariosavaluo->Export == "print")) { ?>
+<?php
+if ($comentariosavaluo_list->DbMasterFilter <> "" && $comentariosavaluo->getCurrentMasterTable() == "avaluo") {
+	if ($comentariosavaluo_list->MasterRecordExists) {
+?>
+<?php include_once "avaluomaster.php" ?>
+<?php
+	}
+}
+?>
 <?php } ?>
 <?php
 	$bSelectLimit = $comentariosavaluo_list->UseSelectLimit;
@@ -1820,6 +1665,10 @@ $comentariosavaluo_list->ShowMessage();
 <input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $comentariosavaluo_list->Token ?>">
 <?php } ?>
 <input type="hidden" name="t" value="comentariosavaluo">
+<?php if ($comentariosavaluo->getCurrentMasterTable() == "avaluo" && $comentariosavaluo->CurrentAction <> "") { ?>
+<input type="hidden" name="<?php echo EW_TABLE_SHOW_MASTER ?>" value="avaluo">
+<input type="hidden" name="fk_id" value="<?php echo $comentariosavaluo->id_avaluo->getSessionValue() ?>">
+<?php } ?>
 <div id="gmp_comentariosavaluo" class="<?php if (ew_IsResponsiveLayout()) { ?>table-responsive <?php } ?>ewGridMiddlePanel">
 <?php if ($comentariosavaluo_list->TotalRecs > 0 || $comentariosavaluo->CurrentAction == "gridedit") { ?>
 <table id="tbl_comentariosavaluolist" class="table ewTable">
@@ -1845,21 +1694,21 @@ $comentariosavaluo_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($comentariosavaluo->id_avaluo->Visible) { // id_avaluo ?>
-	<?php if ($comentariosavaluo->SortUrl($comentariosavaluo->id_avaluo) == "") { ?>
-		<th data-name="id_avaluo" class="<?php echo $comentariosavaluo->id_avaluo->HeaderCellClass() ?>"><div id="elh_comentariosavaluo_id_avaluo" class="comentariosavaluo_id_avaluo"><div class="ewTableHeaderCaption"><?php echo $comentariosavaluo->id_avaluo->FldCaption() ?></div></div></th>
+<?php if ($comentariosavaluo->usuario->Visible) { // usuario ?>
+	<?php if ($comentariosavaluo->SortUrl($comentariosavaluo->usuario) == "") { ?>
+		<th data-name="usuario" class="<?php echo $comentariosavaluo->usuario->HeaderCellClass() ?>"><div id="elh_comentariosavaluo_usuario" class="comentariosavaluo_usuario"><div class="ewTableHeaderCaption"><?php echo $comentariosavaluo->usuario->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_avaluo" class="<?php echo $comentariosavaluo->id_avaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $comentariosavaluo->SortUrl($comentariosavaluo->id_avaluo) ?>',1);"><div id="elh_comentariosavaluo_id_avaluo" class="comentariosavaluo_id_avaluo">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $comentariosavaluo->id_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($comentariosavaluo->id_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($comentariosavaluo->id_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="usuario" class="<?php echo $comentariosavaluo->usuario->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $comentariosavaluo->SortUrl($comentariosavaluo->usuario) ?>',1);"><div id="elh_comentariosavaluo_usuario" class="comentariosavaluo_usuario">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $comentariosavaluo->usuario->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($comentariosavaluo->usuario->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($comentariosavaluo->usuario->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($comentariosavaluo->created_at->Visible) { // created_at ?>
-	<?php if ($comentariosavaluo->SortUrl($comentariosavaluo->created_at) == "") { ?>
-		<th data-name="created_at" class="<?php echo $comentariosavaluo->created_at->HeaderCellClass() ?>"><div id="elh_comentariosavaluo_created_at" class="comentariosavaluo_created_at"><div class="ewTableHeaderCaption"><?php echo $comentariosavaluo->created_at->FldCaption() ?></div></div></th>
+<?php if ($comentariosavaluo->descripcion->Visible) { // descripcion ?>
+	<?php if ($comentariosavaluo->SortUrl($comentariosavaluo->descripcion) == "") { ?>
+		<th data-name="descripcion" class="<?php echo $comentariosavaluo->descripcion->HeaderCellClass() ?>"><div id="elh_comentariosavaluo_descripcion" class="comentariosavaluo_descripcion"><div class="ewTableHeaderCaption"><?php echo $comentariosavaluo->descripcion->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="created_at" class="<?php echo $comentariosavaluo->created_at->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $comentariosavaluo->SortUrl($comentariosavaluo->created_at) ?>',1);"><div id="elh_comentariosavaluo_created_at" class="comentariosavaluo_created_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $comentariosavaluo->created_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($comentariosavaluo->created_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($comentariosavaluo->created_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="descripcion" class="<?php echo $comentariosavaluo->descripcion->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $comentariosavaluo->SortUrl($comentariosavaluo->descripcion) ?>',1);"><div id="elh_comentariosavaluo_descripcion" class="comentariosavaluo_descripcion">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $comentariosavaluo->descripcion->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($comentariosavaluo->descripcion->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($comentariosavaluo->descripcion->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -1936,19 +1785,19 @@ $comentariosavaluo_list->ListOptions->Render("body", "left", $comentariosavaluo_
 </span>
 </td>
 	<?php } ?>
-	<?php if ($comentariosavaluo->id_avaluo->Visible) { // id_avaluo ?>
-		<td data-name="id_avaluo"<?php echo $comentariosavaluo->id_avaluo->CellAttributes() ?>>
-<span id="el<?php echo $comentariosavaluo_list->RowCnt ?>_comentariosavaluo_id_avaluo" class="comentariosavaluo_id_avaluo">
-<span<?php echo $comentariosavaluo->id_avaluo->ViewAttributes() ?>>
-<?php echo $comentariosavaluo->id_avaluo->ListViewValue() ?></span>
+	<?php if ($comentariosavaluo->usuario->Visible) { // usuario ?>
+		<td data-name="usuario"<?php echo $comentariosavaluo->usuario->CellAttributes() ?>>
+<span id="el<?php echo $comentariosavaluo_list->RowCnt ?>_comentariosavaluo_usuario" class="comentariosavaluo_usuario">
+<span<?php echo $comentariosavaluo->usuario->ViewAttributes() ?>>
+<?php echo $comentariosavaluo->usuario->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
-	<?php if ($comentariosavaluo->created_at->Visible) { // created_at ?>
-		<td data-name="created_at"<?php echo $comentariosavaluo->created_at->CellAttributes() ?>>
-<span id="el<?php echo $comentariosavaluo_list->RowCnt ?>_comentariosavaluo_created_at" class="comentariosavaluo_created_at">
-<span<?php echo $comentariosavaluo->created_at->ViewAttributes() ?>>
-<?php echo $comentariosavaluo->created_at->ListViewValue() ?></span>
+	<?php if ($comentariosavaluo->descripcion->Visible) { // descripcion ?>
+		<td data-name="descripcion"<?php echo $comentariosavaluo->descripcion->CellAttributes() ?>>
+<span id="el<?php echo $comentariosavaluo_list->RowCnt ?>_comentariosavaluo_descripcion" class="comentariosavaluo_descripcion">
+<span<?php echo $comentariosavaluo->descripcion->ViewAttributes() ?>>
+<?php echo $comentariosavaluo->descripcion->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
@@ -1978,7 +1827,6 @@ $comentariosavaluo_list->ListOptions->Render("body", "right", $comentariosavaluo
 if ($comentariosavaluo_list->Recordset)
 	$comentariosavaluo_list->Recordset->Close();
 ?>
-<?php if ($comentariosavaluo->Export == "") { ?>
 <div class="box-footer ewGridLowerPanel">
 <?php if ($comentariosavaluo->CurrentAction <> "gridadd" && $comentariosavaluo->CurrentAction <> "gridedit") { ?>
 <form name="ewPagerForm" class="ewForm form-inline ewPagerForm" action="<?php echo ew_CurrentPage() ?>">
@@ -2030,7 +1878,6 @@ if ($comentariosavaluo_list->Recordset)
 </div>
 <div class="clearfix"></div>
 </div>
-<?php } ?>
 </div>
 <?php } ?>
 <?php if ($comentariosavaluo_list->TotalRecs == 0 && $comentariosavaluo->CurrentAction == "") { // Show other options ?>
@@ -2044,24 +1891,20 @@ if ($comentariosavaluo_list->Recordset)
 </div>
 <div class="clearfix"></div>
 <?php } ?>
-<?php if ($comentariosavaluo->Export == "") { ?>
 <script type="text/javascript">
 fcomentariosavaluolist.Init();
 </script>
-<?php } ?>
 <?php
 $comentariosavaluo_list->ShowPageFooter();
 if (EW_DEBUG_ENABLED)
 	echo ew_DebugMsg();
 ?>
-<?php if ($comentariosavaluo->Export == "") { ?>
 <script type="text/javascript">
 
 // Write your table-specific startup script here
 // document.write("page loaded");
 
 </script>
-<?php } ?>
 <?php include_once "footer.php" ?>
 <?php
 $comentariosavaluo_list->Page_Terminate();

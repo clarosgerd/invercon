@@ -465,6 +465,7 @@ class cinspector_list extends cinspector {
 		$this->especialidad->SetVisibility();
 		$this->status->SetVisibility();
 		$this->color->SetVisibility();
+		$this->codigo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -837,6 +838,7 @@ class cinspector_list extends cinspector {
 		$sFilterList = ew_Concat($sFilterList, $this->especialidad->AdvancedSearch->ToJson(), ","); // Field especialidad
 		$sFilterList = ew_Concat($sFilterList, $this->status->AdvancedSearch->ToJson(), ","); // Field status
 		$sFilterList = ew_Concat($sFilterList, $this->color->AdvancedSearch->ToJson(), ","); // Field color
+		$sFilterList = ew_Concat($sFilterList, $this->codigo->AdvancedSearch->ToJson(), ","); // Field codigo
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -1024,6 +1026,14 @@ class cinspector_list extends cinspector {
 		$this->color->AdvancedSearch->SearchValue2 = @$filter["y_color"];
 		$this->color->AdvancedSearch->SearchOperator2 = @$filter["w_color"];
 		$this->color->AdvancedSearch->Save();
+
+		// Field codigo
+		$this->codigo->AdvancedSearch->SearchValue = @$filter["x_codigo"];
+		$this->codigo->AdvancedSearch->SearchOperator = @$filter["z_codigo"];
+		$this->codigo->AdvancedSearch->SearchCondition = @$filter["v_codigo"];
+		$this->codigo->AdvancedSearch->SearchValue2 = @$filter["y_codigo"];
+		$this->codigo->AdvancedSearch->SearchOperator2 = @$filter["w_codigo"];
+		$this->codigo->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -1045,6 +1055,7 @@ class cinspector_list extends cinspector {
 		$this->BuildBasicSearchSQL($sWhere, $this->cargo, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->especialidad, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->color, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->codigo, $arKeywords, $type);
 		return $sWhere;
 	}
 
@@ -1207,6 +1218,7 @@ class cinspector_list extends cinspector {
 			$this->UpdateSort($this->especialidad); // especialidad
 			$this->UpdateSort($this->status); // status
 			$this->UpdateSort($this->color); // color
+			$this->UpdateSort($this->codigo); // codigo
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1255,6 +1267,7 @@ class cinspector_list extends cinspector {
 				$this->especialidad->setSort("");
 				$this->status->setSort("");
 				$this->color->setSort("");
+				$this->codigo->setSort("");
 			}
 
 			// Reset start position
@@ -1298,7 +1311,7 @@ class cinspector_list extends cinspector {
 
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
-		$this->ListOptions->UseDropDownButton = TRUE;
+		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
 		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
@@ -1687,6 +1700,7 @@ class cinspector_list extends cinspector {
 		$this->avatar->Upload->DbValue = $row['avatar'];
 		if (is_array($this->avatar->Upload->DbValue) || is_object($this->avatar->Upload->DbValue)) // Byte array
 			$this->avatar->Upload->DbValue = ew_BytesToStr($this->avatar->Upload->DbValue);
+		$this->codigo->setDbValue($row['codigo']);
 	}
 
 	// Return a row with default values
@@ -1711,6 +1725,7 @@ class cinspector_list extends cinspector {
 		$row['status'] = NULL;
 		$row['color'] = NULL;
 		$row['avatar'] = NULL;
+		$row['codigo'] = NULL;
 		return $row;
 	}
 
@@ -1738,6 +1753,7 @@ class cinspector_list extends cinspector {
 		$this->status->DbValue = $row['status'];
 		$this->color->DbValue = $row['color'];
 		$this->avatar->Upload->DbValue = $row['avatar'];
+		$this->codigo->DbValue = $row['codigo'];
 	}
 
 	// Load old record
@@ -1799,6 +1815,8 @@ class cinspector_list extends cinspector {
 		// avatar
 
 		$this->avatar->CellCssStyle = "white-space: nowrap;";
+
+		// codigo
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// nombre
@@ -1820,9 +1838,23 @@ class cinspector_list extends cinspector {
 		// id_rol
 		if (strval($this->id_rol->CurrentValue) <> "") {
 			$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-		$sWhereWrk = "";
-		$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1843,9 +1875,23 @@ class cinspector_list extends cinspector {
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1902,6 +1948,10 @@ class cinspector_list extends cinspector {
 		// color
 		$this->color->ViewValue = $this->color->CurrentValue;
 		$this->color->ViewCustomAttributes = "";
+
+		// codigo
+		$this->codigo->ViewValue = $this->codigo->CurrentValue;
+		$this->codigo->ViewCustomAttributes = "";
 
 			// nombre
 			$this->nombre->LinkCustomAttributes = "";
@@ -1982,6 +2032,11 @@ class cinspector_list extends cinspector {
 			$this->color->LinkCustomAttributes = "";
 			$this->color->HrefValue = "";
 			$this->color->TooltipValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
+			$this->codigo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -2702,6 +2757,15 @@ $inspector_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($inspector->codigo->Visible) { // codigo ?>
+	<?php if ($inspector->SortUrl($inspector->codigo) == "") { ?>
+		<th data-name="codigo" class="<?php echo $inspector->codigo->HeaderCellClass() ?>"><div id="elh_inspector_codigo" class="inspector_codigo"><div class="ewTableHeaderCaption"><?php echo $inspector->codigo->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="codigo" class="<?php echo $inspector->codigo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $inspector->SortUrl($inspector->codigo) ?>',1);"><div id="elh_inspector_codigo" class="inspector_codigo">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $inspector->codigo->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($inspector->codigo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($inspector->codigo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php
 
 // Render list options (header, right)
@@ -2892,6 +2956,14 @@ $inspector_list->ListOptions->Render("body", "left", $inspector_list->RowCnt);
 <span id="el<?php echo $inspector_list->RowCnt ?>_inspector_color" class="inspector_color">
 <span<?php echo $inspector->color->ViewAttributes() ?>>
 <?php echo $inspector->color->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($inspector->codigo->Visible) { // codigo ?>
+		<td data-name="codigo"<?php echo $inspector->codigo->CellAttributes() ?>>
+<span id="el<?php echo $inspector_list->RowCnt ?>_inspector_codigo" class="inspector_codigo">
+<span<?php echo $inspector->codigo->ViewAttributes() ?>>
+<?php echo $inspector->codigo->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>

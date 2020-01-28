@@ -329,6 +329,8 @@ class cestadointerno_edit extends cestadointerno {
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
 		$this->descripcion->SetVisibility();
+		$this->owner->SetVisibility();
+		$this->time->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -570,6 +572,12 @@ class cestadointerno_edit extends cestadointerno {
 		if (!$this->descripcion->FldIsDetailKey) {
 			$this->descripcion->setFormValue($objForm->GetValue("x_descripcion"));
 		}
+		if (!$this->owner->FldIsDetailKey) {
+			$this->owner->setFormValue($objForm->GetValue("x_owner"));
+		}
+		if (!$this->time->FldIsDetailKey) {
+			$this->time->setFormValue($objForm->GetValue("x_time"));
+		}
 	}
 
 	// Restore form values
@@ -577,6 +585,8 @@ class cestadointerno_edit extends cestadointerno {
 		global $objForm;
 		$this->id->CurrentValue = $this->id->FormValue;
 		$this->descripcion->CurrentValue = $this->descripcion->FormValue;
+		$this->owner->CurrentValue = $this->owner->FormValue;
+		$this->time->CurrentValue = $this->time->FormValue;
 	}
 
 	// Load row based on key values
@@ -614,6 +624,8 @@ class cestadointerno_edit extends cestadointerno {
 			return;
 		$this->id->setDbValue($row['id']);
 		$this->descripcion->setDbValue($row['descripcion']);
+		$this->owner->setDbValue($row['owner']);
+		$this->time->setDbValue($row['time']);
 	}
 
 	// Return a row with default values
@@ -621,6 +633,8 @@ class cestadointerno_edit extends cestadointerno {
 		$row = array();
 		$row['id'] = NULL;
 		$row['descripcion'] = NULL;
+		$row['owner'] = NULL;
+		$row['time'] = NULL;
 		return $row;
 	}
 
@@ -631,6 +645,8 @@ class cestadointerno_edit extends cestadointerno {
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
 		$this->descripcion->DbValue = $row['descripcion'];
+		$this->owner->DbValue = $row['owner'];
+		$this->time->DbValue = $row['time'];
 	}
 
 	// Load old record
@@ -667,6 +683,8 @@ class cestadointerno_edit extends cestadointerno {
 		// Common render codes for all row types
 		// id
 		// descripcion
+		// owner
+		// time
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -678,6 +696,47 @@ class cestadointerno_edit extends cestadointerno {
 		$this->descripcion->ViewValue = $this->descripcion->CurrentValue;
 		$this->descripcion->ViewCustomAttributes = "";
 
+		// owner
+		if (strval($this->owner->CurrentValue) <> "") {
+			$sFilterWrk = "`userlevelname`" . ew_SearchString("=", $this->owner->CurrentValue, EW_DATATYPE_STRING, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->owner, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->owner->ViewValue = $this->owner->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->owner->ViewValue = $this->owner->CurrentValue;
+			}
+		} else {
+			$this->owner->ViewValue = NULL;
+		}
+		$this->owner->ViewCustomAttributes = "";
+
+		// time
+		$this->time->ViewValue = $this->time->CurrentValue;
+		$this->time->ViewCustomAttributes = "";
+
 			// id
 			$this->id->LinkCustomAttributes = "";
 			$this->id->HrefValue = "";
@@ -687,6 +746,16 @@ class cestadointerno_edit extends cestadointerno {
 			$this->descripcion->LinkCustomAttributes = "";
 			$this->descripcion->HrefValue = "";
 			$this->descripcion->TooltipValue = "";
+
+			// owner
+			$this->owner->LinkCustomAttributes = "";
+			$this->owner->HrefValue = "";
+			$this->owner->TooltipValue = "";
+
+			// time
+			$this->time->LinkCustomAttributes = "";
+			$this->time->HrefValue = "";
+			$this->time->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// id
@@ -701,6 +770,45 @@ class cestadointerno_edit extends cestadointerno {
 			$this->descripcion->EditValue = ew_HtmlEncode($this->descripcion->CurrentValue);
 			$this->descripcion->PlaceHolder = ew_RemoveHtml($this->descripcion->FldTitle());
 
+			// owner
+			$this->owner->EditAttrs["class"] = "form-control";
+			$this->owner->EditCustomAttributes = "";
+			if (trim(strval($this->owner->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`userlevelname`" . ew_SearchString("=", $this->owner->CurrentValue, EW_DATATYPE_STRING, "");
+			}
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->owner->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->owner->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->owner->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->owner, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->owner->EditValue = $arwrk;
+
+			// time
+			$this->time->EditAttrs["class"] = "form-control";
+			$this->time->EditCustomAttributes = "";
+			$this->time->EditValue = ew_HtmlEncode($this->time->CurrentValue);
+			$this->time->PlaceHolder = ew_RemoveHtml($this->time->FldTitle());
+
 			// Edit refer script
 			// id
 
@@ -710,6 +818,14 @@ class cestadointerno_edit extends cestadointerno {
 			// descripcion
 			$this->descripcion->LinkCustomAttributes = "";
 			$this->descripcion->HrefValue = "";
+
+			// owner
+			$this->owner->LinkCustomAttributes = "";
+			$this->owner->HrefValue = "";
+
+			// time
+			$this->time->LinkCustomAttributes = "";
+			$this->time->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -729,6 +845,9 @@ class cestadointerno_edit extends cestadointerno {
 		// Check if validation required
 		if (!EW_SERVER_VALIDATE)
 			return ($gsFormError == "");
+		if (!ew_CheckInteger($this->time->FormValue)) {
+			ew_AddMessage($gsFormError, $this->time->FldErrMsg());
+		}
 
 		// Return validate result
 		$ValidateForm = ($gsFormError == "");
@@ -767,6 +886,12 @@ class cestadointerno_edit extends cestadointerno {
 
 			// descripcion
 			$this->descripcion->SetDbValueDef($rsnew, $this->descripcion->CurrentValue, NULL, $this->descripcion->ReadOnly);
+
+			// owner
+			$this->owner->SetDbValueDef($rsnew, $this->owner->CurrentValue, NULL, $this->owner->ReadOnly);
+
+			// time
+			$this->time->SetDbValueDef($rsnew, $this->time->CurrentValue, NULL, $this->time->ReadOnly);
 
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
@@ -815,6 +940,32 @@ class cestadointerno_edit extends cestadointerno {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
+		case "x_owner":
+			$sSqlWrk = "";
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `userlevelname` AS `LinkFld`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `userlevelname` AS `LinkFld`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `userlevelname` AS `LinkFld`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`userlevelname` IN ({filter_value})', "t0" => "200", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->owner, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		}
 	}
 
@@ -934,6 +1085,9 @@ festadointernoedit.Validate = function() {
 	for (var i = startcnt; i <= rowcnt; i++) {
 		var infix = ($k[0]) ? String(i) : "";
 		$fobj.data("rowindex", infix);
+			elm = this.GetElements("x" + infix + "_time");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($estadointerno->time->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -963,8 +1117,10 @@ festadointernoedit.Form_CustomValidate =
 festadointernoedit.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+festadointernoedit.Lists["x_owner"] = {"LinkField":"x_userlevelname","Ajax":true,"AutoFill":false,"DisplayFields":["x_userlevelname","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"userlevels"};
+festadointernoedit.Lists["x_owner"].Data = "<?php echo $estadointerno_edit->owner->LookupFilterQuery(FALSE, "edit") ?>";
 
+// Form object for search
 </script>
 <script type="text/javascript">
 
@@ -1032,6 +1188,52 @@ $estadointerno_edit->ShowMessage();
 <input type="text" data-table="estadointerno" data-field="x_descripcion" name="x_descripcion" id="x_descripcion" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($estadointerno->descripcion->getPlaceHolder()) ?>" value="<?php echo $estadointerno->descripcion->EditValue ?>"<?php echo $estadointerno->descripcion->EditAttributes() ?>>
 </span>
 <?php echo $estadointerno->descripcion->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($estadointerno->owner->Visible) { // owner ?>
+<?php if ($estadointerno_edit->IsMobileOrModal) { ?>
+	<div id="r_owner" class="form-group">
+		<label id="elh_estadointerno_owner" for="x_owner" class="<?php echo $estadointerno_edit->LeftColumnClass ?>"><?php echo $estadointerno->owner->FldCaption() ?></label>
+		<div class="<?php echo $estadointerno_edit->RightColumnClass ?>"><div<?php echo $estadointerno->owner->CellAttributes() ?>>
+<span id="el_estadointerno_owner">
+<select data-table="estadointerno" data-field="x_owner" data-value-separator="<?php echo $estadointerno->owner->DisplayValueSeparatorAttribute() ?>" id="x_owner" name="x_owner"<?php echo $estadointerno->owner->EditAttributes() ?>>
+<?php echo $estadointerno->owner->SelectOptionListHtml("x_owner") ?>
+</select>
+</span>
+<?php echo $estadointerno->owner->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_owner">
+		<td class="col-sm-3"><span id="elh_estadointerno_owner"><?php echo $estadointerno->owner->FldCaption() ?></span></td>
+		<td<?php echo $estadointerno->owner->CellAttributes() ?>>
+<span id="el_estadointerno_owner">
+<select data-table="estadointerno" data-field="x_owner" data-value-separator="<?php echo $estadointerno->owner->DisplayValueSeparatorAttribute() ?>" id="x_owner" name="x_owner"<?php echo $estadointerno->owner->EditAttributes() ?>>
+<?php echo $estadointerno->owner->SelectOptionListHtml("x_owner") ?>
+</select>
+</span>
+<?php echo $estadointerno->owner->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($estadointerno->time->Visible) { // time ?>
+<?php if ($estadointerno_edit->IsMobileOrModal) { ?>
+	<div id="r_time" class="form-group">
+		<label id="elh_estadointerno_time" for="x_time" class="<?php echo $estadointerno_edit->LeftColumnClass ?>"><?php echo $estadointerno->time->FldCaption() ?></label>
+		<div class="<?php echo $estadointerno_edit->RightColumnClass ?>"><div<?php echo $estadointerno->time->CellAttributes() ?>>
+<span id="el_estadointerno_time">
+<input type="text" data-table="estadointerno" data-field="x_time" name="x_time" id="x_time" size="30" placeholder="<?php echo ew_HtmlEncode($estadointerno->time->getPlaceHolder()) ?>" value="<?php echo $estadointerno->time->EditValue ?>"<?php echo $estadointerno->time->EditAttributes() ?>>
+</span>
+<?php echo $estadointerno->time->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_time">
+		<td class="col-sm-3"><span id="elh_estadointerno_time"><?php echo $estadointerno->time->FldCaption() ?></span></td>
+		<td<?php echo $estadointerno->time->CellAttributes() ?>>
+<span id="el_estadointerno_time">
+<input type="text" data-table="estadointerno" data-field="x_time" name="x_time" id="x_time" size="30" placeholder="<?php echo ew_HtmlEncode($estadointerno->time->getPlaceHolder()) ?>" value="<?php echo $estadointerno->time->EditValue ?>"<?php echo $estadointerno->time->EditAttributes() ?>>
+</span>
+<?php echo $estadointerno->time->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>

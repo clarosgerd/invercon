@@ -15,8 +15,8 @@ if (EW_DEBUG_ENABLED) {
 
 // General
 define("EW_IS_WINDOWS", (strtolower(substr(PHP_OS, 0, 3)) === 'win'), TRUE); // Is Windows OS
-define("EW_IS_PHP5", version_compare(PHP_VERSION, "5.5.0") >= 0, TRUE); // Is PHP 5.5 or later
-if (!EW_IS_PHP5) die("This script requires PHP 5.5 or later. You are running " . phpversion() . ".");
+define("EW_IS_PHP5", version_compare(PHP_VERSION, "5.4.0") >= 0, TRUE); // Is PHP 5.4 or later
+if (!EW_IS_PHP5) die("This script requires PHP 5.4 or later. You are running " . phpversion() . ".");
 define("EW_PATH_DELIMITER", ((EW_IS_WINDOWS) ? "\\" : "/"), TRUE); // Physical path delimiter
 $EW_ROOT_RELATIVE_PATH = "."; // Relative path of app root
 define("EW_UNFORMAT_YEAR", 50, TRUE); // Unformat year
@@ -25,7 +25,7 @@ define("EW_CONFIG_FILE_FOLDER", EW_PROJECT_NAME, TRUE); // Config file name
 define("EW_PROJECT_ID", "{30AA0C25-B486-48CC-AF92-47D039BF725C}", TRUE); // Project ID (GUID)
 $EW_RELATED_PROJECT_ID = "";
 $EW_RELATED_LANGUAGE_FOLDER = "";
-define("EW_RANDOM_KEY", 'uYStY4wcyX9crthr', TRUE); // Random key for encryption
+define("EW_RANDOM_KEY", 'twpz38ji9m8605Lj', TRUE); // Random key for encryption
 define("EW_PROJECT_STYLESHEET_FILENAME", "phpcss/invercon.css", TRUE); // Project stylesheet file name
 define("EW_CHARSET", "utf-8", TRUE); // Project charset
 define("EW_EMAIL_CHARSET", EW_CHARSET, TRUE); // Email charset
@@ -79,7 +79,7 @@ if (!defined("EW_USE_MYSQLI"))
 	define('EW_USE_MYSQLI', extension_loaded("mysqli"), TRUE); // Use MySQLi
 if (!defined("EW_USE_MSSQL_NATIVE"))
 	define("EW_USE_MSSQL_NATIVE", FALSE, TRUE); // Use ADOdb "mssqlnative" driver for MSSQL
-$EW_CONN["DB"] = array("conn" => NULL, "id" => "DB", "type" => "MYSQL", "host" => "localhost", "port" => 3306, "user" => "root", "pass" => "usbw", "db" => "invercon", "qs" => "`", "qe" => "`");
+$EW_CONN["DB"] = array("conn" => NULL, "id" => "DB", "type" => "MYSQL", "host" => "localhost", "port" => 3306, "user" => "root", "pass" => "", "db" => "inverconbd", "qs" => "`", "qe" => "`");
 $EW_CONN[0] = &$EW_CONN["DB"];
 
 // Set up database error function
@@ -173,7 +173,7 @@ define("EW_SESSION_TEMP_IMAGES", EW_PROJECT_NAME . "_TempImages", TRUE); // Temp
 define("EW_LANGUAGE_FOLDER", $EW_RELATIVE_PATH . "phplang/", TRUE);
 $EW_LANGUAGE_FILE = array();
 $EW_LANGUAGE_FILE[] = array("en", "", "english.xml");
-$EW_LANGUAGE_FILE[] = array("es", "", "spanish.xml");
+$EW_LANGUAGE_FILE[] = array("es", "", "Spanish_es.xml");
 define("EW_LANGUAGE_DEFAULT_ID", "es", TRUE);
 define("EW_SESSION_LANGUAGE_ID", EW_PROJECT_NAME . "_LanguageId", TRUE); // Language ID
 define("EW_LOCALE_FOLDER", $EW_RELATIVE_PATH . "phplocale/", TRUE);
@@ -343,7 +343,7 @@ define("EW_EMAIL_FORGOTPWD_TEMPLATE", "forgotpwd.html", TRUE);
 define("EW_EMAIL_NOTIFY_TEMPLATE", "notify.html", TRUE);
 define("EW_EMAIL_REGISTER_TEMPLATE", "register.html", TRUE);
 define("EW_EMAIL_RESETPWD_TEMPLATE", "resetpwd.html", TRUE);
-$EW_EMAIL_TEMPLATE_PATH = "phphtml"; // Template path
+define("EW_EMAIL_TEMPLATE_PATH", "phphtml", TRUE); // Template path
 
 // Remote file
 $EW_REMOTE_FILE_PATTERN = '/^((https?\:)?|ftps?\:|s3:)\/\//i';
@@ -855,7 +855,7 @@ define("EW_ITEM_TEMPLATE_CLASSNAME", "ewTemplate", TRUE);
 define("EW_ITEM_TABLE_CLASSNAME", "ewItemTable", TRUE);
 
 // Page Title Style
-define("EW_PAGE_TITLE_STYLE", "Title", TRUE);
+define("EW_PAGE_TITLE_STYLE", "Breadcrumbs", TRUE);
 
 // Use responsive layout
 $EW_USE_RESPONSIVE_LAYOUT = TRUE;
@@ -966,7 +966,7 @@ if (!isset($conn)) {
 
 // Mobile detect
 $MobileDetect = NULL;
-$IsMobile = NULL;
+$IsMobile = FALSE;
 
 // Breadcrumb
 $Breadcrumb = NULL;

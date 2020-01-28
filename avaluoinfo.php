@@ -396,12 +396,12 @@ class cavaluo extends cTable {
 		switch ($gsLanguage) {
 		case "es":
 			$select = "SELECT * FROM (" .
-				"SELECT *, (SELECT CONCAT(COALESCE(`nombre`, ''),'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',COALESCE(`apellido`,'')) FROM `oficialcredito` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_oficialcredito` LIMIT 1) AS `EV__id_oficialcredito`, (SELECT CONCAT(COALESCE(`apellido`, ''),'" . ew_ValueSeparator(1, $this->id_inspector) . "',COALESCE(`nombre`,'')) FROM `inspector` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_inspector` LIMIT 1) AS `EV__id_inspector` FROM `avaluo`" .
+				"SELECT *, (SELECT CONCAT(`nombre`,'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',`apellido`) FROM `oficialcredito` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_oficialcredito` LIMIT 1) AS `EV__id_oficialcredito`, (SELECT CONCAT(`apellido`,'" . ew_ValueSeparator(1, $this->id_inspector) . "',`nombre`) FROM `inspector` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_inspector` LIMIT 1) AS `EV__id_inspector` FROM `avaluo`" .
 				") `EW_TMP_TABLE`";
 			break;
 		default:
 			$select = "SELECT * FROM (" .
-				"SELECT *, (SELECT CONCAT(COALESCE(`nombre`, ''),'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',COALESCE(`apellido`,'')) FROM `oficialcredito` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_oficialcredito` LIMIT 1) AS `EV__id_oficialcredito`, (SELECT CONCAT(COALESCE(`apellido`, ''),'" . ew_ValueSeparator(1, $this->id_inspector) . "',COALESCE(`nombre`,'')) FROM `inspector` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_inspector` LIMIT 1) AS `EV__id_inspector` FROM `avaluo`" .
+				"SELECT *, (SELECT CONCAT(`nombre`,'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',`apellido`) FROM `oficialcredito` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_oficialcredito` LIMIT 1) AS `EV__id_oficialcredito`, (SELECT CONCAT(`apellido`,'" . ew_ValueSeparator(1, $this->id_inspector) . "',`nombre`) FROM `inspector` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `avaluo`.`id_inspector` LIMIT 1) AS `EV__id_inspector` FROM `avaluo`" .
 				") `EW_TMP_TABLE`";
 			break;
 		}

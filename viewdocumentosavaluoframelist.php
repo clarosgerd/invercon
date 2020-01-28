@@ -449,6 +449,9 @@ class cviewdocumentosavaluoframe_list extends cviewdocumentosavaluoframe {
 
 		// Setup export options
 		$this->SetupExportOptions();
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbOldSkipHeaderFooter = $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = TRUE;
 		$this->descripcion->SetVisibility();
 		$this->imagen->SetVisibility();
 		$this->avaluo->SetVisibility();
@@ -505,6 +508,8 @@ class cviewdocumentosavaluoframe_list extends cviewdocumentosavaluoframe {
 	//
 	function Page_Terminate($url = "") {
 		global $gsExportFile, $gTmpImages;
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = $gbOldSkipHeaderFooter;
 
 		// Page Unload event
 		$this->Page_Unload();
@@ -541,7 +546,6 @@ class cviewdocumentosavaluoframe_list extends cviewdocumentosavaluoframe {
 			ew_SaveDebugMsg();
 			header("Location: " . $url);
 		}
-		exit();
 	}
 
 	// Class variables

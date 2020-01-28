@@ -3049,17 +3049,17 @@ class cviewavaluoinspectorhistorico_list extends cviewavaluoinspectorhistorico {
 			switch (@$gsLanguage) {
 				case "en":
 					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld` FROM `oficialcredito`";
-					$sWhereWrk = "`nombre` LIKE '{query_value}%' OR CONCAT(COALESCE(`nombre`, ''),'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',COALESCE(`apellido`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`nombre` LIKE '{query_value}%' OR CONCAT(`nombre`,'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',`apellido`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
 					break;
 				case "es":
 					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld` FROM `oficialcredito`";
-					$sWhereWrk = "`nombre` LIKE '{query_value}%' OR CONCAT(COALESCE(`nombre`, ''),'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',COALESCE(`apellido`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`nombre` LIKE '{query_value}%' OR CONCAT(`nombre`,'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',`apellido`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
 					break;
 				default:
 					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld` FROM `oficialcredito`";
-					$sWhereWrk = "`nombre` LIKE '{query_value}%' OR CONCAT(COALESCE(`nombre`, ''),'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',COALESCE(`apellido`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`nombre` LIKE '{query_value}%' OR CONCAT(`nombre`,'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',`apellido`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
 					break;
 			}
@@ -3075,17 +3075,17 @@ class cviewavaluoinspectorhistorico_list extends cviewavaluoinspectorhistorico {
 			switch (@$gsLanguage) {
 				case "en":
 					$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld` FROM `inspector`";
-					$sWhereWrk = "`apellido` LIKE '{query_value}%' OR CONCAT(COALESCE(`apellido`, ''),'" . ew_ValueSeparator(1, $this->id_inspector) . "',COALESCE(`nombre`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`apellido` LIKE '{query_value}%' OR CONCAT(`apellido`,'" . ew_ValueSeparator(1, $this->id_inspector) . "',`nombre`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
 					break;
 				case "es":
 					$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld` FROM `inspector`";
-					$sWhereWrk = "`apellido` LIKE '{query_value}%' OR CONCAT(COALESCE(`apellido`, ''),'" . ew_ValueSeparator(1, $this->id_inspector) . "',COALESCE(`nombre`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`apellido` LIKE '{query_value}%' OR CONCAT(`apellido`,'" . ew_ValueSeparator(1, $this->id_inspector) . "',`nombre`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
 					break;
 				default:
 					$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld` FROM `inspector`";
-					$sWhereWrk = "`apellido` LIKE '{query_value}%' OR CONCAT(COALESCE(`apellido`, ''),'" . ew_ValueSeparator(1, $this->id_inspector) . "',COALESCE(`nombre`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`apellido` LIKE '{query_value}%' OR CONCAT(`apellido`,'" . ew_ValueSeparator(1, $this->id_inspector) . "',`nombre`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
 					break;
 			}
@@ -3101,17 +3101,17 @@ class cviewavaluoinspectorhistorico_list extends cviewavaluoinspectorhistorico {
 			switch (@$gsLanguage) {
 				case "en":
 					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld` FROM `cliente`";
-					$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(COALESCE(`name`, ''),'" . ew_ValueSeparator(1, $this->id_cliente) . "',COALESCE(`lastname`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(`name`,'" . ew_ValueSeparator(1, $this->id_cliente) . "',`lastname`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array();
 					break;
 				case "es":
 					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld` FROM `cliente`";
-					$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(COALESCE(`name`, ''),'" . ew_ValueSeparator(1, $this->id_cliente) . "',COALESCE(`lastname`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(`name`,'" . ew_ValueSeparator(1, $this->id_cliente) . "',`lastname`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array();
 					break;
 				default:
 					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld` FROM `cliente`";
-					$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(COALESCE(`name`, ''),'" . ew_ValueSeparator(1, $this->id_cliente) . "',COALESCE(`lastname`,'')) LIKE '{query_value}%'";
+					$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(`name`,'" . ew_ValueSeparator(1, $this->id_cliente) . "',`lastname`) LIKE '{query_value}%'";
 					$fld->LookupFilters = array();
 					break;
 			}

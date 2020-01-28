@@ -345,6 +345,7 @@ class cusuario_add extends cusuario {
 		$this->avatar->SetVisibility();
 		$this->created_at->SetVisibility();
 		$this->color->SetVisibility();
+		$this->codigo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -587,6 +588,8 @@ class cusuario_add extends cusuario {
 		$this->created_at->OldValue = $this->created_at->CurrentValue;
 		$this->color->CurrentValue = NULL;
 		$this->color->OldValue = $this->color->CurrentValue;
+		$this->codigo->CurrentValue = NULL;
+		$this->codigo->OldValue = $this->codigo->CurrentValue;
 	}
 
 	// Load form values
@@ -653,6 +656,9 @@ class cusuario_add extends cusuario {
 		if (!$this->color->FldIsDetailKey) {
 			$this->color->setFormValue($objForm->GetValue("x_color"));
 		}
+		if (!$this->codigo->FldIsDetailKey) {
+			$this->codigo->setFormValue($objForm->GetValue("x_codigo"));
+		}
 	}
 
 	// Restore form values
@@ -678,6 +684,7 @@ class cusuario_add extends cusuario {
 		$this->created_at->CurrentValue = $this->created_at->FormValue;
 		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
 		$this->color->CurrentValue = $this->color->FormValue;
+		$this->codigo->CurrentValue = $this->codigo->FormValue;
 	}
 
 	// Load row based on key values
@@ -744,6 +751,7 @@ class cusuario_add extends cusuario {
 			$this->avatar->Upload->DbValue = ew_BytesToStr($this->avatar->Upload->DbValue);
 		$this->created_at->setDbValue($row['created_at']);
 		$this->color->setDbValue($row['color']);
+		$this->codigo->setDbValue($row['codigo']);
 	}
 
 	// Return a row with default values
@@ -770,6 +778,7 @@ class cusuario_add extends cusuario {
 		$row['avatar'] = $this->avatar->Upload->DbValue;
 		$row['created_at'] = $this->created_at->CurrentValue;
 		$row['color'] = $this->color->CurrentValue;
+		$row['codigo'] = $this->codigo->CurrentValue;
 		return $row;
 	}
 
@@ -798,6 +807,7 @@ class cusuario_add extends cusuario {
 		$this->avatar->Upload->DbValue = $row['avatar'];
 		$this->created_at->DbValue = $row['created_at'];
 		$this->color->DbValue = $row['color'];
+		$this->codigo->DbValue = $row['codigo'];
 	}
 
 	// Load old record
@@ -852,6 +862,7 @@ class cusuario_add extends cusuario {
 		// avatar
 		// created_at
 		// color
+		// codigo
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -879,10 +890,24 @@ class cusuario_add extends cusuario {
 		if ($Security->CanAdmin()) { // System admin
 		if (strval($this->id_rol->CurrentValue) <> "") {
 			$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-		$sWhereWrk = "";
-		$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
-		$lookuptblfilter = "`userlevelid`='1'";
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+		}
+		$lookuptblfilter = "`userlevelid`>=1";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
@@ -911,9 +936,23 @@ class cusuario_add extends cusuario {
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -954,9 +993,23 @@ class cusuario_add extends cusuario {
 		// id_institucion
 		if (strval($this->id_institucion->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_institucion->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
-		$sWhereWrk = "";
-		$this->id_institucion->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
+				$sWhereWrk = "";
+				$this->id_institucion->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
+				$sWhereWrk = "";
+				$this->id_institucion->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
+				$sWhereWrk = "";
+				$this->id_institucion->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_institucion, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1003,6 +1056,10 @@ class cusuario_add extends cusuario {
 		// color
 		$this->color->ViewValue = $this->color->CurrentValue;
 		$this->color->ViewCustomAttributes = "";
+
+		// codigo
+		$this->codigo->ViewValue = $this->codigo->CurrentValue;
+		$this->codigo->ViewCustomAttributes = "";
 
 			// nombre
 			$this->nombre->LinkCustomAttributes = "";
@@ -1110,6 +1167,11 @@ class cusuario_add extends cusuario {
 			$this->color->LinkCustomAttributes = "";
 			$this->color->HrefValue = "";
 			$this->color->TooltipValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
+			$this->codigo->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// nombre
@@ -1155,10 +1217,24 @@ class cusuario_add extends cusuario {
 			} else {
 				$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `userlevels`";
-			$sWhereWrk = "";
-			$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
-			$lookuptblfilter = "`userlevelid`='1'";
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+					break;
+			}
+			$lookuptblfilter = "`userlevelid`>=1";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
@@ -1190,9 +1266,23 @@ class cusuario_add extends cusuario {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
-			$sWhereWrk = "";
-			$this->id_sucursal->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1242,9 +1332,23 @@ class cusuario_add extends cusuario {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_institucion->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `banco`";
-			$sWhereWrk = "";
-			$this->id_institucion->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `banco`";
+					$sWhereWrk = "";
+					$this->id_institucion->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `banco`";
+					$sWhereWrk = "";
+					$this->id_institucion->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `banco`";
+					$sWhereWrk = "";
+					$this->id_institucion->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_institucion, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1289,6 +1393,12 @@ class cusuario_add extends cusuario {
 			$this->color->EditCustomAttributes = "";
 			$this->color->EditValue = ew_HtmlEncode($this->color->CurrentValue);
 			$this->color->PlaceHolder = ew_RemoveHtml($this->color->FldTitle());
+
+			// codigo
+			$this->codigo->EditAttrs["class"] = "form-control";
+			$this->codigo->EditCustomAttributes = "";
+			$this->codigo->EditValue = ew_HtmlEncode($this->codigo->CurrentValue);
+			$this->codigo->PlaceHolder = ew_RemoveHtml($this->codigo->FldTitle());
 
 			// Add refer script
 			// nombre
@@ -1378,6 +1488,10 @@ class cusuario_add extends cusuario {
 			// color
 			$this->color->LinkCustomAttributes = "";
 			$this->color->HrefValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1544,6 +1658,9 @@ class cusuario_add extends cusuario {
 		// color
 		$this->color->SetDbValueDef($rsnew, $this->color->CurrentValue, NULL, FALSE);
 
+		// codigo
+		$this->codigo->SetDbValueDef($rsnew, $this->codigo->CurrentValue, NULL, FALSE);
+
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
 		$bInsertRow = $this->Row_Inserting($rs, $rsnew);
@@ -1620,10 +1737,24 @@ class cusuario_add extends cusuario {
 		switch ($fld->FldVar) {
 		case "x_id_rol":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `userlevelid` AS `LinkFld`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`userlevelname`');
-			$lookuptblfilter = "`userlevelid`='1'";
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `userlevelid` AS `LinkFld`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`userlevelname`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `userlevelid` AS `LinkFld`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`userlevelname`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `userlevelid` AS `LinkFld`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`userlevelname`');
+					break;
+			}
+			$lookuptblfilter = "`userlevelid`>=1";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`userlevelid` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
@@ -1634,9 +1765,23 @@ class cusuario_add extends cusuario {
 			break;
 		case "x_id_sucursal":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
@@ -1646,9 +1791,23 @@ class cusuario_add extends cusuario {
 			break;
 		case "x_id_institucion":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_institucion, $sWhereWrk); // Call Lookup Selecting
@@ -2020,7 +2179,7 @@ $usuario_add->ShowMessage();
 <?php } else { ?>
 <span id="el_usuario_id_rol">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_rol"><?php echo (strval($usuario->id_rol->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $usuario->id_rol->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_rol"><?php echo (strval($usuario->id_rol->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $usuario->id_rol->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($usuario->id_rol->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_rol',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($usuario->id_rol->ReadOnly || $usuario->id_rol->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="usuario" data-field="x_id_rol" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $usuario->id_rol->DisplayValueSeparatorAttribute() ?>" name="x_id_rol" id="x_id_rol" value="<?php echo $usuario->id_rol->CurrentValue ?>"<?php echo $usuario->id_rol->EditAttributes() ?>>
@@ -2039,7 +2198,7 @@ $usuario_add->ShowMessage();
 <?php } else { ?>
 <span id="el_usuario_id_rol">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_rol"><?php echo (strval($usuario->id_rol->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $usuario->id_rol->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_rol"><?php echo (strval($usuario->id_rol->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $usuario->id_rol->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($usuario->id_rol->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_rol',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($usuario->id_rol->ReadOnly || $usuario->id_rol->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="usuario" data-field="x_id_rol" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $usuario->id_rol->DisplayValueSeparatorAttribute() ?>" name="x_id_rol" id="x_id_rol" value="<?php echo $usuario->id_rol->CurrentValue ?>"<?php echo $usuario->id_rol->EditAttributes() ?>>
@@ -2311,7 +2470,7 @@ $usuario_add->ShowMessage();
 		<div class="<?php echo $usuario_add->RightColumnClass ?>"><div<?php echo $usuario->avatar->CellAttributes() ?>>
 <span id="el_usuario_avatar">
 <div id="fd_x_avatar">
-<span title="<?php echo $usuario->avatar->FldTitle() ? $usuario->avatar->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($usuario->avatar->ReadOnly || $usuario->avatar->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $usuario->avatar->FldTitle() ? $usuario->avatar->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($usuario->avatar->ReadOnly || $usuario->avatar->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="usuario" data-field="x_avatar" name="x_avatar" id="x_avatar"<?php echo $usuario->avatar->EditAttributes() ?>>
 </span>
@@ -2331,7 +2490,7 @@ $usuario_add->ShowMessage();
 		<td<?php echo $usuario->avatar->CellAttributes() ?>>
 <span id="el_usuario_avatar">
 <div id="fd_x_avatar">
-<span title="<?php echo $usuario->avatar->FldTitle() ? $usuario->avatar->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($usuario->avatar->ReadOnly || $usuario->avatar->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $usuario->avatar->FldTitle() ? $usuario->avatar->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($usuario->avatar->ReadOnly || $usuario->avatar->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="usuario" data-field="x_avatar" name="x_avatar" id="x_avatar"<?php echo $usuario->avatar->EditAttributes() ?>>
 </span>
@@ -2375,6 +2534,27 @@ $("#x_color").colorpicker({ format: "hex" });
 
 </span>
 <?php echo $usuario->color->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($usuario->codigo->Visible) { // codigo ?>
+<?php if ($usuario_add->IsMobileOrModal) { ?>
+	<div id="r_codigo" class="form-group">
+		<label id="elh_usuario_codigo" for="x_codigo" class="<?php echo $usuario_add->LeftColumnClass ?>"><?php echo $usuario->codigo->FldCaption() ?></label>
+		<div class="<?php echo $usuario_add->RightColumnClass ?>"><div<?php echo $usuario->codigo->CellAttributes() ?>>
+<span id="el_usuario_codigo">
+<input type="text" data-table="usuario" data-field="x_codigo" name="x_codigo" id="x_codigo" size="30" maxlength="5" placeholder="<?php echo ew_HtmlEncode($usuario->codigo->getPlaceHolder()) ?>" value="<?php echo $usuario->codigo->EditValue ?>"<?php echo $usuario->codigo->EditAttributes() ?>>
+</span>
+<?php echo $usuario->codigo->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_codigo">
+		<td class="col-sm-3"><span id="elh_usuario_codigo"><?php echo $usuario->codigo->FldCaption() ?></span></td>
+		<td<?php echo $usuario->codigo->CellAttributes() ?>>
+<span id="el_usuario_codigo">
+<input type="text" data-table="usuario" data-field="x_codigo" name="x_codigo" id="x_codigo" size="30" maxlength="5" placeholder="<?php echo ew_HtmlEncode($usuario->codigo->getPlaceHolder()) ?>" value="<?php echo $usuario->codigo->EditValue ?>"<?php echo $usuario->codigo->EditAttributes() ?>>
+</span>
+<?php echo $usuario->codigo->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>

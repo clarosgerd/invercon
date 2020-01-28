@@ -1018,8 +1018,56 @@ class caudittrail extends cTable {
 
 		// Enter your code here
 		// To cancel, set return value to FALSE
+	//var_dump($rsold);
 
-		return TRUE;
+	if ($rsnew['estadointerno']==3)
+				{
+
+					//$rsnew['estado']=2;
+					//$rsnew['estadointerno']=2;
+
+	$html="<p>El codigo de avaluo cambio de estado a terminado por el inspector</p>";
+					$Email = new cEmail;
+					$Email->Sender= $_SESSION["usr"];
+					$secretaria=$_SESSION["secretarias"];
+					$Email->AddCc($rsold["id_oficialcredito"]);
+					if(is_array($secretaria)){
+						foreach($secretaria as $secretarias){
+							$Email->AddCc($secretarias["login"]);
+						}
+					}else{
+						$Email->AddCc($secretaria);
+					}
+					$Email->Subject = "El avaluo fue terminado por el inspector";
+					$Email->Content = $html;
+					$Email->Recipient =  $_SESSION["usr"];
+					$bEmailSent = $Email->Send();
+					if(is_array($secretaria)){
+						foreach($secretaria as $secretarias){
+							$sql_new_email_secretaria="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$secretarias["login"]."', NULL, NULL, 'El avaluo fue terminado por inspector', '0', '0', CURRENT_TIMESTAMP)";
+							$sql_new_notificacion_secretaria = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('El avaluo fue terminado por inspector', '" . $_SESSION["usr"] . "', '" . $secretarias["login"] . "', '0', '0', CURRENT_TIMESTAMP)";
+							$MyResult = ew_Execute($sql_new_email_secretaria);
+							$MyResult1 = ew_Execute($sql_new_notificacion_secretaria);
+						}
+					}else{
+						$sql_new_email_secretaria="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$secretaria["login"]."', NULL, NULL, 'El avaluo fue terminado por inspector', '0', '0', CURRENT_TIMESTAMP)";
+						$sql_new_notificacion_secretaria = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('El avaluo fue terminado por inspector', '" . $_SESSION["usr"] . "', '" . $secretaria["login"] . "', '0', '0', CURRENT_TIMESTAMP)";
+						$MyResult = ew_Execute($sql_new_email_secretaria);
+						$MyResult1 = ew_Execute($sql_new_notificacion_secretaria);
+					}
+				   $sql_new_email_oficial="INSERT INTO `emailnotificaciones` (`enviadopor`, `recibidopor`, `cc`, `bcc`, `mensaje`, `leido`, `estado`, `fechaenvio`) VALUES ('".$_SESSION["usr"]."', '".$rsold["id_oficialcredito"]."', NULL, NULL, 'El avaluo fue terminado por inspector', '0', '0', CURRENT_TIMESTAMP)";
+					$MyResult2 = ew_Execute($sql_new_email_oficial);
+				$sql_new_notificacion_oficial = "INSERT INTO `notificaciones` (`mensaje`, `creadopor`, `recibidopor`, `leido`, `estado`, `fecha`) VALUES ('', '" . $_SESSION["usr"] . "', '" . $rsold["id_oficialcredito"] . "', '0', '0', CURRENT_TIMESTAMP)";
+			   		$MyResult2 = ew_Execute($sql_new_email_oficial);
+					$sql_comentarios="INSERT INTO `comentariosavaluo`(`descripcion`, `id_avaluo`) VALUES ('".$rsnew['comentario']."','".$rsold['id']."')";
+				   	$sql_historico="INSERT INTO `historico`(`proceso`, `responsable`, `salida`, `comentario`, `id_solicitud`, `id_avaluo`) VALUES ('".$rsnew['estadointerno']."','".$rsold["id_inspector"]."',NOW(),'".$rsnew["comentario"]."','".$rsold["id_solicitud"]."','".$rsold["id"]."')";
+					$MyResult4 = ew_Execute($sql_comentarios);
+					$MyResult5 = ew_Execute($sql_historico);
+						return TRUE;
+				}
+				else{
+					return FALSE;
+				}
 	}
 
 	// Row Updated event

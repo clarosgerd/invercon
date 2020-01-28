@@ -341,6 +341,7 @@ class cavaluo_edit extends cavaluo {
 		$this->id_inspector->SetVisibility();
 		$this->fecha_avaluo->SetVisibility();
 		$this->id_sucursal->SetVisibility();
+		$this->informe->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -601,6 +602,8 @@ class cavaluo_edit extends cavaluo {
 		global $objForm, $Language;
 
 		// Get upload data
+		$this->informe->Upload->Index = $objForm->Index;
+		$this->informe->Upload->UploadFile();
 	}
 
 	// Load form values
@@ -608,6 +611,7 @@ class cavaluo_edit extends cavaluo {
 
 		// Load from form
 		global $objForm;
+		$this->GetUploadFiles(); // Get upload files
 		if (!$this->id_solicitud->FldIsDetailKey) {
 			$this->id_solicitud->setFormValue($objForm->GetValue("x_id_solicitud"));
 		}
@@ -704,6 +708,9 @@ class cavaluo_edit extends cavaluo {
 		$this->ModifiedBy->setDbValue($row['ModifiedBy']);
 		$this->DeletedBy->setDbValue($row['DeletedBy']);
 		$this->id_sucursal->setDbValue($row['id_sucursal']);
+		$this->informe->Upload->DbValue = $row['informe'];
+		if (is_array($this->informe->Upload->DbValue) || is_object($this->informe->Upload->DbValue)) // Byte array
+			$this->informe->Upload->DbValue = ew_BytesToStr($this->informe->Upload->DbValue);
 	}
 
 	// Return a row with default values
@@ -730,6 +737,7 @@ class cavaluo_edit extends cavaluo {
 		$row['ModifiedBy'] = NULL;
 		$row['DeletedBy'] = NULL;
 		$row['id_sucursal'] = NULL;
+		$row['informe'] = NULL;
 		return $row;
 	}
 
@@ -759,6 +767,7 @@ class cavaluo_edit extends cavaluo {
 		$this->ModifiedBy->DbValue = $row['ModifiedBy'];
 		$this->DeletedBy->DbValue = $row['DeletedBy'];
 		$this->id_sucursal->DbValue = $row['id_sucursal'];
+		$this->informe->Upload->DbValue = $row['informe'];
 	}
 
 	// Load old record
@@ -814,6 +823,7 @@ class cavaluo_edit extends cavaluo {
 		// ModifiedBy
 		// DeletedBy
 		// id_sucursal
+		// informe
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -961,6 +971,15 @@ class cavaluo_edit extends cavaluo {
 		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
 		$this->id_sucursal->ViewCustomAttributes = "";
 
+		// informe
+		if (!ew_Empty($this->informe->Upload->DbValue)) {
+			$this->informe->ViewValue = "avaluo_informe_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->informe->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->informe->Upload->DbValue, 0, 11)));
+		} else {
+			$this->informe->ViewValue = "";
+		}
+		$this->informe->ViewCustomAttributes = "";
+
 			// id_solicitud
 			$this->id_solicitud->LinkCustomAttributes = "";
 			$this->id_solicitud->HrefValue = "";
@@ -985,6 +1004,18 @@ class cavaluo_edit extends cavaluo {
 			$this->id_sucursal->LinkCustomAttributes = "";
 			$this->id_sucursal->HrefValue = "";
 			$this->id_sucursal->TooltipValue = "";
+
+			// informe
+			$this->informe->LinkCustomAttributes = "";
+			if (!empty($this->informe->Upload->DbValue)) {
+				$this->informe->HrefValue = "avaluo_informe_bv.php?id=" . $this->id->CurrentValue;
+				$this->informe->LinkAttrs["target"] = "_blank";
+				if ($this->Export <> "") $this->informe->HrefValue = ew_FullUrl($this->informe->HrefValue, "href");
+			} else {
+				$this->informe->HrefValue = "";
+			}
+			$this->informe->HrefValue2 = "avaluo_informe_bv.php?id=" . $this->id->CurrentValue;
+			$this->informe->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// id_solicitud
@@ -1103,6 +1134,17 @@ class cavaluo_edit extends cavaluo {
 			$this->id_sucursal->EditAttrs["class"] = "form-control";
 			$this->id_sucursal->EditCustomAttributes = "";
 
+			// informe
+			$this->informe->EditAttrs["class"] = "form-control";
+			$this->informe->EditCustomAttributes = "";
+			if (!ew_Empty($this->informe->Upload->DbValue)) {
+				$this->informe->EditValue = "avaluo_informe_bv.php?" . "id=" . $this->id->CurrentValue;
+				$this->informe->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->informe->Upload->DbValue, 0, 11)));
+			} else {
+				$this->informe->EditValue = "";
+			}
+			if ($this->CurrentAction == "I" && !$this->EventCancelled) ew_RenderUploadField($this->informe);
+
 			// Edit refer script
 			// id_solicitud
 
@@ -1125,6 +1167,17 @@ class cavaluo_edit extends cavaluo {
 			$this->id_sucursal->LinkCustomAttributes = "";
 			$this->id_sucursal->HrefValue = "";
 			$this->id_sucursal->TooltipValue = "";
+
+			// informe
+			$this->informe->LinkCustomAttributes = "";
+			if (!empty($this->informe->Upload->DbValue)) {
+				$this->informe->HrefValue = "avaluo_informe_bv.php?id=" . $this->id->CurrentValue;
+				$this->informe->LinkAttrs["target"] = "_blank";
+				if ($this->Export <> "") $this->informe->HrefValue = ew_FullUrl($this->informe->HrefValue, "href");
+			} else {
+				$this->informe->HrefValue = "";
+			}
+			$this->informe->HrefValue2 = "avaluo_informe_bv.php?id=" . $this->id->CurrentValue;
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1212,6 +1265,15 @@ class cavaluo_edit extends cavaluo {
 			// fecha_avaluo
 			$this->fecha_avaluo->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 10), NULL, $this->fecha_avaluo->ReadOnly);
 
+			// informe
+			if ($this->informe->Visible && !$this->informe->ReadOnly && !$this->informe->Upload->KeepFile) {
+				if (is_null($this->informe->Upload->Value)) {
+					$rsnew['informe'] = NULL;
+				} else {
+					$rsnew['informe'] = $this->informe->Upload->Value;
+				}
+			}
+
 			// Check referential integrity for master table 'solicitud'
 			$bValidMasterRecord = TRUE;
 			$sMasterFilter = $this->SqlMasterFilter_solicitud();
@@ -1283,6 +1345,9 @@ class cavaluo_edit extends cavaluo {
 		if ($EditRow)
 			$this->Row_Updated($rsold, $rsnew);
 		$rs->Close();
+
+		// informe
+		ew_CleanUploadTempPath($this->informe, $this->informe->Upload->Index);
 		return $EditRow;
 	}
 
@@ -1441,7 +1506,7 @@ class cavaluo_edit extends cavaluo {
 		case "x_id_solicitud":
 			$sSqlWrk = "";
 			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld` FROM `solicitud`";
-			$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(COALESCE(`name`, ''),'" . ew_ValueSeparator(1, $this->id_solicitud) . "',COALESCE(`lastname`,'')) LIKE '{query_value}%'";
+			$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(`name`,'" . ew_ValueSeparator(1, $this->id_solicitud) . "',`lastname`) LIKE '{query_value}%'";
 			$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "");
 			$sSqlWrk = "";
@@ -1776,7 +1841,7 @@ favaluoedit.CreateAutoSuggest({"id":"x_id_solicitud","forceSelect":false});
 		<div class="<?php echo $avaluo_edit->RightColumnClass ?>"><div<?php echo $avaluo->id_oficialcredito->CellAttributes() ?>>
 <span id="el_avaluo_id_oficialcredito">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_oficialcredito"><?php echo (strval($avaluo->id_oficialcredito->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_oficialcredito->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_oficialcredito"><?php echo (strval($avaluo->id_oficialcredito->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_oficialcredito->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->id_oficialcredito->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_oficialcredito',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->id_oficialcredito->ReadOnly || $avaluo->id_oficialcredito->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="avaluo" data-field="x_id_oficialcredito" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->id_oficialcredito->DisplayValueSeparatorAttribute() ?>" name="x_id_oficialcredito" id="x_id_oficialcredito" value="<?php echo $avaluo->id_oficialcredito->CurrentValue ?>"<?php echo $avaluo->id_oficialcredito->EditAttributes() ?>>
@@ -1789,7 +1854,7 @@ favaluoedit.CreateAutoSuggest({"id":"x_id_solicitud","forceSelect":false});
 		<td<?php echo $avaluo->id_oficialcredito->CellAttributes() ?>>
 <span id="el_avaluo_id_oficialcredito">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_oficialcredito"><?php echo (strval($avaluo->id_oficialcredito->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_oficialcredito->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_oficialcredito"><?php echo (strval($avaluo->id_oficialcredito->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_oficialcredito->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->id_oficialcredito->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_oficialcredito',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->id_oficialcredito->ReadOnly || $avaluo->id_oficialcredito->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="avaluo" data-field="x_id_oficialcredito" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->id_oficialcredito->DisplayValueSeparatorAttribute() ?>" name="x_id_oficialcredito" id="x_id_oficialcredito" value="<?php echo $avaluo->id_oficialcredito->CurrentValue ?>"<?php echo $avaluo->id_oficialcredito->EditAttributes() ?>>
@@ -1805,7 +1870,7 @@ favaluoedit.CreateAutoSuggest({"id":"x_id_solicitud","forceSelect":false});
 		<div class="<?php echo $avaluo_edit->RightColumnClass ?>"><div<?php echo $avaluo->id_inspector->CellAttributes() ?>>
 <span id="el_avaluo_id_inspector">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_inspector"><?php echo (strval($avaluo->id_inspector->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_inspector->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_inspector"><?php echo (strval($avaluo->id_inspector->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_inspector->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->id_inspector->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_inspector',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->id_inspector->ReadOnly || $avaluo->id_inspector->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="avaluo" data-field="x_id_inspector" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->id_inspector->DisplayValueSeparatorAttribute() ?>" name="x_id_inspector" id="x_id_inspector" value="<?php echo $avaluo->id_inspector->CurrentValue ?>"<?php echo $avaluo->id_inspector->EditAttributes() ?>>
@@ -1818,7 +1883,7 @@ favaluoedit.CreateAutoSuggest({"id":"x_id_solicitud","forceSelect":false});
 		<td<?php echo $avaluo->id_inspector->CellAttributes() ?>>
 <span id="el_avaluo_id_inspector">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_inspector"><?php echo (strval($avaluo->id_inspector->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_inspector->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_inspector"><?php echo (strval($avaluo->id_inspector->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->id_inspector->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->id_inspector->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_inspector',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->id_inspector->ReadOnly || $avaluo->id_inspector->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="avaluo" data-field="x_id_inspector" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->id_inspector->DisplayValueSeparatorAttribute() ?>" name="x_id_inspector" id="x_id_inspector" value="<?php echo $avaluo->id_inspector->CurrentValue ?>"<?php echo $avaluo->id_inspector->EditAttributes() ?>>
@@ -1855,6 +1920,57 @@ ew_CreateDateTimePicker("favaluoedit", "x_fecha_avaluo", {"ignoreReadonly":true,
 <?php } ?>
 </span>
 <?php echo $avaluo->fecha_avaluo->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($avaluo->informe->Visible) { // informe ?>
+<?php if ($avaluo_edit->IsMobileOrModal) { ?>
+	<div id="r_informe" class="form-group">
+		<label id="elh_avaluo_informe" class="<?php echo $avaluo_edit->LeftColumnClass ?>"><?php echo $avaluo->informe->FldCaption() ?></label>
+		<div class="<?php echo $avaluo_edit->RightColumnClass ?>"><div<?php echo $avaluo->informe->CellAttributes() ?>>
+<span id="el_avaluo_informe">
+<div id="fd_x_informe">
+<span title="<?php echo $avaluo->informe->FldTitle() ? $avaluo->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($avaluo->informe->ReadOnly || $avaluo->informe->Disabled) echo " hide"; ?>">
+	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
+	<input type="file" title=" " data-table="avaluo" data-field="x_informe" name="x_informe" id="x_informe"<?php echo $avaluo->informe->EditAttributes() ?>>
+</span>
+<input type="hidden" name="fn_x_informe" id= "fn_x_informe" value="<?php echo $avaluo->informe->Upload->FileName ?>">
+<?php if (@$_POST["fa_x_informe"] == "0") { ?>
+<input type="hidden" name="fa_x_informe" id= "fa_x_informe" value="0">
+<?php } else { ?>
+<input type="hidden" name="fa_x_informe" id= "fa_x_informe" value="1">
+<?php } ?>
+<input type="hidden" name="fs_x_informe" id= "fs_x_informe" value="0">
+<input type="hidden" name="fx_x_informe" id= "fx_x_informe" value="<?php echo $avaluo->informe->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x_informe" id= "fm_x_informe" value="<?php echo $avaluo->informe->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x_informe" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+</span>
+<?php echo $avaluo->informe->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_informe">
+		<td class="col-sm-3"><span id="elh_avaluo_informe"><?php echo $avaluo->informe->FldCaption() ?></span></td>
+		<td<?php echo $avaluo->informe->CellAttributes() ?>>
+<span id="el_avaluo_informe">
+<div id="fd_x_informe">
+<span title="<?php echo $avaluo->informe->FldTitle() ? $avaluo->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($avaluo->informe->ReadOnly || $avaluo->informe->Disabled) echo " hide"; ?>">
+	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
+	<input type="file" title=" " data-table="avaluo" data-field="x_informe" name="x_informe" id="x_informe"<?php echo $avaluo->informe->EditAttributes() ?>>
+</span>
+<input type="hidden" name="fn_x_informe" id= "fn_x_informe" value="<?php echo $avaluo->informe->Upload->FileName ?>">
+<?php if (@$_POST["fa_x_informe"] == "0") { ?>
+<input type="hidden" name="fa_x_informe" id= "fa_x_informe" value="0">
+<?php } else { ?>
+<input type="hidden" name="fa_x_informe" id= "fa_x_informe" value="1">
+<?php } ?>
+<input type="hidden" name="fs_x_informe" id= "fs_x_informe" value="0">
+<input type="hidden" name="fx_x_informe" id= "fx_x_informe" value="<?php echo $avaluo->informe->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x_informe" id= "fm_x_informe" value="<?php echo $avaluo->informe->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x_informe" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+</span>
+<?php echo $avaluo->informe->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>

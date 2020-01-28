@@ -408,6 +408,9 @@ class cviewpagoavaluos_list extends cviewpagoavaluos {
 
 		// Set up list options
 		$this->SetupListOptions();
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbOldSkipHeaderFooter = $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = TRUE;
 		$this->avaluo_id->SetVisibility();
 		$this->q->SetVisibility();
 		$this->id_metodopago->SetVisibility();
@@ -465,6 +468,8 @@ class cviewpagoavaluos_list extends cviewpagoavaluos {
 	//
 	function Page_Terminate($url = "") {
 		global $gsExportFile, $gTmpImages;
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = $gbOldSkipHeaderFooter;
 
 		// Page Unload event
 		$this->Page_Unload();
@@ -501,7 +506,6 @@ class cviewpagoavaluos_list extends cviewpagoavaluos {
 			ew_SaveDebugMsg();
 			header("Location: " . $url);
 		}
-		exit();
 	}
 
 	// Class variables

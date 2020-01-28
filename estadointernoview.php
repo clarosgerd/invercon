@@ -384,6 +384,8 @@ class cestadointerno_view extends cestadointerno {
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
 		$this->descripcion->SetVisibility();
+		$this->owner->SetVisibility();
+		$this->time->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -555,7 +557,7 @@ class cestadointerno_view extends cestadointerno {
 		$option = &$options["action"];
 		$option->DropDownButtonPhrase = $Language->Phrase("ButtonActions");
 		$option->UseImageAndText = TRUE;
-		$option->UseDropDownButton = TRUE;
+		$option->UseDropDownButton = FALSE;
 		$option->UseButtonGroup = TRUE;
 		$item = &$option->Add($option->GroupOptionName);
 		$item->Body = "";
@@ -633,6 +635,8 @@ class cestadointerno_view extends cestadointerno {
 			return;
 		$this->id->setDbValue($row['id']);
 		$this->descripcion->setDbValue($row['descripcion']);
+		$this->owner->setDbValue($row['owner']);
+		$this->time->setDbValue($row['time']);
 	}
 
 	// Return a row with default values
@@ -640,6 +644,8 @@ class cestadointerno_view extends cestadointerno {
 		$row = array();
 		$row['id'] = NULL;
 		$row['descripcion'] = NULL;
+		$row['owner'] = NULL;
+		$row['time'] = NULL;
 		return $row;
 	}
 
@@ -650,6 +656,8 @@ class cestadointerno_view extends cestadointerno {
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
 		$this->descripcion->DbValue = $row['descripcion'];
+		$this->owner->DbValue = $row['owner'];
+		$this->time->DbValue = $row['time'];
 	}
 
 	// Render row values based on field settings
@@ -670,6 +678,8 @@ class cestadointerno_view extends cestadointerno {
 		// Common render codes for all row types
 		// id
 		// descripcion
+		// owner
+		// time
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -681,6 +691,47 @@ class cestadointerno_view extends cestadointerno {
 		$this->descripcion->ViewValue = $this->descripcion->CurrentValue;
 		$this->descripcion->ViewCustomAttributes = "";
 
+		// owner
+		if (strval($this->owner->CurrentValue) <> "") {
+			$sFilterWrk = "`userlevelname`" . ew_SearchString("=", $this->owner->CurrentValue, EW_DATATYPE_STRING, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->owner, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->owner->ViewValue = $this->owner->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->owner->ViewValue = $this->owner->CurrentValue;
+			}
+		} else {
+			$this->owner->ViewValue = NULL;
+		}
+		$this->owner->ViewCustomAttributes = "";
+
+		// time
+		$this->time->ViewValue = $this->time->CurrentValue;
+		$this->time->ViewCustomAttributes = "";
+
 			// id
 			$this->id->LinkCustomAttributes = "";
 			$this->id->HrefValue = "";
@@ -690,6 +741,16 @@ class cestadointerno_view extends cestadointerno {
 			$this->descripcion->LinkCustomAttributes = "";
 			$this->descripcion->HrefValue = "";
 			$this->descripcion->TooltipValue = "";
+
+			// owner
+			$this->owner->LinkCustomAttributes = "";
+			$this->owner->HrefValue = "";
+			$this->owner->TooltipValue = "";
+
+			// time
+			$this->time->LinkCustomAttributes = "";
+			$this->time->HrefValue = "";
+			$this->time->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -847,8 +908,10 @@ festadointernoview.Form_CustomValidate =
 festadointernoview.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+festadointernoview.Lists["x_owner"] = {"LinkField":"x_userlevelname","Ajax":true,"AutoFill":false,"DisplayFields":["x_userlevelname","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"userlevels"};
+festadointernoview.Lists["x_owner"].Data = "<?php echo $estadointerno_view->owner->LookupFilterQuery(FALSE, "view") ?>";
 
+// Form object for search
 </script>
 <script type="text/javascript">
 
@@ -891,6 +954,28 @@ $estadointerno_view->ShowMessage();
 <span id="el_estadointerno_descripcion">
 <span<?php echo $estadointerno->descripcion->ViewAttributes() ?>>
 <?php echo $estadointerno->descripcion->ViewValue ?></span>
+</span>
+</td>
+	</tr>
+<?php } ?>
+<?php if ($estadointerno->owner->Visible) { // owner ?>
+	<tr id="r_owner">
+		<td class="col-sm-3"><span id="elh_estadointerno_owner"><?php echo $estadointerno->owner->FldCaption() ?></span></td>
+		<td data-name="owner"<?php echo $estadointerno->owner->CellAttributes() ?>>
+<span id="el_estadointerno_owner">
+<span<?php echo $estadointerno->owner->ViewAttributes() ?>>
+<?php echo $estadointerno->owner->ViewValue ?></span>
+</span>
+</td>
+	</tr>
+<?php } ?>
+<?php if ($estadointerno->time->Visible) { // time ?>
+	<tr id="r_time">
+		<td class="col-sm-3"><span id="elh_estadointerno_time"><?php echo $estadointerno->time->FldCaption() ?></span></td>
+		<td data-name="time"<?php echo $estadointerno->time->CellAttributes() ?>>
+<span id="el_estadointerno_time">
+<span<?php echo $estadointerno->time->ViewAttributes() ?>>
+<?php echo $estadointerno->time->ViewValue ?></span>
 </span>
 </td>
 	</tr>

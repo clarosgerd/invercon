@@ -4,11 +4,14 @@
 // tipoinmueble
 // id_solicitud
 // id_oficialcredito
-// id_cliente
+// id_inspector
 // estado
 // estadointerno
 // estadopago
 // fecha_avaluo
+// monto_pago
+// montoincial
+// comentario
 
 ?>
 <?php if ($avaluo->Visible) { ?>
@@ -59,13 +62,13 @@
 </td>
 		</tr>
 <?php } ?>
-<?php if ($avaluo->id_cliente->Visible) { // id_cliente ?>
-		<tr id="r_id_cliente">
-			<td class="col-sm-3"><?php echo $avaluo->id_cliente->FldCaption() ?></td>
-			<td<?php echo $avaluo->id_cliente->CellAttributes() ?>>
-<span id="el_avaluo_id_cliente">
-<span<?php echo $avaluo->id_cliente->ViewAttributes() ?>>
-<?php echo $avaluo->id_cliente->ListViewValue() ?></span>
+<?php if ($avaluo->id_inspector->Visible) { // id_inspector ?>
+		<tr id="r_id_inspector">
+			<td class="col-sm-3"><?php echo $avaluo->id_inspector->FldCaption() ?></td>
+			<td<?php echo $avaluo->id_inspector->CellAttributes() ?>>
+<span id="el_avaluo_id_inspector">
+<span<?php echo $avaluo->id_inspector->ViewAttributes() ?>>
+<?php echo $avaluo->id_inspector->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>
@@ -110,6 +113,39 @@
 <span id="el_avaluo_fecha_avaluo">
 <span<?php echo $avaluo->fecha_avaluo->ViewAttributes() ?>>
 <?php echo $avaluo->fecha_avaluo->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($avaluo->monto_pago->Visible) { // monto_pago ?>
+		<tr id="r_monto_pago">
+			<td class="col-sm-3"><?php echo $avaluo->monto_pago->FldCaption() ?></td>
+			<td<?php echo $avaluo->monto_pago->CellAttributes() ?>>
+<span id="el_avaluo_monto_pago">
+<span<?php echo $avaluo->monto_pago->ViewAttributes() ?>>
+<?php echo $avaluo->monto_pago->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($avaluo->montoincial->Visible) { // montoincial ?>
+		<tr id="r_montoincial">
+			<td class="col-sm-3"><?php echo $avaluo->montoincial->FldCaption() ?></td>
+			<td<?php echo $avaluo->montoincial->CellAttributes() ?>>
+<span id="el_avaluo_montoincial">
+<span<?php echo $avaluo->montoincial->ViewAttributes() ?>>
+<?php echo $avaluo->montoincial->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($avaluo->comentario->Visible) { // comentario ?>
+		<tr id="r_comentario">
+			<td class="col-sm-3"><?php echo $avaluo->comentario->FldCaption() ?></td>
+			<td<?php echo $avaluo->comentario->CellAttributes() ?>>
+<span id="el_avaluo_comentario">
+<span<?php echo $avaluo->comentario->ViewAttributes() ?>>
+<?php echo $avaluo->comentario->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>

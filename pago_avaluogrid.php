@@ -42,6 +42,30 @@ fpago_avaluogrid.Validate = function() {
 		var checkrow = (gridinsert) ? !this.EmptyRow(infix) : true;
 		if (checkrow) {
 			addcnt++;
+			elm = this.GetElements("x" + infix + "_pago_id");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($pago_avaluo->pago_id->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_avaluo_id");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($pago_avaluo->avaluo_id->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_q");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($pago_avaluo->q->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_id_metodopago");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $pago_avaluo->id_metodopago->FldCaption(), $pago_avaluo->id_metodopago->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_id_metodopago");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($pago_avaluo->id_metodopago->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_monto");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $pago_avaluo->monto->FldCaption(), $pago_avaluo->monto->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_monto");
+			if (elm && !ew_CheckNumber(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($pago_avaluo->monto->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_id_banco");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($pago_avaluo->id_banco->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -57,6 +81,9 @@ fpago_avaluogrid.EmptyRow = function(infix) {
 	if (ew_ValueChanged(fobj, infix, "pago_id", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "avaluo_id", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "q", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "id_metodopago", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "monto", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "id_banco", false)) return false;
 	return true;
 }
 
@@ -72,12 +99,8 @@ fpago_avaluogrid.Form_CustomValidate =
 fpago_avaluogrid.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-fpago_avaluogrid.Lists["x_pago_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"pago"};
-fpago_avaluogrid.Lists["x_pago_id"].Data = "<?php echo $pago_avaluo_grid->pago_id->LookupFilterQuery(FALSE, "grid") ?>";
-fpago_avaluogrid.Lists["x_avaluo_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","x_codigoavaluo","x_id_oficialcredito","x_tipoinmueble"],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
-fpago_avaluogrid.Lists["x_avaluo_id"].Data = "<?php echo $pago_avaluo_grid->avaluo_id->LookupFilterQuery(FALSE, "grid") ?>";
-
 // Form object for search
+
 </script>
 <?php } ?>
 <?php
@@ -181,6 +204,33 @@ $pago_avaluo_grid->ListOptions->Render("header", "left");
 	<?php } else { ?>
 		<th data-name="q" class="<?php echo $pago_avaluo->q->HeaderCellClass() ?>"><div><div id="elh_pago_avaluo_q" class="pago_avaluo_q">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $pago_avaluo->q->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($pago_avaluo->q->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($pago_avaluo->q->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($pago_avaluo->id_metodopago->Visible) { // id_metodopago ?>
+	<?php if ($pago_avaluo->SortUrl($pago_avaluo->id_metodopago) == "") { ?>
+		<th data-name="id_metodopago" class="<?php echo $pago_avaluo->id_metodopago->HeaderCellClass() ?>"><div id="elh_pago_avaluo_id_metodopago" class="pago_avaluo_id_metodopago"><div class="ewTableHeaderCaption"><?php echo $pago_avaluo->id_metodopago->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="id_metodopago" class="<?php echo $pago_avaluo->id_metodopago->HeaderCellClass() ?>"><div><div id="elh_pago_avaluo_id_metodopago" class="pago_avaluo_id_metodopago">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $pago_avaluo->id_metodopago->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($pago_avaluo->id_metodopago->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($pago_avaluo->id_metodopago->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($pago_avaluo->monto->Visible) { // monto ?>
+	<?php if ($pago_avaluo->SortUrl($pago_avaluo->monto) == "") { ?>
+		<th data-name="monto" class="<?php echo $pago_avaluo->monto->HeaderCellClass() ?>"><div id="elh_pago_avaluo_monto" class="pago_avaluo_monto"><div class="ewTableHeaderCaption"><?php echo $pago_avaluo->monto->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="monto" class="<?php echo $pago_avaluo->monto->HeaderCellClass() ?>"><div><div id="elh_pago_avaluo_monto" class="pago_avaluo_monto">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $pago_avaluo->monto->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($pago_avaluo->monto->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($pago_avaluo->monto->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($pago_avaluo->id_banco->Visible) { // id_banco ?>
+	<?php if ($pago_avaluo->SortUrl($pago_avaluo->id_banco) == "") { ?>
+		<th data-name="id_banco" class="<?php echo $pago_avaluo->id_banco->HeaderCellClass() ?>"><div id="elh_pago_avaluo_id_banco" class="pago_avaluo_id_banco"><div class="ewTableHeaderCaption"><?php echo $pago_avaluo->id_banco->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="id_banco" class="<?php echo $pago_avaluo->id_banco->HeaderCellClass() ?>"><div><div id="elh_pago_avaluo_id_banco" class="pago_avaluo_id_banco">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $pago_avaluo->id_banco->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($pago_avaluo->id_banco->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($pago_avaluo->id_banco->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -331,9 +381,7 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowCnt
 <input type="hidden" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" value="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_pago_id" class="form-group pago_avaluo_pago_id">
-<select data-table="pago_avaluo" data-field="x_pago_id" data-value-separator="<?php echo $pago_avaluo->pago_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id"<?php echo $pago_avaluo->pago_id->EditAttributes() ?>>
-<?php echo $pago_avaluo->pago_id->SelectOptionListHtml("x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id") ?>
-</select>
+<input type="text" data-table="pago_avaluo" data-field="x_pago_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->pago_id->EditValue ?>"<?php echo $pago_avaluo->pago_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <input type="hidden" data-table="pago_avaluo" data-field="x_pago_id" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" value="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->OldValue) ?>">
@@ -347,9 +395,7 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowCnt
 <input type="hidden" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" value="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_pago_id" class="form-group pago_avaluo_pago_id">
-<select data-table="pago_avaluo" data-field="x_pago_id" data-value-separator="<?php echo $pago_avaluo->pago_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id"<?php echo $pago_avaluo->pago_id->EditAttributes() ?>>
-<?php echo $pago_avaluo->pago_id->SelectOptionListHtml("x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id") ?>
-</select>
+<input type="text" data-table="pago_avaluo" data-field="x_pago_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->pago_id->EditValue ?>"<?php echo $pago_avaluo->pago_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php } ?>
@@ -379,11 +425,7 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowCnt
 <input type="hidden" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id"><?php echo (strval($pago_avaluo->avaluo_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago_avaluo->avaluo_id->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago_avaluo->avaluo_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago_avaluo->avaluo_id->ReadOnly || $pago_avaluo->avaluo_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="pago_avaluo" data-field="x_avaluo_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo $pago_avaluo->avaluo_id->CurrentValue ?>"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
+<input type="text" data-table="pago_avaluo" data-field="x_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->avaluo_id->EditValue ?>"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <input type="hidden" data-table="pago_avaluo" data-field="x_avaluo_id" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->OldValue) ?>">
@@ -397,11 +439,7 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowCnt
 <input type="hidden" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id"><?php echo (strval($pago_avaluo->avaluo_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago_avaluo->avaluo_id->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago_avaluo->avaluo_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago_avaluo->avaluo_id->ReadOnly || $pago_avaluo->avaluo_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="pago_avaluo" data-field="x_avaluo_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo $pago_avaluo->avaluo_id->CurrentValue ?>"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
+<input type="text" data-table="pago_avaluo" data-field="x_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->avaluo_id->EditValue ?>"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php } ?>
@@ -430,10 +468,8 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowCnt
 <?php } ?>
 <?php if ($pago_avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_q" class="form-group pago_avaluo_q">
-<span<?php echo $pago_avaluo->q->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $pago_avaluo->q->EditValue ?></p></span>
+<input type="text" data-table="pago_avaluo" data-field="x_q" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_q" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_q" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->q->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->q->EditValue ?>"<?php echo $pago_avaluo->q->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="pago_avaluo" data-field="x_q" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_q" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_q" value="<?php echo ew_HtmlEncode($pago_avaluo->q->CurrentValue) ?>">
 <?php } ?>
 <?php if ($pago_avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_q" class="pago_avaluo_q">
@@ -446,6 +482,90 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowCnt
 <?php } else { ?>
 <input type="hidden" data-table="pago_avaluo" data-field="x_q" name="fpago_avaluogrid$x<?php echo $pago_avaluo_grid->RowIndex ?>_q" id="fpago_avaluogrid$x<?php echo $pago_avaluo_grid->RowIndex ?>_q" value="<?php echo ew_HtmlEncode($pago_avaluo->q->FormValue) ?>">
 <input type="hidden" data-table="pago_avaluo" data-field="x_q" name="fpago_avaluogrid$o<?php echo $pago_avaluo_grid->RowIndex ?>_q" id="fpago_avaluogrid$o<?php echo $pago_avaluo_grid->RowIndex ?>_q" value="<?php echo ew_HtmlEncode($pago_avaluo->q->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+	<?php } ?>
+	<?php if ($pago_avaluo->id_metodopago->Visible) { // id_metodopago ?>
+		<td data-name="id_metodopago"<?php echo $pago_avaluo->id_metodopago->CellAttributes() ?>>
+<?php if ($pago_avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_id_metodopago" class="form-group pago_avaluo_id_metodopago">
+<input type="text" data-table="pago_avaluo" data-field="x_id_metodopago" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->id_metodopago->EditValue ?>"<?php echo $pago_avaluo->id_metodopago->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_metodopago" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->OldValue) ?>">
+<?php } ?>
+<?php if ($pago_avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_id_metodopago" class="form-group pago_avaluo_id_metodopago">
+<input type="text" data-table="pago_avaluo" data-field="x_id_metodopago" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->id_metodopago->EditValue ?>"<?php echo $pago_avaluo->id_metodopago->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($pago_avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_id_metodopago" class="pago_avaluo_id_metodopago">
+<span<?php echo $pago_avaluo->id_metodopago->ViewAttributes() ?>>
+<?php echo $pago_avaluo->id_metodopago->ListViewValue() ?></span>
+</span>
+<?php if ($pago_avaluo->CurrentAction <> "F") { ?>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_metodopago" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->FormValue) ?>">
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_metodopago" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->OldValue) ?>">
+<?php } else { ?>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_metodopago" name="fpago_avaluogrid$x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="fpago_avaluogrid$x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->FormValue) ?>">
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_metodopago" name="fpago_avaluogrid$o<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="fpago_avaluogrid$o<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+	<?php } ?>
+	<?php if ($pago_avaluo->monto->Visible) { // monto ?>
+		<td data-name="monto"<?php echo $pago_avaluo->monto->CellAttributes() ?>>
+<?php if ($pago_avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_monto" class="form-group pago_avaluo_monto">
+<input type="text" data-table="pago_avaluo" data-field="x_monto" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->monto->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->monto->EditValue ?>"<?php echo $pago_avaluo->monto->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="pago_avaluo" data-field="x_monto" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_monto" value="<?php echo ew_HtmlEncode($pago_avaluo->monto->OldValue) ?>">
+<?php } ?>
+<?php if ($pago_avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_monto" class="form-group pago_avaluo_monto">
+<input type="text" data-table="pago_avaluo" data-field="x_monto" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->monto->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->monto->EditValue ?>"<?php echo $pago_avaluo->monto->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($pago_avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_monto" class="pago_avaluo_monto">
+<span<?php echo $pago_avaluo->monto->ViewAttributes() ?>>
+<?php echo $pago_avaluo->monto->ListViewValue() ?></span>
+</span>
+<?php if ($pago_avaluo->CurrentAction <> "F") { ?>
+<input type="hidden" data-table="pago_avaluo" data-field="x_monto" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" value="<?php echo ew_HtmlEncode($pago_avaluo->monto->FormValue) ?>">
+<input type="hidden" data-table="pago_avaluo" data-field="x_monto" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_monto" value="<?php echo ew_HtmlEncode($pago_avaluo->monto->OldValue) ?>">
+<?php } else { ?>
+<input type="hidden" data-table="pago_avaluo" data-field="x_monto" name="fpago_avaluogrid$x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="fpago_avaluogrid$x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" value="<?php echo ew_HtmlEncode($pago_avaluo->monto->FormValue) ?>">
+<input type="hidden" data-table="pago_avaluo" data-field="x_monto" name="fpago_avaluogrid$o<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="fpago_avaluogrid$o<?php echo $pago_avaluo_grid->RowIndex ?>_monto" value="<?php echo ew_HtmlEncode($pago_avaluo->monto->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+	<?php } ?>
+	<?php if ($pago_avaluo->id_banco->Visible) { // id_banco ?>
+		<td data-name="id_banco"<?php echo $pago_avaluo->id_banco->CellAttributes() ?>>
+<?php if ($pago_avaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_id_banco" class="form-group pago_avaluo_id_banco">
+<input type="text" data-table="pago_avaluo" data-field="x_id_banco" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->id_banco->EditValue ?>"<?php echo $pago_avaluo->id_banco->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_banco" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" value="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->OldValue) ?>">
+<?php } ?>
+<?php if ($pago_avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_id_banco" class="form-group pago_avaluo_id_banco">
+<input type="text" data-table="pago_avaluo" data-field="x_id_banco" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->id_banco->EditValue ?>"<?php echo $pago_avaluo->id_banco->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($pago_avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $pago_avaluo_grid->RowCnt ?>_pago_avaluo_id_banco" class="pago_avaluo_id_banco">
+<span<?php echo $pago_avaluo->id_banco->ViewAttributes() ?>>
+<?php echo $pago_avaluo->id_banco->ListViewValue() ?></span>
+</span>
+<?php if ($pago_avaluo->CurrentAction <> "F") { ?>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_banco" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" value="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->FormValue) ?>">
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_banco" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" value="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->OldValue) ?>">
+<?php } else { ?>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_banco" name="fpago_avaluogrid$x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="fpago_avaluogrid$x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" value="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->FormValue) ?>">
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_banco" name="fpago_avaluogrid$o<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="fpago_avaluogrid$o<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" value="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>
@@ -516,9 +636,7 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowInd
 <input type="hidden" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" value="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el$rowindex$_pago_avaluo_pago_id" class="form-group pago_avaluo_pago_id">
-<select data-table="pago_avaluo" data-field="x_pago_id" data-value-separator="<?php echo $pago_avaluo->pago_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id"<?php echo $pago_avaluo->pago_id->EditAttributes() ?>>
-<?php echo $pago_avaluo->pago_id->SelectOptionListHtml("x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id") ?>
-</select>
+<input type="text" data-table="pago_avaluo" data-field="x_pago_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_pago_id" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->pago_id->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->pago_id->EditValue ?>"<?php echo $pago_avaluo->pago_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php } else { ?>
@@ -542,11 +660,7 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowInd
 <input type="hidden" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el$rowindex$_pago_avaluo_avaluo_id" class="form-group pago_avaluo_avaluo_id">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id"><?php echo (strval($pago_avaluo->avaluo_id->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $pago_avaluo->avaluo_id->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($pago_avaluo->avaluo_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($pago_avaluo->avaluo_id->ReadOnly || $pago_avaluo->avaluo_id->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="pago_avaluo" data-field="x_avaluo_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $pago_avaluo->avaluo_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" value="<?php echo $pago_avaluo->avaluo_id->CurrentValue ?>"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
+<input type="text" data-table="pago_avaluo" data-field="x_avaluo_id" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_avaluo_id" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->avaluo_id->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->avaluo_id->EditValue ?>"<?php echo $pago_avaluo->avaluo_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php } else { ?>
@@ -575,10 +689,58 @@ $pago_avaluo_grid->ListOptions->Render("body", "left", $pago_avaluo_grid->RowInd
 <input type="hidden" data-table="pago_avaluo" data-field="x_q" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_q" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_q" value="<?php echo ew_HtmlEncode($pago_avaluo->q->OldValue) ?>">
 </td>
 	<?php } ?>
+	<?php if ($pago_avaluo->id_metodopago->Visible) { // id_metodopago ?>
+		<td data-name="id_metodopago">
+<?php if ($pago_avaluo->CurrentAction <> "F") { ?>
+<span id="el$rowindex$_pago_avaluo_id_metodopago" class="form-group pago_avaluo_id_metodopago">
+<input type="text" data-table="pago_avaluo" data-field="x_id_metodopago" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->id_metodopago->EditValue ?>"<?php echo $pago_avaluo->id_metodopago->EditAttributes() ?>>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_pago_avaluo_id_metodopago" class="form-group pago_avaluo_id_metodopago">
+<span<?php echo $pago_avaluo->id_metodopago->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago_avaluo->id_metodopago->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_metodopago" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_metodopago" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_metodopago" value="<?php echo ew_HtmlEncode($pago_avaluo->id_metodopago->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($pago_avaluo->monto->Visible) { // monto ?>
+		<td data-name="monto">
+<?php if ($pago_avaluo->CurrentAction <> "F") { ?>
+<span id="el$rowindex$_pago_avaluo_monto" class="form-group pago_avaluo_monto">
+<input type="text" data-table="pago_avaluo" data-field="x_monto" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->monto->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->monto->EditValue ?>"<?php echo $pago_avaluo->monto->EditAttributes() ?>>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_pago_avaluo_monto" class="form-group pago_avaluo_monto">
+<span<?php echo $pago_avaluo->monto->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago_avaluo->monto->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="pago_avaluo" data-field="x_monto" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_monto" value="<?php echo ew_HtmlEncode($pago_avaluo->monto->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="pago_avaluo" data-field="x_monto" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_monto" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_monto" value="<?php echo ew_HtmlEncode($pago_avaluo->monto->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($pago_avaluo->id_banco->Visible) { // id_banco ?>
+		<td data-name="id_banco">
+<?php if ($pago_avaluo->CurrentAction <> "F") { ?>
+<span id="el$rowindex$_pago_avaluo_id_banco" class="form-group pago_avaluo_id_banco">
+<input type="text" data-table="pago_avaluo" data-field="x_id_banco" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" size="30" placeholder="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->getPlaceHolder()) ?>" value="<?php echo $pago_avaluo->id_banco->EditValue ?>"<?php echo $pago_avaluo->id_banco->EditAttributes() ?>>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_pago_avaluo_id_banco" class="form-group pago_avaluo_id_banco">
+<span<?php echo $pago_avaluo->id_banco->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $pago_avaluo->id_banco->ViewValue ?></p></span>
+</span>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_banco" name="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="x<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" value="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="pago_avaluo" data-field="x_id_banco" name="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" id="o<?php echo $pago_avaluo_grid->RowIndex ?>_id_banco" value="<?php echo ew_HtmlEncode($pago_avaluo->id_banco->OldValue) ?>">
+</td>
+	<?php } ?>
 <?php
 
 // Render list options (body, right)
-$pago_avaluo_grid->ListOptions->Render("body", "right", $pago_avaluo_grid->RowIndex);
+$pago_avaluo_grid->ListOptions->Render("body", "right", $pago_avaluo_grid->RowCnt);
 ?>
 <script type="text/javascript">
 fpago_avaluogrid.UpdateOpts(<?php echo $pago_avaluo_grid->RowIndex ?>);

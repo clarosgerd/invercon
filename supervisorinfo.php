@@ -26,6 +26,7 @@ class csupervisor extends cTable {
 	var $status;
 	var $avatar;
 	var $color;
+	var $codigo;
 
 	//
 	// Table class constructor
@@ -163,6 +164,11 @@ class csupervisor extends cTable {
 		$this->color = new cField('supervisor', 'supervisor', 'x_color', 'color', '`color`', '`color`', 200, -1, FALSE, '`color`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->color->Sortable = FALSE; // Allow sort
 		$this->fields['color'] = &$this->color;
+
+		// codigo
+		$this->codigo = new cField('supervisor', 'supervisor', 'x_codigo', 'codigo', '`codigo`', '`codigo`', 200, -1, FALSE, '`codigo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->codigo->Sortable = TRUE; // Allow sort
+		$this->fields['codigo'] = &$this->codigo;
 	}
 
 	// Field Visibility
@@ -701,6 +707,7 @@ class csupervisor extends cTable {
 		$this->status->setDbValue($rs->fields('status'));
 		$this->avatar->Upload->DbValue = $rs->fields('avatar');
 		$this->color->setDbValue($rs->fields('color'));
+		$this->codigo->setDbValue($rs->fields('codigo'));
 	}
 
 	// Render list row values
@@ -735,7 +742,9 @@ class csupervisor extends cTable {
 		// color
 		$this->color->CellCssStyle = "white-space: nowrap;";
 
+		// codigo
 		// nombre
+
 		$this->nombre->ViewValue = $this->nombre->CurrentValue;
 		$this->nombre->ViewCustomAttributes = "";
 
@@ -758,9 +767,23 @@ class csupervisor extends cTable {
 		// id_rol
 		if (strval($this->id_rol->CurrentValue) <> "") {
 			$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-		$sWhereWrk = "";
-		$this->id_rol->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -781,9 +804,23 @@ class csupervisor extends cTable {
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -853,6 +890,10 @@ class csupervisor extends cTable {
 		// color
 		$this->color->ViewValue = $this->color->CurrentValue;
 		$this->color->ViewCustomAttributes = "";
+
+		// codigo
+		$this->codigo->ViewValue = $this->codigo->CurrentValue;
+		$this->codigo->ViewCustomAttributes = "";
 
 		// nombre
 		$this->nombre->LinkCustomAttributes = "";
@@ -956,6 +997,11 @@ class csupervisor extends cTable {
 		$this->color->HrefValue = "";
 		$this->color->TooltipValue = "";
 
+		// codigo
+		$this->codigo->LinkCustomAttributes = "";
+		$this->codigo->HrefValue = "";
+		$this->codigo->TooltipValue = "";
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 
@@ -1005,9 +1051,23 @@ class csupervisor extends cTable {
 		$this->id_rol->EditCustomAttributes = "";
 		if (strval($this->id_rol->CurrentValue) <> "") {
 			$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-		$sWhereWrk = "";
-		$this->id_rol->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1105,6 +1165,12 @@ class csupervisor extends cTable {
 		$this->color->EditValue = $this->color->CurrentValue;
 		$this->color->PlaceHolder = ew_RemoveHtml($this->color->FldTitle());
 
+		// codigo
+		$this->codigo->EditAttrs["class"] = "form-control";
+		$this->codigo->EditCustomAttributes = "";
+		$this->codigo->EditValue = $this->codigo->CurrentValue;
+		$this->codigo->PlaceHolder = ew_RemoveHtml($this->codigo->FldTitle());
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 	}
@@ -1148,6 +1214,7 @@ class csupervisor extends cTable {
 					if ($this->cargo->Exportable) $Doc->ExportCaption($this->cargo);
 					if ($this->id_institucion->Exportable) $Doc->ExportCaption($this->id_institucion);
 					if ($this->especialidad->Exportable) $Doc->ExportCaption($this->especialidad);
+					if ($this->codigo->Exportable) $Doc->ExportCaption($this->codigo);
 				} else {
 					if ($this->nombre->Exportable) $Doc->ExportCaption($this->nombre);
 					if ($this->apellido->Exportable) $Doc->ExportCaption($this->apellido);
@@ -1165,6 +1232,7 @@ class csupervisor extends cTable {
 					if ($this->id_institucion->Exportable) $Doc->ExportCaption($this->id_institucion);
 					if ($this->especialidad->Exportable) $Doc->ExportCaption($this->especialidad);
 					if ($this->status->Exportable) $Doc->ExportCaption($this->status);
+					if ($this->codigo->Exportable) $Doc->ExportCaption($this->codigo);
 				}
 				$Doc->EndExportRow();
 			}
@@ -1212,6 +1280,7 @@ class csupervisor extends cTable {
 						if ($this->cargo->Exportable) $Doc->ExportField($this->cargo);
 						if ($this->id_institucion->Exportable) $Doc->ExportField($this->id_institucion);
 						if ($this->especialidad->Exportable) $Doc->ExportField($this->especialidad);
+						if ($this->codigo->Exportable) $Doc->ExportField($this->codigo);
 					} else {
 						if ($this->nombre->Exportable) $Doc->ExportField($this->nombre);
 						if ($this->apellido->Exportable) $Doc->ExportField($this->apellido);
@@ -1229,6 +1298,7 @@ class csupervisor extends cTable {
 						if ($this->id_institucion->Exportable) $Doc->ExportField($this->id_institucion);
 						if ($this->especialidad->Exportable) $Doc->ExportField($this->especialidad);
 						if ($this->status->Exportable) $Doc->ExportField($this->status);
+						if ($this->codigo->Exportable) $Doc->ExportField($this->codigo);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

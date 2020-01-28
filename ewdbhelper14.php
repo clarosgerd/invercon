@@ -19,20 +19,20 @@ if (!function_exists('DbHelper')) {
 			$langid = "";
 			$info = $args[0];
 		}
-		$dbclass = "cinvercon_db";
+		$dbclass = "cinverconbd_db";
 		$dbhelper = new $dbclass($langfolder, $langid, $info);
 		return $dbhelper;
 	}
 }
 
-class cinvercon_db extends cDbHelper {
+class cinverconbd_db extends cDbHelper {
 
 	// Database connection info
 	var $Host = 'localhost';
 	var $Port = 3306;
 	var $Username = 'root';
-	var $Password = 'usbw';
-	var $DbName = 'invercon';
+	var $Password = '';
+	var $DbName = 'inverconbd';
 	var $CharSet = "utf-8";
 
 	// ADODB (Access/SQL Server)

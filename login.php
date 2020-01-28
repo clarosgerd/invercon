@@ -672,10 +672,10 @@ $login->ShowMessage();
 <div class="login-box-body">
 <p class="login-box-msg"><?php echo $Language->Phrase("Login") ?></p>
 	<div class="form-group">
-		<div><input type="text" name="username" id="username" class="form-control ewControl" value="<?php echo ew_HtmlEncode($login->Username) ?>" placeholder="<?php echo ew_HtmlEncode($Language->Phrase("Username")) ?>"></div>
+		<div><input type="text" name="username" id="username" class="form-control ewControl" value="<?php echo ew_HtmlEncode($login->Username) ?>"></div>
 	</div>
 	<div class="form-group">
-		<div><input type="password" name="password" id="password" class="form-control ewControl" placeholder="<?php echo ew_HtmlEncode($Language->Phrase("Password")) ?>"></div>
+		<div><input type="password" name="password" id="password" class="form-control ewControl"></div>
 	</div>
 	<div class="checkbox">
 		<label for="rememberme"><input type="checkbox" name="type" id="rememberme" value="a"<?php if ($login->LoginType == "a") { ?> checked<?php } ?>><?php echo $Language->Phrase("RememberMe") ?></label>

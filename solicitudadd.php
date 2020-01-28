@@ -326,9 +326,7 @@ class csolicitud_add extends csolicitud {
 
 		$objForm = new cFormObj();
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
-		$this->nombre_contacto->SetVisibility();
 		$this->name->SetVisibility();
-		$this->lastname->SetVisibility();
 		$this->_email->SetVisibility();
 		$this->address->SetVisibility();
 		$this->phone->SetVisibility();
@@ -361,6 +359,8 @@ class csolicitud_add extends csolicitud {
 		$this->tipoespecial->SetVisibility();
 		$this->imagen_tipoespecial01->SetVisibility();
 		$this->email_contacto->SetVisibility();
+		$this->nombre_contacto->SetVisibility();
+		$this->lastname->SetVisibility();
 
 		// Set up multi page object
 		$this->SetupMultiPages();
@@ -624,12 +624,8 @@ class csolicitud_add extends csolicitud {
 	function LoadDefaultValues() {
 		$this->id->CurrentValue = NULL;
 		$this->id->OldValue = $this->id->CurrentValue;
-		$this->nombre_contacto->CurrentValue = NULL;
-		$this->nombre_contacto->OldValue = $this->nombre_contacto->CurrentValue;
 		$this->name->CurrentValue = NULL;
 		$this->name->OldValue = $this->name->CurrentValue;
-		$this->lastname->CurrentValue = NULL;
-		$this->lastname->OldValue = $this->lastname->CurrentValue;
 		$this->_email->CurrentValue = NULL;
 		$this->_email->OldValue = $this->_email->CurrentValue;
 		$this->address->CurrentValue = NULL;
@@ -638,7 +634,7 @@ class csolicitud_add extends csolicitud {
 		$this->phone->OldValue = $this->phone->CurrentValue;
 		$this->cell->CurrentValue = NULL;
 		$this->cell->OldValue = $this->cell->CurrentValue;
-		$this->is_active->CurrentValue = 0;
+		$this->is_active->CurrentValue = 1;
 		$this->created_at->CurrentValue = NULL;
 		$this->created_at->OldValue = $this->created_at->CurrentValue;
 		$this->id_sucursal->CurrentValue = $_SESSION["sucursal"];
@@ -736,6 +732,12 @@ class csolicitud_add extends csolicitud {
 		$this->imagen_tipoespecial01->OldValue = $this->imagen_tipoespecial01->Upload->DbValue;
 		$this->email_contacto->CurrentValue = NULL;
 		$this->email_contacto->OldValue = $this->email_contacto->CurrentValue;
+		$this->nombre_contacto->CurrentValue = NULL;
+		$this->nombre_contacto->OldValue = $this->nombre_contacto->CurrentValue;
+		$this->lastname->CurrentValue = NULL;
+		$this->lastname->OldValue = $this->lastname->CurrentValue;
+		$this->monto_inicial->CurrentValue = NULL;
+		$this->monto_inicial->OldValue = $this->monto_inicial->CurrentValue;
 	}
 
 	// Load form values
@@ -744,14 +746,8 @@ class csolicitud_add extends csolicitud {
 		// Load from form
 		global $objForm;
 		$this->GetUploadFiles(); // Get upload files
-		if (!$this->nombre_contacto->FldIsDetailKey) {
-			$this->nombre_contacto->setFormValue($objForm->GetValue("x_nombre_contacto"));
-		}
 		if (!$this->name->FldIsDetailKey) {
 			$this->name->setFormValue($objForm->GetValue("x_name"));
-		}
-		if (!$this->lastname->FldIsDetailKey) {
-			$this->lastname->setFormValue($objForm->GetValue("x_lastname"));
 		}
 		if (!$this->_email->FldIsDetailKey) {
 			$this->_email->setFormValue($objForm->GetValue("x__email"));
@@ -807,14 +803,18 @@ class csolicitud_add extends csolicitud {
 		if (!$this->email_contacto->FldIsDetailKey) {
 			$this->email_contacto->setFormValue($objForm->GetValue("x_email_contacto"));
 		}
+		if (!$this->nombre_contacto->FldIsDetailKey) {
+			$this->nombre_contacto->setFormValue($objForm->GetValue("x_nombre_contacto"));
+		}
+		if (!$this->lastname->FldIsDetailKey) {
+			$this->lastname->setFormValue($objForm->GetValue("x_lastname"));
+		}
 	}
 
 	// Restore form values
 	function RestoreFormValues() {
 		global $objForm;
-		$this->nombre_contacto->CurrentValue = $this->nombre_contacto->FormValue;
 		$this->name->CurrentValue = $this->name->FormValue;
-		$this->lastname->CurrentValue = $this->lastname->FormValue;
 		$this->_email->CurrentValue = $this->_email->FormValue;
 		$this->address->CurrentValue = $this->address->FormValue;
 		$this->phone->CurrentValue = $this->phone->FormValue;
@@ -833,6 +833,8 @@ class csolicitud_add extends csolicitud {
 		$this->documento_mercaderia->CurrentValue = $this->documento_mercaderia->FormValue;
 		$this->tipoespecial->CurrentValue = $this->tipoespecial->FormValue;
 		$this->email_contacto->CurrentValue = $this->email_contacto->FormValue;
+		$this->nombre_contacto->CurrentValue = $this->nombre_contacto->FormValue;
+		$this->lastname->CurrentValue = $this->lastname->FormValue;
 	}
 
 	// Load row based on key values
@@ -869,9 +871,7 @@ class csolicitud_add extends csolicitud {
 		if (!$rs || $rs->EOF)
 			return;
 		$this->id->setDbValue($row['id']);
-		$this->nombre_contacto->setDbValue($row['nombre_contacto']);
 		$this->name->setDbValue($row['name']);
-		$this->lastname->setDbValue($row['lastname']);
 		$this->_email->setDbValue($row['email']);
 		$this->address->setDbValue($row['address']);
 		$this->phone->setDbValue($row['phone']);
@@ -978,6 +978,9 @@ class csolicitud_add extends csolicitud {
 		if (is_array($this->imagen_tipoespecial01->Upload->DbValue) || is_object($this->imagen_tipoespecial01->Upload->DbValue)) // Byte array
 			$this->imagen_tipoespecial01->Upload->DbValue = ew_BytesToStr($this->imagen_tipoespecial01->Upload->DbValue);
 		$this->email_contacto->setDbValue($row['email_contacto']);
+		$this->nombre_contacto->setDbValue($row['nombre_contacto']);
+		$this->lastname->setDbValue($row['lastname']);
+		$this->monto_inicial->setDbValue($row['monto_inicial']);
 	}
 
 	// Return a row with default values
@@ -985,9 +988,7 @@ class csolicitud_add extends csolicitud {
 		$this->LoadDefaultValues();
 		$row = array();
 		$row['id'] = $this->id->CurrentValue;
-		$row['nombre_contacto'] = $this->nombre_contacto->CurrentValue;
 		$row['name'] = $this->name->CurrentValue;
-		$row['lastname'] = $this->lastname->CurrentValue;
 		$row['email'] = $this->_email->CurrentValue;
 		$row['address'] = $this->address->CurrentValue;
 		$row['phone'] = $this->phone->CurrentValue;
@@ -1042,6 +1043,9 @@ class csolicitud_add extends csolicitud {
 		$row['tipoespecial'] = $this->tipoespecial->CurrentValue;
 		$row['imagen_tipoespecial01'] = $this->imagen_tipoespecial01->Upload->DbValue;
 		$row['email_contacto'] = $this->email_contacto->CurrentValue;
+		$row['nombre_contacto'] = $this->nombre_contacto->CurrentValue;
+		$row['lastname'] = $this->lastname->CurrentValue;
+		$row['monto_inicial'] = $this->monto_inicial->CurrentValue;
 		return $row;
 	}
 
@@ -1051,9 +1055,7 @@ class csolicitud_add extends csolicitud {
 			return;
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
-		$this->nombre_contacto->DbValue = $row['nombre_contacto'];
 		$this->name->DbValue = $row['name'];
-		$this->lastname->DbValue = $row['lastname'];
 		$this->_email->DbValue = $row['email'];
 		$this->address->DbValue = $row['address'];
 		$this->phone->DbValue = $row['phone'];
@@ -1108,6 +1110,9 @@ class csolicitud_add extends csolicitud {
 		$this->tipoespecial->DbValue = $row['tipoespecial'];
 		$this->imagen_tipoespecial01->Upload->DbValue = $row['imagen_tipoespecial01'];
 		$this->email_contacto->DbValue = $row['email_contacto'];
+		$this->nombre_contacto->DbValue = $row['nombre_contacto'];
+		$this->lastname->DbValue = $row['lastname'];
+		$this->monto_inicial->DbValue = $row['monto_inicial'];
 	}
 
 	// Load old record
@@ -1143,9 +1148,7 @@ class csolicitud_add extends csolicitud {
 
 		// Common render codes for all row types
 		// id
-		// nombre_contacto
 		// name
-		// lastname
 		// email
 		// address
 		// phone
@@ -1200,20 +1203,15 @@ class csolicitud_add extends csolicitud {
 		// tipoespecial
 		// imagen_tipoespecial01
 		// email_contacto
+		// nombre_contacto
+		// lastname
+		// monto_inicial
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
-
-		// nombre_contacto
-		$this->nombre_contacto->ViewValue = $this->nombre_contacto->CurrentValue;
-		$this->nombre_contacto->ViewCustomAttributes = "";
 
 		// name
 		$this->name->ViewValue = $this->name->CurrentValue;
 		$this->name->ViewCustomAttributes = "";
-
-		// lastname
-		$this->lastname->ViewValue = $this->lastname->CurrentValue;
-		$this->lastname->ViewCustomAttributes = "";
 
 		// email
 		$this->_email->ViewValue = $this->_email->CurrentValue;
@@ -1232,28 +1230,7 @@ class csolicitud_add extends csolicitud {
 		$this->cell->ViewCustomAttributes = "";
 
 		// id_sucursal
-		if (strval($this->id_sucursal->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
-		$lookuptblfilter = "`id`='".$_SESSION["sucursal"]."'";
-		ew_AddFilter($sWhereWrk, $lookuptblfilter);
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->id_sucursal->ViewValue = $this->id_sucursal->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
-			}
-		} else {
-			$this->id_sucursal->ViewValue = NULL;
-		}
+		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
 		$this->id_sucursal->ViewCustomAttributes = "";
 
 		// tipoinmueble
@@ -1264,9 +1241,23 @@ class csolicitud_add extends csolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='INMUEBLE'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1296,9 +1287,23 @@ class csolicitud_add extends csolicitud {
 		// id_ciudad_inmueble
 		if (strval($this->id_ciudad_inmueble->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_inmueble->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_inmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_inmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_inmueble->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_ciudad_inmueble, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1319,9 +1324,23 @@ class csolicitud_add extends csolicitud {
 		// id_provincia_inmueble
 		if (strval($this->id_provincia_inmueble->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_inmueble->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_inmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_inmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_inmueble->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_provincia_inmueble, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1383,9 +1402,23 @@ class csolicitud_add extends csolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipovehiculo->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='VEHICULO'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1415,9 +1448,23 @@ class csolicitud_add extends csolicitud {
 		// id_ciudad_vehiculo
 		if (strval($this->id_ciudad_vehiculo->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_vehiculo->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_vehiculo->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_vehiculo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_vehiculo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_vehiculo->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_ciudad_vehiculo, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1438,9 +1485,23 @@ class csolicitud_add extends csolicitud {
 		// id_provincia_vehiculo
 		if (strval($this->id_provincia_vehiculo->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_vehiculo->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_vehiculo->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_vehiculo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_vehiculo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_vehiculo->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_provincia_vehiculo, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1502,9 +1563,23 @@ class csolicitud_add extends csolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomaquinaria->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='MAQUINARIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1534,9 +1609,23 @@ class csolicitud_add extends csolicitud {
 		// id_ciudad_maquinaria
 		if (strval($this->id_ciudad_maquinaria->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-		$sWhereWrk = "";
-		$this->id_ciudad_maquinaria->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_maquinaria->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_maquinaria->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+				$sWhereWrk = "";
+				$this->id_ciudad_maquinaria->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_ciudad_maquinaria, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1557,9 +1646,23 @@ class csolicitud_add extends csolicitud {
 		// id_provincia_maquinaria
 		if (strval($this->id_provincia_maquinaria->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-		$sWhereWrk = "";
-		$this->id_provincia_maquinaria->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_maquinaria->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_maquinaria->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+				$sWhereWrk = "";
+				$this->id_provincia_maquinaria->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_provincia_maquinaria, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1621,9 +1724,23 @@ class csolicitud_add extends csolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 			}
-		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipomercaderia->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='MERCADERIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1671,9 +1788,23 @@ class csolicitud_add extends csolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 			}
-		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoespecial->LookupFilters = array();
+				break;
+		}
 		$lookuptblfilter = "`tipo`='ESPECIAL'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1712,9 +1843,23 @@ class csolicitud_add extends csolicitud {
 		// email_contacto
 		if (strval($this->email_contacto->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->email_contacto->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-		$sWhereWrk = "";
-		$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->email_contacto, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1733,20 +1878,22 @@ class csolicitud_add extends csolicitud {
 		}
 		$this->email_contacto->ViewCustomAttributes = "";
 
-			// nombre_contacto
-			$this->nombre_contacto->LinkCustomAttributes = "";
-			$this->nombre_contacto->HrefValue = "";
-			$this->nombre_contacto->TooltipValue = "";
+		// nombre_contacto
+		$this->nombre_contacto->ViewValue = $this->nombre_contacto->CurrentValue;
+		$this->nombre_contacto->ViewCustomAttributes = "";
+
+		// lastname
+		$this->lastname->ViewValue = $this->lastname->CurrentValue;
+		$this->lastname->ViewCustomAttributes = "";
+
+		// monto_inicial
+		$this->monto_inicial->ViewValue = $this->monto_inicial->CurrentValue;
+		$this->monto_inicial->ViewCustomAttributes = "";
 
 			// name
 			$this->name->LinkCustomAttributes = "";
 			$this->name->HrefValue = "";
 			$this->name->TooltipValue = "";
-
-			// lastname
-			$this->lastname->LinkCustomAttributes = "";
-			$this->lastname->HrefValue = "";
-			$this->lastname->TooltipValue = "";
 
 			// email
 			$this->_email->LinkCustomAttributes = "";
@@ -2005,25 +2152,23 @@ class csolicitud_add extends csolicitud {
 			$this->email_contacto->LinkCustomAttributes = "";
 			$this->email_contacto->HrefValue = "";
 			$this->email_contacto->TooltipValue = "";
-		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// nombre_contacto
-			$this->nombre_contacto->EditAttrs["class"] = "form-control";
-			$this->nombre_contacto->EditCustomAttributes = "";
-			$this->nombre_contacto->EditValue = ew_HtmlEncode($this->nombre_contacto->CurrentValue);
-			$this->nombre_contacto->PlaceHolder = ew_RemoveHtml($this->nombre_contacto->FldTitle());
+			$this->nombre_contacto->LinkCustomAttributes = "";
+			$this->nombre_contacto->HrefValue = "";
+			$this->nombre_contacto->TooltipValue = "";
+
+			// lastname
+			$this->lastname->LinkCustomAttributes = "";
+			$this->lastname->HrefValue = "";
+			$this->lastname->TooltipValue = "";
+		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// name
 			$this->name->EditAttrs["class"] = "form-control";
 			$this->name->EditCustomAttributes = "";
 			$this->name->EditValue = ew_HtmlEncode($this->name->CurrentValue);
 			$this->name->PlaceHolder = ew_RemoveHtml($this->name->FldTitle());
-
-			// lastname
-			$this->lastname->EditAttrs["class"] = "form-control";
-			$this->lastname->EditCustomAttributes = "";
-			$this->lastname->EditValue = ew_HtmlEncode($this->lastname->CurrentValue);
-			$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
 
 			// email
 			$this->_email->EditAttrs["class"] = "form-control";
@@ -2050,31 +2195,9 @@ class csolicitud_add extends csolicitud {
 			$this->cell->PlaceHolder = ew_RemoveHtml($this->cell->FldTitle());
 
 			// id_sucursal
+			$this->id_sucursal->EditAttrs["class"] = "form-control";
 			$this->id_sucursal->EditCustomAttributes = "";
-			if (trim(strval($this->id_sucursal->CurrentValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
-			$sWhereWrk = "";
-			$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
-			$lookuptblfilter = "`id`='".$_SESSION["sucursal"]."'";
-			ew_AddFilter($sWhereWrk, $lookuptblfilter);
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
-				$this->id_sucursal->ViewValue = $this->id_sucursal->DisplayValue($arwrk);
-			} else {
-				$this->id_sucursal->ViewValue = $Language->Phrase("PleaseSelect");
-			}
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->id_sucursal->EditValue = $arwrk;
+			$this->id_sucursal->CurrentValue = $_SESSION["sucursal"];
 
 			// tipoinmueble
 			$this->tipoinmueble->EditCustomAttributes = "";
@@ -2088,9 +2211,23 @@ class csolicitud_add extends csolicitud {
 					$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 				}
 			}
-			$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
-			$sWhereWrk = "";
-			$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipoinmueble->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipoinmueble->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipoinmueble->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='INMUEBLE'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2124,9 +2261,23 @@ class csolicitud_add extends csolicitud {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
-			$sWhereWrk = "";
-			$this->id_ciudad_inmueble->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
+					$sWhereWrk = "";
+					$this->id_ciudad_inmueble->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
+					$sWhereWrk = "";
+					$this->id_ciudad_inmueble->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
+					$sWhereWrk = "";
+					$this->id_ciudad_inmueble->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_ciudad_inmueble, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2143,9 +2294,23 @@ class csolicitud_add extends csolicitud {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_inmueble->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
-			$sWhereWrk = "";
-			$this->id_provincia_inmueble->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
+					$sWhereWrk = "";
+					$this->id_provincia_inmueble->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
+					$sWhereWrk = "";
+					$this->id_provincia_inmueble->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
+					$sWhereWrk = "";
+					$this->id_provincia_inmueble->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_provincia_inmueble, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2199,6 +2364,7 @@ class csolicitud_add extends csolicitud {
 			if (($this->CurrentAction == "I" || $this->CurrentAction == "C") && !$this->EventCancelled) ew_RenderUploadField($this->imagen_inmueble05);
 
 			// tipovehiculo
+			$this->tipovehiculo->EditAttrs["class"] = "form-control";
 			$this->tipovehiculo->EditCustomAttributes = "";
 			if (trim(strval($this->tipovehiculo->CurrentValue)) == "") {
 				$sFilterWrk = "0=1";
@@ -2210,30 +2376,29 @@ class csolicitud_add extends csolicitud {
 					$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 				}
 			}
-			$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
-			$sWhereWrk = "";
-			$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipovehiculo->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipovehiculo->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipovehiculo->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='VEHICULO'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->tipovehiculo, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$this->tipovehiculo->ViewValue = "";
-				$ari = 0;
-				while (!$rswrk->EOF) {
-					$arwrk = array();
-					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
-					$this->tipovehiculo->ViewValue .= $this->tipovehiculo->DisplayValue($arwrk);
-					$rswrk->MoveNext();
-					if (!$rswrk->EOF) $this->tipovehiculo->ViewValue .= ew_ViewOptionSeparator($ari); // Separate Options
-					$ari++;
-				}
-				$rswrk->MoveFirst();
-			} else {
-				$this->tipovehiculo->ViewValue = $Language->Phrase("PleaseSelect");
-			}
 			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
 			if ($rswrk) $rswrk->Close();
 			$this->tipovehiculo->EditValue = $arwrk;
@@ -2246,9 +2411,23 @@ class csolicitud_add extends csolicitud {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_vehiculo->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
-			$sWhereWrk = "";
-			$this->id_ciudad_vehiculo->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
+					$sWhereWrk = "";
+					$this->id_ciudad_vehiculo->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
+					$sWhereWrk = "";
+					$this->id_ciudad_vehiculo->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
+					$sWhereWrk = "";
+					$this->id_ciudad_vehiculo->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_ciudad_vehiculo, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2265,9 +2444,23 @@ class csolicitud_add extends csolicitud {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_vehiculo->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
-			$sWhereWrk = "";
-			$this->id_provincia_vehiculo->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
+					$sWhereWrk = "";
+					$this->id_provincia_vehiculo->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
+					$sWhereWrk = "";
+					$this->id_provincia_vehiculo->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
+					$sWhereWrk = "";
+					$this->id_provincia_vehiculo->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_provincia_vehiculo, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2321,6 +2514,7 @@ class csolicitud_add extends csolicitud {
 			if (($this->CurrentAction == "I" || $this->CurrentAction == "C") && !$this->EventCancelled) ew_RenderUploadField($this->imagen_vehiculo07);
 
 			// tipomaquinaria
+			$this->tipomaquinaria->EditAttrs["class"] = "form-control";
 			$this->tipomaquinaria->EditCustomAttributes = "";
 			if (trim(strval($this->tipomaquinaria->CurrentValue)) == "") {
 				$sFilterWrk = "0=1";
@@ -2332,30 +2526,29 @@ class csolicitud_add extends csolicitud {
 					$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 				}
 			}
-			$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
-			$sWhereWrk = "";
-			$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipomaquinaria->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipomaquinaria->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipomaquinaria->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='MAQUINARIA'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->tipomaquinaria, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$this->tipomaquinaria->ViewValue = "";
-				$ari = 0;
-				while (!$rswrk->EOF) {
-					$arwrk = array();
-					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
-					$this->tipomaquinaria->ViewValue .= $this->tipomaquinaria->DisplayValue($arwrk);
-					$rswrk->MoveNext();
-					if (!$rswrk->EOF) $this->tipomaquinaria->ViewValue .= ew_ViewOptionSeparator($ari); // Separate Options
-					$ari++;
-				}
-				$rswrk->MoveFirst();
-			} else {
-				$this->tipomaquinaria->ViewValue = $Language->Phrase("PleaseSelect");
-			}
 			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
 			if ($rswrk) $rswrk->Close();
 			$this->tipomaquinaria->EditValue = $arwrk;
@@ -2368,9 +2561,23 @@ class csolicitud_add extends csolicitud {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_ciudad_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
-			$sWhereWrk = "";
-			$this->id_ciudad_maquinaria->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
+					$sWhereWrk = "";
+					$this->id_ciudad_maquinaria->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
+					$sWhereWrk = "";
+					$this->id_ciudad_maquinaria->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `departamento`";
+					$sWhereWrk = "";
+					$this->id_ciudad_maquinaria->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_ciudad_maquinaria, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2387,9 +2594,23 @@ class csolicitud_add extends csolicitud {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_provincia_maquinaria->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
-			$sWhereWrk = "";
-			$this->id_provincia_maquinaria->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
+					$sWhereWrk = "";
+					$this->id_provincia_maquinaria->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
+					$sWhereWrk = "";
+					$this->id_provincia_maquinaria->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `provincia`";
+					$sWhereWrk = "";
+					$this->id_provincia_maquinaria->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_provincia_maquinaria, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2443,6 +2664,7 @@ class csolicitud_add extends csolicitud {
 			if (($this->CurrentAction == "I" || $this->CurrentAction == "C") && !$this->EventCancelled) ew_RenderUploadField($this->imagen_maquinaria07);
 
 			// tipomercaderia
+			$this->tipomercaderia->EditAttrs["class"] = "form-control";
 			$this->tipomercaderia->EditCustomAttributes = "";
 			if (trim(strval($this->tipomercaderia->CurrentValue)) == "") {
 				$sFilterWrk = "0=1";
@@ -2454,30 +2676,29 @@ class csolicitud_add extends csolicitud {
 					$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 				}
 			}
-			$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
-			$sWhereWrk = "";
-			$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipomercaderia->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipomercaderia->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipomercaderia->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='MERCADERIA'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->tipomercaderia, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$this->tipomercaderia->ViewValue = "";
-				$ari = 0;
-				while (!$rswrk->EOF) {
-					$arwrk = array();
-					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
-					$this->tipomercaderia->ViewValue .= $this->tipomercaderia->DisplayValue($arwrk);
-					$rswrk->MoveNext();
-					if (!$rswrk->EOF) $this->tipomercaderia->ViewValue .= ew_ViewOptionSeparator($ari); // Separate Options
-					$ari++;
-				}
-				$rswrk->MoveFirst();
-			} else {
-				$this->tipomercaderia->ViewValue = $Language->Phrase("PleaseSelect");
-			}
 			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
 			if ($rswrk) $rswrk->Close();
 			$this->tipomercaderia->EditValue = $arwrk;
@@ -2500,6 +2721,7 @@ class csolicitud_add extends csolicitud {
 			$this->documento_mercaderia->PlaceHolder = ew_RemoveHtml($this->documento_mercaderia->FldTitle());
 
 			// tipoespecial
+			$this->tipoespecial->EditAttrs["class"] = "form-control";
 			$this->tipoespecial->EditCustomAttributes = "";
 			if (trim(strval($this->tipoespecial->CurrentValue)) == "") {
 				$sFilterWrk = "0=1";
@@ -2511,30 +2733,29 @@ class csolicitud_add extends csolicitud {
 					$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 				}
 			}
-			$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
-			$sWhereWrk = "";
-			$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipoespecial->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipoespecial->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipoespecial->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='ESPECIAL'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->tipoespecial, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$this->tipoespecial->ViewValue = "";
-				$ari = 0;
-				while (!$rswrk->EOF) {
-					$arwrk = array();
-					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
-					$this->tipoespecial->ViewValue .= $this->tipoespecial->DisplayValue($arwrk);
-					$rswrk->MoveNext();
-					if (!$rswrk->EOF) $this->tipoespecial->ViewValue .= ew_ViewOptionSeparator($ari); // Separate Options
-					$ari++;
-				}
-				$rswrk->MoveFirst();
-			} else {
-				$this->tipoespecial->ViewValue = $Language->Phrase("PleaseSelect");
-			}
 			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
 			if ($rswrk) $rswrk->Close();
 			$this->tipoespecial->EditValue = $arwrk;
@@ -2557,9 +2778,23 @@ class csolicitud_add extends csolicitud {
 			} else {
 				$sFilterWrk = "`login`" . ew_SearchString("=", $this->email_contacto->CurrentValue, EW_DATATYPE_STRING, "");
 			}
-			$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `oficialcredito`";
-			$sWhereWrk = "";
-			$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `oficialcredito`";
+					$sWhereWrk = "";
+					$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `oficialcredito`";
+					$sWhereWrk = "";
+					$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `oficialcredito`";
+					$sWhereWrk = "";
+					$this->email_contacto->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->email_contacto, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2576,19 +2811,23 @@ class csolicitud_add extends csolicitud {
 			if ($rswrk) $rswrk->Close();
 			$this->email_contacto->EditValue = $arwrk;
 
-			// Add refer script
 			// nombre_contacto
-
-			$this->nombre_contacto->LinkCustomAttributes = "";
-			$this->nombre_contacto->HrefValue = "";
-
-			// name
-			$this->name->LinkCustomAttributes = "";
-			$this->name->HrefValue = "";
+			$this->nombre_contacto->EditAttrs["class"] = "form-control";
+			$this->nombre_contacto->EditCustomAttributes = "";
+			$this->nombre_contacto->EditValue = ew_HtmlEncode($this->nombre_contacto->CurrentValue);
+			$this->nombre_contacto->PlaceHolder = ew_RemoveHtml($this->nombre_contacto->FldTitle());
 
 			// lastname
-			$this->lastname->LinkCustomAttributes = "";
-			$this->lastname->HrefValue = "";
+			$this->lastname->EditAttrs["class"] = "form-control";
+			$this->lastname->EditCustomAttributes = "";
+			$this->lastname->EditValue = ew_HtmlEncode($this->lastname->CurrentValue);
+			$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
+
+			// Add refer script
+			// name
+
+			$this->name->LinkCustomAttributes = "";
+			$this->name->HrefValue = "";
 
 			// email
 			$this->_email->LinkCustomAttributes = "";
@@ -2815,6 +3054,14 @@ class csolicitud_add extends csolicitud {
 			// email_contacto
 			$this->email_contacto->LinkCustomAttributes = "";
 			$this->email_contacto->HrefValue = "";
+
+			// nombre_contacto
+			$this->nombre_contacto->LinkCustomAttributes = "";
+			$this->nombre_contacto->HrefValue = "";
+
+			// lastname
+			$this->lastname->LinkCustomAttributes = "";
+			$this->lastname->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -2837,14 +3084,8 @@ class csolicitud_add extends csolicitud {
 		if (!$this->name->FldIsDetailKey && !is_null($this->name->FormValue) && $this->name->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->name->FldCaption(), $this->name->ReqErrMsg));
 		}
-		if (!$this->lastname->FldIsDetailKey && !is_null($this->lastname->FormValue) && $this->lastname->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->lastname->FldCaption(), $this->lastname->ReqErrMsg));
-		}
 		if (!$this->_email->FldIsDetailKey && !is_null($this->_email->FormValue) && $this->_email->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->_email->FldCaption(), $this->_email->ReqErrMsg));
-		}
-		if (!$this->id_sucursal->FldIsDetailKey && !is_null($this->id_sucursal->FormValue) && $this->id_sucursal->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->id_sucursal->FldCaption(), $this->id_sucursal->ReqErrMsg));
 		}
 
 		// Validate detail grid
@@ -2881,14 +3122,8 @@ class csolicitud_add extends csolicitud {
 		}
 		$rsnew = array();
 
-		// nombre_contacto
-		$this->nombre_contacto->SetDbValueDef($rsnew, $this->nombre_contacto->CurrentValue, NULL, FALSE);
-
 		// name
 		$this->name->SetDbValueDef($rsnew, $this->name->CurrentValue, NULL, FALSE);
-
-		// lastname
-		$this->lastname->SetDbValueDef($rsnew, $this->lastname->CurrentValue, NULL, FALSE);
 
 		// email
 		$this->_email->SetDbValueDef($rsnew, $this->_email->CurrentValue, NULL, FALSE);
@@ -3070,6 +3305,12 @@ class csolicitud_add extends csolicitud {
 		// email_contacto
 		$this->email_contacto->SetDbValueDef($rsnew, $this->email_contacto->CurrentValue, NULL, FALSE);
 
+		// nombre_contacto
+		$this->nombre_contacto->SetDbValueDef($rsnew, $this->nombre_contacto->CurrentValue, NULL, FALSE);
+
+		// lastname
+		$this->lastname->SetDbValueDef($rsnew, $this->lastname->CurrentValue, NULL, FALSE);
+
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
 		$bInsertRow = $this->Row_Inserting($rs, $rsnew);
@@ -3227,25 +3468,25 @@ class csolicitud_add extends csolicitud {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
-		case "x_id_sucursal":
-			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`nombre`');
-			$lookuptblfilter = "`id`='".$_SESSION["sucursal"]."'";
-			ew_AddFilter($sWhereWrk, $lookuptblfilter);
-			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
-			$sSqlWrk = "";
-			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			if ($sSqlWrk <> "")
-				$fld->LookupFilters["s"] .= $sSqlWrk;
-			break;
 		case "x_tipoinmueble":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='INMUEBLE'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`nombre` IN ({filter_value})', "t0" => "200", "fn0" => "");
@@ -3257,9 +3498,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_id_ciudad_inmueble":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_ciudad_inmueble, $sWhereWrk); // Call Lookup Selecting
@@ -3269,9 +3524,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_id_provincia_inmueble":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_provincia_inmueble, $sWhereWrk); // Call Lookup Selecting
@@ -3281,9 +3550,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_tipovehiculo":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='VEHICULO'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`nombre` IN ({filter_value})', "t0" => "200", "fn0" => "");
@@ -3295,9 +3578,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_id_ciudad_vehiculo":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_ciudad_vehiculo, $sWhereWrk); // Call Lookup Selecting
@@ -3307,9 +3604,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_id_provincia_vehiculo":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_provincia_vehiculo, $sWhereWrk); // Call Lookup Selecting
@@ -3319,9 +3630,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_tipomaquinaria":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='MAQUINARIA'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`nombre` IN ({filter_value})', "t0" => "200", "fn0" => "");
@@ -3333,9 +3658,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_id_ciudad_maquinaria":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `departamento`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_ciudad_maquinaria, $sWhereWrk); // Call Lookup Selecting
@@ -3345,9 +3684,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_id_provincia_maquinaria":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `provincia`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_provincia_maquinaria, $sWhereWrk); // Call Lookup Selecting
@@ -3357,9 +3710,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_tipomercaderia":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id_tipoinmueble` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id_tipoinmueble` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id_tipoinmueble` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id_tipoinmueble` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='MERCADERIA'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id_tipoinmueble` IN ({filter_value})', "t0" => "3", "fn0" => "");
@@ -3371,9 +3738,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_tipoespecial":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id_tipoinmueble` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id_tipoinmueble` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id_tipoinmueble` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id_tipoinmueble` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
 			$lookuptblfilter = "`tipo`='ESPECIAL'";
 			ew_AddFilter($sWhereWrk, $lookuptblfilter);
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id_tipoinmueble` IN ({filter_value})', "t0" => "3", "fn0" => "");
@@ -3385,9 +3766,23 @@ class csolicitud_add extends csolicitud {
 			break;
 		case "x_email_contacto":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`login` IN ({filter_value})', "t0" => "200", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->email_contacto, $sWhereWrk); // Call Lookup Selecting
@@ -3517,15 +3912,9 @@ fsolicitudadd.Validate = function() {
 			elm = this.GetElements("x" + infix + "_name");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $solicitud->name->FldCaption(), $solicitud->name->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_lastname");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $solicitud->lastname->FldCaption(), $solicitud->lastname->ReqErrMsg)) ?>");
 			elm = this.GetElements("x" + infix + "__email");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $solicitud->_email->FldCaption(), $solicitud->_email->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_id_sucursal");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $solicitud->id_sucursal->FldCaption(), $solicitud->id_sucursal->ReqErrMsg)) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -3558,8 +3947,6 @@ fsolicitudadd.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 fsolicitudadd.MultiPage = new ew_MultiPage("fsolicitudadd");
 
 // Dynamic selection lists
-fsolicitudadd.Lists["x_id_sucursal"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"sucursal"};
-fsolicitudadd.Lists["x_id_sucursal"].Data = "<?php echo $solicitud_add->id_sucursal->LookupFilterQuery(FALSE, "add") ?>";
 fsolicitudadd.Lists["x_tipoinmueble[]"] = {"LinkField":"x_nombre","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
 fsolicitudadd.Lists["x_tipoinmueble[]"].Data = "<?php echo $solicitud_add->tipoinmueble->LookupFilterQuery(FALSE, "add") ?>";
 fsolicitudadd.Lists["x_id_ciudad_inmueble"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"departamento"};
@@ -3622,34 +4009,13 @@ $solicitud_add->ShowMessage();
 <?php } else { ?>
 <table id="tbl_solicitudadd1" class="table table-striped table-bordered table-hover table-condensed ewDesktopTable"><!-- table* -->
 <?php } ?>
-<?php if ($solicitud->nombre_contacto->Visible) { // nombre_contacto ?>
-<?php if ($solicitud_add->IsMobileOrModal) { ?>
-	<div id="r_nombre_contacto" class="form-group">
-		<label id="elh_solicitud_nombre_contacto" for="x_nombre_contacto" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->nombre_contacto->FldCaption() ?></label>
-		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->nombre_contacto->CellAttributes() ?>>
-<span id="el_solicitud_nombre_contacto">
-<input type="text" data-table="solicitud" data-field="x_nombre_contacto" data-page="1" name="x_nombre_contacto" id="x_nombre_contacto" size="30" maxlength="200" placeholder="<?php echo ew_HtmlEncode($solicitud->nombre_contacto->getPlaceHolder()) ?>" value="<?php echo $solicitud->nombre_contacto->EditValue ?>"<?php echo $solicitud->nombre_contacto->EditAttributes() ?>>
-</span>
-<?php echo $solicitud->nombre_contacto->CustomMsg ?></div></div>
-	</div>
-<?php } else { ?>
-	<tr id="r_nombre_contacto">
-		<td class="col-sm-3"><span id="elh_solicitud_nombre_contacto"><?php echo $solicitud->nombre_contacto->FldCaption() ?></span></td>
-		<td<?php echo $solicitud->nombre_contacto->CellAttributes() ?>>
-<span id="el_solicitud_nombre_contacto">
-<input type="text" data-table="solicitud" data-field="x_nombre_contacto" data-page="1" name="x_nombre_contacto" id="x_nombre_contacto" size="30" maxlength="200" placeholder="<?php echo ew_HtmlEncode($solicitud->nombre_contacto->getPlaceHolder()) ?>" value="<?php echo $solicitud->nombre_contacto->EditValue ?>"<?php echo $solicitud->nombre_contacto->EditAttributes() ?>>
-</span>
-<?php echo $solicitud->nombre_contacto->CustomMsg ?></td>
-	</tr>
-<?php } ?>
-<?php } ?>
 <?php if ($solicitud->name->Visible) { // name ?>
 <?php if ($solicitud_add->IsMobileOrModal) { ?>
 	<div id="r_name" class="form-group">
 		<label id="elh_solicitud_name" for="x_name" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->name->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->name->CellAttributes() ?>>
 <span id="el_solicitud_name">
-<input type="text" data-table="solicitud" data-field="x_name" data-page="1" name="x_name" id="x_name" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($solicitud->name->getPlaceHolder()) ?>" value="<?php echo $solicitud->name->EditValue ?>"<?php echo $solicitud->name->EditAttributes() ?>>
+<input type="text" data-table="solicitud" data-field="x_name" data-page="1" name="x_name" id="x_name" size="20" maxlength="50" placeholder="<?php echo ew_HtmlEncode($solicitud->name->getPlaceHolder()) ?>" value="<?php echo $solicitud->name->EditValue ?>"<?php echo $solicitud->name->EditAttributes() ?>>
 </span>
 <?php echo $solicitud->name->CustomMsg ?></div></div>
 	</div>
@@ -3658,30 +4024,9 @@ $solicitud_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_solicitud_name"><?php echo $solicitud->name->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
 		<td<?php echo $solicitud->name->CellAttributes() ?>>
 <span id="el_solicitud_name">
-<input type="text" data-table="solicitud" data-field="x_name" data-page="1" name="x_name" id="x_name" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($solicitud->name->getPlaceHolder()) ?>" value="<?php echo $solicitud->name->EditValue ?>"<?php echo $solicitud->name->EditAttributes() ?>>
+<input type="text" data-table="solicitud" data-field="x_name" data-page="1" name="x_name" id="x_name" size="20" maxlength="50" placeholder="<?php echo ew_HtmlEncode($solicitud->name->getPlaceHolder()) ?>" value="<?php echo $solicitud->name->EditValue ?>"<?php echo $solicitud->name->EditAttributes() ?>>
 </span>
 <?php echo $solicitud->name->CustomMsg ?></td>
-	</tr>
-<?php } ?>
-<?php } ?>
-<?php if ($solicitud->lastname->Visible) { // lastname ?>
-<?php if ($solicitud_add->IsMobileOrModal) { ?>
-	<div id="r_lastname" class="form-group">
-		<label id="elh_solicitud_lastname" for="x_lastname" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->lastname->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
-		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->lastname->CellAttributes() ?>>
-<span id="el_solicitud_lastname">
-<input type="text" data-table="solicitud" data-field="x_lastname" data-page="1" name="x_lastname" id="x_lastname" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($solicitud->lastname->getPlaceHolder()) ?>" value="<?php echo $solicitud->lastname->EditValue ?>"<?php echo $solicitud->lastname->EditAttributes() ?>>
-</span>
-<?php echo $solicitud->lastname->CustomMsg ?></div></div>
-	</div>
-<?php } else { ?>
-	<tr id="r_lastname">
-		<td class="col-sm-3"><span id="elh_solicitud_lastname"><?php echo $solicitud->lastname->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
-		<td<?php echo $solicitud->lastname->CellAttributes() ?>>
-<span id="el_solicitud_lastname">
-<input type="text" data-table="solicitud" data-field="x_lastname" data-page="1" name="x_lastname" id="x_lastname" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($solicitud->lastname->getPlaceHolder()) ?>" value="<?php echo $solicitud->lastname->EditValue ?>"<?php echo $solicitud->lastname->EditAttributes() ?>>
-</span>
-<?php echo $solicitud->lastname->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>
@@ -3733,7 +4078,7 @@ $solicitud_add->ShowMessage();
 		<label id="elh_solicitud_phone" for="x_phone" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->phone->FldCaption() ?></label>
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->phone->CellAttributes() ?>>
 <span id="el_solicitud_phone">
-<input type="text" data-table="solicitud" data-field="x_phone" data-page="1" name="x_phone" id="x_phone" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($solicitud->phone->getPlaceHolder()) ?>" value="<?php echo $solicitud->phone->EditValue ?>"<?php echo $solicitud->phone->EditAttributes() ?>>
+<input type="text" data-table="solicitud" data-field="x_phone" data-page="1" name="x_phone" id="x_phone" size="10" maxlength="255" placeholder="<?php echo ew_HtmlEncode($solicitud->phone->getPlaceHolder()) ?>" value="<?php echo $solicitud->phone->EditValue ?>"<?php echo $solicitud->phone->EditAttributes() ?>>
 </span>
 <?php echo $solicitud->phone->CustomMsg ?></div></div>
 	</div>
@@ -3742,7 +4087,7 @@ $solicitud_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_solicitud_phone"><?php echo $solicitud->phone->FldCaption() ?></span></td>
 		<td<?php echo $solicitud->phone->CellAttributes() ?>>
 <span id="el_solicitud_phone">
-<input type="text" data-table="solicitud" data-field="x_phone" data-page="1" name="x_phone" id="x_phone" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($solicitud->phone->getPlaceHolder()) ?>" value="<?php echo $solicitud->phone->EditValue ?>"<?php echo $solicitud->phone->EditAttributes() ?>>
+<input type="text" data-table="solicitud" data-field="x_phone" data-page="1" name="x_phone" id="x_phone" size="10" maxlength="255" placeholder="<?php echo ew_HtmlEncode($solicitud->phone->getPlaceHolder()) ?>" value="<?php echo $solicitud->phone->EditValue ?>"<?php echo $solicitud->phone->EditAttributes() ?>>
 </span>
 <?php echo $solicitud->phone->CustomMsg ?></td>
 	</tr>
@@ -3754,7 +4099,7 @@ $solicitud_add->ShowMessage();
 		<label id="elh_solicitud_cell" for="x_cell" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->cell->FldCaption() ?></label>
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->cell->CellAttributes() ?>>
 <span id="el_solicitud_cell">
-<input type="text" data-table="solicitud" data-field="x_cell" data-page="1" name="x_cell" id="x_cell" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($solicitud->cell->getPlaceHolder()) ?>" value="<?php echo $solicitud->cell->EditValue ?>"<?php echo $solicitud->cell->EditAttributes() ?>>
+<input type="text" data-table="solicitud" data-field="x_cell" data-page="1" name="x_cell" id="x_cell" size="15" maxlength="255" placeholder="<?php echo ew_HtmlEncode($solicitud->cell->getPlaceHolder()) ?>" value="<?php echo $solicitud->cell->EditValue ?>"<?php echo $solicitud->cell->EditAttributes() ?>>
 </span>
 <?php echo $solicitud->cell->CustomMsg ?></div></div>
 	</div>
@@ -3763,41 +4108,15 @@ $solicitud_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_solicitud_cell"><?php echo $solicitud->cell->FldCaption() ?></span></td>
 		<td<?php echo $solicitud->cell->CellAttributes() ?>>
 <span id="el_solicitud_cell">
-<input type="text" data-table="solicitud" data-field="x_cell" data-page="1" name="x_cell" id="x_cell" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($solicitud->cell->getPlaceHolder()) ?>" value="<?php echo $solicitud->cell->EditValue ?>"<?php echo $solicitud->cell->EditAttributes() ?>>
+<input type="text" data-table="solicitud" data-field="x_cell" data-page="1" name="x_cell" id="x_cell" size="15" maxlength="255" placeholder="<?php echo ew_HtmlEncode($solicitud->cell->getPlaceHolder()) ?>" value="<?php echo $solicitud->cell->EditValue ?>"<?php echo $solicitud->cell->EditAttributes() ?>>
 </span>
 <?php echo $solicitud->cell->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>
-<?php if ($solicitud->id_sucursal->Visible) { // id_sucursal ?>
-<?php if ($solicitud_add->IsMobileOrModal) { ?>
-	<div id="r_id_sucursal" class="form-group">
-		<label id="elh_solicitud_id_sucursal" for="x_id_sucursal" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->id_sucursal->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
-		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->id_sucursal->CellAttributes() ?>>
 <span id="el_solicitud_id_sucursal">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($solicitud->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->id_sucursal->ViewValue); ?></span>
+<input type="hidden" data-table="solicitud" data-field="x_id_sucursal" data-page="1" name="x_id_sucursal" id="x_id_sucursal" value="<?php echo ew_HtmlEncode($solicitud->id_sucursal->CurrentValue) ?>">
 </span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->id_sucursal->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_sucursal',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->id_sucursal->ReadOnly || $solicitud->id_sucursal->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_id_sucursal" data-page="1" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $solicitud->id_sucursal->DisplayValueSeparatorAttribute() ?>" name="x_id_sucursal" id="x_id_sucursal" value="<?php echo $solicitud->id_sucursal->CurrentValue ?>"<?php echo $solicitud->id_sucursal->EditAttributes() ?>>
-</span>
-<?php echo $solicitud->id_sucursal->CustomMsg ?></div></div>
-	</div>
-<?php } else { ?>
-	<tr id="r_id_sucursal">
-		<td class="col-sm-3"><span id="elh_solicitud_id_sucursal"><?php echo $solicitud->id_sucursal->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
-		<td<?php echo $solicitud->id_sucursal->CellAttributes() ?>>
-<span id="el_solicitud_id_sucursal">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($solicitud->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->id_sucursal->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->id_sucursal->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_sucursal',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->id_sucursal->ReadOnly || $solicitud->id_sucursal->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_id_sucursal" data-page="1" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $solicitud->id_sucursal->DisplayValueSeparatorAttribute() ?>" name="x_id_sucursal" id="x_id_sucursal" value="<?php echo $solicitud->id_sucursal->CurrentValue ?>"<?php echo $solicitud->id_sucursal->EditAttributes() ?>>
-</span>
-<?php echo $solicitud->id_sucursal->CustomMsg ?></td>
-	</tr>
-<?php } ?>
-<?php } ?>
 <?php if ($solicitud->email_contacto->Visible) { // email_contacto ?>
 <?php if ($solicitud_add->IsMobileOrModal) { ?>
 	<div id="r_email_contacto" class="form-group">
@@ -3805,7 +4124,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->email_contacto->CellAttributes() ?>>
 <span id="el_solicitud_email_contacto">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_email_contacto"><?php echo (strval($solicitud->email_contacto->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->email_contacto->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_email_contacto"><?php echo (strval($solicitud->email_contacto->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->email_contacto->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->email_contacto->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_email_contacto',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->email_contacto->ReadOnly || $solicitud->email_contacto->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="solicitud" data-field="x_email_contacto" data-page="1" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $solicitud->email_contacto->DisplayValueSeparatorAttribute() ?>" name="x_email_contacto" id="x_email_contacto" value="<?php echo $solicitud->email_contacto->CurrentValue ?>"<?php echo $solicitud->email_contacto->EditAttributes() ?>>
@@ -3818,12 +4137,54 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->email_contacto->CellAttributes() ?>>
 <span id="el_solicitud_email_contacto">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_email_contacto"><?php echo (strval($solicitud->email_contacto->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->email_contacto->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_email_contacto"><?php echo (strval($solicitud->email_contacto->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->email_contacto->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->email_contacto->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_email_contacto',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->email_contacto->ReadOnly || $solicitud->email_contacto->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="solicitud" data-field="x_email_contacto" data-page="1" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $solicitud->email_contacto->DisplayValueSeparatorAttribute() ?>" name="x_email_contacto" id="x_email_contacto" value="<?php echo $solicitud->email_contacto->CurrentValue ?>"<?php echo $solicitud->email_contacto->EditAttributes() ?>>
 </span>
 <?php echo $solicitud->email_contacto->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($solicitud->nombre_contacto->Visible) { // nombre_contacto ?>
+<?php if ($solicitud_add->IsMobileOrModal) { ?>
+	<div id="r_nombre_contacto" class="form-group">
+		<label id="elh_solicitud_nombre_contacto" for="x_nombre_contacto" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->nombre_contacto->FldCaption() ?></label>
+		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->nombre_contacto->CellAttributes() ?>>
+<span id="el_solicitud_nombre_contacto">
+<input type="text" data-table="solicitud" data-field="x_nombre_contacto" data-page="1" name="x_nombre_contacto" id="x_nombre_contacto" size="20" maxlength="200" placeholder="<?php echo ew_HtmlEncode($solicitud->nombre_contacto->getPlaceHolder()) ?>" value="<?php echo $solicitud->nombre_contacto->EditValue ?>"<?php echo $solicitud->nombre_contacto->EditAttributes() ?>>
+</span>
+<?php echo $solicitud->nombre_contacto->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_nombre_contacto">
+		<td class="col-sm-3"><span id="elh_solicitud_nombre_contacto"><?php echo $solicitud->nombre_contacto->FldCaption() ?></span></td>
+		<td<?php echo $solicitud->nombre_contacto->CellAttributes() ?>>
+<span id="el_solicitud_nombre_contacto">
+<input type="text" data-table="solicitud" data-field="x_nombre_contacto" data-page="1" name="x_nombre_contacto" id="x_nombre_contacto" size="20" maxlength="200" placeholder="<?php echo ew_HtmlEncode($solicitud->nombre_contacto->getPlaceHolder()) ?>" value="<?php echo $solicitud->nombre_contacto->EditValue ?>"<?php echo $solicitud->nombre_contacto->EditAttributes() ?>>
+</span>
+<?php echo $solicitud->nombre_contacto->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($solicitud->lastname->Visible) { // lastname ?>
+<?php if ($solicitud_add->IsMobileOrModal) { ?>
+	<div id="r_lastname" class="form-group">
+		<label id="elh_solicitud_lastname" for="x_lastname" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->lastname->FldCaption() ?></label>
+		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->lastname->CellAttributes() ?>>
+<span id="el_solicitud_lastname">
+<input type="text" data-table="solicitud" data-field="x_lastname" data-page="1" name="x_lastname" id="x_lastname" size="20" maxlength="50" placeholder="<?php echo ew_HtmlEncode($solicitud->lastname->getPlaceHolder()) ?>" value="<?php echo $solicitud->lastname->EditValue ?>"<?php echo $solicitud->lastname->EditAttributes() ?>>
+</span>
+<?php echo $solicitud->lastname->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_lastname">
+		<td class="col-sm-3"><span id="elh_solicitud_lastname"><?php echo $solicitud->lastname->FldCaption() ?></span></td>
+		<td<?php echo $solicitud->lastname->CellAttributes() ?>>
+<span id="el_solicitud_lastname">
+<input type="text" data-table="solicitud" data-field="x_lastname" data-page="1" name="x_lastname" id="x_lastname" size="20" maxlength="50" placeholder="<?php echo ew_HtmlEncode($solicitud->lastname->getPlaceHolder()) ?>" value="<?php echo $solicitud->lastname->EditValue ?>"<?php echo $solicitud->lastname->EditAttributes() ?>>
+</span>
+<?php echo $solicitud->lastname->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>
@@ -3845,11 +4206,21 @@ $solicitud_add->ShowMessage();
 		<label id="elh_solicitud_tipoinmueble" for="x_tipoinmueble" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->tipoinmueble->FldCaption() ?></label>
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->tipoinmueble->CellAttributes() ?>>
 <span id="el_solicitud_tipoinmueble">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($solicitud->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipoinmueble->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipoinmueble->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoinmueble[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipoinmueble->ReadOnly || $solicitud->tipoinmueble->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipoinmueble" data-page="2" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipoinmueble->DisplayValueSeparatorAttribute() ?>" name="x_tipoinmueble[]" id="x_tipoinmueble[]" value="<?php echo $solicitud->tipoinmueble->CurrentValue ?>"<?php echo $solicitud->tipoinmueble->EditAttributes() ?>>
+<div class="ewDropdownList has-feedback">
+	<span onclick="" class="form-control dropdown-toggle" aria-expanded="false"<?php if ($solicitud->tipoinmueble->ReadOnly) { ?> readonly<?php } else { ?>data-toggle="dropdown"<?php } ?>>
+		<?php echo $solicitud->tipoinmueble->ViewValue ?>
+	</span>
+	<?php if (!$solicitud->tipoinmueble->ReadOnly) { ?>
+	<span class="glyphicon glyphicon-remove form-control-feedback ewDropdownListClear"></span>
+	<span class="form-control-feedback"><span class="caret"></span></span>
+	<?php } ?>
+	<div id="dsl_x_tipoinmueble" data-repeatcolumn="1" class="dropdown-menu">
+		<div class="ewItems" style="position: relative; overflow-x: hidden;">
+<?php echo $solicitud->tipoinmueble->CheckBoxListHtml(TRUE, "x_tipoinmueble[]", 2) ?>
+		</div>
+	</div>
+	<div id="tp_x_tipoinmueble" class="ewTemplate"><input type="checkbox" data-table="solicitud" data-field="x_tipoinmueble" data-page="2" data-value-separator="<?php echo $solicitud->tipoinmueble->DisplayValueSeparatorAttribute() ?>" name="x_tipoinmueble[]" id="x_tipoinmueble[]" value="{value}"<?php echo $solicitud->tipoinmueble->EditAttributes() ?>></div>
+</div>
 </span>
 <?php echo $solicitud->tipoinmueble->CustomMsg ?></div></div>
 	</div>
@@ -3858,11 +4229,21 @@ $solicitud_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_solicitud_tipoinmueble"><?php echo $solicitud->tipoinmueble->FldCaption() ?></span></td>
 		<td<?php echo $solicitud->tipoinmueble->CellAttributes() ?>>
 <span id="el_solicitud_tipoinmueble">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($solicitud->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipoinmueble->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipoinmueble->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoinmueble[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipoinmueble->ReadOnly || $solicitud->tipoinmueble->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipoinmueble" data-page="2" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipoinmueble->DisplayValueSeparatorAttribute() ?>" name="x_tipoinmueble[]" id="x_tipoinmueble[]" value="<?php echo $solicitud->tipoinmueble->CurrentValue ?>"<?php echo $solicitud->tipoinmueble->EditAttributes() ?>>
+<div class="ewDropdownList has-feedback">
+	<span onclick="" class="form-control dropdown-toggle" aria-expanded="false"<?php if ($solicitud->tipoinmueble->ReadOnly) { ?> readonly<?php } else { ?>data-toggle="dropdown"<?php } ?>>
+		<?php echo $solicitud->tipoinmueble->ViewValue ?>
+	</span>
+	<?php if (!$solicitud->tipoinmueble->ReadOnly) { ?>
+	<span class="glyphicon glyphicon-remove form-control-feedback ewDropdownListClear"></span>
+	<span class="form-control-feedback"><span class="caret"></span></span>
+	<?php } ?>
+	<div id="dsl_x_tipoinmueble" data-repeatcolumn="1" class="dropdown-menu">
+		<div class="ewItems" style="position: relative; overflow-x: hidden;">
+<?php echo $solicitud->tipoinmueble->CheckBoxListHtml(TRUE, "x_tipoinmueble[]", 2) ?>
+		</div>
+	</div>
+	<div id="tp_x_tipoinmueble" class="ewTemplate"><input type="checkbox" data-table="solicitud" data-field="x_tipoinmueble" data-page="2" data-value-separator="<?php echo $solicitud->tipoinmueble->DisplayValueSeparatorAttribute() ?>" name="x_tipoinmueble[]" id="x_tipoinmueble[]" value="{value}"<?php echo $solicitud->tipoinmueble->EditAttributes() ?>></div>
+</div>
 </span>
 <?php echo $solicitud->tipoinmueble->CustomMsg ?></td>
 	</tr>
@@ -3925,7 +4306,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_inmueble02->CellAttributes() ?>>
 <span id="el_solicitud_imagen_inmueble02">
 <div id="fd_x_imagen_inmueble02">
-<span title="<?php echo $solicitud->imagen_inmueble02->FldTitle() ? $solicitud->imagen_inmueble02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble02->ReadOnly || $solicitud->imagen_inmueble02->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_inmueble02->FldTitle() ? $solicitud->imagen_inmueble02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble02->ReadOnly || $solicitud->imagen_inmueble02->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_inmueble02" data-page="2" name="x_imagen_inmueble02" id="x_imagen_inmueble02"<?php echo $solicitud->imagen_inmueble02->EditAttributes() ?>>
 </span>
@@ -3945,7 +4326,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_inmueble02->CellAttributes() ?>>
 <span id="el_solicitud_imagen_inmueble02">
 <div id="fd_x_imagen_inmueble02">
-<span title="<?php echo $solicitud->imagen_inmueble02->FldTitle() ? $solicitud->imagen_inmueble02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble02->ReadOnly || $solicitud->imagen_inmueble02->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_inmueble02->FldTitle() ? $solicitud->imagen_inmueble02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble02->ReadOnly || $solicitud->imagen_inmueble02->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_inmueble02" data-page="2" name="x_imagen_inmueble02" id="x_imagen_inmueble02"<?php echo $solicitud->imagen_inmueble02->EditAttributes() ?>>
 </span>
@@ -3968,7 +4349,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_inmueble03->CellAttributes() ?>>
 <span id="el_solicitud_imagen_inmueble03">
 <div id="fd_x_imagen_inmueble03">
-<span title="<?php echo $solicitud->imagen_inmueble03->FldTitle() ? $solicitud->imagen_inmueble03->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble03->ReadOnly || $solicitud->imagen_inmueble03->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_inmueble03->FldTitle() ? $solicitud->imagen_inmueble03->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble03->ReadOnly || $solicitud->imagen_inmueble03->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_inmueble03" data-page="2" name="x_imagen_inmueble03" id="x_imagen_inmueble03"<?php echo $solicitud->imagen_inmueble03->EditAttributes() ?>>
 </span>
@@ -3988,7 +4369,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_inmueble03->CellAttributes() ?>>
 <span id="el_solicitud_imagen_inmueble03">
 <div id="fd_x_imagen_inmueble03">
-<span title="<?php echo $solicitud->imagen_inmueble03->FldTitle() ? $solicitud->imagen_inmueble03->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble03->ReadOnly || $solicitud->imagen_inmueble03->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_inmueble03->FldTitle() ? $solicitud->imagen_inmueble03->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble03->ReadOnly || $solicitud->imagen_inmueble03->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_inmueble03" data-page="2" name="x_imagen_inmueble03" id="x_imagen_inmueble03"<?php echo $solicitud->imagen_inmueble03->EditAttributes() ?>>
 </span>
@@ -4011,7 +4392,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_inmueble04->CellAttributes() ?>>
 <span id="el_solicitud_imagen_inmueble04">
 <div id="fd_x_imagen_inmueble04">
-<span title="<?php echo $solicitud->imagen_inmueble04->FldTitle() ? $solicitud->imagen_inmueble04->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble04->ReadOnly || $solicitud->imagen_inmueble04->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_inmueble04->FldTitle() ? $solicitud->imagen_inmueble04->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble04->ReadOnly || $solicitud->imagen_inmueble04->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_inmueble04" data-page="2" name="x_imagen_inmueble04" id="x_imagen_inmueble04"<?php echo $solicitud->imagen_inmueble04->EditAttributes() ?>>
 </span>
@@ -4031,7 +4412,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_inmueble04->CellAttributes() ?>>
 <span id="el_solicitud_imagen_inmueble04">
 <div id="fd_x_imagen_inmueble04">
-<span title="<?php echo $solicitud->imagen_inmueble04->FldTitle() ? $solicitud->imagen_inmueble04->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble04->ReadOnly || $solicitud->imagen_inmueble04->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_inmueble04->FldTitle() ? $solicitud->imagen_inmueble04->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble04->ReadOnly || $solicitud->imagen_inmueble04->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_inmueble04" data-page="2" name="x_imagen_inmueble04" id="x_imagen_inmueble04"<?php echo $solicitud->imagen_inmueble04->EditAttributes() ?>>
 </span>
@@ -4054,7 +4435,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_inmueble05->CellAttributes() ?>>
 <span id="el_solicitud_imagen_inmueble05">
 <div id="fd_x_imagen_inmueble05">
-<span title="<?php echo $solicitud->imagen_inmueble05->FldTitle() ? $solicitud->imagen_inmueble05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble05->ReadOnly || $solicitud->imagen_inmueble05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_inmueble05->FldTitle() ? $solicitud->imagen_inmueble05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble05->ReadOnly || $solicitud->imagen_inmueble05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_inmueble05" data-page="2" name="x_imagen_inmueble05" id="x_imagen_inmueble05"<?php echo $solicitud->imagen_inmueble05->EditAttributes() ?>>
 </span>
@@ -4074,7 +4455,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_inmueble05->CellAttributes() ?>>
 <span id="el_solicitud_imagen_inmueble05">
 <div id="fd_x_imagen_inmueble05">
-<span title="<?php echo $solicitud->imagen_inmueble05->FldTitle() ? $solicitud->imagen_inmueble05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble05->ReadOnly || $solicitud->imagen_inmueble05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_inmueble05->FldTitle() ? $solicitud->imagen_inmueble05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_inmueble05->ReadOnly || $solicitud->imagen_inmueble05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_inmueble05" data-page="2" name="x_imagen_inmueble05" id="x_imagen_inmueble05"<?php echo $solicitud->imagen_inmueble05->EditAttributes() ?>>
 </span>
@@ -4108,11 +4489,9 @@ $solicitud_add->ShowMessage();
 		<label id="elh_solicitud_tipovehiculo" for="x_tipovehiculo" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->tipovehiculo->FldCaption() ?></label>
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->tipovehiculo->CellAttributes() ?>>
 <span id="el_solicitud_tipovehiculo">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($solicitud->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipovehiculo->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipovehiculo->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipovehiculo[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipovehiculo->ReadOnly || $solicitud->tipovehiculo->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipovehiculo" data-page="3" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipovehiculo->DisplayValueSeparatorAttribute() ?>" name="x_tipovehiculo[]" id="x_tipovehiculo[]" value="<?php echo $solicitud->tipovehiculo->CurrentValue ?>"<?php echo $solicitud->tipovehiculo->EditAttributes() ?>>
+<select data-table="solicitud" data-field="x_tipovehiculo" data-page="3" data-value-separator="<?php echo $solicitud->tipovehiculo->DisplayValueSeparatorAttribute() ?>" id="x_tipovehiculo[]" name="x_tipovehiculo[]" multiple="multiple"<?php echo $solicitud->tipovehiculo->EditAttributes() ?>>
+<?php echo $solicitud->tipovehiculo->SelectOptionListHtml("x_tipovehiculo[]") ?>
+</select>
 </span>
 <?php echo $solicitud->tipovehiculo->CustomMsg ?></div></div>
 	</div>
@@ -4121,11 +4500,9 @@ $solicitud_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_solicitud_tipovehiculo"><?php echo $solicitud->tipovehiculo->FldCaption() ?></span></td>
 		<td<?php echo $solicitud->tipovehiculo->CellAttributes() ?>>
 <span id="el_solicitud_tipovehiculo">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($solicitud->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipovehiculo->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipovehiculo->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipovehiculo[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipovehiculo->ReadOnly || $solicitud->tipovehiculo->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipovehiculo" data-page="3" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipovehiculo->DisplayValueSeparatorAttribute() ?>" name="x_tipovehiculo[]" id="x_tipovehiculo[]" value="<?php echo $solicitud->tipovehiculo->CurrentValue ?>"<?php echo $solicitud->tipovehiculo->EditAttributes() ?>>
+<select data-table="solicitud" data-field="x_tipovehiculo" data-page="3" data-value-separator="<?php echo $solicitud->tipovehiculo->DisplayValueSeparatorAttribute() ?>" id="x_tipovehiculo[]" name="x_tipovehiculo[]" multiple="multiple"<?php echo $solicitud->tipovehiculo->EditAttributes() ?>>
+<?php echo $solicitud->tipovehiculo->SelectOptionListHtml("x_tipovehiculo[]") ?>
+</select>
 </span>
 <?php echo $solicitud->tipovehiculo->CustomMsg ?></td>
 	</tr>
@@ -4188,7 +4565,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_vehiculo02->CellAttributes() ?>>
 <span id="el_solicitud_imagen_vehiculo02">
 <div id="fd_x_imagen_vehiculo02">
-<span title="<?php echo $solicitud->imagen_vehiculo02->FldTitle() ? $solicitud->imagen_vehiculo02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo02->ReadOnly || $solicitud->imagen_vehiculo02->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_vehiculo02->FldTitle() ? $solicitud->imagen_vehiculo02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo02->ReadOnly || $solicitud->imagen_vehiculo02->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_vehiculo02" data-page="3" name="x_imagen_vehiculo02" id="x_imagen_vehiculo02"<?php echo $solicitud->imagen_vehiculo02->EditAttributes() ?>>
 </span>
@@ -4208,7 +4585,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_vehiculo02->CellAttributes() ?>>
 <span id="el_solicitud_imagen_vehiculo02">
 <div id="fd_x_imagen_vehiculo02">
-<span title="<?php echo $solicitud->imagen_vehiculo02->FldTitle() ? $solicitud->imagen_vehiculo02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo02->ReadOnly || $solicitud->imagen_vehiculo02->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_vehiculo02->FldTitle() ? $solicitud->imagen_vehiculo02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo02->ReadOnly || $solicitud->imagen_vehiculo02->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_vehiculo02" data-page="3" name="x_imagen_vehiculo02" id="x_imagen_vehiculo02"<?php echo $solicitud->imagen_vehiculo02->EditAttributes() ?>>
 </span>
@@ -4231,7 +4608,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_vehiculo05->CellAttributes() ?>>
 <span id="el_solicitud_imagen_vehiculo05">
 <div id="fd_x_imagen_vehiculo05">
-<span title="<?php echo $solicitud->imagen_vehiculo05->FldTitle() ? $solicitud->imagen_vehiculo05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo05->ReadOnly || $solicitud->imagen_vehiculo05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_vehiculo05->FldTitle() ? $solicitud->imagen_vehiculo05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo05->ReadOnly || $solicitud->imagen_vehiculo05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_vehiculo05" data-page="3" name="x_imagen_vehiculo05" id="x_imagen_vehiculo05"<?php echo $solicitud->imagen_vehiculo05->EditAttributes() ?>>
 </span>
@@ -4251,7 +4628,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_vehiculo05->CellAttributes() ?>>
 <span id="el_solicitud_imagen_vehiculo05">
 <div id="fd_x_imagen_vehiculo05">
-<span title="<?php echo $solicitud->imagen_vehiculo05->FldTitle() ? $solicitud->imagen_vehiculo05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo05->ReadOnly || $solicitud->imagen_vehiculo05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_vehiculo05->FldTitle() ? $solicitud->imagen_vehiculo05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo05->ReadOnly || $solicitud->imagen_vehiculo05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_vehiculo05" data-page="3" name="x_imagen_vehiculo05" id="x_imagen_vehiculo05"<?php echo $solicitud->imagen_vehiculo05->EditAttributes() ?>>
 </span>
@@ -4274,7 +4651,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_vehiculo06->CellAttributes() ?>>
 <span id="el_solicitud_imagen_vehiculo06">
 <div id="fd_x_imagen_vehiculo06">
-<span title="<?php echo $solicitud->imagen_vehiculo06->FldTitle() ? $solicitud->imagen_vehiculo06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo06->ReadOnly || $solicitud->imagen_vehiculo06->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_vehiculo06->FldTitle() ? $solicitud->imagen_vehiculo06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo06->ReadOnly || $solicitud->imagen_vehiculo06->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_vehiculo06" data-page="3" name="x_imagen_vehiculo06" id="x_imagen_vehiculo06"<?php echo $solicitud->imagen_vehiculo06->EditAttributes() ?>>
 </span>
@@ -4294,7 +4671,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_vehiculo06->CellAttributes() ?>>
 <span id="el_solicitud_imagen_vehiculo06">
 <div id="fd_x_imagen_vehiculo06">
-<span title="<?php echo $solicitud->imagen_vehiculo06->FldTitle() ? $solicitud->imagen_vehiculo06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo06->ReadOnly || $solicitud->imagen_vehiculo06->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_vehiculo06->FldTitle() ? $solicitud->imagen_vehiculo06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo06->ReadOnly || $solicitud->imagen_vehiculo06->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_vehiculo06" data-page="3" name="x_imagen_vehiculo06" id="x_imagen_vehiculo06"<?php echo $solicitud->imagen_vehiculo06->EditAttributes() ?>>
 </span>
@@ -4317,7 +4694,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_vehiculo07->CellAttributes() ?>>
 <span id="el_solicitud_imagen_vehiculo07">
 <div id="fd_x_imagen_vehiculo07">
-<span title="<?php echo $solicitud->imagen_vehiculo07->FldTitle() ? $solicitud->imagen_vehiculo07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo07->ReadOnly || $solicitud->imagen_vehiculo07->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_vehiculo07->FldTitle() ? $solicitud->imagen_vehiculo07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo07->ReadOnly || $solicitud->imagen_vehiculo07->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_vehiculo07" data-page="3" name="x_imagen_vehiculo07" id="x_imagen_vehiculo07"<?php echo $solicitud->imagen_vehiculo07->EditAttributes() ?>>
 </span>
@@ -4337,7 +4714,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_vehiculo07->CellAttributes() ?>>
 <span id="el_solicitud_imagen_vehiculo07">
 <div id="fd_x_imagen_vehiculo07">
-<span title="<?php echo $solicitud->imagen_vehiculo07->FldTitle() ? $solicitud->imagen_vehiculo07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo07->ReadOnly || $solicitud->imagen_vehiculo07->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_vehiculo07->FldTitle() ? $solicitud->imagen_vehiculo07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_vehiculo07->ReadOnly || $solicitud->imagen_vehiculo07->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_vehiculo07" data-page="3" name="x_imagen_vehiculo07" id="x_imagen_vehiculo07"<?php echo $solicitud->imagen_vehiculo07->EditAttributes() ?>>
 </span>
@@ -4371,11 +4748,9 @@ $solicitud_add->ShowMessage();
 		<label id="elh_solicitud_tipomaquinaria" for="x_tipomaquinaria" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->tipomaquinaria->FldCaption() ?></label>
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->tipomaquinaria->CellAttributes() ?>>
 <span id="el_solicitud_tipomaquinaria">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($solicitud->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipomaquinaria->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipomaquinaria->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomaquinaria[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipomaquinaria->ReadOnly || $solicitud->tipomaquinaria->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipomaquinaria" data-page="4" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipomaquinaria->DisplayValueSeparatorAttribute() ?>" name="x_tipomaquinaria[]" id="x_tipomaquinaria[]" value="<?php echo $solicitud->tipomaquinaria->CurrentValue ?>"<?php echo $solicitud->tipomaquinaria->EditAttributes() ?>>
+<select data-table="solicitud" data-field="x_tipomaquinaria" data-page="4" data-value-separator="<?php echo $solicitud->tipomaquinaria->DisplayValueSeparatorAttribute() ?>" id="x_tipomaquinaria[]" name="x_tipomaquinaria[]" multiple="multiple"<?php echo $solicitud->tipomaquinaria->EditAttributes() ?>>
+<?php echo $solicitud->tipomaquinaria->SelectOptionListHtml("x_tipomaquinaria[]") ?>
+</select>
 </span>
 <?php echo $solicitud->tipomaquinaria->CustomMsg ?></div></div>
 	</div>
@@ -4384,11 +4759,9 @@ $solicitud_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_solicitud_tipomaquinaria"><?php echo $solicitud->tipomaquinaria->FldCaption() ?></span></td>
 		<td<?php echo $solicitud->tipomaquinaria->CellAttributes() ?>>
 <span id="el_solicitud_tipomaquinaria">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($solicitud->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipomaquinaria->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipomaquinaria->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomaquinaria[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipomaquinaria->ReadOnly || $solicitud->tipomaquinaria->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipomaquinaria" data-page="4" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipomaquinaria->DisplayValueSeparatorAttribute() ?>" name="x_tipomaquinaria[]" id="x_tipomaquinaria[]" value="<?php echo $solicitud->tipomaquinaria->CurrentValue ?>"<?php echo $solicitud->tipomaquinaria->EditAttributes() ?>>
+<select data-table="solicitud" data-field="x_tipomaquinaria" data-page="4" data-value-separator="<?php echo $solicitud->tipomaquinaria->DisplayValueSeparatorAttribute() ?>" id="x_tipomaquinaria[]" name="x_tipomaquinaria[]" multiple="multiple"<?php echo $solicitud->tipomaquinaria->EditAttributes() ?>>
+<?php echo $solicitud->tipomaquinaria->SelectOptionListHtml("x_tipomaquinaria[]") ?>
+</select>
 </span>
 <?php echo $solicitud->tipomaquinaria->CustomMsg ?></td>
 	</tr>
@@ -4451,7 +4824,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_maquinaria02->CellAttributes() ?>>
 <span id="el_solicitud_imagen_maquinaria02">
 <div id="fd_x_imagen_maquinaria02">
-<span title="<?php echo $solicitud->imagen_maquinaria02->FldTitle() ? $solicitud->imagen_maquinaria02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria02->ReadOnly || $solicitud->imagen_maquinaria02->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_maquinaria02->FldTitle() ? $solicitud->imagen_maquinaria02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria02->ReadOnly || $solicitud->imagen_maquinaria02->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_maquinaria02" data-page="4" name="x_imagen_maquinaria02" id="x_imagen_maquinaria02"<?php echo $solicitud->imagen_maquinaria02->EditAttributes() ?>>
 </span>
@@ -4471,7 +4844,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_maquinaria02->CellAttributes() ?>>
 <span id="el_solicitud_imagen_maquinaria02">
 <div id="fd_x_imagen_maquinaria02">
-<span title="<?php echo $solicitud->imagen_maquinaria02->FldTitle() ? $solicitud->imagen_maquinaria02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria02->ReadOnly || $solicitud->imagen_maquinaria02->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_maquinaria02->FldTitle() ? $solicitud->imagen_maquinaria02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria02->ReadOnly || $solicitud->imagen_maquinaria02->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_maquinaria02" data-page="4" name="x_imagen_maquinaria02" id="x_imagen_maquinaria02"<?php echo $solicitud->imagen_maquinaria02->EditAttributes() ?>>
 </span>
@@ -4494,7 +4867,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_maquinaria05->CellAttributes() ?>>
 <span id="el_solicitud_imagen_maquinaria05">
 <div id="fd_x_imagen_maquinaria05">
-<span title="<?php echo $solicitud->imagen_maquinaria05->FldTitle() ? $solicitud->imagen_maquinaria05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria05->ReadOnly || $solicitud->imagen_maquinaria05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_maquinaria05->FldTitle() ? $solicitud->imagen_maquinaria05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria05->ReadOnly || $solicitud->imagen_maquinaria05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_maquinaria05" data-page="4" name="x_imagen_maquinaria05" id="x_imagen_maquinaria05"<?php echo $solicitud->imagen_maquinaria05->EditAttributes() ?>>
 </span>
@@ -4514,7 +4887,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_maquinaria05->CellAttributes() ?>>
 <span id="el_solicitud_imagen_maquinaria05">
 <div id="fd_x_imagen_maquinaria05">
-<span title="<?php echo $solicitud->imagen_maquinaria05->FldTitle() ? $solicitud->imagen_maquinaria05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria05->ReadOnly || $solicitud->imagen_maquinaria05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_maquinaria05->FldTitle() ? $solicitud->imagen_maquinaria05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria05->ReadOnly || $solicitud->imagen_maquinaria05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_maquinaria05" data-page="4" name="x_imagen_maquinaria05" id="x_imagen_maquinaria05"<?php echo $solicitud->imagen_maquinaria05->EditAttributes() ?>>
 </span>
@@ -4537,7 +4910,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_maquinaria06->CellAttributes() ?>>
 <span id="el_solicitud_imagen_maquinaria06">
 <div id="fd_x_imagen_maquinaria06">
-<span title="<?php echo $solicitud->imagen_maquinaria06->FldTitle() ? $solicitud->imagen_maquinaria06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria06->ReadOnly || $solicitud->imagen_maquinaria06->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_maquinaria06->FldTitle() ? $solicitud->imagen_maquinaria06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria06->ReadOnly || $solicitud->imagen_maquinaria06->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_maquinaria06" data-page="4" name="x_imagen_maquinaria06" id="x_imagen_maquinaria06"<?php echo $solicitud->imagen_maquinaria06->EditAttributes() ?>>
 </span>
@@ -4557,7 +4930,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_maquinaria06->CellAttributes() ?>>
 <span id="el_solicitud_imagen_maquinaria06">
 <div id="fd_x_imagen_maquinaria06">
-<span title="<?php echo $solicitud->imagen_maquinaria06->FldTitle() ? $solicitud->imagen_maquinaria06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria06->ReadOnly || $solicitud->imagen_maquinaria06->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_maquinaria06->FldTitle() ? $solicitud->imagen_maquinaria06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria06->ReadOnly || $solicitud->imagen_maquinaria06->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_maquinaria06" data-page="4" name="x_imagen_maquinaria06" id="x_imagen_maquinaria06"<?php echo $solicitud->imagen_maquinaria06->EditAttributes() ?>>
 </span>
@@ -4580,7 +4953,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_maquinaria07->CellAttributes() ?>>
 <span id="el_solicitud_imagen_maquinaria07">
 <div id="fd_x_imagen_maquinaria07">
-<span title="<?php echo $solicitud->imagen_maquinaria07->FldTitle() ? $solicitud->imagen_maquinaria07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria07->ReadOnly || $solicitud->imagen_maquinaria07->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_maquinaria07->FldTitle() ? $solicitud->imagen_maquinaria07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria07->ReadOnly || $solicitud->imagen_maquinaria07->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_maquinaria07" data-page="4" name="x_imagen_maquinaria07" id="x_imagen_maquinaria07"<?php echo $solicitud->imagen_maquinaria07->EditAttributes() ?>>
 </span>
@@ -4600,7 +4973,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_maquinaria07->CellAttributes() ?>>
 <span id="el_solicitud_imagen_maquinaria07">
 <div id="fd_x_imagen_maquinaria07">
-<span title="<?php echo $solicitud->imagen_maquinaria07->FldTitle() ? $solicitud->imagen_maquinaria07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria07->ReadOnly || $solicitud->imagen_maquinaria07->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_maquinaria07->FldTitle() ? $solicitud->imagen_maquinaria07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_maquinaria07->ReadOnly || $solicitud->imagen_maquinaria07->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_maquinaria07" data-page="4" name="x_imagen_maquinaria07" id="x_imagen_maquinaria07"<?php echo $solicitud->imagen_maquinaria07->EditAttributes() ?>>
 </span>
@@ -4634,11 +5007,9 @@ $solicitud_add->ShowMessage();
 		<label id="elh_solicitud_tipomercaderia" for="x_tipomercaderia" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->tipomercaderia->FldCaption() ?></label>
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->tipomercaderia->CellAttributes() ?>>
 <span id="el_solicitud_tipomercaderia">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($solicitud->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipomercaderia->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipomercaderia->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomercaderia[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipomercaderia->ReadOnly || $solicitud->tipomercaderia->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipomercaderia" data-page="5" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipomercaderia->DisplayValueSeparatorAttribute() ?>" name="x_tipomercaderia[]" id="x_tipomercaderia[]" value="<?php echo $solicitud->tipomercaderia->CurrentValue ?>"<?php echo $solicitud->tipomercaderia->EditAttributes() ?>>
+<select data-table="solicitud" data-field="x_tipomercaderia" data-page="5" data-value-separator="<?php echo $solicitud->tipomercaderia->DisplayValueSeparatorAttribute() ?>" id="x_tipomercaderia[]" name="x_tipomercaderia[]" multiple="multiple"<?php echo $solicitud->tipomercaderia->EditAttributes() ?>>
+<?php echo $solicitud->tipomercaderia->SelectOptionListHtml("x_tipomercaderia[]") ?>
+</select>
 </span>
 <?php echo $solicitud->tipomercaderia->CustomMsg ?></div></div>
 	</div>
@@ -4647,11 +5018,9 @@ $solicitud_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_solicitud_tipomercaderia"><?php echo $solicitud->tipomercaderia->FldCaption() ?></span></td>
 		<td<?php echo $solicitud->tipomercaderia->CellAttributes() ?>>
 <span id="el_solicitud_tipomercaderia">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($solicitud->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipomercaderia->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipomercaderia->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomercaderia[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipomercaderia->ReadOnly || $solicitud->tipomercaderia->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipomercaderia" data-page="5" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipomercaderia->DisplayValueSeparatorAttribute() ?>" name="x_tipomercaderia[]" id="x_tipomercaderia[]" value="<?php echo $solicitud->tipomercaderia->CurrentValue ?>"<?php echo $solicitud->tipomercaderia->EditAttributes() ?>>
+<select data-table="solicitud" data-field="x_tipomercaderia" data-page="5" data-value-separator="<?php echo $solicitud->tipomercaderia->DisplayValueSeparatorAttribute() ?>" id="x_tipomercaderia[]" name="x_tipomercaderia[]" multiple="multiple"<?php echo $solicitud->tipomercaderia->EditAttributes() ?>>
+<?php echo $solicitud->tipomercaderia->SelectOptionListHtml("x_tipomercaderia[]") ?>
+</select>
 </span>
 <?php echo $solicitud->tipomercaderia->CustomMsg ?></td>
 	</tr>
@@ -4664,7 +5033,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_mercaderia01->CellAttributes() ?>>
 <span id="el_solicitud_imagen_mercaderia01">
 <div id="fd_x_imagen_mercaderia01">
-<span title="<?php echo $solicitud->imagen_mercaderia01->FldTitle() ? $solicitud->imagen_mercaderia01->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_mercaderia01->ReadOnly || $solicitud->imagen_mercaderia01->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_mercaderia01->FldTitle() ? $solicitud->imagen_mercaderia01->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_mercaderia01->ReadOnly || $solicitud->imagen_mercaderia01->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_mercaderia01" data-page="5" name="x_imagen_mercaderia01" id="x_imagen_mercaderia01"<?php echo $solicitud->imagen_mercaderia01->EditAttributes() ?>>
 </span>
@@ -4684,7 +5053,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_mercaderia01->CellAttributes() ?>>
 <span id="el_solicitud_imagen_mercaderia01">
 <div id="fd_x_imagen_mercaderia01">
-<span title="<?php echo $solicitud->imagen_mercaderia01->FldTitle() ? $solicitud->imagen_mercaderia01->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_mercaderia01->ReadOnly || $solicitud->imagen_mercaderia01->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_mercaderia01->FldTitle() ? $solicitud->imagen_mercaderia01->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_mercaderia01->ReadOnly || $solicitud->imagen_mercaderia01->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_mercaderia01" data-page="5" name="x_imagen_mercaderia01" id="x_imagen_mercaderia01"<?php echo $solicitud->imagen_mercaderia01->EditAttributes() ?>>
 </span>
@@ -4739,11 +5108,9 @@ $solicitud_add->ShowMessage();
 		<label id="elh_solicitud_tipoespecial" for="x_tipoespecial" class="<?php echo $solicitud_add->LeftColumnClass ?>"><?php echo $solicitud->tipoespecial->FldCaption() ?></label>
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->tipoespecial->CellAttributes() ?>>
 <span id="el_solicitud_tipoespecial">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($solicitud->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipoespecial->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipoespecial->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoespecial[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipoespecial->ReadOnly || $solicitud->tipoespecial->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipoespecial" data-page="6" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipoespecial->DisplayValueSeparatorAttribute() ?>" name="x_tipoespecial[]" id="x_tipoespecial[]" value="<?php echo $solicitud->tipoespecial->CurrentValue ?>"<?php echo $solicitud->tipoespecial->EditAttributes() ?>>
+<select data-table="solicitud" data-field="x_tipoespecial" data-page="6" data-value-separator="<?php echo $solicitud->tipoespecial->DisplayValueSeparatorAttribute() ?>" id="x_tipoespecial[]" name="x_tipoespecial[]" multiple="multiple"<?php echo $solicitud->tipoespecial->EditAttributes() ?>>
+<?php echo $solicitud->tipoespecial->SelectOptionListHtml("x_tipoespecial[]") ?>
+</select>
 </span>
 <?php echo $solicitud->tipoespecial->CustomMsg ?></div></div>
 	</div>
@@ -4752,11 +5119,9 @@ $solicitud_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_solicitud_tipoespecial"><?php echo $solicitud->tipoespecial->FldCaption() ?></span></td>
 		<td<?php echo $solicitud->tipoespecial->CellAttributes() ?>>
 <span id="el_solicitud_tipoespecial">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($solicitud->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $solicitud->tipoespecial->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($solicitud->tipoespecial->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoespecial[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($solicitud->tipoespecial->ReadOnly || $solicitud->tipoespecial->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="solicitud" data-field="x_tipoespecial" data-page="6" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $solicitud->tipoespecial->DisplayValueSeparatorAttribute() ?>" name="x_tipoespecial[]" id="x_tipoespecial[]" value="<?php echo $solicitud->tipoespecial->CurrentValue ?>"<?php echo $solicitud->tipoespecial->EditAttributes() ?>>
+<select data-table="solicitud" data-field="x_tipoespecial" data-page="6" data-value-separator="<?php echo $solicitud->tipoespecial->DisplayValueSeparatorAttribute() ?>" id="x_tipoespecial[]" name="x_tipoespecial[]" multiple="multiple"<?php echo $solicitud->tipoespecial->EditAttributes() ?>>
+<?php echo $solicitud->tipoespecial->SelectOptionListHtml("x_tipoespecial[]") ?>
+</select>
 </span>
 <?php echo $solicitud->tipoespecial->CustomMsg ?></td>
 	</tr>
@@ -4769,7 +5134,7 @@ $solicitud_add->ShowMessage();
 		<div class="<?php echo $solicitud_add->RightColumnClass ?>"><div<?php echo $solicitud->imagen_tipoespecial01->CellAttributes() ?>>
 <span id="el_solicitud_imagen_tipoespecial01">
 <div id="fd_x_imagen_tipoespecial01">
-<span title="<?php echo $solicitud->imagen_tipoespecial01->FldTitle() ? $solicitud->imagen_tipoespecial01->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_tipoespecial01->ReadOnly || $solicitud->imagen_tipoespecial01->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_tipoespecial01->FldTitle() ? $solicitud->imagen_tipoespecial01->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_tipoespecial01->ReadOnly || $solicitud->imagen_tipoespecial01->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_tipoespecial01" data-page="6" name="x_imagen_tipoespecial01" id="x_imagen_tipoespecial01"<?php echo $solicitud->imagen_tipoespecial01->EditAttributes() ?>>
 </span>
@@ -4789,7 +5154,7 @@ $solicitud_add->ShowMessage();
 		<td<?php echo $solicitud->imagen_tipoespecial01->CellAttributes() ?>>
 <span id="el_solicitud_imagen_tipoespecial01">
 <div id="fd_x_imagen_tipoespecial01">
-<span title="<?php echo $solicitud->imagen_tipoespecial01->FldTitle() ? $solicitud->imagen_tipoespecial01->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_tipoespecial01->ReadOnly || $solicitud->imagen_tipoespecial01->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $solicitud->imagen_tipoespecial01->FldTitle() ? $solicitud->imagen_tipoespecial01->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($solicitud->imagen_tipoespecial01->ReadOnly || $solicitud->imagen_tipoespecial01->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="solicitud" data-field="x_imagen_tipoespecial01" data-page="6" name="x_imagen_tipoespecial01" id="x_imagen_tipoespecial01"<?php echo $solicitud->imagen_tipoespecial01->EditAttributes() ?>>
 </span>

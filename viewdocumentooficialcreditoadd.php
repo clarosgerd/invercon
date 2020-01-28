@@ -1448,7 +1448,7 @@ $viewdocumentooficialcredito_add->ShowMessage();
 		<div class="<?php echo $viewdocumentooficialcredito_add->RightColumnClass ?>"><div<?php echo $viewdocumentooficialcredito->imagen->CellAttributes() ?>>
 <span id="el_viewdocumentooficialcredito_imagen">
 <div id="fd_x_imagen">
-<span title="<?php echo $viewdocumentooficialcredito->imagen->FldTitle() ? $viewdocumentooficialcredito->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentooficialcredito->imagen->ReadOnly || $viewdocumentooficialcredito->imagen->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewdocumentooficialcredito->imagen->FldTitle() ? $viewdocumentooficialcredito->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentooficialcredito->imagen->ReadOnly || $viewdocumentooficialcredito->imagen->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewdocumentooficialcredito" data-field="x_imagen" name="x_imagen" id="x_imagen"<?php echo $viewdocumentooficialcredito->imagen->EditAttributes() ?>>
 </span>
@@ -1468,7 +1468,7 @@ $viewdocumentooficialcredito_add->ShowMessage();
 		<td<?php echo $viewdocumentooficialcredito->imagen->CellAttributes() ?>>
 <span id="el_viewdocumentooficialcredito_imagen">
 <div id="fd_x_imagen">
-<span title="<?php echo $viewdocumentooficialcredito->imagen->FldTitle() ? $viewdocumentooficialcredito->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentooficialcredito->imagen->ReadOnly || $viewdocumentooficialcredito->imagen->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewdocumentooficialcredito->imagen->FldTitle() ? $viewdocumentooficialcredito->imagen->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewdocumentooficialcredito->imagen->ReadOnly || $viewdocumentooficialcredito->imagen->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewdocumentooficialcredito" data-field="x_imagen" name="x_imagen" id="x_imagen"<?php echo $viewdocumentooficialcredito->imagen->EditAttributes() ?>>
 </span>
@@ -1532,7 +1532,7 @@ $viewdocumentooficialcredito_add->ShowMessage();
 		<div class="<?php echo $viewdocumentooficialcredito_add->RightColumnClass ?>"><div<?php echo $viewdocumentooficialcredito->id_tipodocumento->CellAttributes() ?>>
 <span id="el_viewdocumentooficialcredito_id_tipodocumento">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_tipodocumento"><?php echo (strval($viewdocumentooficialcredito->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentooficialcredito->id_tipodocumento->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_tipodocumento"><?php echo (strval($viewdocumentooficialcredito->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentooficialcredito->id_tipodocumento->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewdocumentooficialcredito->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewdocumentooficialcredito->id_tipodocumento->ReadOnly || $viewdocumentooficialcredito->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewdocumentooficialcredito" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewdocumentooficialcredito->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x_id_tipodocumento" id="x_id_tipodocumento" value="<?php echo $viewdocumentooficialcredito->id_tipodocumento->CurrentValue ?>"<?php echo $viewdocumentooficialcredito->id_tipodocumento->EditAttributes() ?>>
@@ -1548,7 +1548,7 @@ $viewdocumentooficialcredito_add->ShowMessage();
 		<td<?php echo $viewdocumentooficialcredito->id_tipodocumento->CellAttributes() ?>>
 <span id="el_viewdocumentooficialcredito_id_tipodocumento">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_tipodocumento"><?php echo (strval($viewdocumentooficialcredito->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentooficialcredito->id_tipodocumento->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_tipodocumento"><?php echo (strval($viewdocumentooficialcredito->id_tipodocumento->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewdocumentooficialcredito->id_tipodocumento->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewdocumentooficialcredito->id_tipodocumento->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_tipodocumento',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewdocumentooficialcredito->id_tipodocumento->ReadOnly || $viewdocumentooficialcredito->id_tipodocumento->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewdocumentooficialcredito" data-field="x_id_tipodocumento" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewdocumentooficialcredito->id_tipodocumento->DisplayValueSeparatorAttribute() ?>" name="x_id_tipodocumento" id="x_id_tipodocumento" value="<?php echo $viewdocumentooficialcredito->id_tipodocumento->CurrentValue ?>"<?php echo $viewdocumentooficialcredito->id_tipodocumento->EditAttributes() ?>>

@@ -533,7 +533,7 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowCnt);
 <?php if ($viewavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $viewavaluo_grid->RowCnt ?>_viewavaluo_estado" class="form-group viewavaluo_estado">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewavaluo_grid->RowIndex ?>_estado"><?php echo (strval($viewavaluo->estado->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewavaluo->estado->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewavaluo_grid->RowIndex ?>_estado"><?php echo (strval($viewavaluo->estado->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewavaluo->estado->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewavaluo->estado->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $viewavaluo_grid->RowIndex ?>_estado',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewavaluo->estado->ReadOnly || $viewavaluo->estado->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewavaluo" data-field="x_estado" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewavaluo->estado->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" value="<?php echo $viewavaluo->estado->CurrentValue ?>"<?php echo $viewavaluo->estado->EditAttributes() ?>>
@@ -627,7 +627,7 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowCnt);
 <?php if ($viewavaluo_grid->RowAction == "insert") { // Add record ?>
 <span id="el$rowindex$_viewavaluo_informe" class="form-group viewavaluo_informe">
 <div id="fd_x<?php echo $viewavaluo_grid->RowIndex ?>_informe">
-<span title="<?php echo $viewavaluo->informe->FldTitle() ? $viewavaluo->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluo->informe->ReadOnly || $viewavaluo->informe->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewavaluo->informe->FldTitle() ? $viewavaluo->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluo->informe->ReadOnly || $viewavaluo->informe->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewavaluo" data-field="x_informe" name="x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id="x<?php echo $viewavaluo_grid->RowIndex ?>_informe"<?php echo $viewavaluo->informe->EditAttributes() ?>>
 </span>
@@ -793,7 +793,7 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowIndex
 <?php if ($viewavaluo->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_viewavaluo_estado" class="form-group viewavaluo_estado">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewavaluo_grid->RowIndex ?>_estado"><?php echo (strval($viewavaluo->estado->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewavaluo->estado->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x<?php echo $viewavaluo_grid->RowIndex ?>_estado"><?php echo (strval($viewavaluo->estado->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewavaluo->estado->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewavaluo->estado->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $viewavaluo_grid->RowIndex ?>_estado',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewavaluo->estado->ReadOnly || $viewavaluo->estado->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewavaluo" data-field="x_estado" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewavaluo->estado->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" id="x<?php echo $viewavaluo_grid->RowIndex ?>_estado" value="<?php echo $viewavaluo->estado->CurrentValue ?>"<?php echo $viewavaluo->estado->EditAttributes() ?>>
@@ -846,7 +846,7 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowIndex
 		<td data-name="informe">
 <span id="el$rowindex$_viewavaluo_informe" class="form-group viewavaluo_informe">
 <div id="fd_x<?php echo $viewavaluo_grid->RowIndex ?>_informe">
-<span title="<?php echo $viewavaluo->informe->FldTitle() ? $viewavaluo->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluo->informe->ReadOnly || $viewavaluo->informe->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewavaluo->informe->FldTitle() ? $viewavaluo->informe->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewavaluo->informe->ReadOnly || $viewavaluo->informe->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewavaluo" data-field="x_informe" name="x<?php echo $viewavaluo_grid->RowIndex ?>_informe" id="x<?php echo $viewavaluo_grid->RowIndex ?>_informe"<?php echo $viewavaluo->informe->EditAttributes() ?>>
 </span>
@@ -864,7 +864,7 @@ $viewavaluo_grid->ListOptions->Render("body", "left", $viewavaluo_grid->RowIndex
 <?php
 
 // Render list options (body, right)
-$viewavaluo_grid->ListOptions->Render("body", "right", $viewavaluo_grid->RowIndex);
+$viewavaluo_grid->ListOptions->Render("body", "right", $viewavaluo_grid->RowCnt);
 ?>
 <script type="text/javascript">
 fviewavaluogrid.UpdateOpts(<?php echo $viewavaluo_grid->RowIndex ?>);

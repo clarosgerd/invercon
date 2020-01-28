@@ -349,6 +349,7 @@ Page_Rendering();
 //echo $_GET['id'];
 //echo $_GET['type'];
 //$_GET['case']case=of
+/*
 if (isset($_GET['id']) || isset($_GET['type']) || isset($_GET['case'])) { /// all
 
 if ($_GET['case']=="sec") ////if of
@@ -467,7 +468,7 @@ if ($_GET['type']=="validar")
 		//echo $sData; // display it
 
 		$all_mensaje_result->Close();
-		/** @var TYPE_NAME $this */
+
 		$core_php->setSuccessMessage($sData);
 		//ew_SendEmail()
 
@@ -598,8 +599,6 @@ if ($_GET['type']=="email")
 		//echo $sData; // display it
 
 		$all_mensaje_result->Close();
-		/** @var TYPE_NAME $this */
-
 		$assunto = "Actualizacion de Documentos";
 		$texto = $sData;
 
@@ -753,7 +752,6 @@ if ($_GET['type']=="notify")
 		//echo $sData; // display it
 
 		$all_mensaje_result->Close();
-		/** @var TYPE_NAME $this */
 
 		$assunto = "Actualizacion de Documentos";
 		$texto = $sData;
@@ -926,7 +924,6 @@ if ($_GET['type']=="validar")
 		//echo $sData; // display it
 
 		$all_mensaje_result->Close();
-		/** @var TYPE_NAME $this */
 		$core_php->setSuccessMessage($sData);
 		//ew_SendEmail()
 
@@ -1056,8 +1053,6 @@ if ($_GET['type']=="email")
 		//echo $sData; // display it
 
 		$all_mensaje_result->Close();
-		/** @var TYPE_NAME $this */
-
 		$assunto = "Documentos Faltantes";
 		$texto = $sData;
 
@@ -1209,7 +1204,6 @@ if ($_GET['type']=="notify")
 		//echo $sData; // display it
 
 		$all_mensaje_result->Close();
-		/** @var TYPE_NAME $this */
 
 		$assunto = "Documentos Faltantes";
 		$texto = $sData;
@@ -1269,6 +1263,106 @@ if ($_GET['type']=="smslearn")
 	header('Location:viewsolicitudlist.php');
 	exit;
 }
+*/
+if (isset($_GET['id']) || isset($_GET['type']) || isset($_GET['case'])) { /// all
+if ($_GET['case']=="sec")
+{
+
+
+switch ($_GET['type']) {
+
+
+	case "emailof":
+		$core_php->setSuccessMessage("email enviado");
+	header('Location:viewavaluosclist.php');
+	exit;
+	break;
+	case "pagado":
+		$core_php->setSuccessMessage("SMS enviado");
+	header('Location:viewavaluosclist.php');
+	exit;
+	break;
+
+	case "email":
+	
+			$Sql="SELECT solicitud.email FROM solicitud  INNER JOIN avaluo ON solicitud.id = avaluo.id_solicitud";
+	$TheQuery=$Sql." WHERE id = '" . ew_AdjustSql($_GET['id']) . "'";
+	$email = ew_ExecuteScalar($TheQuery);
+	
+
+		if (isset($email))
+		{
+		$Email = new cEmail;
+		$Email->Sender="tester@communitysoft.org";
+		$Email->AddRecipient($email);
+		$Email->AddCc($email_contacto);
+		$Email->Subject = $assunto;
+		$Email->Content = $sData;
+		$Email->Recipient = $email_envio;
+		$bEmailSent = $Email->Send();
+		$core_php->setSuccessMessage("Correo enviado");
+		}
+		else{
+			$core_php->setFailureMessage("Correo no enviado");
+		}
+
+	$core_php->setSuccessMessage("Email enviado");
+	header('Location:viewavaluosclist.php');
+	exit;
+	break;
+	case "whataspp":
+	$core_php->setSuccessMessage("WhatsApp enviado");
+	header('Location:viewavaluosclist.php');
+	exit;
+	break;
+	case "whatasppapi":
+	$Sql="SELECT solicitud.cell FROM solicitud  INNER JOIN avaluo ON solicitud.id = avaluo.id_solicitud";
+	$TheQuery=$Sql." WHERE id = '" . ew_AdjustSql($_GET['id']) . "'";
+	$celular = ew_ExecuteScalar($TheQuery);
+	
+// https://eu84.chat-api.com/instance89383/ and token fa83g4xkqmnl36lf
+	$apiURL = 'https://eu84.chat-api.com/instance89383/';
+	$token = 'fa83g4xkqmnl36lf';
+
+	$message = "Su avaluo fue terminado pase por la oficina para cancelar el costo ";
+	$phone = $celular;
+	$data = json_encode(
+	array(
+		'chatId'=>$phone.'@c.us',
+		'body'=>$message
+	)
+	);
+	$url = $apiURL.'message?token='.$token;
+	$options = stream_context_create(
+	array('http' =>
+		array(
+			'method'  => 'POST',
+			'header'  => 'Content-type: application/json',
+			'content' => $data
+		)
+		)
+		);
+	$response = file_get_contents($url,false,$options);
+	$core_php->setSuccessMessage("WHATAPP enviado");
+	header('Location:viewavaluosclist.php');
+	exit;
+		break;
+	case "sms":
+	   $Sql="SELECT solicitud.cell FROM solicitud  INNER JOIN avaluo ON solicitud.id = avaluo.id_solicitud";
+		$TheQuery=$Sql." WHERE avaluo.id = '" . ew_AdjustSql($_GET['id']) . "'";
+		$celular = ew_ExecuteScalar($TheQuery);
+		
+		$sms_msg= ew_Execute("insert into sms_data (celular,mensaje) values ('".$celular."','Su avaluo fue terminado pase por la oficina para cancelar el costo')");
+		
+		$core_php->setSuccessMessage("SMS enviado");
+	header('Location:viewavaluosclist.php');
+	exit;
+		break;
+}
+}
+//echo $response; exit;
+}
+
 ?>
 <?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
 <?php include_once "footer.php" ?>

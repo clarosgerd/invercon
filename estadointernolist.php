@@ -453,6 +453,8 @@ class cestadointerno_list extends cestadointerno {
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
 		$this->descripcion->SetVisibility();
+		$this->owner->SetVisibility();
+		$this->time->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -811,6 +813,8 @@ class cestadointerno_list extends cestadointerno {
 			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "festadointernolistsrch");
 		$sFilterList = ew_Concat($sFilterList, $this->id->AdvancedSearch->ToJson(), ","); // Field id
 		$sFilterList = ew_Concat($sFilterList, $this->descripcion->AdvancedSearch->ToJson(), ","); // Field descripcion
+		$sFilterList = ew_Concat($sFilterList, $this->owner->AdvancedSearch->ToJson(), ","); // Field owner
+		$sFilterList = ew_Concat($sFilterList, $this->time->AdvancedSearch->ToJson(), ","); // Field time
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -870,6 +874,22 @@ class cestadointerno_list extends cestadointerno {
 		$this->descripcion->AdvancedSearch->SearchValue2 = @$filter["y_descripcion"];
 		$this->descripcion->AdvancedSearch->SearchOperator2 = @$filter["w_descripcion"];
 		$this->descripcion->AdvancedSearch->Save();
+
+		// Field owner
+		$this->owner->AdvancedSearch->SearchValue = @$filter["x_owner"];
+		$this->owner->AdvancedSearch->SearchOperator = @$filter["z_owner"];
+		$this->owner->AdvancedSearch->SearchCondition = @$filter["v_owner"];
+		$this->owner->AdvancedSearch->SearchValue2 = @$filter["y_owner"];
+		$this->owner->AdvancedSearch->SearchOperator2 = @$filter["w_owner"];
+		$this->owner->AdvancedSearch->Save();
+
+		// Field time
+		$this->time->AdvancedSearch->SearchValue = @$filter["x_time"];
+		$this->time->AdvancedSearch->SearchOperator = @$filter["z_time"];
+		$this->time->AdvancedSearch->SearchCondition = @$filter["v_time"];
+		$this->time->AdvancedSearch->SearchValue2 = @$filter["y_time"];
+		$this->time->AdvancedSearch->SearchOperator2 = @$filter["w_time"];
+		$this->time->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -878,6 +898,7 @@ class cestadointerno_list extends cestadointerno {
 	function BasicSearchSQL($arKeywords, $type) {
 		$sWhere = "";
 		$this->BuildBasicSearchSQL($sWhere, $this->descripcion, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->owner, $arKeywords, $type);
 		return $sWhere;
 	}
 
@@ -1026,6 +1047,8 @@ class cestadointerno_list extends cestadointerno {
 			$this->CurrentOrderType = @$_GET["ordertype"];
 			$this->UpdateSort($this->id); // id
 			$this->UpdateSort($this->descripcion); // descripcion
+			$this->UpdateSort($this->owner); // owner
+			$this->UpdateSort($this->time); // time
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1060,6 +1083,8 @@ class cestadointerno_list extends cestadointerno {
 				$this->setSessionOrderBy($sOrderBy);
 				$this->id->setSort("");
 				$this->descripcion->setSort("");
+				$this->owner->setSort("");
+				$this->time->setSort("");
 			}
 
 			// Reset start position
@@ -1109,7 +1134,7 @@ class cestadointerno_list extends cestadointerno {
 
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
-		$this->ListOptions->UseDropDownButton = TRUE;
+		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
 		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
@@ -1488,6 +1513,8 @@ class cestadointerno_list extends cestadointerno {
 			return;
 		$this->id->setDbValue($row['id']);
 		$this->descripcion->setDbValue($row['descripcion']);
+		$this->owner->setDbValue($row['owner']);
+		$this->time->setDbValue($row['time']);
 	}
 
 	// Return a row with default values
@@ -1495,6 +1522,8 @@ class cestadointerno_list extends cestadointerno {
 		$row = array();
 		$row['id'] = NULL;
 		$row['descripcion'] = NULL;
+		$row['owner'] = NULL;
+		$row['time'] = NULL;
 		return $row;
 	}
 
@@ -1505,6 +1534,8 @@ class cestadointerno_list extends cestadointerno {
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
 		$this->descripcion->DbValue = $row['descripcion'];
+		$this->owner->DbValue = $row['owner'];
+		$this->time->DbValue = $row['time'];
 	}
 
 	// Load old record
@@ -1547,6 +1578,8 @@ class cestadointerno_list extends cestadointerno {
 		// Common render codes for all row types
 		// id
 		// descripcion
+		// owner
+		// time
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -1558,6 +1591,47 @@ class cestadointerno_list extends cestadointerno {
 		$this->descripcion->ViewValue = $this->descripcion->CurrentValue;
 		$this->descripcion->ViewCustomAttributes = "";
 
+		// owner
+		if (strval($this->owner->CurrentValue) <> "") {
+			$sFilterWrk = "`userlevelname`" . ew_SearchString("=", $this->owner->CurrentValue, EW_DATATYPE_STRING, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->owner, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->owner->ViewValue = $this->owner->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->owner->ViewValue = $this->owner->CurrentValue;
+			}
+		} else {
+			$this->owner->ViewValue = NULL;
+		}
+		$this->owner->ViewCustomAttributes = "";
+
+		// time
+		$this->time->ViewValue = $this->time->CurrentValue;
+		$this->time->ViewCustomAttributes = "";
+
 			// id
 			$this->id->LinkCustomAttributes = "";
 			$this->id->HrefValue = "";
@@ -1567,6 +1641,16 @@ class cestadointerno_list extends cestadointerno {
 			$this->descripcion->LinkCustomAttributes = "";
 			$this->descripcion->HrefValue = "";
 			$this->descripcion->TooltipValue = "";
+
+			// owner
+			$this->owner->LinkCustomAttributes = "";
+			$this->owner->HrefValue = "";
+			$this->owner->TooltipValue = "";
+
+			// time
+			$this->time->LinkCustomAttributes = "";
+			$this->time->HrefValue = "";
+			$this->time->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -2032,8 +2116,10 @@ festadointernolist.Form_CustomValidate =
 festadointernolist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+festadointernolist.Lists["x_owner"] = {"LinkField":"x_userlevelname","Ajax":true,"AutoFill":false,"DisplayFields":["x_userlevelname","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"userlevels"};
+festadointernolist.Lists["x_owner"].Data = "<?php echo $estadointerno_list->owner->LookupFilterQuery(FALSE, "list") ?>";
 
+// Form object for search
 var CurrentSearchForm = festadointernolistsrch = new ew_Form("festadointernolistsrch");
 </script>
 <script type="text/javascript">
@@ -2157,6 +2243,24 @@ $estadointerno_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($estadointerno->owner->Visible) { // owner ?>
+	<?php if ($estadointerno->SortUrl($estadointerno->owner) == "") { ?>
+		<th data-name="owner" class="<?php echo $estadointerno->owner->HeaderCellClass() ?>"><div id="elh_estadointerno_owner" class="estadointerno_owner"><div class="ewTableHeaderCaption"><?php echo $estadointerno->owner->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="owner" class="<?php echo $estadointerno->owner->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $estadointerno->SortUrl($estadointerno->owner) ?>',1);"><div id="elh_estadointerno_owner" class="estadointerno_owner">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $estadointerno->owner->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($estadointerno->owner->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($estadointerno->owner->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($estadointerno->time->Visible) { // time ?>
+	<?php if ($estadointerno->SortUrl($estadointerno->time) == "") { ?>
+		<th data-name="time" class="<?php echo $estadointerno->time->HeaderCellClass() ?>"><div id="elh_estadointerno_time" class="estadointerno_time"><div class="ewTableHeaderCaption"><?php echo $estadointerno->time->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="time" class="<?php echo $estadointerno->time->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $estadointerno->SortUrl($estadointerno->time) ?>',1);"><div id="elh_estadointerno_time" class="estadointerno_time">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $estadointerno->time->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($estadointerno->time->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($estadointerno->time->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php
 
 // Render list options (header, right)
@@ -2235,6 +2339,22 @@ $estadointerno_list->ListOptions->Render("body", "left", $estadointerno_list->Ro
 <span id="el<?php echo $estadointerno_list->RowCnt ?>_estadointerno_descripcion" class="estadointerno_descripcion">
 <span<?php echo $estadointerno->descripcion->ViewAttributes() ?>>
 <?php echo $estadointerno->descripcion->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($estadointerno->owner->Visible) { // owner ?>
+		<td data-name="owner"<?php echo $estadointerno->owner->CellAttributes() ?>>
+<span id="el<?php echo $estadointerno_list->RowCnt ?>_estadointerno_owner" class="estadointerno_owner">
+<span<?php echo $estadointerno->owner->ViewAttributes() ?>>
+<?php echo $estadointerno->owner->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($estadointerno->time->Visible) { // time ?>
+		<td data-name="time"<?php echo $estadointerno->time->CellAttributes() ?>>
+<span id="el<?php echo $estadointerno_list->RowCnt ?>_estadointerno_time" class="estadointerno_time">
+<span<?php echo $estadointerno->time->ViewAttributes() ?>>
+<?php echo $estadointerno->time->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>

@@ -42,15 +42,9 @@ fcomentariosavaluogrid.Validate = function() {
 		var checkrow = (gridinsert) ? !this.EmptyRow(infix) : true;
 		if (checkrow) {
 			addcnt++;
-			elm = this.GetElements("x" + infix + "_id_avaluo");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($comentariosavaluo->id_avaluo->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
+			elm = this.GetElements("x" + infix + "_descripcion");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $comentariosavaluo->created_at->FldCaption(), $comentariosavaluo->created_at->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($comentariosavaluo->created_at->FldErrMsg()) ?>");
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $comentariosavaluo->descripcion->FldCaption(), $comentariosavaluo->descripcion->ReqErrMsg)) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -63,8 +57,8 @@ fcomentariosavaluogrid.Validate = function() {
 // Check empty row
 fcomentariosavaluogrid.EmptyRow = function(infix) {
 	var fobj = this.Form;
-	if (ew_ValueChanged(fobj, infix, "id_avaluo", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "created_at", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "usuario", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "descripcion", false)) return false;
 	return true;
 }
 
@@ -80,8 +74,10 @@ fcomentariosavaluogrid.Form_CustomValidate =
 fcomentariosavaluogrid.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+fcomentariosavaluogrid.Lists["x_usuario"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_codigo","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"usuario"};
+fcomentariosavaluogrid.Lists["x_usuario"].Data = "<?php echo $comentariosavaluo_grid->usuario->LookupFilterQuery(FALSE, "grid") ?>";
 
+// Form object for search
 </script>
 <?php } ?>
 <?php
@@ -161,21 +157,21 @@ $comentariosavaluo_grid->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($comentariosavaluo->id_avaluo->Visible) { // id_avaluo ?>
-	<?php if ($comentariosavaluo->SortUrl($comentariosavaluo->id_avaluo) == "") { ?>
-		<th data-name="id_avaluo" class="<?php echo $comentariosavaluo->id_avaluo->HeaderCellClass() ?>"><div id="elh_comentariosavaluo_id_avaluo" class="comentariosavaluo_id_avaluo"><div class="ewTableHeaderCaption"><?php echo $comentariosavaluo->id_avaluo->FldCaption() ?></div></div></th>
+<?php if ($comentariosavaluo->usuario->Visible) { // usuario ?>
+	<?php if ($comentariosavaluo->SortUrl($comentariosavaluo->usuario) == "") { ?>
+		<th data-name="usuario" class="<?php echo $comentariosavaluo->usuario->HeaderCellClass() ?>"><div id="elh_comentariosavaluo_usuario" class="comentariosavaluo_usuario"><div class="ewTableHeaderCaption"><?php echo $comentariosavaluo->usuario->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_avaluo" class="<?php echo $comentariosavaluo->id_avaluo->HeaderCellClass() ?>"><div><div id="elh_comentariosavaluo_id_avaluo" class="comentariosavaluo_id_avaluo">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $comentariosavaluo->id_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($comentariosavaluo->id_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($comentariosavaluo->id_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="usuario" class="<?php echo $comentariosavaluo->usuario->HeaderCellClass() ?>"><div><div id="elh_comentariosavaluo_usuario" class="comentariosavaluo_usuario">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $comentariosavaluo->usuario->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($comentariosavaluo->usuario->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($comentariosavaluo->usuario->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($comentariosavaluo->created_at->Visible) { // created_at ?>
-	<?php if ($comentariosavaluo->SortUrl($comentariosavaluo->created_at) == "") { ?>
-		<th data-name="created_at" class="<?php echo $comentariosavaluo->created_at->HeaderCellClass() ?>"><div id="elh_comentariosavaluo_created_at" class="comentariosavaluo_created_at"><div class="ewTableHeaderCaption"><?php echo $comentariosavaluo->created_at->FldCaption() ?></div></div></th>
+<?php if ($comentariosavaluo->descripcion->Visible) { // descripcion ?>
+	<?php if ($comentariosavaluo->SortUrl($comentariosavaluo->descripcion) == "") { ?>
+		<th data-name="descripcion" class="<?php echo $comentariosavaluo->descripcion->HeaderCellClass() ?>"><div id="elh_comentariosavaluo_descripcion" class="comentariosavaluo_descripcion"><div class="ewTableHeaderCaption"><?php echo $comentariosavaluo->descripcion->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="created_at" class="<?php echo $comentariosavaluo->created_at->HeaderCellClass() ?>"><div><div id="elh_comentariosavaluo_created_at" class="comentariosavaluo_created_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $comentariosavaluo->created_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($comentariosavaluo->created_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($comentariosavaluo->created_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="descripcion" class="<?php echo $comentariosavaluo->descripcion->HeaderCellClass() ?>"><div><div id="elh_comentariosavaluo_descripcion" class="comentariosavaluo_descripcion">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $comentariosavaluo->descripcion->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($comentariosavaluo->descripcion->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($comentariosavaluo->descripcion->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -315,74 +311,62 @@ $comentariosavaluo_grid->ListOptions->Render("body", "left", $comentariosavaluo_
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($comentariosavaluo->id_avaluo->Visible) { // id_avaluo ?>
-		<td data-name="id_avaluo"<?php echo $comentariosavaluo->id_avaluo->CellAttributes() ?>>
+	<?php if ($comentariosavaluo->usuario->Visible) { // usuario ?>
+		<td data-name="usuario"<?php echo $comentariosavaluo->usuario->CellAttributes() ?>>
 <?php if ($comentariosavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<?php if ($comentariosavaluo->id_avaluo->getSessionValue() <> "") { ?>
-<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_id_avaluo" class="form-group comentariosavaluo_id_avaluo">
-<span<?php echo $comentariosavaluo->id_avaluo->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $comentariosavaluo->id_avaluo->ViewValue ?></p></span>
+<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_usuario" class="form-group comentariosavaluo_usuario">
+<select data-table="comentariosavaluo" data-field="x_usuario" data-value-separator="<?php echo $comentariosavaluo->usuario->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario"<?php echo $comentariosavaluo->usuario->EditAttributes() ?>>
+<?php echo $comentariosavaluo->usuario->SelectOptionListHtml("x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario") ?>
+</select>
 </span>
-<input type="hidden" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->CurrentValue) ?>">
-<?php } else { ?>
-<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_id_avaluo" class="form-group comentariosavaluo_id_avaluo">
-<input type="text" data-table="comentariosavaluo" data-field="x_id_avaluo" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" size="30" placeholder="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->getPlaceHolder()) ?>" value="<?php echo $comentariosavaluo->id_avaluo->EditValue ?>"<?php echo $comentariosavaluo->id_avaluo->EditAttributes() ?>>
-</span>
-<?php } ?>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_id_avaluo" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->OldValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_usuario" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" value="<?php echo ew_HtmlEncode($comentariosavaluo->usuario->OldValue) ?>">
 <?php } ?>
 <?php if ($comentariosavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<?php if ($comentariosavaluo->id_avaluo->getSessionValue() <> "") { ?>
-<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_id_avaluo" class="form-group comentariosavaluo_id_avaluo">
-<span<?php echo $comentariosavaluo->id_avaluo->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $comentariosavaluo->id_avaluo->ViewValue ?></p></span>
+<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_usuario" class="form-group comentariosavaluo_usuario">
+<select data-table="comentariosavaluo" data-field="x_usuario" data-value-separator="<?php echo $comentariosavaluo->usuario->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario"<?php echo $comentariosavaluo->usuario->EditAttributes() ?>>
+<?php echo $comentariosavaluo->usuario->SelectOptionListHtml("x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario") ?>
+</select>
 </span>
-<input type="hidden" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->CurrentValue) ?>">
-<?php } else { ?>
-<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_id_avaluo" class="form-group comentariosavaluo_id_avaluo">
-<input type="text" data-table="comentariosavaluo" data-field="x_id_avaluo" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" size="30" placeholder="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->getPlaceHolder()) ?>" value="<?php echo $comentariosavaluo->id_avaluo->EditValue ?>"<?php echo $comentariosavaluo->id_avaluo->EditAttributes() ?>>
-</span>
-<?php } ?>
 <?php } ?>
 <?php if ($comentariosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_id_avaluo" class="comentariosavaluo_id_avaluo">
-<span<?php echo $comentariosavaluo->id_avaluo->ViewAttributes() ?>>
-<?php echo $comentariosavaluo->id_avaluo->ListViewValue() ?></span>
+<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_usuario" class="comentariosavaluo_usuario">
+<span<?php echo $comentariosavaluo->usuario->ViewAttributes() ?>>
+<?php echo $comentariosavaluo->usuario->ListViewValue() ?></span>
 </span>
 <?php if ($comentariosavaluo->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_id_avaluo" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->FormValue) ?>">
-<input type="hidden" data-table="comentariosavaluo" data-field="x_id_avaluo" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->OldValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_usuario" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" value="<?php echo ew_HtmlEncode($comentariosavaluo->usuario->FormValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_usuario" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" value="<?php echo ew_HtmlEncode($comentariosavaluo->usuario->OldValue) ?>">
 <?php } else { ?>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_id_avaluo" name="fcomentariosavaluogrid$x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="fcomentariosavaluogrid$x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->FormValue) ?>">
-<input type="hidden" data-table="comentariosavaluo" data-field="x_id_avaluo" name="fcomentariosavaluogrid$o<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="fcomentariosavaluogrid$o<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->OldValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_usuario" name="fcomentariosavaluogrid$x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" id="fcomentariosavaluogrid$x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" value="<?php echo ew_HtmlEncode($comentariosavaluo->usuario->FormValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_usuario" name="fcomentariosavaluogrid$o<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" id="fcomentariosavaluogrid$o<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" value="<?php echo ew_HtmlEncode($comentariosavaluo->usuario->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($comentariosavaluo->created_at->Visible) { // created_at ?>
-		<td data-name="created_at"<?php echo $comentariosavaluo->created_at->CellAttributes() ?>>
+	<?php if ($comentariosavaluo->descripcion->Visible) { // descripcion ?>
+		<td data-name="descripcion"<?php echo $comentariosavaluo->descripcion->CellAttributes() ?>>
 <?php if ($comentariosavaluo->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_created_at" class="form-group comentariosavaluo_created_at">
-<input type="text" data-table="comentariosavaluo" data-field="x_created_at" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->getPlaceHolder()) ?>" value="<?php echo $comentariosavaluo->created_at->EditValue ?>"<?php echo $comentariosavaluo->created_at->EditAttributes() ?>>
+<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_descripcion" class="form-group comentariosavaluo_descripcion">
+<textarea data-table="comentariosavaluo" data-field="x_descripcion" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->getPlaceHolder()) ?>"<?php echo $comentariosavaluo->descripcion->EditAttributes() ?>><?php echo $comentariosavaluo->descripcion->EditValue ?></textarea>
 </span>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_created_at" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->OldValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_descripcion" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" value="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->OldValue) ?>">
 <?php } ?>
 <?php if ($comentariosavaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_created_at" class="form-group comentariosavaluo_created_at">
-<input type="text" data-table="comentariosavaluo" data-field="x_created_at" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->getPlaceHolder()) ?>" value="<?php echo $comentariosavaluo->created_at->EditValue ?>"<?php echo $comentariosavaluo->created_at->EditAttributes() ?>>
+<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_descripcion" class="form-group comentariosavaluo_descripcion">
+<textarea data-table="comentariosavaluo" data-field="x_descripcion" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->getPlaceHolder()) ?>"<?php echo $comentariosavaluo->descripcion->EditAttributes() ?>><?php echo $comentariosavaluo->descripcion->EditValue ?></textarea>
 </span>
 <?php } ?>
 <?php if ($comentariosavaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_created_at" class="comentariosavaluo_created_at">
-<span<?php echo $comentariosavaluo->created_at->ViewAttributes() ?>>
-<?php echo $comentariosavaluo->created_at->ListViewValue() ?></span>
+<span id="el<?php echo $comentariosavaluo_grid->RowCnt ?>_comentariosavaluo_descripcion" class="comentariosavaluo_descripcion">
+<span<?php echo $comentariosavaluo->descripcion->ViewAttributes() ?>>
+<?php echo $comentariosavaluo->descripcion->ListViewValue() ?></span>
 </span>
 <?php if ($comentariosavaluo->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_created_at" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->FormValue) ?>">
-<input type="hidden" data-table="comentariosavaluo" data-field="x_created_at" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->OldValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_descripcion" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" value="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->FormValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_descripcion" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" value="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->OldValue) ?>">
 <?php } else { ?>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_created_at" name="fcomentariosavaluogrid$x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="fcomentariosavaluogrid$x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->FormValue) ?>">
-<input type="hidden" data-table="comentariosavaluo" data-field="x_created_at" name="fcomentariosavaluogrid$o<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="fcomentariosavaluogrid$o<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->OldValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_descripcion" name="fcomentariosavaluogrid$x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="fcomentariosavaluogrid$x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" value="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->FormValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_descripcion" name="fcomentariosavaluogrid$o<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="fcomentariosavaluogrid$o<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" value="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>
@@ -442,50 +426,44 @@ $comentariosavaluo_grid->ListOptions->Render("body", "left", $comentariosavaluo_
 <input type="hidden" data-table="comentariosavaluo" data-field="x_id" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_id" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($comentariosavaluo->id->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($comentariosavaluo->id_avaluo->Visible) { // id_avaluo ?>
-		<td data-name="id_avaluo">
+	<?php if ($comentariosavaluo->usuario->Visible) { // usuario ?>
+		<td data-name="usuario">
 <?php if ($comentariosavaluo->CurrentAction <> "F") { ?>
-<?php if ($comentariosavaluo->id_avaluo->getSessionValue() <> "") { ?>
-<span id="el$rowindex$_comentariosavaluo_id_avaluo" class="form-group comentariosavaluo_id_avaluo">
-<span<?php echo $comentariosavaluo->id_avaluo->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $comentariosavaluo->id_avaluo->ViewValue ?></p></span>
+<span id="el$rowindex$_comentariosavaluo_usuario" class="form-group comentariosavaluo_usuario">
+<select data-table="comentariosavaluo" data-field="x_usuario" data-value-separator="<?php echo $comentariosavaluo->usuario->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario"<?php echo $comentariosavaluo->usuario->EditAttributes() ?>>
+<?php echo $comentariosavaluo->usuario->SelectOptionListHtml("x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario") ?>
+</select>
 </span>
-<input type="hidden" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->CurrentValue) ?>">
 <?php } else { ?>
-<span id="el$rowindex$_comentariosavaluo_id_avaluo" class="form-group comentariosavaluo_id_avaluo">
-<input type="text" data-table="comentariosavaluo" data-field="x_id_avaluo" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" size="30" placeholder="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->getPlaceHolder()) ?>" value="<?php echo $comentariosavaluo->id_avaluo->EditValue ?>"<?php echo $comentariosavaluo->id_avaluo->EditAttributes() ?>>
+<span id="el$rowindex$_comentariosavaluo_usuario" class="form-group comentariosavaluo_usuario">
+<span<?php echo $comentariosavaluo->usuario->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $comentariosavaluo->usuario->ViewValue ?></p></span>
 </span>
+<input type="hidden" data-table="comentariosavaluo" data-field="x_usuario" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" value="<?php echo ew_HtmlEncode($comentariosavaluo->usuario->FormValue) ?>">
 <?php } ?>
-<?php } else { ?>
-<span id="el$rowindex$_comentariosavaluo_id_avaluo" class="form-group comentariosavaluo_id_avaluo">
-<span<?php echo $comentariosavaluo->id_avaluo->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $comentariosavaluo->id_avaluo->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_id_avaluo" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_id_avaluo" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_id_avaluo" value="<?php echo ew_HtmlEncode($comentariosavaluo->id_avaluo->OldValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_usuario" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_usuario" value="<?php echo ew_HtmlEncode($comentariosavaluo->usuario->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($comentariosavaluo->created_at->Visible) { // created_at ?>
-		<td data-name="created_at">
+	<?php if ($comentariosavaluo->descripcion->Visible) { // descripcion ?>
+		<td data-name="descripcion">
 <?php if ($comentariosavaluo->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_comentariosavaluo_created_at" class="form-group comentariosavaluo_created_at">
-<input type="text" data-table="comentariosavaluo" data-field="x_created_at" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->getPlaceHolder()) ?>" value="<?php echo $comentariosavaluo->created_at->EditValue ?>"<?php echo $comentariosavaluo->created_at->EditAttributes() ?>>
+<span id="el$rowindex$_comentariosavaluo_descripcion" class="form-group comentariosavaluo_descripcion">
+<textarea data-table="comentariosavaluo" data-field="x_descripcion" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->getPlaceHolder()) ?>"<?php echo $comentariosavaluo->descripcion->EditAttributes() ?>><?php echo $comentariosavaluo->descripcion->EditValue ?></textarea>
 </span>
 <?php } else { ?>
-<span id="el$rowindex$_comentariosavaluo_created_at" class="form-group comentariosavaluo_created_at">
-<span<?php echo $comentariosavaluo->created_at->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $comentariosavaluo->created_at->ViewValue ?></p></span>
+<span id="el$rowindex$_comentariosavaluo_descripcion" class="form-group comentariosavaluo_descripcion">
+<span<?php echo $comentariosavaluo->descripcion->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $comentariosavaluo->descripcion->ViewValue ?></p></span>
 </span>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_created_at" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->FormValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_descripcion" name="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="x<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" value="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->FormValue) ?>">
 <?php } ?>
-<input type="hidden" data-table="comentariosavaluo" data-field="x_created_at" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($comentariosavaluo->created_at->OldValue) ?>">
+<input type="hidden" data-table="comentariosavaluo" data-field="x_descripcion" name="o<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" id="o<?php echo $comentariosavaluo_grid->RowIndex ?>_descripcion" value="<?php echo ew_HtmlEncode($comentariosavaluo->descripcion->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php
 
 // Render list options (body, right)
-$comentariosavaluo_grid->ListOptions->Render("body", "right", $comentariosavaluo_grid->RowIndex);
+$comentariosavaluo_grid->ListOptions->Render("body", "right", $comentariosavaluo_grid->RowCnt);
 ?>
 <script type="text/javascript">
 fcomentariosavaluogrid.UpdateOpts(<?php echo $comentariosavaluo_grid->RowIndex ?>);

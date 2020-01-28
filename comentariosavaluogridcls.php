@@ -352,8 +352,8 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		$this->id->SetVisibility();
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
-		$this->id_avaluo->SetVisibility();
-		$this->created_at->SetVisibility();
+		$this->usuario->SetVisibility();
+		$this->descripcion->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -493,6 +493,9 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		$this->Command = strtolower(@$_GET["cmd"]);
 		if ($this->IsPageRequest()) { // Validate request
 
+			// Set up records per page
+			$this->SetupDisplayRecs();
+
 			// Handle reset command
 			$this->ResetCmd();
 
@@ -575,6 +578,27 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 				if ($this->Recordset = $this->LoadRecordset())
 					$this->TotalRecs = $this->Recordset->RecordCount();
 			}
+		}
+	}
+
+	// Set up number of records displayed per page
+	function SetupDisplayRecs() {
+		$sWrk = @$_GET[EW_TABLE_REC_PER_PAGE];
+		if ($sWrk <> "") {
+			if (is_numeric($sWrk)) {
+				$this->DisplayRecs = intval($sWrk);
+			} else {
+				if (strtolower($sWrk) == "all") { // Display all records
+					$this->DisplayRecs = -1;
+				} else {
+					$this->DisplayRecs = 20; // Non-numeric, load default
+				}
+			}
+			$this->setRecordsPerPage($this->DisplayRecs); // Save to Session
+
+			// Reset start position
+			$this->StartRec = 1;
+			$this->setStartRecordNumber($this->StartRec);
 		}
 	}
 
@@ -819,9 +843,9 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 	// Check if empty row
 	function EmptyRow() {
 		global $objForm;
-		if ($objForm->HasValue("x_id_avaluo") && $objForm->HasValue("o_id_avaluo") && $this->id_avaluo->CurrentValue <> $this->id_avaluo->OldValue)
+		if ($objForm->HasValue("x_usuario") && $objForm->HasValue("o_usuario") && $this->usuario->CurrentValue <> $this->usuario->OldValue)
 			return FALSE;
-		if ($objForm->HasValue("x_created_at") && $objForm->HasValue("o_created_at") && $this->created_at->CurrentValue <> $this->created_at->OldValue)
+		if ($objForm->HasValue("x_descripcion") && $objForm->HasValue("o_descripcion") && $this->descripcion->CurrentValue <> $this->descripcion->OldValue)
 			return FALSE;
 		return TRUE;
 	}
@@ -953,31 +977,19 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		if ($this->AllowAddDeleteRow) {
 			$item = &$this->ListOptions->Add("griddelete");
 			$item->CssClass = "text-nowrap";
-			$item->OnLeft = TRUE;
+			$item->OnLeft = FALSE;
 			$item->Visible = FALSE; // Default hidden
 		}
 
 		// Add group option item
 		$item = &$this->ListOptions->Add($this->ListOptions->GroupOptionName);
 		$item->Body = "";
-		$item->OnLeft = TRUE;
+		$item->OnLeft = FALSE;
 		$item->Visible = FALSE;
-
-		// "edit"
-		$item = &$this->ListOptions->Add("edit");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->CanEdit();
-		$item->OnLeft = TRUE;
-
-		// "delete"
-		$item = &$this->ListOptions->Add("delete");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->CanDelete();
-		$item->OnLeft = TRUE;
 
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
-		$this->ListOptions->UseDropDownButton = TRUE;
+		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
 		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
@@ -1020,7 +1032,7 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 				$option->UseButtonGroup = TRUE; // Use button group for grid delete button
 				$option->UseImageAndText = TRUE; // Use image and text for grid delete button
 				$oListOpt = &$option->Items["griddelete"];
-				if (!$Security->CanDelete() && is_numeric($this->RowIndex) && ($this->RowAction == "" || $this->RowAction == "edit")) { // Do not allow delete existing record
+				if (is_numeric($this->RowIndex) && ($this->RowAction == "" || $this->RowAction == "edit")) { // Do not allow delete existing record
 					$oListOpt->Body = "&nbsp;";
 				} else {
 					$oListOpt->Body = "<a class=\"ewGridLink ewGridDelete\" title=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" onclick=\"return ew_DeleteGridRow(this, " . $this->RowIndex . ");\">" . $Language->Phrase("DeleteLink") . "</a>";
@@ -1028,22 +1040,6 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 			}
 		}
 		if ($this->CurrentMode == "view") { // View mode
-
-		// "edit"
-		$oListOpt = &$this->ListOptions->Items["edit"];
-		$editcaption = ew_HtmlTitle($Language->Phrase("EditLink"));
-		if ($Security->CanEdit()) {
-			$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
-		} else {
-			$oListOpt->Body = "";
-		}
-
-		// "delete"
-		$oListOpt = &$this->ListOptions->Items["delete"];
-		if ($Security->CanDelete())
-			$oListOpt->Body = "<a class=\"ewRowLink ewDelete\"" . "" . " title=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" href=\"" . ew_HtmlEncode($this->DeleteUrl) . "\">" . $Language->Phrase("DeleteLink") . "</a>";
-		else
-			$oListOpt->Body = "";
 		} // End View mode
 		if ($this->CurrentMode == "edit" && is_numeric($this->RowIndex)) {
 			$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $KeyName . "\" id=\"" . $KeyName . "\" value=\"" . $this->id->CurrentValue . "\">";
@@ -1069,18 +1065,6 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		$item = &$option->Add($option->GroupOptionName);
 		$item->Body = "";
 		$item->Visible = FALSE;
-
-		// Add
-		if ($this->CurrentMode == "view") { // Check view mode
-			$item = &$option->Add("add");
-			$addcaption = ew_HtmlTitle($Language->Phrase("AddLink"));
-			$this->AddUrl = $this->GetAddUrl();
-			if (ew_IsMobile())
-				$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . ew_HtmlEncode($this->AddUrl) . "\">" . $Language->Phrase("AddLink") . "</a>";
-			else
-				$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-table=\"comentariosavaluo\" data-caption=\"" . $addcaption . "\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'AddBtn',url:'" . ew_HtmlEncode($this->AddUrl) . "'});\">" . $Language->Phrase("AddLink") . "</a>";
-			$item->Visible = ($this->AddUrl <> "" && $Security->CanAdd());
-		}
 	}
 
 	// Render other options
@@ -1094,7 +1078,7 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 				$option->UseImageAndText = TRUE;
 				$item = &$option->Add("addblankrow");
 				$item->Body = "<a class=\"ewAddEdit ewAddBlankRow\" title=\"" . ew_HtmlTitle($Language->Phrase("AddBlankRow")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("AddBlankRow")) . "\" href=\"javascript:void(0);\" onclick=\"ew_AddGridRow(this);\">" . $Language->Phrase("AddBlankRow") . "</a>";
-				$item->Visible = $Security->CanAdd();
+				$item->Visible = FALSE;
 				$this->ShowOtherOptions = $item->Visible;
 			}
 		}
@@ -1156,6 +1140,8 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 	function LoadDefaultValues() {
 		$this->id->CurrentValue = NULL;
 		$this->id->OldValue = $this->id->CurrentValue;
+		$this->usuario->CurrentValue = NULL;
+		$this->usuario->OldValue = $this->usuario->CurrentValue;
 		$this->descripcion->CurrentValue = NULL;
 		$this->descripcion->OldValue = $this->descripcion->CurrentValue;
 		$this->id_avaluo->CurrentValue = NULL;
@@ -1172,15 +1158,14 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		$objForm->FormName = $this->FormName;
 		if (!$this->id->FldIsDetailKey && $this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
 			$this->id->setFormValue($objForm->GetValue("x_id"));
-		if (!$this->id_avaluo->FldIsDetailKey) {
-			$this->id_avaluo->setFormValue($objForm->GetValue("x_id_avaluo"));
+		if (!$this->usuario->FldIsDetailKey) {
+			$this->usuario->setFormValue($objForm->GetValue("x_usuario"));
 		}
-		$this->id_avaluo->setOldValue($objForm->GetValue("o_id_avaluo"));
-		if (!$this->created_at->FldIsDetailKey) {
-			$this->created_at->setFormValue($objForm->GetValue("x_created_at"));
-			$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
+		$this->usuario->setOldValue($objForm->GetValue("o_usuario"));
+		if (!$this->descripcion->FldIsDetailKey) {
+			$this->descripcion->setFormValue($objForm->GetValue("x_descripcion"));
 		}
-		$this->created_at->setOldValue($objForm->GetValue("o_created_at"));
+		$this->descripcion->setOldValue($objForm->GetValue("o_descripcion"));
 	}
 
 	// Restore form values
@@ -1188,9 +1173,8 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		global $objForm;
 		if ($this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
 			$this->id->CurrentValue = $this->id->FormValue;
-		$this->id_avaluo->CurrentValue = $this->id_avaluo->FormValue;
-		$this->created_at->CurrentValue = $this->created_at->FormValue;
-		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
+		$this->usuario->CurrentValue = $this->usuario->FormValue;
+		$this->descripcion->CurrentValue = $this->descripcion->FormValue;
 	}
 
 	// Load recordset
@@ -1253,6 +1237,7 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		if (!$rs || $rs->EOF)
 			return;
 		$this->id->setDbValue($row['id']);
+		$this->usuario->setDbValue($row['usuario']);
 		$this->descripcion->setDbValue($row['descripcion']);
 		$this->id_avaluo->setDbValue($row['id_avaluo']);
 		$this->created_at->setDbValue($row['created_at']);
@@ -1263,6 +1248,7 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		$this->LoadDefaultValues();
 		$row = array();
 		$row['id'] = $this->id->CurrentValue;
+		$row['usuario'] = $this->usuario->CurrentValue;
 		$row['descripcion'] = $this->descripcion->CurrentValue;
 		$row['id_avaluo'] = $this->id_avaluo->CurrentValue;
 		$row['created_at'] = $this->created_at->CurrentValue;
@@ -1275,6 +1261,7 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 			return;
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
+		$this->usuario->DbValue = $row['usuario'];
 		$this->descripcion->DbValue = $row['descripcion'];
 		$this->id_avaluo->DbValue = $row['id_avaluo'];
 		$this->created_at->DbValue = $row['created_at'];
@@ -1323,6 +1310,7 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 
 		// Common render codes for all row types
 		// id
+		// usuario
 		// descripcion
 		// id_avaluo
 		// created_at
@@ -1333,8 +1321,82 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
+		// usuario
+		if (strval($this->usuario->CurrentValue) <> "") {
+			$sFilterWrk = "`login`" . ew_SearchString("=", $this->usuario->CurrentValue, EW_DATATYPE_STRING, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+				$sWhereWrk = "";
+				$this->usuario->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+				$sWhereWrk = "";
+				$this->usuario->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+				$sWhereWrk = "";
+				$this->usuario->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->usuario->ViewValue = $this->usuario->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->usuario->ViewValue = $this->usuario->CurrentValue;
+			}
+		} else {
+			$this->usuario->ViewValue = NULL;
+		}
+		$this->usuario->ViewCustomAttributes = "";
+
+		// descripcion
+		$this->descripcion->ViewValue = $this->descripcion->CurrentValue;
+		$this->descripcion->ViewCustomAttributes = "";
+
 		// id_avaluo
-		$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+		if (strval($this->id_avaluo->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->id_avaluo->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_avaluo, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0);
+				$this->id_avaluo->ViewValue = $this->id_avaluo->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
+			}
+		} else {
+			$this->id_avaluo->ViewValue = NULL;
+		}
 		$this->id_avaluo->ViewCustomAttributes = "";
 
 		// created_at
@@ -1347,37 +1409,58 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 			$this->id->HrefValue = "";
 			$this->id->TooltipValue = "";
 
-			// id_avaluo
-			$this->id_avaluo->LinkCustomAttributes = "";
-			$this->id_avaluo->HrefValue = "";
-			$this->id_avaluo->TooltipValue = "";
+			// usuario
+			$this->usuario->LinkCustomAttributes = "";
+			$this->usuario->HrefValue = "";
+			$this->usuario->TooltipValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
+			// descripcion
+			$this->descripcion->LinkCustomAttributes = "";
+			$this->descripcion->HrefValue = "";
+			$this->descripcion->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// id
-			// id_avaluo
+			// usuario
 
-			$this->id_avaluo->EditAttrs["class"] = "form-control";
-			$this->id_avaluo->EditCustomAttributes = "";
-			if ($this->id_avaluo->getSessionValue() <> "") {
-				$this->id_avaluo->CurrentValue = $this->id_avaluo->getSessionValue();
-				$this->id_avaluo->OldValue = $this->id_avaluo->CurrentValue;
-			$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
-			$this->id_avaluo->ViewCustomAttributes = "";
+			$this->usuario->EditAttrs["class"] = "form-control";
+			$this->usuario->EditCustomAttributes = "";
+			if (trim(strval($this->usuario->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
 			} else {
-			$this->id_avaluo->EditValue = ew_HtmlEncode($this->id_avaluo->CurrentValue);
-			$this->id_avaluo->PlaceHolder = ew_RemoveHtml($this->id_avaluo->FldTitle());
+				$sFilterWrk = "`login`" . ew_SearchString("=", $this->usuario->CurrentValue, EW_DATATYPE_STRING, "");
 			}
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
+					$sWhereWrk = "";
+					$this->usuario->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
+					$sWhereWrk = "";
+					$this->usuario->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
+					$sWhereWrk = "";
+					$this->usuario->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			if (!$GLOBALS["comentariosavaluo"]->UserIDAllow("gridcls")) $sWhereWrk = $GLOBALS["usuario"]->AddUserIDFilter($sWhereWrk);
+			$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->usuario->EditValue = $arwrk;
 
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->created_at->CurrentValue, 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldTitle());
+			// descripcion
+			$this->descripcion->EditAttrs["class"] = "form-control";
+			$this->descripcion->EditCustomAttributes = "";
+			$this->descripcion->EditValue = ew_HtmlEncode($this->descripcion->CurrentValue);
+			$this->descripcion->PlaceHolder = ew_RemoveHtml($this->descripcion->FldTitle());
 
 			// Add refer script
 			// id
@@ -1385,13 +1468,13 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 			$this->id->LinkCustomAttributes = "";
 			$this->id->HrefValue = "";
 
-			// id_avaluo
-			$this->id_avaluo->LinkCustomAttributes = "";
-			$this->id_avaluo->HrefValue = "";
+			// usuario
+			$this->usuario->LinkCustomAttributes = "";
+			$this->usuario->HrefValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
+			// descripcion
+			$this->descripcion->LinkCustomAttributes = "";
+			$this->descripcion->HrefValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// id
@@ -1400,24 +1483,45 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 			$this->id->EditValue = $this->id->CurrentValue;
 			$this->id->ViewCustomAttributes = "";
 
-			// id_avaluo
-			$this->id_avaluo->EditAttrs["class"] = "form-control";
-			$this->id_avaluo->EditCustomAttributes = "";
-			if ($this->id_avaluo->getSessionValue() <> "") {
-				$this->id_avaluo->CurrentValue = $this->id_avaluo->getSessionValue();
-				$this->id_avaluo->OldValue = $this->id_avaluo->CurrentValue;
-			$this->id_avaluo->ViewValue = $this->id_avaluo->CurrentValue;
-			$this->id_avaluo->ViewCustomAttributes = "";
+			// usuario
+			$this->usuario->EditAttrs["class"] = "form-control";
+			$this->usuario->EditCustomAttributes = "";
+			if (trim(strval($this->usuario->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
 			} else {
-			$this->id_avaluo->EditValue = ew_HtmlEncode($this->id_avaluo->CurrentValue);
-			$this->id_avaluo->PlaceHolder = ew_RemoveHtml($this->id_avaluo->FldTitle());
+				$sFilterWrk = "`login`" . ew_SearchString("=", $this->usuario->CurrentValue, EW_DATATYPE_STRING, "");
 			}
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
+					$sWhereWrk = "";
+					$this->usuario->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
+					$sWhereWrk = "";
+					$this->usuario->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
+					$sWhereWrk = "";
+					$this->usuario->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			if (!$GLOBALS["comentariosavaluo"]->UserIDAllow("gridcls")) $sWhereWrk = $GLOBALS["usuario"]->AddUserIDFilter($sWhereWrk);
+			$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->usuario->EditValue = $arwrk;
 
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->created_at->CurrentValue, 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldTitle());
+			// descripcion
+			$this->descripcion->EditAttrs["class"] = "form-control";
+			$this->descripcion->EditCustomAttributes = "";
+			$this->descripcion->EditValue = ew_HtmlEncode($this->descripcion->CurrentValue);
+			$this->descripcion->PlaceHolder = ew_RemoveHtml($this->descripcion->FldTitle());
 
 			// Edit refer script
 			// id
@@ -1425,13 +1529,13 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 			$this->id->LinkCustomAttributes = "";
 			$this->id->HrefValue = "";
 
-			// id_avaluo
-			$this->id_avaluo->LinkCustomAttributes = "";
-			$this->id_avaluo->HrefValue = "";
+			// usuario
+			$this->usuario->LinkCustomAttributes = "";
+			$this->usuario->HrefValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
+			// descripcion
+			$this->descripcion->LinkCustomAttributes = "";
+			$this->descripcion->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1448,14 +1552,8 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		// Check if validation required
 		if (!EW_SERVER_VALIDATE)
 			return ($gsFormError == "");
-		if (!ew_CheckInteger($this->id_avaluo->FormValue)) {
-			ew_AddMessage($gsFormError, $this->id_avaluo->FldErrMsg());
-		}
-		if (!$this->created_at->FldIsDetailKey && !is_null($this->created_at->FormValue) && $this->created_at->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->created_at->FldCaption(), $this->created_at->ReqErrMsg));
-		}
-		if (!ew_CheckDateDef($this->created_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->created_at->FldErrMsg());
+		if (!$this->descripcion->FldIsDetailKey && !is_null($this->descripcion->FormValue) && $this->descripcion->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->descripcion->FldCaption(), $this->descripcion->ReqErrMsg));
 		}
 
 		// Return validate result
@@ -1570,11 +1668,11 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 			$this->LoadDbValues($rsold);
 			$rsnew = array();
 
-			// id_avaluo
-			$this->id_avaluo->SetDbValueDef($rsnew, $this->id_avaluo->CurrentValue, NULL, $this->id_avaluo->ReadOnly);
+			// usuario
+			$this->usuario->SetDbValueDef($rsnew, $this->usuario->CurrentValue, NULL, $this->usuario->ReadOnly);
 
-			// created_at
-			$this->created_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->created_at->CurrentValue, 0), ew_CurrentDate(), $this->created_at->ReadOnly);
+			// descripcion
+			$this->descripcion->SetDbValueDef($rsnew, $this->descripcion->CurrentValue, "", $this->descripcion->ReadOnly);
 
 			// Check referential integrity for master table 'avaluo'
 			$bValidMasterRecord = TRUE;
@@ -1642,8 +1740,8 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		// Check referential integrity for master table 'avaluo'
 		$bValidMasterRecord = TRUE;
 		$sMasterFilter = $this->SqlMasterFilter_avaluo();
-		if (strval($this->id_avaluo->CurrentValue) <> "") {
-			$sMasterFilter = str_replace("@id@", ew_AdjustSql($this->id_avaluo->CurrentValue, "DB"), $sMasterFilter);
+		if ($this->id_avaluo->getSessionValue() <> "") {
+			$sMasterFilter = str_replace("@id@", ew_AdjustSql($this->id_avaluo->getSessionValue(), "DB"), $sMasterFilter);
 		} else {
 			$bValidMasterRecord = FALSE;
 		}
@@ -1666,11 +1764,16 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		}
 		$rsnew = array();
 
-		// id_avaluo
-		$this->id_avaluo->SetDbValueDef($rsnew, $this->id_avaluo->CurrentValue, NULL, FALSE);
+		// usuario
+		$this->usuario->SetDbValueDef($rsnew, $this->usuario->CurrentValue, NULL, FALSE);
 
-		// created_at
-		$this->created_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->created_at->CurrentValue, 0), ew_CurrentDate(), FALSE);
+		// descripcion
+		$this->descripcion->SetDbValueDef($rsnew, $this->descripcion->CurrentValue, "", FALSE);
+
+		// id_avaluo
+		if ($this->id_avaluo->getSessionValue() <> "") {
+			$rsnew['id_avaluo'] = $this->id_avaluo->getSessionValue();
+		}
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
@@ -1720,6 +1823,33 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
+		case "x_usuario":
+			$sSqlWrk = "";
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `login` AS `LinkFld`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `login` AS `LinkFld`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `login` AS `LinkFld`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+					$sWhereWrk = "";
+					$fld->LookupFilters = array();
+					break;
+			}
+			if (!$GLOBALS["comentariosavaluo"]->UserIDAllow("gridcls")) $sWhereWrk = $GLOBALS["usuario"]->AddUserIDFilter($sWhereWrk);
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`login` IN ({filter_value})', "t0" => "200", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		}
 	}
 

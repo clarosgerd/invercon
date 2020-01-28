@@ -408,6 +408,9 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 
 		// Set up list options
 		$this->SetupListOptions();
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbOldSkipHeaderFooter = $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = TRUE;
 		$this->id->SetVisibility();
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
@@ -471,6 +474,8 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 	//
 	function Page_Terminate($url = "") {
 		global $gsExportFile, $gTmpImages;
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = $gbOldSkipHeaderFooter;
 
 		// Page Unload event
 		$this->Page_Unload();
@@ -507,7 +512,6 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 			ew_SaveDebugMsg();
 			header("Location: " . $url);
 		}
-		exit();
 	}
 
 	// Class variables

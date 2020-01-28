@@ -604,7 +604,7 @@ $forgotpwd->ShowMessage();
 <div class="login-box-body">
 <p class="login-box-msg"><?php echo $Language->Phrase("RequestPwd") ?></p>
 	<div class="form-group">
-		<div><input type="text" name="email" id="email" class="form-control ewControl" value="<?php echo ew_HtmlEncode($forgotpwd->Email) ?>" size="30" maxlength="100" placeholder="<?php echo ew_HtmlEncode($Language->Phrase("UserEmail")) ?>"></div>
+		<div><input type="text" name="email" id="email" class="form-control ewControl" value="<?php echo ew_HtmlEncode($forgotpwd->Email) ?>" size="30" maxlength="100"></div>
 	</div>
 	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("SendPwd") ?></button>
 </div>

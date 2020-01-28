@@ -25,6 +25,7 @@ class coficialcredito extends cTable {
 	var $especialidad;
 	var $status;
 	var $avatar;
+	var $codigo;
 
 	//
 	// Table class constructor
@@ -156,6 +157,11 @@ class coficialcredito extends cTable {
 		$this->avatar = new cField('oficialcredito', 'oficialcredito', 'x_avatar', 'avatar', '`avatar`', '`avatar`', 205, -1, TRUE, '`avatar`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
 		$this->avatar->Sortable = TRUE; // Allow sort
 		$this->fields['avatar'] = &$this->avatar;
+
+		// codigo
+		$this->codigo = new cField('oficialcredito', 'oficialcredito', 'x_codigo', 'codigo', '`codigo`', '`codigo`', 200, -1, FALSE, '`codigo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->codigo->Sortable = TRUE; // Allow sort
+		$this->fields['codigo'] = &$this->codigo;
 	}
 
 	// Field Visibility
@@ -693,6 +699,7 @@ class coficialcredito extends cTable {
 		$this->especialidad->setDbValue($rs->fields('especialidad'));
 		$this->status->setDbValue($rs->fields('status'));
 		$this->avatar->Upload->DbValue = $rs->fields('avatar');
+		$this->codigo->setDbValue($rs->fields('codigo'));
 	}
 
 	// Render list row values
@@ -721,6 +728,7 @@ class coficialcredito extends cTable {
 		// especialidad
 		// status
 		// avatar
+		// codigo
 		// nombre
 
 		$this->nombre->ViewValue = $this->nombre->CurrentValue;
@@ -749,9 +757,23 @@ class coficialcredito extends cTable {
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -821,6 +843,10 @@ class coficialcredito extends cTable {
 			$this->avatar->ViewValue = "";
 		}
 		$this->avatar->ViewCustomAttributes = "";
+
+		// codigo
+		$this->codigo->ViewValue = $this->codigo->CurrentValue;
+		$this->codigo->ViewCustomAttributes = "";
 
 		// nombre
 		$this->nombre->LinkCustomAttributes = "";
@@ -918,6 +944,11 @@ class coficialcredito extends cTable {
 		}
 		$this->avatar->HrefValue2 = "oficialcredito_avatar_bv.php?_login=" . $this->_login->CurrentValue;
 		$this->avatar->TooltipValue = "";
+
+		// codigo
+		$this->codigo->LinkCustomAttributes = "";
+		$this->codigo->HrefValue = "";
+		$this->codigo->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -1047,6 +1078,12 @@ class coficialcredito extends cTable {
 			$this->avatar->EditValue = "";
 		}
 
+		// codigo
+		$this->codigo->EditAttrs["class"] = "form-control";
+		$this->codigo->EditCustomAttributes = "";
+		$this->codigo->EditValue = $this->codigo->CurrentValue;
+		$this->codigo->PlaceHolder = ew_RemoveHtml($this->codigo->FldTitle());
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 	}
@@ -1092,6 +1129,7 @@ class coficialcredito extends cTable {
 					if ($this->especialidad->Exportable) $Doc->ExportCaption($this->especialidad);
 					if ($this->status->Exportable) $Doc->ExportCaption($this->status);
 					if ($this->avatar->Exportable) $Doc->ExportCaption($this->avatar);
+					if ($this->codigo->Exportable) $Doc->ExportCaption($this->codigo);
 				} else {
 					if ($this->nombre->Exportable) $Doc->ExportCaption($this->nombre);
 					if ($this->apellido->Exportable) $Doc->ExportCaption($this->apellido);
@@ -1108,6 +1146,7 @@ class coficialcredito extends cTable {
 					if ($this->cargo->Exportable) $Doc->ExportCaption($this->cargo);
 					if ($this->id_institucion->Exportable) $Doc->ExportCaption($this->id_institucion);
 					if ($this->especialidad->Exportable) $Doc->ExportCaption($this->especialidad);
+					if ($this->codigo->Exportable) $Doc->ExportCaption($this->codigo);
 				}
 				$Doc->EndExportRow();
 			}
@@ -1157,6 +1196,7 @@ class coficialcredito extends cTable {
 						if ($this->especialidad->Exportable) $Doc->ExportField($this->especialidad);
 						if ($this->status->Exportable) $Doc->ExportField($this->status);
 						if ($this->avatar->Exportable) $Doc->ExportField($this->avatar);
+						if ($this->codigo->Exportable) $Doc->ExportField($this->codigo);
 					} else {
 						if ($this->nombre->Exportable) $Doc->ExportField($this->nombre);
 						if ($this->apellido->Exportable) $Doc->ExportField($this->apellido);
@@ -1173,6 +1213,7 @@ class coficialcredito extends cTable {
 						if ($this->cargo->Exportable) $Doc->ExportField($this->cargo);
 						if ($this->id_institucion->Exportable) $Doc->ExportField($this->id_institucion);
 						if ($this->especialidad->Exportable) $Doc->ExportField($this->especialidad);
+						if ($this->codigo->Exportable) $Doc->ExportField($this->codigo);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

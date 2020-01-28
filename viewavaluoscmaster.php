@@ -1,32 +1,22 @@
 <?php
 
-// id
 // codigoavaluo
-// id_solicitud
 // id_oficialcredito
 // id_inspector
 // id_cliente
-// estado
 // estadointerno
 // estadopago
 // fecha_avaluo
+// montoincial
+// monto_pago
+// comentario
+// documento_pago
 
 ?>
 <?php if ($viewavaluosc->Visible) { ?>
 <div class="ewMasterDiv">
 <table id="tbl_viewavaluoscmaster" class="table ewViewTable ewMasterTable ewVertical">
 	<tbody>
-<?php if ($viewavaluosc->id->Visible) { // id ?>
-		<tr id="r_id">
-			<td class="col-sm-3"><?php echo $viewavaluosc->id->FldCaption() ?></td>
-			<td<?php echo $viewavaluosc->id->CellAttributes() ?>>
-<span id="el_viewavaluosc_id">
-<span<?php echo $viewavaluosc->id->ViewAttributes() ?>>
-<?php echo $viewavaluosc->id->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
 <?php if ($viewavaluosc->codigoavaluo->Visible) { // codigoavaluo ?>
 		<tr id="r_codigoavaluo">
 			<td class="col-sm-3"><?php echo $viewavaluosc->codigoavaluo->FldCaption() ?></td>
@@ -34,17 +24,6 @@
 <span id="el_viewavaluosc_codigoavaluo">
 <span<?php echo $viewavaluosc->codigoavaluo->ViewAttributes() ?>>
 <?php echo $viewavaluosc->codigoavaluo->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($viewavaluosc->id_solicitud->Visible) { // id_solicitud ?>
-		<tr id="r_id_solicitud">
-			<td class="col-sm-3"><?php echo $viewavaluosc->id_solicitud->FldCaption() ?></td>
-			<td<?php echo $viewavaluosc->id_solicitud->CellAttributes() ?>>
-<span id="el_viewavaluosc_id_solicitud">
-<span<?php echo $viewavaluosc->id_solicitud->ViewAttributes() ?>>
-<?php echo $viewavaluosc->id_solicitud->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>
@@ -82,17 +61,6 @@
 </td>
 		</tr>
 <?php } ?>
-<?php if ($viewavaluosc->estado->Visible) { // estado ?>
-		<tr id="r_estado">
-			<td class="col-sm-3"><?php echo $viewavaluosc->estado->FldCaption() ?></td>
-			<td<?php echo $viewavaluosc->estado->CellAttributes() ?>>
-<span id="el_viewavaluosc_estado">
-<span<?php echo $viewavaluosc->estado->ViewAttributes() ?>>
-<?php echo $viewavaluosc->estado->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
 <?php if ($viewavaluosc->estadointerno->Visible) { // estadointerno ?>
 		<tr id="r_estadointerno">
 			<td class="col-sm-3"><?php echo $viewavaluosc->estadointerno->FldCaption() ?></td>
@@ -122,6 +90,51 @@
 <span id="el_viewavaluosc_fecha_avaluo">
 <span<?php echo $viewavaluosc->fecha_avaluo->ViewAttributes() ?>>
 <?php echo $viewavaluosc->fecha_avaluo->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($viewavaluosc->montoincial->Visible) { // montoincial ?>
+		<tr id="r_montoincial">
+			<td class="col-sm-3"><?php echo $viewavaluosc->montoincial->FldCaption() ?></td>
+			<td<?php echo $viewavaluosc->montoincial->CellAttributes() ?>>
+<span id="el_viewavaluosc_montoincial">
+<span<?php echo $viewavaluosc->montoincial->ViewAttributes() ?>>
+<?php echo $viewavaluosc->montoincial->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($viewavaluosc->monto_pago->Visible) { // monto_pago ?>
+		<tr id="r_monto_pago">
+			<td class="col-sm-3"><?php echo $viewavaluosc->monto_pago->FldCaption() ?></td>
+			<td<?php echo $viewavaluosc->monto_pago->CellAttributes() ?>>
+<span id="el_viewavaluosc_monto_pago">
+<span<?php echo $viewavaluosc->monto_pago->ViewAttributes() ?>>
+<?php echo $viewavaluosc->monto_pago->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($viewavaluosc->comentario->Visible) { // comentario ?>
+		<tr id="r_comentario">
+			<td class="col-sm-3"><?php echo $viewavaluosc->comentario->FldCaption() ?></td>
+			<td<?php echo $viewavaluosc->comentario->CellAttributes() ?>>
+<span id="el_viewavaluosc_comentario">
+<span<?php echo $viewavaluosc->comentario->ViewAttributes() ?>>
+<?php echo $viewavaluosc->comentario->ListViewValue() ?></span>
+</span>
+</td>
+		</tr>
+<?php } ?>
+<?php if ($viewavaluosc->documento_pago->Visible) { // documento_pago ?>
+		<tr id="r_documento_pago">
+			<td class="col-sm-3"><?php echo $viewavaluosc->documento_pago->FldCaption() ?></td>
+			<td<?php echo $viewavaluosc->documento_pago->CellAttributes() ?>>
+<span id="el_viewavaluosc_documento_pago">
+<span<?php echo $viewavaluosc->documento_pago->ViewAttributes() ?>>
+<?php echo ew_GetFileViewTag($viewavaluosc->documento_pago, $viewavaluosc->documento_pago->ListViewValue()) ?>
+</span>
 </span>
 </td>
 		</tr>

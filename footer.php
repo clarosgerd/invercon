@@ -16,6 +16,76 @@
 {{if isLoggedIn}}
  <?php	
 
+	//echo "SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "'";			
+$count = ew_ExecuteScalar("SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0");
+if ($count == 0)
+{
+echo "<li class=\"dropdown notifications-menu\">\n";
+echo "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n";
+echo "<i class=\"fa fa-bell-o\"></i></br>\n";
+echo "<span class=\"label label-danger\">$count</span>\n";
+echo "</a>\n";
+echo "<ul class=\"dropdown-menu\">\n";
+echo "<li class=\"header\">Tu tienes $count mensaje</li>\n";
+echo "</ul>\n";
+echo "</li>\n";
+}
+
+// Get a field value
+// NOTE: Modify your SQL here, replace the table name, field name and the condition
+//$MyField = ew_ExecuteScalar("SELECT MyField FROM MyTable WHERE XXX");
+
+else{				//<!-- inner menu: contains the actual data -->			
+$TheQuery="SELECT * FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0";				
+$all_mensaje_result = ew_Execute($TheQuery) or die("error during: ".$TheQuery);
+if ($all_mensaje_result && $all_mensaje_result->RecordCount() > 0) {
+$all_mensaje_result->MoveFirst();
+$sData = "";
+echo "<li class=\"dropdown notifications-menu\">\n";
+echo "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n";
+echo "<i class=\"fa fa-bell-o\"></i></br>\n";
+echo "<span class=\"label label-danger\">$count</span>\n";
+echo "</a>\n";
+echo "<ul class=\"dropdown-menu\">\n";
+echo "<li class=\"header\">Tu tienes $count mensaje</li>\n";
+echo "<li>\n";
+echo "<ul class=\"menu\">\n";
+while ($all_mensaje_result && !$all_mensaje_result->EOF) 
+{
+$idmensaje=$all_mensaje_result->fields[0];
+$mensaje=$all_mensaje_result->fields[1];
+	$creadopor=$all_mensaje_result->fields[2];
+	$recibidopor=$all_mensaje_result->fields[3];
+	$name_enviado = ew_ExecuteScalar("SELECT CONCAT(nombre, ', ', apellido) FROM usuario WHERE login = '" . ew_AdjustSql($creadopor) . "'");
+	$especialidad_enviado = ew_ExecuteScalar("SELECT especialidad FROM usuario WHERE login = '" . ew_AdjustSql($creadopor) . "'");
+	$min_enviado = ew_ExecuteScalar("SELECT TIMESTAMPDIFF(MINUTE,now(),fecha) FROM notificaciones WHERE creadopor = '" . ew_AdjustSql($creadopor) . "' and leido=0");
+echo "<li><!-- start message -->\n";
+echo "<a href=avaluocore.php?type=notifylearn&id=".$idmensaje.">";
+echo "<div class=\"pull-left\">\n";
+echo "<img src=\"phpimages/people35.png\" class=\"img-circle\" alt=\"User Image\">\n";
+echo "</div>\n";
+echo "<h4>\n";
+echo "$name_enviado\n";
+echo "<small><i class=\"fa fa-clock-o\" style=\"font-size:5px;color:red\"></i>$min_enviado</small>\n";
+echo "</h4>\n";
+echo "<p>$mensaje</p>\n";
+echo "</a>\n";
+echo "</li>\n";
+$all_mensaje_result->MoveNext();
+}
+
+//echo $sData; // display it 
+$all_mensaje_result->Close();
+echo "<li class=\"footer\"><a href=\"notificacioneslist.php\">Ver todos los mensajes</a></li>\n";
+echo "</ul>\n";
+echo "</li>\n";
+} else {
+$this->setFailureMessage("No records found.");
+}
+echo "</ul>\n";
+echo "</li>\n";
+}
+
 			//echo "SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "'";			
 $count = ew_ExecuteScalar("SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0");
 if ($count == 0)
@@ -30,6 +100,11 @@ echo "<li class=\"header\">Tu tienes $count mensaje</li>\n";
 echo "</ul>\n";
 echo "</li>\n";
 }
+
+// Get a field value
+// NOTE: Modify your SQL here, replace the table name, field name and the condition
+//$MyField = ew_ExecuteScalar("SELECT MyField FROM MyTable WHERE XXX");
+
 else{				//<!-- inner menu: contains the actual data -->			
 $TheQuery="SELECT * FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0";				
 $all_mensaje_result = ew_Execute($TheQuery) or die("error during: ".$TheQuery);

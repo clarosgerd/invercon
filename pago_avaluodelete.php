@@ -7,6 +7,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "phpfn14.php" ?>
 <?php include_once "pago_avaluoinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
+<?php include_once "avaluoinfo.php" ?>
 <?php include_once "pagoinfo.php" ?>
 <?php include_once "viewavaluoscinfo.php" ?>
 <?php include_once "userfn14.php" ?>
@@ -261,6 +262,9 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		// Table object (usuario)
 		if (!isset($GLOBALS['usuario'])) $GLOBALS['usuario'] = new cusuario();
 
+		// Table object (avaluo)
+		if (!isset($GLOBALS['avaluo'])) $GLOBALS['avaluo'] = new cavaluo();
+
 		// Table object (pago)
 		if (!isset($GLOBALS['pago'])) $GLOBALS['pago'] = new cpago();
 
@@ -334,6 +338,10 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		$this->pago_id->SetVisibility();
 		$this->avaluo_id->SetVisibility();
 		$this->q->SetVisibility();
+		$this->id_metodopago->SetVisibility();
+		$this->monto->SetVisibility();
+		$this->documentopago->SetVisibility();
+		$this->id_banco->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -525,6 +533,12 @@ class cpago_avaluo_delete extends cpago_avaluo {
 			$this->avaluo_id->VirtualValue = ""; // Clear value
 		}
 		$this->q->setDbValue($row['q']);
+		$this->id_metodopago->setDbValue($row['id_metodopago']);
+		$this->monto->setDbValue($row['monto']);
+		$this->documentopago->Upload->DbValue = $row['documentopago'];
+		if (is_array($this->documentopago->Upload->DbValue) || is_object($this->documentopago->Upload->DbValue)) // Byte array
+			$this->documentopago->Upload->DbValue = ew_BytesToStr($this->documentopago->Upload->DbValue);
+		$this->id_banco->setDbValue($row['id_banco']);
 	}
 
 	// Return a row with default values
@@ -534,6 +548,10 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		$row['pago_id'] = NULL;
 		$row['avaluo_id'] = NULL;
 		$row['q'] = NULL;
+		$row['id_metodopago'] = NULL;
+		$row['monto'] = NULL;
+		$row['documentopago'] = NULL;
+		$row['id_banco'] = NULL;
 		return $row;
 	}
 
@@ -546,6 +564,10 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		$this->pago_id->DbValue = $row['pago_id'];
 		$this->avaluo_id->DbValue = $row['avaluo_id'];
 		$this->q->DbValue = $row['q'];
+		$this->id_metodopago->DbValue = $row['id_metodopago'];
+		$this->monto->DbValue = $row['monto'];
+		$this->documentopago->Upload->DbValue = $row['documentopago'];
+		$this->id_banco->DbValue = $row['id_banco'];
 	}
 
 	// Render row values based on field settings
@@ -553,8 +575,12 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		global $Security, $Language, $gsLanguage;
 
 		// Initialize URLs
-		// Call Row_Rendering event
+		// Convert decimal values if posted back
 
+		if ($this->monto->FormValue == $this->monto->CurrentValue && is_numeric(ew_StrToFloat($this->monto->CurrentValue)))
+			$this->monto->CurrentValue = ew_StrToFloat($this->monto->CurrentValue);
+
+		// Call Row_Rendering event
 		$this->Row_Rendering();
 
 		// Common render codes for all row types
@@ -562,34 +588,52 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		// pago_id
 		// avaluo_id
 		// q
+		// id_metodopago
+		// monto
+		// documentopago
+		// id_banco
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
-		$this->id->ViewValue = $this->id->CurrentValue;
-		$this->id->ViewCustomAttributes = "";
-
-		// pago_id
-		if (strval($this->pago_id->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->pago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `pago`";
-		$sWhereWrk = "";
-		$this->pago_id->LookupFilters = array();
+		if (strval($this->id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->pago_id, $sWhereWrk); // Call Lookup Selecting
+		$this->Lookup_Selecting($this->id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
 				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->pago_id->ViewValue = $this->pago_id->DisplayValue($arwrk);
+				$this->id->ViewValue = $this->id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
-				$this->pago_id->ViewValue = $this->pago_id->CurrentValue;
+				$this->id->ViewValue = $this->id->CurrentValue;
 			}
 		} else {
-			$this->pago_id->ViewValue = NULL;
+			$this->id->ViewValue = NULL;
 		}
+		$this->id->ViewCustomAttributes = "";
+
+		// pago_id
+		$this->pago_id->ViewValue = $this->pago_id->CurrentValue;
 		$this->pago_id->ViewCustomAttributes = "";
 
 		// avaluo_id
@@ -598,19 +642,30 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		} else {
 		if (strval($this->avaluo_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->avaluo_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `codigoavaluo` AS `Disp2Fld`, `id_oficialcredito` AS `Disp3Fld`, `tipoinmueble` AS `Disp4Fld` FROM `avaluo`";
-		$sWhereWrk = "";
-		$this->avaluo_id->LookupFilters = array("dx1" => '`id`', "dx2" => '`codigoavaluo`', "dx3" => '`id_oficialcredito`', "dx4" => '`tipoinmueble`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+				$sWhereWrk = "";
+				$this->avaluo_id->LookupFilters = array("dx1" => '`codigoavaluo`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->avaluo_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			$rswrk = Conn()->Execute($sSqlWrk);
 			if ($rswrk && !$rswrk->EOF) { // Lookup values found
 				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = ew_FormatNumber($rswrk->fields('Disp2Fld'), 0, 0, 0, 0);
-				$arwrk[3] = $rswrk->fields('Disp3Fld');
-				$arwrk[4] = $rswrk->fields('Disp4Fld');
+				$arwrk[1] = ew_FormatNumber($rswrk->fields('DispFld'), 0, 0, 0, 0);
 				$this->avaluo_id->ViewValue = $this->avaluo_id->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -625,6 +680,60 @@ class cpago_avaluo_delete extends cpago_avaluo {
 		// q
 		$this->q->ViewValue = $this->q->CurrentValue;
 		$this->q->ViewCustomAttributes = "";
+
+		// id_metodopago
+		if (strval($this->id_metodopago->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_metodopago->CurrentValue, EW_DATATYPE_NUMBER, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id_metodopago->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id_metodopago->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+				$sWhereWrk = "";
+				$this->id_metodopago->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_metodopago, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->id_metodopago->ViewValue = $this->id_metodopago->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_metodopago->ViewValue = $this->id_metodopago->CurrentValue;
+			}
+		} else {
+			$this->id_metodopago->ViewValue = NULL;
+		}
+		$this->id_metodopago->ViewCustomAttributes = "";
+
+		// monto
+		$this->monto->ViewValue = $this->monto->CurrentValue;
+		$this->monto->ViewCustomAttributes = "";
+
+		// documentopago
+		if (!ew_Empty($this->documentopago->Upload->DbValue)) {
+			$this->documentopago->ViewValue = "pago_avaluo_documentopago_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->documentopago->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->documentopago->Upload->DbValue, 0, 11)));
+		} else {
+			$this->documentopago->ViewValue = "";
+		}
+		$this->documentopago->ViewCustomAttributes = "";
+
+		// id_banco
+		$this->id_banco->ViewValue = $this->id_banco->CurrentValue;
+		$this->id_banco->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -645,6 +754,33 @@ class cpago_avaluo_delete extends cpago_avaluo {
 			$this->q->LinkCustomAttributes = "";
 			$this->q->HrefValue = "";
 			$this->q->TooltipValue = "";
+
+			// id_metodopago
+			$this->id_metodopago->LinkCustomAttributes = "";
+			$this->id_metodopago->HrefValue = "";
+			$this->id_metodopago->TooltipValue = "";
+
+			// monto
+			$this->monto->LinkCustomAttributes = "";
+			$this->monto->HrefValue = "";
+			$this->monto->TooltipValue = "";
+
+			// documentopago
+			$this->documentopago->LinkCustomAttributes = "";
+			if (!empty($this->documentopago->Upload->DbValue)) {
+				$this->documentopago->HrefValue = "pago_avaluo_documentopago_bv.php?id=" . $this->id->CurrentValue;
+				$this->documentopago->LinkAttrs["target"] = "_blank";
+				if ($this->Export <> "") $this->documentopago->HrefValue = ew_FullUrl($this->documentopago->HrefValue, "href");
+			} else {
+				$this->documentopago->HrefValue = "";
+			}
+			$this->documentopago->HrefValue2 = "pago_avaluo_documentopago_bv.php?id=" . $this->id->CurrentValue;
+			$this->documentopago->TooltipValue = "";
+
+			// id_banco
+			$this->id_banco->LinkCustomAttributes = "";
+			$this->id_banco->HrefValue = "";
+			$this->id_banco->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -755,6 +891,17 @@ class cpago_avaluo_delete extends cpago_avaluo {
 					$bValidMaster = FALSE;
 				}
 			}
+			if ($sMasterTblVar == "avaluo") {
+				$bValidMaster = TRUE;
+				if (@$_GET["fk_id"] <> "") {
+					$GLOBALS["avaluo"]->id->setQueryStringValue($_GET["fk_id"]);
+					$this->avaluo_id->setQueryStringValue($GLOBALS["avaluo"]->id->QueryStringValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->QueryStringValue);
+					if (!is_numeric($GLOBALS["avaluo"]->id->QueryStringValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
 			if ($sMasterTblVar == "viewavaluosc") {
 				$bValidMaster = TRUE;
 				if (@$_GET["fk_id"] <> "") {
@@ -780,6 +927,17 @@ class cpago_avaluo_delete extends cpago_avaluo {
 					$this->pago_id->setFormValue($GLOBALS["pago"]->id->FormValue);
 					$this->pago_id->setSessionValue($this->pago_id->FormValue);
 					if (!is_numeric($GLOBALS["pago"]->id->FormValue)) $bValidMaster = FALSE;
+				} else {
+					$bValidMaster = FALSE;
+				}
+			}
+			if ($sMasterTblVar == "avaluo") {
+				$bValidMaster = TRUE;
+				if (@$_POST["fk_id"] <> "") {
+					$GLOBALS["avaluo"]->id->setFormValue($_POST["fk_id"]);
+					$this->avaluo_id->setFormValue($GLOBALS["avaluo"]->id->FormValue);
+					$this->avaluo_id->setSessionValue($this->avaluo_id->FormValue);
+					if (!is_numeric($GLOBALS["avaluo"]->id->FormValue)) $bValidMaster = FALSE;
 				} else {
 					$bValidMaster = FALSE;
 				}
@@ -810,6 +968,9 @@ class cpago_avaluo_delete extends cpago_avaluo {
 			// Clear previous master key from Session
 			if ($sMasterTblVar <> "pago") {
 				if ($this->pago_id->CurrentValue == "") $this->pago_id->setSessionValue("");
+			}
+			if ($sMasterTblVar <> "avaluo") {
+				if ($this->avaluo_id->CurrentValue == "") $this->avaluo_id->setSessionValue("");
 			}
 			if ($sMasterTblVar <> "viewavaluosc") {
 				if ($this->avaluo_id->CurrentValue == "") $this->avaluo_id->setSessionValue("");
@@ -943,10 +1104,12 @@ fpago_avaluodelete.Form_CustomValidate =
 fpago_avaluodelete.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-fpago_avaluodelete.Lists["x_pago_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"pago"};
-fpago_avaluodelete.Lists["x_pago_id"].Data = "<?php echo $pago_avaluo_delete->pago_id->LookupFilterQuery(FALSE, "delete") ?>";
-fpago_avaluodelete.Lists["x_avaluo_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","x_codigoavaluo","x_id_oficialcredito","x_tipoinmueble"],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
+fpago_avaluodelete.Lists["x_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"metodopago"};
+fpago_avaluodelete.Lists["x_id"].Data = "<?php echo $pago_avaluo_delete->id->LookupFilterQuery(FALSE, "delete") ?>";
+fpago_avaluodelete.Lists["x_avaluo_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_codigoavaluo","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"avaluo"};
 fpago_avaluodelete.Lists["x_avaluo_id"].Data = "<?php echo $pago_avaluo_delete->avaluo_id->LookupFilterQuery(FALSE, "delete") ?>";
+fpago_avaluodelete.Lists["x_id_metodopago"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"metodopago"};
+fpago_avaluodelete.Lists["x_id_metodopago"].Data = "<?php echo $pago_avaluo_delete->id_metodopago->LookupFilterQuery(FALSE, "delete") ?>";
 
 // Form object for search
 </script>
@@ -984,6 +1147,18 @@ $pago_avaluo_delete->ShowMessage();
 <?php } ?>
 <?php if ($pago_avaluo->q->Visible) { // q ?>
 		<th class="<?php echo $pago_avaluo->q->HeaderCellClass() ?>"><span id="elh_pago_avaluo_q" class="pago_avaluo_q"><?php echo $pago_avaluo->q->FldCaption() ?></span></th>
+<?php } ?>
+<?php if ($pago_avaluo->id_metodopago->Visible) { // id_metodopago ?>
+		<th class="<?php echo $pago_avaluo->id_metodopago->HeaderCellClass() ?>"><span id="elh_pago_avaluo_id_metodopago" class="pago_avaluo_id_metodopago"><?php echo $pago_avaluo->id_metodopago->FldCaption() ?></span></th>
+<?php } ?>
+<?php if ($pago_avaluo->monto->Visible) { // monto ?>
+		<th class="<?php echo $pago_avaluo->monto->HeaderCellClass() ?>"><span id="elh_pago_avaluo_monto" class="pago_avaluo_monto"><?php echo $pago_avaluo->monto->FldCaption() ?></span></th>
+<?php } ?>
+<?php if ($pago_avaluo->documentopago->Visible) { // documentopago ?>
+		<th class="<?php echo $pago_avaluo->documentopago->HeaderCellClass() ?>"><span id="elh_pago_avaluo_documentopago" class="pago_avaluo_documentopago"><?php echo $pago_avaluo->documentopago->FldCaption() ?></span></th>
+<?php } ?>
+<?php if ($pago_avaluo->id_banco->Visible) { // id_banco ?>
+		<th class="<?php echo $pago_avaluo->id_banco->HeaderCellClass() ?>"><span id="elh_pago_avaluo_id_banco" class="pago_avaluo_id_banco"><?php echo $pago_avaluo->id_banco->FldCaption() ?></span></th>
 <?php } ?>
 	</tr>
 	</thead>
@@ -1035,6 +1210,39 @@ while (!$pago_avaluo_delete->Recordset->EOF) {
 <span id="el<?php echo $pago_avaluo_delete->RowCnt ?>_pago_avaluo_q" class="pago_avaluo_q">
 <span<?php echo $pago_avaluo->q->ViewAttributes() ?>>
 <?php echo $pago_avaluo->q->ListViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($pago_avaluo->id_metodopago->Visible) { // id_metodopago ?>
+		<td<?php echo $pago_avaluo->id_metodopago->CellAttributes() ?>>
+<span id="el<?php echo $pago_avaluo_delete->RowCnt ?>_pago_avaluo_id_metodopago" class="pago_avaluo_id_metodopago">
+<span<?php echo $pago_avaluo->id_metodopago->ViewAttributes() ?>>
+<?php echo $pago_avaluo->id_metodopago->ListViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($pago_avaluo->monto->Visible) { // monto ?>
+		<td<?php echo $pago_avaluo->monto->CellAttributes() ?>>
+<span id="el<?php echo $pago_avaluo_delete->RowCnt ?>_pago_avaluo_monto" class="pago_avaluo_monto">
+<span<?php echo $pago_avaluo->monto->ViewAttributes() ?>>
+<?php echo $pago_avaluo->monto->ListViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($pago_avaluo->documentopago->Visible) { // documentopago ?>
+		<td<?php echo $pago_avaluo->documentopago->CellAttributes() ?>>
+<span id="el<?php echo $pago_avaluo_delete->RowCnt ?>_pago_avaluo_documentopago" class="pago_avaluo_documentopago">
+<span<?php echo $pago_avaluo->documentopago->ViewAttributes() ?>>
+<?php echo ew_GetFileViewTag($pago_avaluo->documentopago, $pago_avaluo->documentopago->ListViewValue()) ?>
+</span>
+</span>
+</td>
+<?php } ?>
+<?php if ($pago_avaluo->id_banco->Visible) { // id_banco ?>
+		<td<?php echo $pago_avaluo->id_banco->CellAttributes() ?>>
+<span id="el<?php echo $pago_avaluo_delete->RowCnt ?>_pago_avaluo_id_banco" class="pago_avaluo_id_banco">
+<span<?php echo $pago_avaluo->id_banco->ViewAttributes() ?>>
+<?php echo $pago_avaluo->id_banco->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

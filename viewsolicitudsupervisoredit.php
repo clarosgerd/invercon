@@ -3667,7 +3667,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->tipoinmueble->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipoinmueble">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($viewsolicitudsupervisor->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipoinmueble->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($viewsolicitudsupervisor->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipoinmueble->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipoinmueble->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoinmueble[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipoinmueble->ReadOnly || $viewsolicitudsupervisor->tipoinmueble->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipoinmueble" data-page="2" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipoinmueble->DisplayValueSeparatorAttribute() ?>" name="x_tipoinmueble[]" id="x_tipoinmueble[]" value="<?php echo $viewsolicitudsupervisor->tipoinmueble->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipoinmueble->EditAttributes() ?>>
@@ -3680,7 +3680,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->tipoinmueble->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipoinmueble">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($viewsolicitudsupervisor->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipoinmueble->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoinmueble"><?php echo (strval($viewsolicitudsupervisor->tipoinmueble->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipoinmueble->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipoinmueble->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoinmueble[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipoinmueble->ReadOnly || $viewsolicitudsupervisor->tipoinmueble->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipoinmueble" data-page="2" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipoinmueble->DisplayValueSeparatorAttribute() ?>" name="x_tipoinmueble[]" id="x_tipoinmueble[]" value="<?php echo $viewsolicitudsupervisor->tipoinmueble->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipoinmueble->EditAttributes() ?>>
@@ -3746,7 +3746,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_inmueble02->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_inmueble02">
 <div id="fd_x_imagen_inmueble02">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble02->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble02->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble02->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble02->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble02->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble02->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_inmueble02" data-page="2" name="x_imagen_inmueble02" id="x_imagen_inmueble02"<?php echo $viewsolicitudsupervisor->imagen_inmueble02->EditAttributes() ?>>
 </span>
@@ -3770,7 +3770,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_inmueble02->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_inmueble02">
 <div id="fd_x_imagen_inmueble02">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble02->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble02->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble02->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble02->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble02->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble02->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble02->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_inmueble02" data-page="2" name="x_imagen_inmueble02" id="x_imagen_inmueble02"<?php echo $viewsolicitudsupervisor->imagen_inmueble02->EditAttributes() ?>>
 </span>
@@ -3797,7 +3797,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_inmueble03->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_inmueble03">
 <div id="fd_x_imagen_inmueble03">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble03->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble03->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble03->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble03->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble03->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble03->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble03->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble03->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_inmueble03" data-page="2" name="x_imagen_inmueble03" id="x_imagen_inmueble03"<?php echo $viewsolicitudsupervisor->imagen_inmueble03->EditAttributes() ?>>
 </span>
@@ -3821,7 +3821,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_inmueble03->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_inmueble03">
 <div id="fd_x_imagen_inmueble03">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble03->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble03->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble03->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble03->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble03->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble03->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble03->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble03->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_inmueble03" data-page="2" name="x_imagen_inmueble03" id="x_imagen_inmueble03"<?php echo $viewsolicitudsupervisor->imagen_inmueble03->EditAttributes() ?>>
 </span>
@@ -3848,7 +3848,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_inmueble04->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_inmueble04">
 <div id="fd_x_imagen_inmueble04">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble04->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble04->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble04->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble04->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble04->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble04->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble04->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble04->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_inmueble04" data-page="2" name="x_imagen_inmueble04" id="x_imagen_inmueble04"<?php echo $viewsolicitudsupervisor->imagen_inmueble04->EditAttributes() ?>>
 </span>
@@ -3872,7 +3872,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_inmueble04->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_inmueble04">
 <div id="fd_x_imagen_inmueble04">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble04->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble04->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble04->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble04->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble04->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble04->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble04->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble04->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_inmueble04" data-page="2" name="x_imagen_inmueble04" id="x_imagen_inmueble04"<?php echo $viewsolicitudsupervisor->imagen_inmueble04->EditAttributes() ?>>
 </span>
@@ -3899,7 +3899,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_inmueble05->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_inmueble05">
 <div id="fd_x_imagen_inmueble05">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble05->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble05->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble05->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble05->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_inmueble05" data-page="2" name="x_imagen_inmueble05" id="x_imagen_inmueble05"<?php echo $viewsolicitudsupervisor->imagen_inmueble05->EditAttributes() ?>>
 </span>
@@ -3923,7 +3923,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_inmueble05->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_inmueble05">
 <div id="fd_x_imagen_inmueble05">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble05->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble05->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_inmueble05->FldTitle() ? $viewsolicitudsupervisor->imagen_inmueble05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_inmueble05->ReadOnly || $viewsolicitudsupervisor->imagen_inmueble05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_inmueble05" data-page="2" name="x_imagen_inmueble05" id="x_imagen_inmueble05"<?php echo $viewsolicitudsupervisor->imagen_inmueble05->EditAttributes() ?>>
 </span>
@@ -3962,7 +3962,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->tipovehiculo->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipovehiculo">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($viewsolicitudsupervisor->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipovehiculo->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($viewsolicitudsupervisor->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipovehiculo->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipovehiculo->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipovehiculo[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipovehiculo->ReadOnly || $viewsolicitudsupervisor->tipovehiculo->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipovehiculo" data-page="3" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipovehiculo->DisplayValueSeparatorAttribute() ?>" name="x_tipovehiculo[]" id="x_tipovehiculo[]" value="<?php echo $viewsolicitudsupervisor->tipovehiculo->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipovehiculo->EditAttributes() ?>>
@@ -3975,7 +3975,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->tipovehiculo->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipovehiculo">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($viewsolicitudsupervisor->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipovehiculo->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipovehiculo"><?php echo (strval($viewsolicitudsupervisor->tipovehiculo->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipovehiculo->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipovehiculo->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipovehiculo[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipovehiculo->ReadOnly || $viewsolicitudsupervisor->tipovehiculo->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipovehiculo" data-page="3" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipovehiculo->DisplayValueSeparatorAttribute() ?>" name="x_tipovehiculo[]" id="x_tipovehiculo[]" value="<?php echo $viewsolicitudsupervisor->tipovehiculo->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipovehiculo->EditAttributes() ?>>
@@ -4033,7 +4033,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_vehiculo05->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_vehiculo05">
 <div id="fd_x_imagen_vehiculo05">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo05->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo05->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo05->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo05->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_vehiculo05" data-page="3" name="x_imagen_vehiculo05" id="x_imagen_vehiculo05"<?php echo $viewsolicitudsupervisor->imagen_vehiculo05->EditAttributes() ?>>
 </span>
@@ -4057,7 +4057,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_vehiculo05->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_vehiculo05">
 <div id="fd_x_imagen_vehiculo05">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo05->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo05->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo05->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo05->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_vehiculo05" data-page="3" name="x_imagen_vehiculo05" id="x_imagen_vehiculo05"<?php echo $viewsolicitudsupervisor->imagen_vehiculo05->EditAttributes() ?>>
 </span>
@@ -4084,7 +4084,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_vehiculo06->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_vehiculo06">
 <div id="fd_x_imagen_vehiculo06">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo06->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo06->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo06->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo06->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo06->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo06->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_vehiculo06" data-page="3" name="x_imagen_vehiculo06" id="x_imagen_vehiculo06"<?php echo $viewsolicitudsupervisor->imagen_vehiculo06->EditAttributes() ?>>
 </span>
@@ -4108,7 +4108,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_vehiculo06->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_vehiculo06">
 <div id="fd_x_imagen_vehiculo06">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo06->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo06->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo06->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo06->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo06->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo06->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_vehiculo06" data-page="3" name="x_imagen_vehiculo06" id="x_imagen_vehiculo06"<?php echo $viewsolicitudsupervisor->imagen_vehiculo06->EditAttributes() ?>>
 </span>
@@ -4135,7 +4135,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_vehiculo07->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_vehiculo07">
 <div id="fd_x_imagen_vehiculo07">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo07->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo07->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo07->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo07->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo07->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo07->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_vehiculo07" data-page="3" name="x_imagen_vehiculo07" id="x_imagen_vehiculo07"<?php echo $viewsolicitudsupervisor->imagen_vehiculo07->EditAttributes() ?>>
 </span>
@@ -4159,7 +4159,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_vehiculo07->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_vehiculo07">
 <div id="fd_x_imagen_vehiculo07">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo07->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo07->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo07->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_vehiculo07->FldTitle() ? $viewsolicitudsupervisor->imagen_vehiculo07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_vehiculo07->ReadOnly || $viewsolicitudsupervisor->imagen_vehiculo07->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_vehiculo07" data-page="3" name="x_imagen_vehiculo07" id="x_imagen_vehiculo07"<?php echo $viewsolicitudsupervisor->imagen_vehiculo07->EditAttributes() ?>>
 </span>
@@ -4198,7 +4198,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->tipomaquinaria->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipomaquinaria">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($viewsolicitudsupervisor->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipomaquinaria->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($viewsolicitudsupervisor->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipomaquinaria->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipomaquinaria->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomaquinaria[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipomaquinaria->ReadOnly || $viewsolicitudsupervisor->tipomaquinaria->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipomaquinaria" data-page="4" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipomaquinaria->DisplayValueSeparatorAttribute() ?>" name="x_tipomaquinaria[]" id="x_tipomaquinaria[]" value="<?php echo $viewsolicitudsupervisor->tipomaquinaria->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipomaquinaria->EditAttributes() ?>>
@@ -4211,7 +4211,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->tipomaquinaria->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipomaquinaria">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($viewsolicitudsupervisor->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipomaquinaria->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomaquinaria"><?php echo (strval($viewsolicitudsupervisor->tipomaquinaria->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipomaquinaria->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipomaquinaria->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomaquinaria[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipomaquinaria->ReadOnly || $viewsolicitudsupervisor->tipomaquinaria->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipomaquinaria" data-page="4" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipomaquinaria->DisplayValueSeparatorAttribute() ?>" name="x_tipomaquinaria[]" id="x_tipomaquinaria[]" value="<?php echo $viewsolicitudsupervisor->tipomaquinaria->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipomaquinaria->EditAttributes() ?>>
@@ -4277,7 +4277,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_maquinaria05->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_maquinaria05">
 <div id="fd_x_imagen_maquinaria05">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria05->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria05->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria05->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria05->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_maquinaria05" data-page="4" name="x_imagen_maquinaria05" id="x_imagen_maquinaria05"<?php echo $viewsolicitudsupervisor->imagen_maquinaria05->EditAttributes() ?>>
 </span>
@@ -4301,7 +4301,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_maquinaria05->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_maquinaria05">
 <div id="fd_x_imagen_maquinaria05">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria05->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria05->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria05->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria05->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria05->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria05->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria05->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_maquinaria05" data-page="4" name="x_imagen_maquinaria05" id="x_imagen_maquinaria05"<?php echo $viewsolicitudsupervisor->imagen_maquinaria05->EditAttributes() ?>>
 </span>
@@ -4328,7 +4328,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_maquinaria06->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_maquinaria06">
 <div id="fd_x_imagen_maquinaria06">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria06->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria06->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria06->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria06->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria06->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria06->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_maquinaria06" data-page="4" name="x_imagen_maquinaria06" id="x_imagen_maquinaria06"<?php echo $viewsolicitudsupervisor->imagen_maquinaria06->EditAttributes() ?>>
 </span>
@@ -4352,7 +4352,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_maquinaria06->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_maquinaria06">
 <div id="fd_x_imagen_maquinaria06">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria06->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria06->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria06->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria06->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria06->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria06->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria06->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_maquinaria06" data-page="4" name="x_imagen_maquinaria06" id="x_imagen_maquinaria06"<?php echo $viewsolicitudsupervisor->imagen_maquinaria06->EditAttributes() ?>>
 </span>
@@ -4379,7 +4379,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->imagen_maquinaria07->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_maquinaria07">
 <div id="fd_x_imagen_maquinaria07">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria07->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria07->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria07->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria07->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria07->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria07->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_maquinaria07" data-page="4" name="x_imagen_maquinaria07" id="x_imagen_maquinaria07"<?php echo $viewsolicitudsupervisor->imagen_maquinaria07->EditAttributes() ?>>
 </span>
@@ -4403,7 +4403,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->imagen_maquinaria07->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_imagen_maquinaria07">
 <div id="fd_x_imagen_maquinaria07">
-<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria07->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria07->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria07->Disabled) echo " hide"; ?>" data-trigger="hover">
+<span title="<?php echo $viewsolicitudsupervisor->imagen_maquinaria07->FldTitle() ? $viewsolicitudsupervisor->imagen_maquinaria07->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($viewsolicitudsupervisor->imagen_maquinaria07->ReadOnly || $viewsolicitudsupervisor->imagen_maquinaria07->Disabled) echo " hide"; ?>">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="viewsolicitudsupervisor" data-field="x_imagen_maquinaria07" data-page="4" name="x_imagen_maquinaria07" id="x_imagen_maquinaria07"<?php echo $viewsolicitudsupervisor->imagen_maquinaria07->EditAttributes() ?>>
 </span>
@@ -4442,7 +4442,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->tipomercaderia->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipomercaderia">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($viewsolicitudsupervisor->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipomercaderia->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($viewsolicitudsupervisor->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipomercaderia->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipomercaderia->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomercaderia[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipomercaderia->ReadOnly || $viewsolicitudsupervisor->tipomercaderia->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipomercaderia" data-page="5" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipomercaderia->DisplayValueSeparatorAttribute() ?>" name="x_tipomercaderia[]" id="x_tipomercaderia[]" value="<?php echo $viewsolicitudsupervisor->tipomercaderia->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipomercaderia->EditAttributes() ?>>
@@ -4455,7 +4455,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->tipomercaderia->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipomercaderia">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($viewsolicitudsupervisor->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipomercaderia->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipomercaderia"><?php echo (strval($viewsolicitudsupervisor->tipomercaderia->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipomercaderia->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipomercaderia->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipomercaderia[]',m:1,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipomercaderia->ReadOnly || $viewsolicitudsupervisor->tipomercaderia->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipomercaderia" data-page="5" data-multiple="1" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipomercaderia->DisplayValueSeparatorAttribute() ?>" name="x_tipomercaderia[]" id="x_tipomercaderia[]" value="<?php echo $viewsolicitudsupervisor->tipomercaderia->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipomercaderia->EditAttributes() ?>>
@@ -4504,7 +4504,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<div class="<?php echo $viewsolicitudsupervisor_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudsupervisor->tipoespecial->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipoespecial">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($viewsolicitudsupervisor->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipoespecial->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($viewsolicitudsupervisor->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipoespecial->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipoespecial->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoespecial',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipoespecial->ReadOnly || $viewsolicitudsupervisor->tipoespecial->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipoespecial" data-page="6" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipoespecial->DisplayValueSeparatorAttribute() ?>" name="x_tipoespecial" id="x_tipoespecial" value="<?php echo $viewsolicitudsupervisor->tipoespecial->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipoespecial->EditAttributes() ?>>
@@ -4517,7 +4517,7 @@ $viewsolicitudsupervisor_edit->ShowMessage();
 		<td<?php echo $viewsolicitudsupervisor->tipoespecial->CellAttributes() ?>>
 <span id="el_viewsolicitudsupervisor_tipoespecial">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($viewsolicitudsupervisor->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipoespecial->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_tipoespecial"><?php echo (strval($viewsolicitudsupervisor->tipoespecial->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $viewsolicitudsupervisor->tipoespecial->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($viewsolicitudsupervisor->tipoespecial->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_tipoespecial',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($viewsolicitudsupervisor->tipoespecial->ReadOnly || $viewsolicitudsupervisor->tipoespecial->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="viewsolicitudsupervisor" data-field="x_tipoespecial" data-page="6" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $viewsolicitudsupervisor->tipoespecial->DisplayValueSeparatorAttribute() ?>" name="x_tipoespecial" id="x_tipoespecial" value="<?php echo $viewsolicitudsupervisor->tipoespecial->CurrentValue ?>"<?php echo $viewsolicitudsupervisor->tipoespecial->EditAttributes() ?>>

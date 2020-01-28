@@ -325,6 +325,9 @@ class cviewsolicitudframe_edit extends cviewsolicitudframe {
 
 		$objForm = new cFormObj();
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbOldSkipHeaderFooter = $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = TRUE;
 		$this->id->SetVisibility();
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
@@ -374,6 +377,8 @@ class cviewsolicitudframe_edit extends cviewsolicitudframe {
 	//
 	function Page_Terminate($url = "") {
 		global $gsExportFile, $gTmpImages;
+		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
+		$gbSkipHeaderFooter = $gbOldSkipHeaderFooter;
 
 		// Page Unload event
 		$this->Page_Unload();
@@ -427,7 +432,6 @@ class cviewsolicitudframe_edit extends cviewsolicitudframe {
 				header("Location: " . $url);
 			}
 		}
-		exit();
 	}
 	var $FormClassName = "form-horizontal ewForm ewEditForm";
 	var $IsModal = FALSE;

@@ -9,6 +9,8 @@ ob_start(); // Turn on output buffering
 <?php include_once "solicitudinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
 <?php include_once "documentosavaluogridcls.php" ?>
+<?php include_once "pago_avaluogridcls.php" ?>
+<?php include_once "comentariosavaluogridcls.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -409,8 +411,11 @@ class cavaluo_list extends cavaluo {
 		// 
 		// Security = null;
 		// 
-		// Get export parameters
+		// Create form object
 
+		$objForm = new cFormObj();
+
+		// Get export parameters
 		$custom = "";
 		if (@$_GET["export"] <> "") {
 			$this->Export = $_GET["export"];
@@ -464,11 +469,14 @@ class cavaluo_list extends cavaluo {
 		$this->tipoinmueble->SetVisibility();
 		$this->id_solicitud->SetVisibility();
 		$this->id_oficialcredito->SetVisibility();
-		$this->id_cliente->SetVisibility();
+		$this->id_inspector->SetVisibility();
 		$this->estado->SetVisibility();
 		$this->estadointerno->SetVisibility();
 		$this->estadopago->SetVisibility();
 		$this->fecha_avaluo->SetVisibility();
+		$this->monto_pago->SetVisibility();
+		$this->montoincial->SetVisibility();
+		$this->comentario->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -496,6 +504,26 @@ class cavaluo_list extends cavaluo {
 					if (preg_match('/^fdocumentosavaluo(grid|add|addopt|edit|update|search)$/', @$_POST["form"])) {
 						if (!isset($GLOBALS["documentosavaluo_grid"])) $GLOBALS["documentosavaluo_grid"] = new cdocumentosavaluo_grid;
 						$GLOBALS["documentosavaluo_grid"]->Page_Init();
+						$this->Page_Terminate();
+						exit();
+					}
+				}
+				if (in_array("pago_avaluo", $DetailTblVar)) {
+
+					// Process auto fill for detail table 'pago_avaluo'
+					if (preg_match('/^fpago_avaluo(grid|add|addopt|edit|update|search)$/', @$_POST["form"])) {
+						if (!isset($GLOBALS["pago_avaluo_grid"])) $GLOBALS["pago_avaluo_grid"] = new cpago_avaluo_grid;
+						$GLOBALS["pago_avaluo_grid"]->Page_Init();
+						$this->Page_Terminate();
+						exit();
+					}
+				}
+				if (in_array("comentariosavaluo", $DetailTblVar)) {
+
+					// Process auto fill for detail table 'comentariosavaluo'
+					if (preg_match('/^fcomentariosavaluo(grid|add|addopt|edit|update|search)$/', @$_POST["form"])) {
+						if (!isset($GLOBALS["comentariosavaluo_grid"])) $GLOBALS["comentariosavaluo_grid"] = new ccomentariosavaluo_grid;
+						$GLOBALS["comentariosavaluo_grid"]->Page_Init();
 						$this->Page_Terminate();
 						exit();
 					}
@@ -652,6 +680,27 @@ class cavaluo_list extends cavaluo {
 			// Set up Breadcrumb
 			if ($this->Export == "")
 				$this->SetupBreadcrumb();
+
+			// Check QueryString parameters
+			if (@$_GET["a"] <> "") {
+				$this->CurrentAction = $_GET["a"];
+
+				// Clear inline mode
+				if ($this->CurrentAction == "cancel")
+					$this->ClearInlineMode();
+
+				// Switch to inline edit mode
+				if ($this->CurrentAction == "edit")
+					$this->InlineEditMode();
+			} else {
+				if (@$_POST["a_list"] <> "") {
+					$this->CurrentAction = $_POST["a_list"]; // Get action
+
+					// Inline Update
+					if (($this->CurrentAction == "update" || $this->CurrentAction == "overwrite") && @$_SESSION[EW_SESSION_INLINE_MODE] == "edit")
+						$this->InlineUpdate();
+				}
+			}
 
 			// Hide list options
 			if ($this->Export <> "") {
@@ -817,6 +866,79 @@ class cavaluo_list extends cavaluo {
 		}
 	}
 
+	// Exit inline mode
+	function ClearInlineMode() {
+		$this->setKey("id", ""); // Clear inline edit key
+		$this->monto_pago->FormValue = ""; // Clear form value
+		$this->montoincial->FormValue = ""; // Clear form value
+		$this->LastAction = $this->CurrentAction; // Save last action
+		$this->CurrentAction = ""; // Clear action
+		$_SESSION[EW_SESSION_INLINE_MODE] = ""; // Clear inline mode
+	}
+
+	// Switch to Inline Edit mode
+	function InlineEditMode() {
+		global $Security, $Language;
+		if (!$Security->CanEdit())
+			$this->Page_Terminate("login.php"); // Go to login page
+		$bInlineEdit = TRUE;
+		if (isset($_GET["id"])) {
+			$this->id->setQueryStringValue($_GET["id"]);
+		} else {
+			$bInlineEdit = FALSE;
+		}
+		if ($bInlineEdit) {
+			if ($this->LoadRow()) {
+				$this->setKey("id", $this->id->CurrentValue); // Set up inline edit key
+				$_SESSION[EW_SESSION_INLINE_MODE] = "edit"; // Enable inline edit
+			}
+		}
+	}
+
+	// Perform update to Inline Edit record
+	function InlineUpdate() {
+		global $Language, $objForm, $gsFormError;
+		$objForm->Index = 1;
+		$this->LoadFormValues(); // Get form values
+
+		// Validate form
+		$bInlineUpdate = TRUE;
+		if (!$this->ValidateForm()) {
+			$bInlineUpdate = FALSE; // Form error, reset action
+			$this->setFailureMessage($gsFormError);
+		} else {
+			$bInlineUpdate = FALSE;
+			$rowkey = strval($objForm->GetValue($this->FormKeyName));
+			if ($this->SetupKeyValues($rowkey)) { // Set up key values
+				if ($this->CheckInlineEditKey()) { // Check key
+					$this->SendEmail = TRUE; // Send email on update success
+					$bInlineUpdate = $this->EditRow(); // Update record
+				} else {
+					$bInlineUpdate = FALSE;
+				}
+			}
+		}
+		if ($bInlineUpdate) { // Update success
+			if ($this->getSuccessMessage() == "")
+				$this->setSuccessMessage($Language->Phrase("UpdateSuccess")); // Set up success message
+			$this->ClearInlineMode(); // Clear inline edit mode
+		} else {
+			if ($this->getFailureMessage() == "")
+				$this->setFailureMessage($Language->Phrase("UpdateFailed")); // Set update failed message
+			$this->EventCancelled = TRUE; // Cancel event
+			$this->CurrentAction = "edit"; // Stay in edit mode
+		}
+	}
+
+	// Check Inline Edit key
+	function CheckInlineEditKey() {
+
+		//CheckInlineEditKey = True
+		if (strval($this->getKey("id")) <> strval($this->id->CurrentValue))
+			return FALSE;
+		return TRUE;
+	}
+
 	// Build filter for all keys
 	function BuildKeyFilter() {
 		global $objForm;
@@ -866,14 +988,9 @@ class cavaluo_list extends cavaluo {
 		// Load server side filters
 		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
 			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "favaluolistsrch");
-		$sFilterList = ew_Concat($sFilterList, $this->id->AdvancedSearch->ToJson(), ","); // Field id
-		$sFilterList = ew_Concat($sFilterList, $this->id_solicitud->AdvancedSearch->ToJson(), ","); // Field id_solicitud
-		$sFilterList = ew_Concat($sFilterList, $this->id_oficialcredito->AdvancedSearch->ToJson(), ","); // Field id_oficialcredito
-		$sFilterList = ew_Concat($sFilterList, $this->id_cliente->AdvancedSearch->ToJson(), ","); // Field id_cliente
-		$sFilterList = ew_Concat($sFilterList, $this->estado->AdvancedSearch->ToJson(), ","); // Field estado
-		$sFilterList = ew_Concat($sFilterList, $this->estadointerno->AdvancedSearch->ToJson(), ","); // Field estadointerno
-		$sFilterList = ew_Concat($sFilterList, $this->fecha_avaluo->AdvancedSearch->ToJson(), ","); // Field fecha_avaluo
-		$sFilterList = ew_Concat($sFilterList, $this->id_sucursal->AdvancedSearch->ToJson(), ","); // Field id_sucursal
+		$sFilterList = ew_Concat($sFilterList, $this->codigoavaluo->AdvancedSearch->ToJson(), ","); // Field codigoavaluo
+		$sFilterList = ew_Concat($sFilterList, $this->monto_pago->AdvancedSearch->ToJson(), ","); // Field monto_pago
+		$sFilterList = ew_Concat($sFilterList, $this->comentario->AdvancedSearch->ToJson(), ","); // Field comentario
 		$sFilterList = preg_replace('/,$/', "", $sFilterList);
 
 		// Return filter list in json
@@ -914,69 +1031,29 @@ class cavaluo_list extends cavaluo {
 		$filter = json_decode(@$_POST["filter"], TRUE);
 		$this->Command = "search";
 
-		// Field id
-		$this->id->AdvancedSearch->SearchValue = @$filter["x_id"];
-		$this->id->AdvancedSearch->SearchOperator = @$filter["z_id"];
-		$this->id->AdvancedSearch->SearchCondition = @$filter["v_id"];
-		$this->id->AdvancedSearch->SearchValue2 = @$filter["y_id"];
-		$this->id->AdvancedSearch->SearchOperator2 = @$filter["w_id"];
-		$this->id->AdvancedSearch->Save();
+		// Field codigoavaluo
+		$this->codigoavaluo->AdvancedSearch->SearchValue = @$filter["x_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->SearchOperator = @$filter["z_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->SearchCondition = @$filter["v_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->SearchValue2 = @$filter["y_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->SearchOperator2 = @$filter["w_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->Save();
 
-		// Field id_solicitud
-		$this->id_solicitud->AdvancedSearch->SearchValue = @$filter["x_id_solicitud"];
-		$this->id_solicitud->AdvancedSearch->SearchOperator = @$filter["z_id_solicitud"];
-		$this->id_solicitud->AdvancedSearch->SearchCondition = @$filter["v_id_solicitud"];
-		$this->id_solicitud->AdvancedSearch->SearchValue2 = @$filter["y_id_solicitud"];
-		$this->id_solicitud->AdvancedSearch->SearchOperator2 = @$filter["w_id_solicitud"];
-		$this->id_solicitud->AdvancedSearch->Save();
+		// Field monto_pago
+		$this->monto_pago->AdvancedSearch->SearchValue = @$filter["x_monto_pago"];
+		$this->monto_pago->AdvancedSearch->SearchOperator = @$filter["z_monto_pago"];
+		$this->monto_pago->AdvancedSearch->SearchCondition = @$filter["v_monto_pago"];
+		$this->monto_pago->AdvancedSearch->SearchValue2 = @$filter["y_monto_pago"];
+		$this->monto_pago->AdvancedSearch->SearchOperator2 = @$filter["w_monto_pago"];
+		$this->monto_pago->AdvancedSearch->Save();
 
-		// Field id_oficialcredito
-		$this->id_oficialcredito->AdvancedSearch->SearchValue = @$filter["x_id_oficialcredito"];
-		$this->id_oficialcredito->AdvancedSearch->SearchOperator = @$filter["z_id_oficialcredito"];
-		$this->id_oficialcredito->AdvancedSearch->SearchCondition = @$filter["v_id_oficialcredito"];
-		$this->id_oficialcredito->AdvancedSearch->SearchValue2 = @$filter["y_id_oficialcredito"];
-		$this->id_oficialcredito->AdvancedSearch->SearchOperator2 = @$filter["w_id_oficialcredito"];
-		$this->id_oficialcredito->AdvancedSearch->Save();
-
-		// Field id_cliente
-		$this->id_cliente->AdvancedSearch->SearchValue = @$filter["x_id_cliente"];
-		$this->id_cliente->AdvancedSearch->SearchOperator = @$filter["z_id_cliente"];
-		$this->id_cliente->AdvancedSearch->SearchCondition = @$filter["v_id_cliente"];
-		$this->id_cliente->AdvancedSearch->SearchValue2 = @$filter["y_id_cliente"];
-		$this->id_cliente->AdvancedSearch->SearchOperator2 = @$filter["w_id_cliente"];
-		$this->id_cliente->AdvancedSearch->Save();
-
-		// Field estado
-		$this->estado->AdvancedSearch->SearchValue = @$filter["x_estado"];
-		$this->estado->AdvancedSearch->SearchOperator = @$filter["z_estado"];
-		$this->estado->AdvancedSearch->SearchCondition = @$filter["v_estado"];
-		$this->estado->AdvancedSearch->SearchValue2 = @$filter["y_estado"];
-		$this->estado->AdvancedSearch->SearchOperator2 = @$filter["w_estado"];
-		$this->estado->AdvancedSearch->Save();
-
-		// Field estadointerno
-		$this->estadointerno->AdvancedSearch->SearchValue = @$filter["x_estadointerno"];
-		$this->estadointerno->AdvancedSearch->SearchOperator = @$filter["z_estadointerno"];
-		$this->estadointerno->AdvancedSearch->SearchCondition = @$filter["v_estadointerno"];
-		$this->estadointerno->AdvancedSearch->SearchValue2 = @$filter["y_estadointerno"];
-		$this->estadointerno->AdvancedSearch->SearchOperator2 = @$filter["w_estadointerno"];
-		$this->estadointerno->AdvancedSearch->Save();
-
-		// Field fecha_avaluo
-		$this->fecha_avaluo->AdvancedSearch->SearchValue = @$filter["x_fecha_avaluo"];
-		$this->fecha_avaluo->AdvancedSearch->SearchOperator = @$filter["z_fecha_avaluo"];
-		$this->fecha_avaluo->AdvancedSearch->SearchCondition = @$filter["v_fecha_avaluo"];
-		$this->fecha_avaluo->AdvancedSearch->SearchValue2 = @$filter["y_fecha_avaluo"];
-		$this->fecha_avaluo->AdvancedSearch->SearchOperator2 = @$filter["w_fecha_avaluo"];
-		$this->fecha_avaluo->AdvancedSearch->Save();
-
-		// Field id_sucursal
-		$this->id_sucursal->AdvancedSearch->SearchValue = @$filter["x_id_sucursal"];
-		$this->id_sucursal->AdvancedSearch->SearchOperator = @$filter["z_id_sucursal"];
-		$this->id_sucursal->AdvancedSearch->SearchCondition = @$filter["v_id_sucursal"];
-		$this->id_sucursal->AdvancedSearch->SearchValue2 = @$filter["y_id_sucursal"];
-		$this->id_sucursal->AdvancedSearch->SearchOperator2 = @$filter["w_id_sucursal"];
-		$this->id_sucursal->AdvancedSearch->Save();
+		// Field comentario
+		$this->comentario->AdvancedSearch->SearchValue = @$filter["x_comentario"];
+		$this->comentario->AdvancedSearch->SearchOperator = @$filter["z_comentario"];
+		$this->comentario->AdvancedSearch->SearchCondition = @$filter["v_comentario"];
+		$this->comentario->AdvancedSearch->SearchValue2 = @$filter["y_comentario"];
+		$this->comentario->AdvancedSearch->SearchOperator2 = @$filter["w_comentario"];
+		$this->comentario->AdvancedSearch->Save();
 	}
 
 	// Advanced search WHERE clause based on QueryString
@@ -984,28 +1061,18 @@ class cavaluo_list extends cavaluo {
 		global $Security;
 		$sWhere = "";
 		if (!$Security->CanSearch()) return "";
-		$this->BuildSearchSql($sWhere, $this->id, $Default, FALSE); // id
-		$this->BuildSearchSql($sWhere, $this->id_solicitud, $Default, FALSE); // id_solicitud
-		$this->BuildSearchSql($sWhere, $this->id_oficialcredito, $Default, FALSE); // id_oficialcredito
-		$this->BuildSearchSql($sWhere, $this->id_cliente, $Default, FALSE); // id_cliente
-		$this->BuildSearchSql($sWhere, $this->estado, $Default, FALSE); // estado
-		$this->BuildSearchSql($sWhere, $this->estadointerno, $Default, FALSE); // estadointerno
-		$this->BuildSearchSql($sWhere, $this->fecha_avaluo, $Default, FALSE); // fecha_avaluo
-		$this->BuildSearchSql($sWhere, $this->id_sucursal, $Default, FALSE); // id_sucursal
+		$this->BuildSearchSql($sWhere, $this->codigoavaluo, $Default, FALSE); // codigoavaluo
+		$this->BuildSearchSql($sWhere, $this->monto_pago, $Default, FALSE); // monto_pago
+		$this->BuildSearchSql($sWhere, $this->comentario, $Default, FALSE); // comentario
 
 		// Set up search parm
 		if (!$Default && $sWhere <> "" && in_array($this->Command, array("", "reset", "resetall"))) {
 			$this->Command = "search";
 		}
 		if (!$Default && $this->Command == "search") {
-			$this->id->AdvancedSearch->Save(); // id
-			$this->id_solicitud->AdvancedSearch->Save(); // id_solicitud
-			$this->id_oficialcredito->AdvancedSearch->Save(); // id_oficialcredito
-			$this->id_cliente->AdvancedSearch->Save(); // id_cliente
-			$this->estado->AdvancedSearch->Save(); // estado
-			$this->estadointerno->AdvancedSearch->Save(); // estadointerno
-			$this->fecha_avaluo->AdvancedSearch->Save(); // fecha_avaluo
-			$this->id_sucursal->AdvancedSearch->Save(); // id_sucursal
+			$this->codigoavaluo->AdvancedSearch->Save(); // codigoavaluo
+			$this->monto_pago->AdvancedSearch->Save(); // monto_pago
+			$this->comentario->AdvancedSearch->Save(); // comentario
 		}
 		return $sWhere;
 	}
@@ -1056,21 +1123,11 @@ class cavaluo_list extends cavaluo {
 
 	// Check if search parm exists
 	function CheckSearchParms() {
-		if ($this->id->AdvancedSearch->IssetSession())
+		if ($this->codigoavaluo->AdvancedSearch->IssetSession())
 			return TRUE;
-		if ($this->id_solicitud->AdvancedSearch->IssetSession())
+		if ($this->monto_pago->AdvancedSearch->IssetSession())
 			return TRUE;
-		if ($this->id_oficialcredito->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->id_cliente->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->estado->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->estadointerno->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->fecha_avaluo->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->id_sucursal->AdvancedSearch->IssetSession())
+		if ($this->comentario->AdvancedSearch->IssetSession())
 			return TRUE;
 		return FALSE;
 	}
@@ -1093,14 +1150,9 @@ class cavaluo_list extends cavaluo {
 
 	// Clear all advanced search parameters
 	function ResetAdvancedSearchParms() {
-		$this->id->AdvancedSearch->UnsetSession();
-		$this->id_solicitud->AdvancedSearch->UnsetSession();
-		$this->id_oficialcredito->AdvancedSearch->UnsetSession();
-		$this->id_cliente->AdvancedSearch->UnsetSession();
-		$this->estado->AdvancedSearch->UnsetSession();
-		$this->estadointerno->AdvancedSearch->UnsetSession();
-		$this->fecha_avaluo->AdvancedSearch->UnsetSession();
-		$this->id_sucursal->AdvancedSearch->UnsetSession();
+		$this->codigoavaluo->AdvancedSearch->UnsetSession();
+		$this->monto_pago->AdvancedSearch->UnsetSession();
+		$this->comentario->AdvancedSearch->UnsetSession();
 	}
 
 	// Restore all search parameters
@@ -1108,35 +1160,30 @@ class cavaluo_list extends cavaluo {
 		$this->RestoreSearch = TRUE;
 
 		// Restore advanced search values
-		$this->id->AdvancedSearch->Load();
-		$this->id_solicitud->AdvancedSearch->Load();
-		$this->id_oficialcredito->AdvancedSearch->Load();
-		$this->id_cliente->AdvancedSearch->Load();
-		$this->estado->AdvancedSearch->Load();
-		$this->estadointerno->AdvancedSearch->Load();
-		$this->fecha_avaluo->AdvancedSearch->Load();
-		$this->id_sucursal->AdvancedSearch->Load();
+		$this->codigoavaluo->AdvancedSearch->Load();
+		$this->monto_pago->AdvancedSearch->Load();
+		$this->comentario->AdvancedSearch->Load();
 	}
 
 	// Set up sort parameters
 	function SetupSortOrder() {
 
-		// Check for Ctrl pressed
-		$bCtrl = (@$_GET["ctrl"] <> "");
-
 		// Check for "order" parameter
 		if (@$_GET["order"] <> "") {
 			$this->CurrentOrder = @$_GET["order"];
 			$this->CurrentOrderType = @$_GET["ordertype"];
-			$this->UpdateSort($this->codigoavaluo, $bCtrl); // codigoavaluo
-			$this->UpdateSort($this->tipoinmueble, $bCtrl); // tipoinmueble
-			$this->UpdateSort($this->id_solicitud, $bCtrl); // id_solicitud
-			$this->UpdateSort($this->id_oficialcredito, $bCtrl); // id_oficialcredito
-			$this->UpdateSort($this->id_cliente, $bCtrl); // id_cliente
-			$this->UpdateSort($this->estado, $bCtrl); // estado
-			$this->UpdateSort($this->estadointerno, $bCtrl); // estadointerno
-			$this->UpdateSort($this->estadopago, $bCtrl); // estadopago
-			$this->UpdateSort($this->fecha_avaluo, $bCtrl); // fecha_avaluo
+			$this->UpdateSort($this->codigoavaluo); // codigoavaluo
+			$this->UpdateSort($this->tipoinmueble); // tipoinmueble
+			$this->UpdateSort($this->id_solicitud); // id_solicitud
+			$this->UpdateSort($this->id_oficialcredito); // id_oficialcredito
+			$this->UpdateSort($this->id_inspector); // id_inspector
+			$this->UpdateSort($this->estado); // estado
+			$this->UpdateSort($this->estadointerno); // estadointerno
+			$this->UpdateSort($this->estadopago); // estadopago
+			$this->UpdateSort($this->fecha_avaluo); // fecha_avaluo
+			$this->UpdateSort($this->monto_pago); // monto_pago
+			$this->UpdateSort($this->montoincial); // montoincial
+			$this->UpdateSort($this->comentario); // comentario
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1182,11 +1229,14 @@ class cavaluo_list extends cavaluo {
 				$this->tipoinmueble->setSort("");
 				$this->id_solicitud->setSort("");
 				$this->id_oficialcredito->setSort("");
-				$this->id_cliente->setSort("");
+				$this->id_inspector->setSort("");
 				$this->estado->setSort("");
 				$this->estadointerno->setSort("");
 				$this->estadopago->setSort("");
 				$this->fecha_avaluo->setSort("");
+				$this->monto_pago->setSort("");
+				$this->montoincial->setSort("");
+				$this->comentario->setSort("");
 			}
 
 			// Reset start position
@@ -1219,6 +1269,22 @@ class cavaluo_list extends cavaluo {
 		$item->ShowInButtonGroup = FALSE;
 		if (!isset($GLOBALS["documentosavaluo_grid"])) $GLOBALS["documentosavaluo_grid"] = new cdocumentosavaluo_grid;
 
+		// "detail_pago_avaluo"
+		$item = &$this->ListOptions->Add("detail_pago_avaluo");
+		$item->CssClass = "text-nowrap";
+		$item->Visible = $Security->AllowList(CurrentProjectID() . 'pago_avaluo') && !$this->ShowMultipleDetails;
+		$item->OnLeft = TRUE;
+		$item->ShowInButtonGroup = FALSE;
+		if (!isset($GLOBALS["pago_avaluo_grid"])) $GLOBALS["pago_avaluo_grid"] = new cpago_avaluo_grid;
+
+		// "detail_comentariosavaluo"
+		$item = &$this->ListOptions->Add("detail_comentariosavaluo");
+		$item->CssClass = "text-nowrap";
+		$item->Visible = $Security->AllowList(CurrentProjectID() . 'comentariosavaluo') && !$this->ShowMultipleDetails;
+		$item->OnLeft = TRUE;
+		$item->ShowInButtonGroup = FALSE;
+		if (!isset($GLOBALS["comentariosavaluo_grid"])) $GLOBALS["comentariosavaluo_grid"] = new ccomentariosavaluo_grid;
+
 		// Multiple details
 		if ($this->ShowMultipleDetails) {
 			$item = &$this->ListOptions->Add("details");
@@ -1231,6 +1297,8 @@ class cavaluo_list extends cavaluo {
 		// Set up detail pages
 		$pages = new cSubPages();
 		$pages->Add("documentosavaluo");
+		$pages->Add("pago_avaluo");
+		$pages->Add("comentariosavaluo");
 		$this->DetailPages = $pages;
 
 		// List actions
@@ -1252,7 +1320,7 @@ class cavaluo_list extends cavaluo {
 
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
-		$this->ListOptions->UseDropDownButton = TRUE;
+		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
 		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
@@ -1274,11 +1342,41 @@ class cavaluo_list extends cavaluo {
 		// Call ListOptions_Rendering event
 		$this->ListOptions_Rendering();
 
+		// Set up row action and key
+		if (is_numeric($this->RowIndex) && $this->CurrentMode <> "view") {
+			$objForm->Index = $this->RowIndex;
+			$ActionName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormActionName);
+			$OldKeyName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormOldKeyName);
+			$KeyName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormKeyName);
+			$BlankRowName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormBlankRowName);
+			if ($this->RowAction <> "")
+				$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $ActionName . "\" id=\"" . $ActionName . "\" value=\"" . $this->RowAction . "\">";
+			if ($this->RowAction == "delete") {
+				$rowkey = $objForm->GetValue($this->FormKeyName);
+				$this->SetupKeyValues($rowkey);
+			}
+			if ($this->RowAction == "insert" && $this->CurrentAction == "F" && $this->EmptyRow())
+				$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $BlankRowName . "\" id=\"" . $BlankRowName . "\" value=\"1\">";
+		}
+
+		// "edit"
+		$oListOpt = &$this->ListOptions->Items["edit"];
+		if ($this->CurrentAction == "edit" && $this->RowType == EW_ROWTYPE_EDIT) { // Inline-Edit
+			$this->ListOptions->CustomItem = "edit"; // Show edit column only
+			$cancelurl = $this->AddMasterUrl($this->PageUrl() . "a=cancel");
+				$oListOpt->Body = "<div" . (($oListOpt->OnLeft) ? " style=\"text-align: right\"" : "") . ">" .
+					"<a class=\"ewGridLink ewInlineUpdate\" title=\"" . ew_HtmlTitle($Language->Phrase("UpdateLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("UpdateLink")) . "\" href=\"\" onclick=\"return ewForms(this).Submit('" . ew_UrlAddHash($this->PageName(), "r" . $this->RowCnt . "_" . $this->TableVar) . "');\">" . $Language->Phrase("UpdateLink") . "</a>&nbsp;" .
+					"<a class=\"ewGridLink ewInlineCancel\" title=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" href=\"" . $cancelurl . "\">" . $Language->Phrase("CancelLink") . "</a>" .
+					"<input type=\"hidden\" name=\"a_list\" id=\"a_list\" value=\"update\"></div>";
+			$oListOpt->Body .= "<input type=\"hidden\" name=\"k" . $this->RowIndex . "_key\" id=\"k" . $this->RowIndex . "_key\" value=\"" . ew_HtmlEncode($this->id->CurrentValue) . "\">";
+			return;
+		}
+
 		// "edit"
 		$oListOpt = &$this->ListOptions->Items["edit"];
 		$editcaption = ew_HtmlTitle($Language->Phrase("EditLink"));
 		if ($Security->CanEdit()) {
-			$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
+			$oListOpt->Body .= "<a class=\"ewRowLink ewInlineEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" href=\"" . ew_HtmlEncode(ew_UrlAddHash($this->InlineEditUrl, "r" . $this->RowCnt . "_" . $this->TableVar)) . "\">" . $Language->Phrase("InlineEditLink") . "</a>";
 		} else {
 			$oListOpt->Body = "";
 		}
@@ -1321,13 +1419,36 @@ class cavaluo_list extends cavaluo {
 			$body = $Language->Phrase("DetailLink") . $Language->TablePhrase("documentosavaluo", "TblCaption");
 			$body = "<a class=\"btn btn-default btn-sm ewRowLink ewDetail\" data-action=\"list\" href=\"" . ew_HtmlEncode("documentosavaluolist.php?" . EW_TABLE_SHOW_MASTER . "=avaluo&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "") . "\">" . $body . "</a>";
 			$links = "";
-			if ($GLOBALS["documentosavaluo_grid"]->DetailEdit && $Security->CanEdit() && $Security->AllowEdit(CurrentProjectID() . 'documentosavaluo')) {
-				$caption = $Language->Phrase("MasterDetailEditLink");
-				$url = $this->GetEditUrl(EW_TABLE_SHOW_DETAIL . "=documentosavaluo");
-				$links .= "<li><a class=\"ewRowLink ewDetailEdit\" data-action=\"edit\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"" . ew_HtmlEncode($url) . "\">" . ew_HtmlImageAndText($caption) . "</a></li>";
-				if ($DetailEditTblVar <> "") $DetailEditTblVar .= ",";
-				$DetailEditTblVar .= "documentosavaluo";
+			if ($links <> "") {
+				$body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewDetail\" data-toggle=\"dropdown\"><b class=\"caret\"></b></button>";
+				$body .= "<ul class=\"dropdown-menu\">". $links . "</ul>";
 			}
+			$body = "<div class=\"btn-group\">" . $body . "</div>";
+			$oListOpt->Body = $body;
+			if ($this->ShowMultipleDetails) $oListOpt->Visible = FALSE;
+		}
+
+		// "detail_pago_avaluo"
+		$oListOpt = &$this->ListOptions->Items["detail_pago_avaluo"];
+		if ($Security->AllowList(CurrentProjectID() . 'pago_avaluo')) {
+			$body = $Language->Phrase("DetailLink") . $Language->TablePhrase("pago_avaluo", "TblCaption");
+			$body = "<a class=\"btn btn-default btn-sm ewRowLink ewDetail\" data-action=\"list\" href=\"" . ew_HtmlEncode("pago_avaluolist.php?" . EW_TABLE_SHOW_MASTER . "=avaluo&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "") . "\">" . $body . "</a>";
+			$links = "";
+			if ($links <> "") {
+				$body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewDetail\" data-toggle=\"dropdown\"><b class=\"caret\"></b></button>";
+				$body .= "<ul class=\"dropdown-menu\">". $links . "</ul>";
+			}
+			$body = "<div class=\"btn-group\">" . $body . "</div>";
+			$oListOpt->Body = $body;
+			if ($this->ShowMultipleDetails) $oListOpt->Visible = FALSE;
+		}
+
+		// "detail_comentariosavaluo"
+		$oListOpt = &$this->ListOptions->Items["detail_comentariosavaluo"];
+		if ($Security->AllowList(CurrentProjectID() . 'comentariosavaluo')) {
+			$body = $Language->Phrase("DetailLink") . $Language->TablePhrase("comentariosavaluo", "TblCaption");
+			$body = "<a class=\"btn btn-default btn-sm ewRowLink ewDetail\" data-action=\"list\" href=\"" . ew_HtmlEncode("comentariosavaluolist.php?" . EW_TABLE_SHOW_MASTER . "=avaluo&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "") . "\">" . $body . "</a>";
+			$links = "";
 			if ($links <> "") {
 				$body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewDetail\" data-toggle=\"dropdown\"><b class=\"caret\"></b></button>";
 				$body .= "<ul class=\"dropdown-menu\">". $links . "</ul>";
@@ -1394,6 +1515,24 @@ class cavaluo_list extends cavaluo {
 			if ($DetailTableLink <> "") $DetailTableLink .= ",";
 			$DetailTableLink .= "documentosavaluo";
 		}
+		$item = &$option->Add("detailadd_pago_avaluo");
+		$url = $this->GetAddUrl(EW_TABLE_SHOW_DETAIL . "=pago_avaluo");
+		$caption = $Language->Phrase("Add") . "&nbsp;" . $this->TableCaption() . "/" . $GLOBALS["pago_avaluo"]->TableCaption();
+		$item->Body = "<a class=\"ewDetailAddGroup ewDetailAdd\" title=\"" . ew_HtmlTitle($caption) . "\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"" . ew_HtmlEncode($url) . "\">" . $caption . "</a>";
+		$item->Visible = ($GLOBALS["pago_avaluo"]->DetailAdd && $Security->AllowAdd(CurrentProjectID() . 'pago_avaluo') && $Security->CanAdd());
+		if ($item->Visible) {
+			if ($DetailTableLink <> "") $DetailTableLink .= ",";
+			$DetailTableLink .= "pago_avaluo";
+		}
+		$item = &$option->Add("detailadd_comentariosavaluo");
+		$url = $this->GetAddUrl(EW_TABLE_SHOW_DETAIL . "=comentariosavaluo");
+		$caption = $Language->Phrase("Add") . "&nbsp;" . $this->TableCaption() . "/" . $GLOBALS["comentariosavaluo"]->TableCaption();
+		$item->Body = "<a class=\"ewDetailAddGroup ewDetailAdd\" title=\"" . ew_HtmlTitle($caption) . "\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"" . ew_HtmlEncode($url) . "\">" . $caption . "</a>";
+		$item->Visible = ($GLOBALS["comentariosavaluo"]->DetailAdd && $Security->AllowAdd(CurrentProjectID() . 'comentariosavaluo') && $Security->CanAdd());
+		if ($item->Visible) {
+			if ($DetailTableLink <> "") $DetailTableLink .= ",";
+			$DetailTableLink .= "comentariosavaluo";
+		}
 
 		// Add multiple details
 		if ($this->ShowMultipleDetails) {
@@ -1421,7 +1560,7 @@ class cavaluo_list extends cavaluo {
 		// Set up options default
 		foreach ($options as &$option) {
 			$option->UseImageAndText = TRUE;
-			$option->UseDropDownButton = TRUE;
+			$option->UseDropDownButton = FALSE;
 			$option->UseButtonGroup = TRUE;
 			$option->ButtonClass = "btn-sm"; // Class for button group
 			$item = &$option->Add($option->GroupOptionName);
@@ -1638,51 +1777,142 @@ class cavaluo_list extends cavaluo {
 		}
 	}
 
+	// Load default values
+	function LoadDefaultValues() {
+		$this->id->CurrentValue = NULL;
+		$this->id->OldValue = $this->id->CurrentValue;
+		$this->codigoavaluo->CurrentValue = NULL;
+		$this->codigoavaluo->OldValue = $this->codigoavaluo->CurrentValue;
+		$this->tipoinmueble->CurrentValue = NULL;
+		$this->tipoinmueble->OldValue = $this->tipoinmueble->CurrentValue;
+		$this->id_solicitud->CurrentValue = NULL;
+		$this->id_solicitud->OldValue = $this->id_solicitud->CurrentValue;
+		$this->id_oficialcredito->CurrentValue = NULL;
+		$this->id_oficialcredito->OldValue = $this->id_oficialcredito->CurrentValue;
+		$this->id_inspector->CurrentValue = NULL;
+		$this->id_inspector->OldValue = $this->id_inspector->CurrentValue;
+		$this->is_active->CurrentValue = 1;
+		$this->created_at->CurrentValue = NULL;
+		$this->created_at->OldValue = $this->created_at->CurrentValue;
+		$this->id_cliente->CurrentValue = NULL;
+		$this->id_cliente->OldValue = $this->id_cliente->CurrentValue;
+		$this->estado->CurrentValue = 1;
+		$this->estadointerno->CurrentValue = 1;
+		$this->estadopago->CurrentValue = 1;
+		$this->fecha_avaluo->CurrentValue = NULL;
+		$this->fecha_avaluo->OldValue = $this->fecha_avaluo->CurrentValue;
+		$this->id_metodopago->CurrentValue = NULL;
+		$this->id_metodopago->OldValue = $this->id_metodopago->CurrentValue;
+		$this->DateModified->CurrentValue = NULL;
+		$this->DateModified->OldValue = $this->DateModified->CurrentValue;
+		$this->DateDeleted->CurrentValue = NULL;
+		$this->DateDeleted->OldValue = $this->DateDeleted->CurrentValue;
+		$this->CreatedBy->CurrentValue = NULL;
+		$this->CreatedBy->OldValue = $this->CreatedBy->CurrentValue;
+		$this->ModifiedBy->CurrentValue = NULL;
+		$this->ModifiedBy->OldValue = $this->ModifiedBy->CurrentValue;
+		$this->DeletedBy->CurrentValue = NULL;
+		$this->DeletedBy->OldValue = $this->DeletedBy->CurrentValue;
+		$this->id_sucursal->CurrentValue = NULL;
+		$this->id_sucursal->OldValue = $this->id_sucursal->CurrentValue;
+		$this->informe->Upload->DbValue = NULL;
+		$this->informe->OldValue = $this->informe->Upload->DbValue;
+		$this->monto_pago->CurrentValue = NULL;
+		$this->monto_pago->OldValue = $this->monto_pago->CurrentValue;
+		$this->montoincial->CurrentValue = NULL;
+		$this->montoincial->OldValue = $this->montoincial->CurrentValue;
+		$this->comentario->CurrentValue = NULL;
+		$this->comentario->OldValue = $this->comentario->CurrentValue;
+		$this->documento_pago->Upload->DbValue = NULL;
+		$this->documento_pago->OldValue = $this->documento_pago->Upload->DbValue;
+	}
+
 	// Load search values for validation
 	function LoadSearchValues() {
 		global $objForm;
 
 		// Load search values
-		// id
+		// codigoavaluo
 
-		$this->id->AdvancedSearch->SearchValue = @$_GET["x_id"];
-		if ($this->id->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->id->AdvancedSearch->SearchOperator = @$_GET["z_id"];
+		$this->codigoavaluo->AdvancedSearch->SearchValue = @$_GET["x_codigoavaluo"];
+		if ($this->codigoavaluo->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->codigoavaluo->AdvancedSearch->SearchOperator = @$_GET["z_codigoavaluo"];
 
-		// id_solicitud
-		$this->id_solicitud->AdvancedSearch->SearchValue = @$_GET["x_id_solicitud"];
-		if ($this->id_solicitud->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->id_solicitud->AdvancedSearch->SearchOperator = @$_GET["z_id_solicitud"];
+		// monto_pago
+		$this->monto_pago->AdvancedSearch->SearchValue = @$_GET["x_monto_pago"];
+		if ($this->monto_pago->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->monto_pago->AdvancedSearch->SearchOperator = @$_GET["z_monto_pago"];
 
-		// id_oficialcredito
-		$this->id_oficialcredito->AdvancedSearch->SearchValue = @$_GET["x_id_oficialcredito"];
-		if ($this->id_oficialcredito->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->id_oficialcredito->AdvancedSearch->SearchOperator = @$_GET["z_id_oficialcredito"];
+		// comentario
+		$this->comentario->AdvancedSearch->SearchValue = @$_GET["x_comentario"];
+		if ($this->comentario->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->comentario->AdvancedSearch->SearchOperator = @$_GET["z_comentario"];
+	}
 
-		// id_cliente
-		$this->id_cliente->AdvancedSearch->SearchValue = @$_GET["x_id_cliente"];
-		if ($this->id_cliente->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->id_cliente->AdvancedSearch->SearchOperator = @$_GET["z_id_cliente"];
+	// Load form values
+	function LoadFormValues() {
 
-		// estado
-		$this->estado->AdvancedSearch->SearchValue = @$_GET["x_estado"];
-		if ($this->estado->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->estado->AdvancedSearch->SearchOperator = @$_GET["z_estado"];
+		// Load from form
+		global $objForm;
+		if (!$this->codigoavaluo->FldIsDetailKey) {
+			$this->codigoavaluo->setFormValue($objForm->GetValue("x_codigoavaluo"));
+		}
+		if (!$this->tipoinmueble->FldIsDetailKey) {
+			$this->tipoinmueble->setFormValue($objForm->GetValue("x_tipoinmueble"));
+		}
+		if (!$this->id_solicitud->FldIsDetailKey) {
+			$this->id_solicitud->setFormValue($objForm->GetValue("x_id_solicitud"));
+		}
+		if (!$this->id_oficialcredito->FldIsDetailKey) {
+			$this->id_oficialcredito->setFormValue($objForm->GetValue("x_id_oficialcredito"));
+		}
+		if (!$this->id_inspector->FldIsDetailKey) {
+			$this->id_inspector->setFormValue($objForm->GetValue("x_id_inspector"));
+		}
+		if (!$this->estado->FldIsDetailKey) {
+			$this->estado->setFormValue($objForm->GetValue("x_estado"));
+		}
+		if (!$this->estadointerno->FldIsDetailKey) {
+			$this->estadointerno->setFormValue($objForm->GetValue("x_estadointerno"));
+		}
+		if (!$this->estadopago->FldIsDetailKey) {
+			$this->estadopago->setFormValue($objForm->GetValue("x_estadopago"));
+		}
+		if (!$this->fecha_avaluo->FldIsDetailKey) {
+			$this->fecha_avaluo->setFormValue($objForm->GetValue("x_fecha_avaluo"));
+			$this->fecha_avaluo->CurrentValue = ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 11);
+		}
+		if (!$this->monto_pago->FldIsDetailKey) {
+			$this->monto_pago->setFormValue($objForm->GetValue("x_monto_pago"));
+		}
+		if (!$this->montoincial->FldIsDetailKey) {
+			$this->montoincial->setFormValue($objForm->GetValue("x_montoincial"));
+		}
+		if (!$this->comentario->FldIsDetailKey) {
+			$this->comentario->setFormValue($objForm->GetValue("x_comentario"));
+		}
+		if (!$this->id->FldIsDetailKey && $this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
+			$this->id->setFormValue($objForm->GetValue("x_id"));
+	}
 
-		// estadointerno
-		$this->estadointerno->AdvancedSearch->SearchValue = @$_GET["x_estadointerno"];
-		if ($this->estadointerno->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->estadointerno->AdvancedSearch->SearchOperator = @$_GET["z_estadointerno"];
-
-		// fecha_avaluo
-		$this->fecha_avaluo->AdvancedSearch->SearchValue = @$_GET["x_fecha_avaluo"];
-		if ($this->fecha_avaluo->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->fecha_avaluo->AdvancedSearch->SearchOperator = @$_GET["z_fecha_avaluo"];
-
-		// id_sucursal
-		$this->id_sucursal->AdvancedSearch->SearchValue = @$_GET["x_id_sucursal"];
-		if ($this->id_sucursal->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->id_sucursal->AdvancedSearch->SearchOperator = @$_GET["z_id_sucursal"];
+	// Restore form values
+	function RestoreFormValues() {
+		global $objForm;
+		if ($this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
+			$this->id->CurrentValue = $this->id->FormValue;
+		$this->codigoavaluo->CurrentValue = $this->codigoavaluo->FormValue;
+		$this->tipoinmueble->CurrentValue = $this->tipoinmueble->FormValue;
+		$this->id_solicitud->CurrentValue = $this->id_solicitud->FormValue;
+		$this->id_oficialcredito->CurrentValue = $this->id_oficialcredito->FormValue;
+		$this->id_inspector->CurrentValue = $this->id_inspector->FormValue;
+		$this->estado->CurrentValue = $this->estado->FormValue;
+		$this->estadointerno->CurrentValue = $this->estadointerno->FormValue;
+		$this->estadopago->CurrentValue = $this->estadopago->FormValue;
+		$this->fecha_avaluo->CurrentValue = $this->fecha_avaluo->FormValue;
+		$this->fecha_avaluo->CurrentValue = ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 11);
+		$this->monto_pago->CurrentValue = $this->monto_pago->FormValue;
+		$this->montoincial->CurrentValue = $this->montoincial->FormValue;
+		$this->comentario->CurrentValue = $this->comentario->FormValue;
 	}
 
 	// Load recordset
@@ -1767,7 +1997,6 @@ class cavaluo_list extends cavaluo {
 		$this->estadointerno->setDbValue($row['estadointerno']);
 		$this->estadopago->setDbValue($row['estadopago']);
 		$this->fecha_avaluo->setDbValue($row['fecha_avaluo']);
-		$this->montoincial->setDbValue($row['montoincial']);
 		$this->id_metodopago->setDbValue($row['id_metodopago']);
 		$this->DateModified->setDbValue($row['DateModified']);
 		$this->DateDeleted->setDbValue($row['DateDeleted']);
@@ -1775,32 +2004,46 @@ class cavaluo_list extends cavaluo {
 		$this->ModifiedBy->setDbValue($row['ModifiedBy']);
 		$this->DeletedBy->setDbValue($row['DeletedBy']);
 		$this->id_sucursal->setDbValue($row['id_sucursal']);
+		$this->informe->Upload->DbValue = $row['informe'];
+		if (is_array($this->informe->Upload->DbValue) || is_object($this->informe->Upload->DbValue)) // Byte array
+			$this->informe->Upload->DbValue = ew_BytesToStr($this->informe->Upload->DbValue);
+		$this->monto_pago->setDbValue($row['monto_pago']);
+		$this->montoincial->setDbValue($row['montoincial']);
+		$this->comentario->setDbValue($row['comentario']);
+		$this->documento_pago->Upload->DbValue = $row['documento_pago'];
+		if (is_array($this->documento_pago->Upload->DbValue) || is_object($this->documento_pago->Upload->DbValue)) // Byte array
+			$this->documento_pago->Upload->DbValue = ew_BytesToStr($this->documento_pago->Upload->DbValue);
 	}
 
 	// Return a row with default values
 	function NewRow() {
+		$this->LoadDefaultValues();
 		$row = array();
-		$row['id'] = NULL;
-		$row['codigoavaluo'] = NULL;
-		$row['tipoinmueble'] = NULL;
-		$row['id_solicitud'] = NULL;
-		$row['id_oficialcredito'] = NULL;
-		$row['id_inspector'] = NULL;
-		$row['is_active'] = NULL;
-		$row['created_at'] = NULL;
-		$row['id_cliente'] = NULL;
-		$row['estado'] = NULL;
-		$row['estadointerno'] = NULL;
-		$row['estadopago'] = NULL;
-		$row['fecha_avaluo'] = NULL;
-		$row['montoincial'] = NULL;
-		$row['id_metodopago'] = NULL;
-		$row['DateModified'] = NULL;
-		$row['DateDeleted'] = NULL;
-		$row['CreatedBy'] = NULL;
-		$row['ModifiedBy'] = NULL;
-		$row['DeletedBy'] = NULL;
-		$row['id_sucursal'] = NULL;
+		$row['id'] = $this->id->CurrentValue;
+		$row['codigoavaluo'] = $this->codigoavaluo->CurrentValue;
+		$row['tipoinmueble'] = $this->tipoinmueble->CurrentValue;
+		$row['id_solicitud'] = $this->id_solicitud->CurrentValue;
+		$row['id_oficialcredito'] = $this->id_oficialcredito->CurrentValue;
+		$row['id_inspector'] = $this->id_inspector->CurrentValue;
+		$row['is_active'] = $this->is_active->CurrentValue;
+		$row['created_at'] = $this->created_at->CurrentValue;
+		$row['id_cliente'] = $this->id_cliente->CurrentValue;
+		$row['estado'] = $this->estado->CurrentValue;
+		$row['estadointerno'] = $this->estadointerno->CurrentValue;
+		$row['estadopago'] = $this->estadopago->CurrentValue;
+		$row['fecha_avaluo'] = $this->fecha_avaluo->CurrentValue;
+		$row['id_metodopago'] = $this->id_metodopago->CurrentValue;
+		$row['DateModified'] = $this->DateModified->CurrentValue;
+		$row['DateDeleted'] = $this->DateDeleted->CurrentValue;
+		$row['CreatedBy'] = $this->CreatedBy->CurrentValue;
+		$row['ModifiedBy'] = $this->ModifiedBy->CurrentValue;
+		$row['DeletedBy'] = $this->DeletedBy->CurrentValue;
+		$row['id_sucursal'] = $this->id_sucursal->CurrentValue;
+		$row['informe'] = $this->informe->Upload->DbValue;
+		$row['monto_pago'] = $this->monto_pago->CurrentValue;
+		$row['montoincial'] = $this->montoincial->CurrentValue;
+		$row['comentario'] = $this->comentario->CurrentValue;
+		$row['documento_pago'] = $this->documento_pago->Upload->DbValue;
 		return $row;
 	}
 
@@ -1822,7 +2065,6 @@ class cavaluo_list extends cavaluo {
 		$this->estadointerno->DbValue = $row['estadointerno'];
 		$this->estadopago->DbValue = $row['estadopago'];
 		$this->fecha_avaluo->DbValue = $row['fecha_avaluo'];
-		$this->montoincial->DbValue = $row['montoincial'];
 		$this->id_metodopago->DbValue = $row['id_metodopago'];
 		$this->DateModified->DbValue = $row['DateModified'];
 		$this->DateDeleted->DbValue = $row['DateDeleted'];
@@ -1830,6 +2072,11 @@ class cavaluo_list extends cavaluo {
 		$this->ModifiedBy->DbValue = $row['ModifiedBy'];
 		$this->DeletedBy->DbValue = $row['DeletedBy'];
 		$this->id_sucursal->DbValue = $row['id_sucursal'];
+		$this->informe->Upload->DbValue = $row['informe'];
+		$this->monto_pago->DbValue = $row['monto_pago'];
+		$this->montoincial->DbValue = $row['montoincial'];
+		$this->comentario->DbValue = $row['comentario'];
+		$this->documento_pago->Upload->DbValue = $row['documento_pago'];
 	}
 
 	// Load old record
@@ -1866,6 +2113,14 @@ class cavaluo_list extends cavaluo {
 		$this->InlineCopyUrl = $this->GetInlineCopyUrl();
 		$this->DeleteUrl = $this->GetDeleteUrl();
 
+		// Convert decimal values if posted back
+		if ($this->monto_pago->FormValue == $this->monto_pago->CurrentValue && is_numeric(ew_StrToFloat($this->monto_pago->CurrentValue)))
+			$this->monto_pago->CurrentValue = ew_StrToFloat($this->monto_pago->CurrentValue);
+
+		// Convert decimal values if posted back
+		if ($this->montoincial->FormValue == $this->montoincial->CurrentValue && is_numeric(ew_StrToFloat($this->montoincial->CurrentValue)))
+			$this->montoincial->CurrentValue = ew_StrToFloat($this->montoincial->CurrentValue);
+
 		// Call Row_Rendering event
 		$this->Row_Rendering();
 
@@ -1886,11 +2141,8 @@ class cavaluo_list extends cavaluo {
 		// estadointerno
 		// estadopago
 		// fecha_avaluo
-		// montoincial
-
-		$this->montoincial->CellCssStyle = "white-space: nowrap;";
-
 		// id_metodopago
+
 		$this->id_metodopago->CellCssStyle = "white-space: nowrap;";
 
 		// DateModified
@@ -1909,6 +2161,12 @@ class cavaluo_list extends cavaluo {
 		$this->DeletedBy->CellCssStyle = "white-space: nowrap;";
 
 		// id_sucursal
+		// informe
+		// monto_pago
+		// montoincial
+		// comentario
+		// documento_pago
+
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// codigoavaluo
@@ -1920,9 +2178,23 @@ class cavaluo_list extends cavaluo {
 		// tipoinmueble
 		if (strval($this->tipoinmueble->CurrentValue) <> "") {
 			$sFilterWrk = "`nombre`" . ew_SearchString("=", $this->tipoinmueble->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-		$sWhereWrk = "";
-		$this->tipoinmueble->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+				$sWhereWrk = "";
+				$this->tipoinmueble->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->tipoinmueble, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1944,9 +2216,23 @@ class cavaluo_list extends cavaluo {
 		$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
 		if (strval($this->id_solicitud->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
-		$sWhereWrk = "";
-		$this->id_solicitud->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+				$sWhereWrk = "";
+				$this->id_solicitud->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+				$sWhereWrk = "";
+				$this->id_solicitud->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+				$sWhereWrk = "";
+				$this->id_solicitud->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1971,9 +2257,23 @@ class cavaluo_list extends cavaluo {
 		} else {
 		if (strval($this->id_oficialcredito->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_oficialcredito->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-		$sWhereWrk = "";
-		$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->id_oficialcredito->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->id_oficialcredito->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "";
+				$this->id_oficialcredito->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1993,6 +2293,48 @@ class cavaluo_list extends cavaluo {
 		}
 		$this->id_oficialcredito->ViewCustomAttributes = "";
 
+		// id_inspector
+		if ($this->id_inspector->VirtualValue <> "") {
+			$this->id_inspector->ViewValue = $this->id_inspector->VirtualValue;
+		} else {
+		if (strval($this->id_inspector->CurrentValue) <> "") {
+			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_inspector->CurrentValue, EW_DATATYPE_STRING, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+				$sWhereWrk = "";
+				$this->id_inspector->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+				$sWhereWrk = "";
+				$this->id_inspector->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+				$sWhereWrk = "";
+				$this->id_inspector->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_inspector, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->id_inspector->ViewValue = $this->id_inspector->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_inspector->ViewValue = $this->id_inspector->CurrentValue;
+			}
+		} else {
+			$this->id_inspector->ViewValue = NULL;
+		}
+		}
+		$this->id_inspector->ViewCustomAttributes = "";
+
 		// is_active
 		if (strval($this->is_active->CurrentValue) <> "") {
 			$this->is_active->ViewValue = $this->is_active->OptionCaption($this->is_active->CurrentValue);
@@ -2001,36 +2343,26 @@ class cavaluo_list extends cavaluo {
 		}
 		$this->is_active->ViewCustomAttributes = "";
 
-		// id_cliente
-		if (strval($this->id_cliente->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_cliente->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-		$sWhereWrk = "";
-		$this->id_cliente->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_cliente, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = $rswrk->fields('Disp2Fld');
-				$this->id_cliente->ViewValue = $this->id_cliente->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_cliente->ViewValue = $this->id_cliente->CurrentValue;
-			}
-		} else {
-			$this->id_cliente->ViewValue = NULL;
-		}
-		$this->id_cliente->ViewCustomAttributes = "";
-
 		// estado
 		if (strval($this->estado->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estado->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
-		$sWhereWrk = "";
-		$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+				$sWhereWrk = "";
+				$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+				$sWhereWrk = "";
+				$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+				$sWhereWrk = "";
+				$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2051,9 +2383,23 @@ class cavaluo_list extends cavaluo {
 		// estadointerno
 		if (strval($this->estadointerno->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-		$sWhereWrk = "";
-		$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2074,9 +2420,23 @@ class cavaluo_list extends cavaluo {
 		// estadopago
 		if (strval($this->estadopago->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadopago->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-		$sWhereWrk = "";
-		$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadopago, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2096,12 +2456,21 @@ class cavaluo_list extends cavaluo {
 
 		// fecha_avaluo
 		$this->fecha_avaluo->ViewValue = $this->fecha_avaluo->CurrentValue;
-		$this->fecha_avaluo->ViewValue = ew_FormatDateTime($this->fecha_avaluo->ViewValue, 10);
+		$this->fecha_avaluo->ViewValue = ew_FormatDateTime($this->fecha_avaluo->ViewValue, 11);
 		$this->fecha_avaluo->ViewCustomAttributes = "";
 
-		// id_sucursal
-		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
-		$this->id_sucursal->ViewCustomAttributes = "";
+		// monto_pago
+		$this->monto_pago->ViewValue = $this->monto_pago->CurrentValue;
+		$this->monto_pago->ViewCustomAttributes = "";
+
+		// montoincial
+		$this->montoincial->ViewValue = $this->montoincial->CurrentValue;
+		$this->montoincial->ViewValue = ew_FormatNumber($this->montoincial->ViewValue, 0, -2, -2, -2);
+		$this->montoincial->ViewCustomAttributes = "";
+
+		// comentario
+		$this->comentario->ViewValue = $this->comentario->CurrentValue;
+		$this->comentario->ViewCustomAttributes = "";
 
 			// codigoavaluo
 			$this->codigoavaluo->LinkCustomAttributes = "";
@@ -2123,10 +2492,10 @@ class cavaluo_list extends cavaluo {
 			$this->id_oficialcredito->HrefValue = "";
 			$this->id_oficialcredito->TooltipValue = "";
 
-			// id_cliente
-			$this->id_cliente->LinkCustomAttributes = "";
-			$this->id_cliente->HrefValue = "";
-			$this->id_cliente->TooltipValue = "";
+			// id_inspector
+			$this->id_inspector->LinkCustomAttributes = "";
+			$this->id_inspector->HrefValue = "";
+			$this->id_inspector->TooltipValue = "";
 
 			// estado
 			$this->estado->LinkCustomAttributes = "";
@@ -2147,6 +2516,560 @@ class cavaluo_list extends cavaluo {
 			$this->fecha_avaluo->LinkCustomAttributes = "";
 			$this->fecha_avaluo->HrefValue = "";
 			$this->fecha_avaluo->TooltipValue = "";
+
+			// monto_pago
+			$this->monto_pago->LinkCustomAttributes = "";
+			$this->monto_pago->HrefValue = "";
+			$this->monto_pago->TooltipValue = "";
+
+			// montoincial
+			$this->montoincial->LinkCustomAttributes = "";
+			$this->montoincial->HrefValue = "";
+			$this->montoincial->TooltipValue = "";
+
+			// comentario
+			$this->comentario->LinkCustomAttributes = "";
+			$this->comentario->HrefValue = "";
+			$this->comentario->TooltipValue = "";
+		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
+
+			// codigoavaluo
+			$this->codigoavaluo->EditAttrs["class"] = "form-control";
+			$this->codigoavaluo->EditCustomAttributes = "";
+			$this->codigoavaluo->EditValue = ew_HtmlEncode($this->codigoavaluo->CurrentValue);
+			$this->codigoavaluo->PlaceHolder = ew_RemoveHtml($this->codigoavaluo->FldTitle());
+
+			// tipoinmueble
+			$this->tipoinmueble->EditAttrs["class"] = "form-control";
+			$this->tipoinmueble->EditCustomAttributes = "";
+
+			// id_solicitud
+			$this->id_solicitud->EditAttrs["class"] = "form-control";
+			$this->id_solicitud->EditCustomAttributes = "";
+			if ($this->id_solicitud->getSessionValue() <> "") {
+				$this->id_solicitud->CurrentValue = $this->id_solicitud->getSessionValue();
+			$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
+			if (strval($this->id_solicitud->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+					$sWhereWrk = "";
+					$this->id_solicitud->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+					$sWhereWrk = "";
+					$this->id_solicitud->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+					$sWhereWrk = "";
+					$this->id_solicitud->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = $rswrk->fields('DispFld');
+					$arwrk[2] = $rswrk->fields('Disp2Fld');
+					$this->id_solicitud->ViewValue = $this->id_solicitud->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
+				}
+			} else {
+				$this->id_solicitud->ViewValue = NULL;
+			}
+			$this->id_solicitud->ViewCustomAttributes = "";
+			} else {
+			$this->id_solicitud->EditValue = ew_HtmlEncode($this->id_solicitud->CurrentValue);
+			$this->id_solicitud->PlaceHolder = ew_RemoveHtml($this->id_solicitud->FldTitle());
+			}
+
+			// id_oficialcredito
+			$this->id_oficialcredito->EditAttrs["class"] = "form-control";
+			$this->id_oficialcredito->EditCustomAttributes = "";
+
+			// id_inspector
+			$this->id_inspector->EditAttrs["class"] = "form-control";
+			$this->id_inspector->EditCustomAttributes = "";
+
+			// estado
+			$this->estado->EditAttrs["class"] = "form-control";
+			$this->estado->EditCustomAttributes = "";
+
+			// estadointerno
+			$this->estadointerno->EditAttrs["class"] = "form-control";
+			$this->estadointerno->EditCustomAttributes = "";
+
+			// estadopago
+			$this->estadopago->EditAttrs["class"] = "form-control";
+			$this->estadopago->EditCustomAttributes = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->EditAttrs["class"] = "form-control";
+			$this->fecha_avaluo->EditCustomAttributes = "";
+			$this->fecha_avaluo->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->fecha_avaluo->CurrentValue, 11));
+			$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
+
+			// monto_pago
+			$this->monto_pago->EditAttrs["class"] = "form-control";
+			$this->monto_pago->EditCustomAttributes = "";
+			$this->monto_pago->EditValue = ew_HtmlEncode($this->monto_pago->CurrentValue);
+			$this->monto_pago->PlaceHolder = ew_RemoveHtml($this->monto_pago->FldTitle());
+			if (strval($this->monto_pago->EditValue) <> "" && is_numeric($this->monto_pago->EditValue)) $this->monto_pago->EditValue = ew_FormatNumber($this->monto_pago->EditValue, -2, -1, -2, 0);
+
+			// montoincial
+			$this->montoincial->EditAttrs["class"] = "form-control";
+			$this->montoincial->EditCustomAttributes = "";
+			$this->montoincial->EditValue = ew_HtmlEncode($this->montoincial->CurrentValue);
+			$this->montoincial->PlaceHolder = ew_RemoveHtml($this->montoincial->FldTitle());
+			if (strval($this->montoincial->EditValue) <> "" && is_numeric($this->montoincial->EditValue)) $this->montoincial->EditValue = ew_FormatNumber($this->montoincial->EditValue, -2, -2, -2, -2);
+
+			// comentario
+			$this->comentario->EditAttrs["class"] = "form-control";
+			$this->comentario->EditCustomAttributes = "";
+			$this->comentario->EditValue = ew_HtmlEncode($this->comentario->CurrentValue);
+			$this->comentario->PlaceHolder = ew_RemoveHtml($this->comentario->FldTitle());
+
+			// Add refer script
+			// codigoavaluo
+
+			$this->codigoavaluo->LinkCustomAttributes = "";
+			$this->codigoavaluo->HrefValue = "";
+
+			// tipoinmueble
+			$this->tipoinmueble->LinkCustomAttributes = "";
+			$this->tipoinmueble->HrefValue = "";
+
+			// id_solicitud
+			$this->id_solicitud->LinkCustomAttributes = "";
+			$this->id_solicitud->HrefValue = "";
+
+			// id_oficialcredito
+			$this->id_oficialcredito->LinkCustomAttributes = "";
+			$this->id_oficialcredito->HrefValue = "";
+
+			// id_inspector
+			$this->id_inspector->LinkCustomAttributes = "";
+			$this->id_inspector->HrefValue = "";
+
+			// estado
+			$this->estado->LinkCustomAttributes = "";
+			$this->estado->HrefValue = "";
+
+			// estadointerno
+			$this->estadointerno->LinkCustomAttributes = "";
+			$this->estadointerno->HrefValue = "";
+
+			// estadopago
+			$this->estadopago->LinkCustomAttributes = "";
+			$this->estadopago->HrefValue = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->LinkCustomAttributes = "";
+			$this->fecha_avaluo->HrefValue = "";
+
+			// monto_pago
+			$this->monto_pago->LinkCustomAttributes = "";
+			$this->monto_pago->HrefValue = "";
+
+			// montoincial
+			$this->montoincial->LinkCustomAttributes = "";
+			$this->montoincial->HrefValue = "";
+
+			// comentario
+			$this->comentario->LinkCustomAttributes = "";
+			$this->comentario->HrefValue = "";
+		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
+
+			// codigoavaluo
+			$this->codigoavaluo->EditAttrs["class"] = "form-control";
+			$this->codigoavaluo->EditCustomAttributes = "";
+			$this->codigoavaluo->EditValue = ew_HtmlEncode($this->codigoavaluo->CurrentValue);
+			$this->codigoavaluo->PlaceHolder = ew_RemoveHtml($this->codigoavaluo->FldTitle());
+
+			// tipoinmueble
+			$this->tipoinmueble->EditAttrs["class"] = "form-control";
+			$this->tipoinmueble->EditCustomAttributes = "";
+			if (trim(strval($this->tipoinmueble->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`nombre`" . ew_SearchString("=", $this->tipoinmueble->CurrentValue, EW_DATATYPE_STRING, "");
+			}
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipoinmueble->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipoinmueble->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `tipoinmueble`";
+					$sWhereWrk = "";
+					$this->tipoinmueble->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->tipoinmueble, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->tipoinmueble->EditValue = $arwrk;
+
+			// id_solicitud
+			$this->id_solicitud->EditAttrs["class"] = "form-control";
+			$this->id_solicitud->EditCustomAttributes = "";
+			if ($this->id_solicitud->getSessionValue() <> "") {
+				$this->id_solicitud->CurrentValue = $this->id_solicitud->getSessionValue();
+			$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
+			if (strval($this->id_solicitud->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+					$sWhereWrk = "";
+					$this->id_solicitud->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+					$sWhereWrk = "";
+					$this->id_solicitud->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+					$sWhereWrk = "";
+					$this->id_solicitud->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = $rswrk->fields('DispFld');
+					$arwrk[2] = $rswrk->fields('Disp2Fld');
+					$this->id_solicitud->ViewValue = $this->id_solicitud->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
+				}
+			} else {
+				$this->id_solicitud->ViewValue = NULL;
+			}
+			$this->id_solicitud->ViewCustomAttributes = "";
+			} else {
+			$this->id_solicitud->EditValue = ew_HtmlEncode($this->id_solicitud->CurrentValue);
+			if (strval($this->id_solicitud->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+					$sWhereWrk = "";
+					$this->id_solicitud->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+					$sWhereWrk = "";
+					$this->id_solicitud->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+					$sWhereWrk = "";
+					$this->id_solicitud->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+					$arwrk[2] = ew_HtmlEncode($rswrk->fields('Disp2Fld'));
+					$this->id_solicitud->EditValue = $this->id_solicitud->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->id_solicitud->EditValue = ew_HtmlEncode($this->id_solicitud->CurrentValue);
+				}
+			} else {
+				$this->id_solicitud->EditValue = NULL;
+			}
+			$this->id_solicitud->PlaceHolder = ew_RemoveHtml($this->id_solicitud->FldTitle());
+			}
+
+			// id_oficialcredito
+			$this->id_oficialcredito->EditAttrs["class"] = "form-control";
+			$this->id_oficialcredito->EditCustomAttributes = "";
+			if (trim(strval($this->id_oficialcredito->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_oficialcredito->CurrentValue, EW_DATATYPE_STRING, "");
+			}
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `oficialcredito`";
+					$sWhereWrk = "";
+					$this->id_oficialcredito->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `oficialcredito`";
+					$sWhereWrk = "";
+					$this->id_oficialcredito->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `oficialcredito`";
+					$sWhereWrk = "";
+					$this->id_oficialcredito->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->id_oficialcredito->EditValue = $arwrk;
+
+			// id_inspector
+			$this->id_inspector->EditAttrs["class"] = "form-control";
+			$this->id_inspector->EditCustomAttributes = "";
+			if (trim(strval($this->id_inspector->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_inspector->CurrentValue, EW_DATATYPE_STRING, "");
+			}
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `inspector`";
+					$sWhereWrk = "";
+					$this->id_inspector->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `inspector`";
+					$sWhereWrk = "";
+					$this->id_inspector->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `inspector`";
+					$sWhereWrk = "";
+					$this->id_inspector->LookupFilters = array();
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->id_inspector, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->id_inspector->EditValue = $arwrk;
+
+			// estado
+			$this->estado->EditAttrs["class"] = "form-control";
+			$this->estado->EditCustomAttributes = "";
+			if (strval($this->estado->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->estado->CurrentValue, EW_DATATYPE_NUMBER, "");
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+					$sWhereWrk = "";
+					$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+					$sWhereWrk = "";
+					$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+					$sWhereWrk = "";
+					$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = $rswrk->fields('DispFld');
+					$this->estado->EditValue = $this->estado->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->estado->EditValue = $this->estado->CurrentValue;
+				}
+			} else {
+				$this->estado->EditValue = NULL;
+			}
+			$this->estado->ViewCustomAttributes = "";
+
+			// estadointerno
+			$this->estadointerno->EditAttrs["class"] = "form-control";
+			$this->estadointerno->EditCustomAttributes = "";
+			if (strval($this->estadointerno->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+					$sWhereWrk = "";
+					$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+					$sWhereWrk = "";
+					$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+					$sWhereWrk = "";
+					$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = $rswrk->fields('DispFld');
+					$this->estadointerno->EditValue = $this->estadointerno->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->estadointerno->EditValue = $this->estadointerno->CurrentValue;
+				}
+			} else {
+				$this->estadointerno->EditValue = NULL;
+			}
+			$this->estadointerno->ViewCustomAttributes = "";
+
+			// estadopago
+			$this->estadopago->EditAttrs["class"] = "form-control";
+			$this->estadopago->EditCustomAttributes = "";
+			if (strval($this->estadopago->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadopago->CurrentValue, EW_DATATYPE_NUMBER, "");
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+					$sWhereWrk = "";
+					$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+					$sWhereWrk = "";
+					$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+					$sWhereWrk = "";
+					$this->estadopago->LookupFilters = array("dx1" => '`descripcion`');
+					break;
+			}
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->estadopago, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = $rswrk->fields('DispFld');
+					$this->estadopago->EditValue = $this->estadopago->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->estadopago->EditValue = $this->estadopago->CurrentValue;
+				}
+			} else {
+				$this->estadopago->EditValue = NULL;
+			}
+			$this->estadopago->ViewCustomAttributes = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->EditAttrs["class"] = "form-control";
+			$this->fecha_avaluo->EditCustomAttributes = "";
+			$this->fecha_avaluo->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->fecha_avaluo->CurrentValue, 11));
+			$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
+
+			// monto_pago
+			$this->monto_pago->EditAttrs["class"] = "form-control";
+			$this->monto_pago->EditCustomAttributes = "";
+			$this->monto_pago->EditValue = ew_HtmlEncode($this->monto_pago->CurrentValue);
+			$this->monto_pago->PlaceHolder = ew_RemoveHtml($this->monto_pago->FldTitle());
+			if (strval($this->monto_pago->EditValue) <> "" && is_numeric($this->monto_pago->EditValue)) $this->monto_pago->EditValue = ew_FormatNumber($this->monto_pago->EditValue, -2, -1, -2, 0);
+
+			// montoincial
+			$this->montoincial->EditAttrs["class"] = "form-control";
+			$this->montoincial->EditCustomAttributes = "";
+			$this->montoincial->EditValue = $this->montoincial->CurrentValue;
+			$this->montoincial->EditValue = ew_FormatNumber($this->montoincial->EditValue, 0, -2, -2, -2);
+			$this->montoincial->ViewCustomAttributes = "";
+
+			// comentario
+			$this->comentario->EditAttrs["class"] = "form-control";
+			$this->comentario->EditCustomAttributes = "";
+			$this->comentario->EditValue = ew_HtmlEncode($this->comentario->CurrentValue);
+			$this->comentario->PlaceHolder = ew_RemoveHtml($this->comentario->FldTitle());
+
+			// Edit refer script
+			// codigoavaluo
+
+			$this->codigoavaluo->LinkCustomAttributes = "";
+			$this->codigoavaluo->HrefValue = "";
+
+			// tipoinmueble
+			$this->tipoinmueble->LinkCustomAttributes = "";
+			$this->tipoinmueble->HrefValue = "";
+
+			// id_solicitud
+			$this->id_solicitud->LinkCustomAttributes = "";
+			$this->id_solicitud->HrefValue = "";
+
+			// id_oficialcredito
+			$this->id_oficialcredito->LinkCustomAttributes = "";
+			$this->id_oficialcredito->HrefValue = "";
+
+			// id_inspector
+			$this->id_inspector->LinkCustomAttributes = "";
+			$this->id_inspector->HrefValue = "";
+
+			// estado
+			$this->estado->LinkCustomAttributes = "";
+			$this->estado->HrefValue = "";
+			$this->estado->TooltipValue = "";
+
+			// estadointerno
+			$this->estadointerno->LinkCustomAttributes = "";
+			$this->estadointerno->HrefValue = "";
+			$this->estadointerno->TooltipValue = "";
+
+			// estadopago
+			$this->estadopago->LinkCustomAttributes = "";
+			$this->estadopago->HrefValue = "";
+			$this->estadopago->TooltipValue = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->LinkCustomAttributes = "";
+			$this->fecha_avaluo->HrefValue = "";
+
+			// monto_pago
+			$this->monto_pago->LinkCustomAttributes = "";
+			$this->monto_pago->HrefValue = "";
+
+			// montoincial
+			$this->montoincial->LinkCustomAttributes = "";
+			$this->montoincial->HrefValue = "";
+			$this->montoincial->TooltipValue = "";
+
+			// comentario
+			$this->comentario->LinkCustomAttributes = "";
+			$this->comentario->HrefValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_SEARCH) { // Search row
 
 			// codigoavaluo
@@ -2163,27 +3086,6 @@ class cavaluo_list extends cavaluo {
 			$this->id_solicitud->EditAttrs["class"] = "form-control";
 			$this->id_solicitud->EditCustomAttributes = "";
 			$this->id_solicitud->EditValue = ew_HtmlEncode($this->id_solicitud->AdvancedSearch->SearchValue);
-			if (strval($this->id_solicitud->AdvancedSearch->SearchValue) <> "") {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->AdvancedSearch->SearchValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
-			$sWhereWrk = "";
-			$this->id_solicitud->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-				$rswrk = Conn()->Execute($sSqlWrk);
-				if ($rswrk && !$rswrk->EOF) { // Lookup values found
-					$arwrk = array();
-					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
-					$arwrk[2] = ew_HtmlEncode($rswrk->fields('Disp2Fld'));
-					$this->id_solicitud->EditValue = $this->id_solicitud->DisplayValue($arwrk);
-					$rswrk->Close();
-				} else {
-					$this->id_solicitud->EditValue = ew_HtmlEncode($this->id_solicitud->AdvancedSearch->SearchValue);
-				}
-			} else {
-				$this->id_solicitud->EditValue = NULL;
-			}
 			$this->id_solicitud->PlaceHolder = ew_RemoveHtml($this->id_solicitud->FldTitle());
 
 			// id_oficialcredito
@@ -2192,74 +3094,19 @@ class cavaluo_list extends cavaluo {
 			$this->id_oficialcredito->EditValue = ew_HtmlEncode($this->id_oficialcredito->AdvancedSearch->SearchValue);
 			$this->id_oficialcredito->PlaceHolder = ew_RemoveHtml($this->id_oficialcredito->FldTitle());
 
-			// id_cliente
-			$this->id_cliente->EditAttrs["class"] = "form-control";
-			$this->id_cliente->EditCustomAttributes = "";
-			if (trim(strval($this->id_cliente->AdvancedSearch->SearchValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_cliente->AdvancedSearch->SearchValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-			$sWhereWrk = "";
-			$this->id_cliente->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->id_cliente, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->id_cliente->EditValue = $arwrk;
+			// id_inspector
+			$this->id_inspector->EditAttrs["class"] = "form-control";
+			$this->id_inspector->EditCustomAttributes = "";
+			$this->id_inspector->EditValue = ew_HtmlEncode($this->id_inspector->AdvancedSearch->SearchValue);
+			$this->id_inspector->PlaceHolder = ew_RemoveHtml($this->id_inspector->FldTitle());
 
 			// estado
+			$this->estado->EditAttrs["class"] = "form-control";
 			$this->estado->EditCustomAttributes = "";
-			if (trim(strval($this->estado->AdvancedSearch->SearchValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->estado->AdvancedSearch->SearchValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estado`";
-			$sWhereWrk = "";
-			$this->estado->LookupFilters = array("dx1" => '`descripcion`');
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
-				$this->estado->AdvancedSearch->ViewValue = $this->estado->DisplayValue($arwrk);
-			} else {
-				$this->estado->AdvancedSearch->ViewValue = $Language->Phrase("PleaseSelect");
-			}
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->estado->EditValue = $arwrk;
 
 			// estadointerno
+			$this->estadointerno->EditAttrs["class"] = "form-control";
 			$this->estadointerno->EditCustomAttributes = "";
-			if (trim(strval($this->estadointerno->AdvancedSearch->SearchValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->AdvancedSearch->SearchValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadointerno`";
-			$sWhereWrk = "";
-			$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
-				$this->estadointerno->AdvancedSearch->ViewValue = $this->estadointerno->DisplayValue($arwrk);
-			} else {
-				$this->estadointerno->AdvancedSearch->ViewValue = $Language->Phrase("PleaseSelect");
-			}
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->estadointerno->EditValue = $arwrk;
 
 			// estadopago
 			$this->estadopago->EditAttrs["class"] = "form-control";
@@ -2268,8 +3115,26 @@ class cavaluo_list extends cavaluo {
 			// fecha_avaluo
 			$this->fecha_avaluo->EditAttrs["class"] = "form-control";
 			$this->fecha_avaluo->EditCustomAttributes = "";
-			$this->fecha_avaluo->EditValue = ew_HtmlEncode(ew_FormatDateTime(ew_UnFormatDateTime($this->fecha_avaluo->AdvancedSearch->SearchValue, 10), 10));
+			$this->fecha_avaluo->EditValue = ew_HtmlEncode(ew_FormatDateTime(ew_UnFormatDateTime($this->fecha_avaluo->AdvancedSearch->SearchValue, 11), 11));
 			$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
+
+			// monto_pago
+			$this->monto_pago->EditAttrs["class"] = "form-control";
+			$this->monto_pago->EditCustomAttributes = "";
+			$this->monto_pago->EditValue = ew_HtmlEncode($this->monto_pago->AdvancedSearch->SearchValue);
+			$this->monto_pago->PlaceHolder = ew_RemoveHtml($this->monto_pago->FldTitle());
+
+			// montoincial
+			$this->montoincial->EditAttrs["class"] = "form-control";
+			$this->montoincial->EditCustomAttributes = "";
+			$this->montoincial->EditValue = ew_HtmlEncode($this->montoincial->AdvancedSearch->SearchValue);
+			$this->montoincial->PlaceHolder = ew_RemoveHtml($this->montoincial->FldTitle());
+
+			// comentario
+			$this->comentario->EditAttrs["class"] = "form-control";
+			$this->comentario->EditCustomAttributes = "";
+			$this->comentario->EditValue = ew_HtmlEncode($this->comentario->AdvancedSearch->SearchValue);
+			$this->comentario->PlaceHolder = ew_RemoveHtml($this->comentario->FldTitle());
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -2289,11 +3154,8 @@ class cavaluo_list extends cavaluo {
 		// Check if validation required
 		if (!EW_SERVER_VALIDATE)
 			return TRUE;
-		if (!ew_CheckInteger($this->id_solicitud->AdvancedSearch->SearchValue)) {
-			ew_AddMessage($gsSearchError, $this->id_solicitud->FldErrMsg());
-		}
-		if (!ew_CheckUSDate($this->fecha_avaluo->AdvancedSearch->SearchValue)) {
-			ew_AddMessage($gsSearchError, $this->fecha_avaluo->FldErrMsg());
+		if (!ew_CheckInteger($this->codigoavaluo->AdvancedSearch->SearchValue)) {
+			ew_AddMessage($gsSearchError, $this->codigoavaluo->FldErrMsg());
 		}
 
 		// Return validate result
@@ -2308,16 +3170,247 @@ class cavaluo_list extends cavaluo {
 		return $ValidateSearch;
 	}
 
+	// Validate form
+	function ValidateForm() {
+		global $Language, $gsFormError;
+
+		// Initialize form error message
+		$gsFormError = "";
+
+		// Check if validation required
+		if (!EW_SERVER_VALIDATE)
+			return ($gsFormError == "");
+		if (!ew_CheckInteger($this->codigoavaluo->FormValue)) {
+			ew_AddMessage($gsFormError, $this->codigoavaluo->FldErrMsg());
+		}
+		if (!ew_CheckInteger($this->id_solicitud->FormValue)) {
+			ew_AddMessage($gsFormError, $this->id_solicitud->FldErrMsg());
+		}
+		if (!$this->fecha_avaluo->FldIsDetailKey && !is_null($this->fecha_avaluo->FormValue) && $this->fecha_avaluo->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->fecha_avaluo->FldCaption(), $this->fecha_avaluo->ReqErrMsg));
+		}
+		if (!ew_CheckEuroDate($this->fecha_avaluo->FormValue)) {
+			ew_AddMessage($gsFormError, $this->fecha_avaluo->FldErrMsg());
+		}
+		if (!ew_CheckNumber($this->monto_pago->FormValue)) {
+			ew_AddMessage($gsFormError, $this->monto_pago->FldErrMsg());
+		}
+
+		// Return validate result
+		$ValidateForm = ($gsFormError == "");
+
+		// Call Form_CustomValidate event
+		$sFormCustomError = "";
+		$ValidateForm = $ValidateForm && $this->Form_CustomValidate($sFormCustomError);
+		if ($sFormCustomError <> "") {
+			ew_AddMessage($gsFormError, $sFormCustomError);
+		}
+		return $ValidateForm;
+	}
+
+	// Update record based on key values
+	function EditRow() {
+		global $Security, $Language;
+		$sFilter = $this->KeyFilter();
+		$sFilter = $this->ApplyUserIDFilters($sFilter);
+		$conn = &$this->Connection();
+		$this->CurrentFilter = $sFilter;
+		$sSql = $this->SQL();
+		$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+		$rs = $conn->Execute($sSql);
+		$conn->raiseErrorFn = '';
+		if ($rs === FALSE)
+			return FALSE;
+		if ($rs->EOF) {
+			$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
+			$EditRow = FALSE; // Update Failed
+		} else {
+
+			// Save old values
+			$rsold = &$rs->fields;
+			$this->LoadDbValues($rsold);
+			$rsnew = array();
+
+			// codigoavaluo
+			$this->codigoavaluo->SetDbValueDef($rsnew, $this->codigoavaluo->CurrentValue, NULL, $this->codigoavaluo->ReadOnly);
+
+			// tipoinmueble
+			$this->tipoinmueble->SetDbValueDef($rsnew, $this->tipoinmueble->CurrentValue, NULL, $this->tipoinmueble->ReadOnly);
+
+			// id_solicitud
+			$this->id_solicitud->SetDbValueDef($rsnew, $this->id_solicitud->CurrentValue, NULL, $this->id_solicitud->ReadOnly);
+
+			// id_oficialcredito
+			$this->id_oficialcredito->SetDbValueDef($rsnew, $this->id_oficialcredito->CurrentValue, NULL, $this->id_oficialcredito->ReadOnly);
+
+			// id_inspector
+			$this->id_inspector->SetDbValueDef($rsnew, $this->id_inspector->CurrentValue, NULL, $this->id_inspector->ReadOnly);
+
+			// fecha_avaluo
+			$this->fecha_avaluo->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 11), NULL, $this->fecha_avaluo->ReadOnly);
+
+			// monto_pago
+			$this->monto_pago->SetDbValueDef($rsnew, $this->monto_pago->CurrentValue, NULL, $this->monto_pago->ReadOnly);
+
+			// comentario
+			$this->comentario->SetDbValueDef($rsnew, $this->comentario->CurrentValue, NULL, $this->comentario->ReadOnly);
+
+			// Check referential integrity for master table 'solicitud'
+			$bValidMasterRecord = TRUE;
+			$sMasterFilter = $this->SqlMasterFilter_solicitud();
+			$KeyValue = isset($rsnew['id_solicitud']) ? $rsnew['id_solicitud'] : $rsold['id_solicitud'];
+			if (strval($KeyValue) <> "") {
+				$sMasterFilter = str_replace("@id@", ew_AdjustSql($KeyValue), $sMasterFilter);
+			} else {
+				$bValidMasterRecord = FALSE;
+			}
+			if ($bValidMasterRecord) {
+				if (!isset($GLOBALS["solicitud"])) $GLOBALS["solicitud"] = new csolicitud();
+				$rsmaster = $GLOBALS["solicitud"]->LoadRs($sMasterFilter);
+				$bValidMasterRecord = ($rsmaster && !$rsmaster->EOF);
+				$rsmaster->Close();
+			}
+			if (!$bValidMasterRecord) {
+				$sRelatedRecordMsg = str_replace("%t", "solicitud", $Language->Phrase("RelatedRecordRequired"));
+				$this->setFailureMessage($sRelatedRecordMsg);
+				$rs->Close();
+				return FALSE;
+			}
+
+			// Call Row Updating event
+			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
+			if ($bUpdateRow) {
+				$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+				if (count($rsnew) > 0)
+					$EditRow = $this->Update($rsnew, "", $rsold);
+				else
+					$EditRow = TRUE; // No field to update
+				$conn->raiseErrorFn = '';
+				if ($EditRow) {
+				}
+			} else {
+				if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
+
+					// Use the message, do nothing
+				} elseif ($this->CancelMessage <> "") {
+					$this->setFailureMessage($this->CancelMessage);
+					$this->CancelMessage = "";
+				} else {
+					$this->setFailureMessage($Language->Phrase("UpdateCancelled"));
+				}
+				$EditRow = FALSE;
+			}
+		}
+
+		// Call Row_Updated event
+		if ($EditRow)
+			$this->Row_Updated($rsold, $rsnew);
+		$rs->Close();
+		return $EditRow;
+	}
+
+	// Add record
+	function AddRow($rsold = NULL) {
+		global $Language, $Security;
+
+		// Check referential integrity for master table 'solicitud'
+		$bValidMasterRecord = TRUE;
+		$sMasterFilter = $this->SqlMasterFilter_solicitud();
+		if (strval($this->id_solicitud->CurrentValue) <> "") {
+			$sMasterFilter = str_replace("@id@", ew_AdjustSql($this->id_solicitud->CurrentValue, "DB"), $sMasterFilter);
+		} else {
+			$bValidMasterRecord = FALSE;
+		}
+		if ($bValidMasterRecord) {
+			if (!isset($GLOBALS["solicitud"])) $GLOBALS["solicitud"] = new csolicitud();
+			$rsmaster = $GLOBALS["solicitud"]->LoadRs($sMasterFilter);
+			$bValidMasterRecord = ($rsmaster && !$rsmaster->EOF);
+			$rsmaster->Close();
+		}
+		if (!$bValidMasterRecord) {
+			$sRelatedRecordMsg = str_replace("%t", "solicitud", $Language->Phrase("RelatedRecordRequired"));
+			$this->setFailureMessage($sRelatedRecordMsg);
+			return FALSE;
+		}
+		$conn = &$this->Connection();
+
+		// Load db values from rsold
+		$this->LoadDbValues($rsold);
+		if ($rsold) {
+		}
+		$rsnew = array();
+
+		// codigoavaluo
+		$this->codigoavaluo->SetDbValueDef($rsnew, $this->codigoavaluo->CurrentValue, NULL, FALSE);
+
+		// tipoinmueble
+		$this->tipoinmueble->SetDbValueDef($rsnew, $this->tipoinmueble->CurrentValue, NULL, FALSE);
+
+		// id_solicitud
+		$this->id_solicitud->SetDbValueDef($rsnew, $this->id_solicitud->CurrentValue, NULL, FALSE);
+
+		// id_oficialcredito
+		$this->id_oficialcredito->SetDbValueDef($rsnew, $this->id_oficialcredito->CurrentValue, NULL, FALSE);
+
+		// id_inspector
+		$this->id_inspector->SetDbValueDef($rsnew, $this->id_inspector->CurrentValue, NULL, FALSE);
+
+		// estado
+		$this->estado->SetDbValueDef($rsnew, $this->estado->CurrentValue, NULL, strval($this->estado->CurrentValue) == "");
+
+		// estadointerno
+		$this->estadointerno->SetDbValueDef($rsnew, $this->estadointerno->CurrentValue, NULL, strval($this->estadointerno->CurrentValue) == "");
+
+		// estadopago
+		$this->estadopago->SetDbValueDef($rsnew, $this->estadopago->CurrentValue, NULL, strval($this->estadopago->CurrentValue) == "");
+
+		// fecha_avaluo
+		$this->fecha_avaluo->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->fecha_avaluo->CurrentValue, 11), NULL, FALSE);
+
+		// monto_pago
+		$this->monto_pago->SetDbValueDef($rsnew, $this->monto_pago->CurrentValue, NULL, strval($this->monto_pago->CurrentValue) == "");
+
+		// montoincial
+		$this->montoincial->SetDbValueDef($rsnew, $this->montoincial->CurrentValue, NULL, strval($this->montoincial->CurrentValue) == "");
+
+		// comentario
+		$this->comentario->SetDbValueDef($rsnew, $this->comentario->CurrentValue, NULL, FALSE);
+
+		// Call Row Inserting event
+		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
+		$bInsertRow = $this->Row_Inserting($rs, $rsnew);
+		if ($bInsertRow) {
+			$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+			$AddRow = $this->Insert($rsnew);
+			$conn->raiseErrorFn = '';
+			if ($AddRow) {
+			}
+		} else {
+			if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
+
+				// Use the message, do nothing
+			} elseif ($this->CancelMessage <> "") {
+				$this->setFailureMessage($this->CancelMessage);
+				$this->CancelMessage = "";
+			} else {
+				$this->setFailureMessage($Language->Phrase("InsertCancelled"));
+			}
+			$AddRow = FALSE;
+		}
+		if ($AddRow) {
+
+			// Call Row Inserted event
+			$rs = ($rsold == NULL) ? NULL : $rsold->fields;
+			$this->Row_Inserted($rs, $rsnew);
+		}
+		return $AddRow;
+	}
+
 	// Load advanced search
 	function LoadAdvancedSearch() {
-		$this->id->AdvancedSearch->Load();
-		$this->id_solicitud->AdvancedSearch->Load();
-		$this->id_oficialcredito->AdvancedSearch->Load();
-		$this->id_cliente->AdvancedSearch->Load();
-		$this->estado->AdvancedSearch->Load();
-		$this->estadointerno->AdvancedSearch->Load();
-		$this->fecha_avaluo->AdvancedSearch->Load();
-		$this->id_sucursal->AdvancedSearch->Load();
+		$this->codigoavaluo->AdvancedSearch->Load();
+		$this->monto_pago->AdvancedSearch->Load();
+		$this->comentario->AdvancedSearch->Load();
 	}
 
 	// Set up export options
@@ -2579,14 +3672,9 @@ class cavaluo_list extends cavaluo {
 		$sQry = "export=html";
 
 		// Build QueryString for search
-		$this->AddSearchQueryString($sQry, $this->id); // id
-		$this->AddSearchQueryString($sQry, $this->id_solicitud); // id_solicitud
-		$this->AddSearchQueryString($sQry, $this->id_oficialcredito); // id_oficialcredito
-		$this->AddSearchQueryString($sQry, $this->id_cliente); // id_cliente
-		$this->AddSearchQueryString($sQry, $this->estado); // estado
-		$this->AddSearchQueryString($sQry, $this->estadointerno); // estadointerno
-		$this->AddSearchQueryString($sQry, $this->fecha_avaluo); // fecha_avaluo
-		$this->AddSearchQueryString($sQry, $this->id_sucursal); // id_sucursal
+		$this->AddSearchQueryString($sQry, $this->codigoavaluo); // codigoavaluo
+		$this->AddSearchQueryString($sQry, $this->monto_pago); // monto_pago
+		$this->AddSearchQueryString($sQry, $this->comentario); // comentario
 
 		// Build QueryString for pager
 		$sQry .= "&" . EW_TABLE_REC_PER_PAGE . "=" . urlencode($this->getRecordsPerPage()) . "&" . EW_TABLE_START_REC . "=" . urlencode($this->getStartRecordNumber());
@@ -2692,14 +3780,51 @@ class cavaluo_list extends cavaluo {
 		$pageId = $pageId ?: $this->PageID;
 		if ($pageId == "list") {
 			switch ($fld->FldVar) {
-			}
-		} elseif ($pageId == "extbs") {
-			switch ($fld->FldVar) {
+		case "x_tipoinmueble":
+			$sSqlWrk = "";
+				switch (@$gsLanguage) {
+					case "en":
+						$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+					case "es":
+						$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+					default:
+						$sSqlWrk = "SELECT `nombre` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+				}
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`nombre` IN ({filter_value})', "t0" => "200", "fn0" => "");
+			$sSqlWrk = "";
+				$this->Lookup_Selecting($this->tipoinmueble, $sWhereWrk); // Call Lookup Selecting
+				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		case "x_id_solicitud":
 			$sSqlWrk = "";
-				$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
-				$sWhereWrk = "{filter}";
-				$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+				switch (@$gsLanguage) {
+					case "en":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array();
+						break;
+					case "es":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array();
+						break;
+					default:
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array();
+						break;
+				}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
@@ -2709,9 +3834,23 @@ class cavaluo_list extends cavaluo {
 			break;
 		case "x_id_oficialcredito":
 			$sSqlWrk = "";
-				$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-				$sWhereWrk = "{filter}";
-				$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
+				switch (@$gsLanguage) {
+					case "en":
+						$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+					case "es":
+						$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+					default:
+						$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+				}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`login` IN ({filter_value})', "t0" => "200", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
@@ -2719,23 +3858,51 @@ class cavaluo_list extends cavaluo {
 			if ($sSqlWrk <> "")
 				$fld->LookupFilters["s"] .= $sSqlWrk;
 			break;
-		case "x_id_cliente":
+		case "x_id_inspector":
 			$sSqlWrk = "";
-				$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-				$sWhereWrk = "";
-				$fld->LookupFilters = array();
-			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
+				switch (@$gsLanguage) {
+					case "en":
+						$sSqlWrk = "SELECT `login` AS `LinkFld`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+					case "es":
+						$sSqlWrk = "SELECT `login` AS `LinkFld`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+					default:
+						$sSqlWrk = "SELECT `login` AS `LinkFld`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+						$sWhereWrk = "";
+						$fld->LookupFilters = array();
+						break;
+				}
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`login` IN ({filter_value})', "t0" => "200", "fn0" => "");
 			$sSqlWrk = "";
-				$this->Lookup_Selecting($this->id_cliente, $sWhereWrk); // Call Lookup Selecting
+				$this->Lookup_Selecting($this->id_inspector, $sWhereWrk); // Call Lookup Selecting
 				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
 			if ($sSqlWrk <> "")
 				$fld->LookupFilters["s"] .= $sSqlWrk;
 			break;
 		case "x_estado":
 			$sSqlWrk = "";
-				$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
-				$sWhereWrk = "{filter}";
-				$fld->LookupFilters = array("dx1" => '`descripcion`');
+				switch (@$gsLanguage) {
+					case "en":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array("dx1" => '`descripcion`');
+						break;
+					case "es":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array("dx1" => '`descripcion`');
+						break;
+					default:
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array("dx1" => '`descripcion`');
+						break;
+				}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
@@ -2745,9 +3912,23 @@ class cavaluo_list extends cavaluo {
 			break;
 		case "x_estadointerno":
 			$sSqlWrk = "";
-				$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-				$sWhereWrk = "{filter}";
-				$fld->LookupFilters = array("dx1" => '`descripcion`');
+				switch (@$gsLanguage) {
+					case "en":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array("dx1" => '`descripcion`');
+						break;
+					case "es":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array("dx1" => '`descripcion`');
+						break;
+					default:
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array("dx1" => '`descripcion`');
+						break;
+				}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
@@ -2755,6 +3936,35 @@ class cavaluo_list extends cavaluo {
 			if ($sSqlWrk <> "")
 				$fld->LookupFilters["s"] .= $sSqlWrk;
 			break;
+		case "x_estadopago":
+			$sSqlWrk = "";
+				switch (@$gsLanguage) {
+					case "en":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array("dx1" => '`descripcion`');
+						break;
+					case "es":
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array("dx1" => '`descripcion`');
+						break;
+					default:
+						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+						$sWhereWrk = "{filter}";
+						$fld->LookupFilters = array("dx1" => '`descripcion`');
+						break;
+				}
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
+			$sSqlWrk = "";
+				$this->Lookup_Selecting($this->estadopago, $sWhereWrk); // Call Lookup Selecting
+				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+			}
+		} elseif ($pageId == "extbs") {
+			switch ($fld->FldVar) {
 			}
 		}
 	}
@@ -2765,14 +3975,25 @@ class cavaluo_list extends cavaluo {
 		$pageId = $pageId ?: $this->PageID;
 		if ($pageId == "list") {
 			switch ($fld->FldVar) {
-			}
-		} elseif ($pageId == "extbs") {
-			switch ($fld->FldVar) {
 		case "x_id_solicitud":
 			$sSqlWrk = "";
-				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld` FROM `solicitud`";
-				$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(COALESCE(`name`, ''),'" . ew_ValueSeparator(1, $this->id_solicitud) . "',COALESCE(`lastname`,'')) LIKE '{query_value}%'";
-				$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
+				switch (@$gsLanguage) {
+					case "en":
+						$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld` FROM `solicitud`";
+						$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(`name`,'" . ew_ValueSeparator(1, $this->id_solicitud) . "',`lastname`) LIKE '{query_value}%'";
+						$fld->LookupFilters = array();
+						break;
+					case "es":
+						$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld` FROM `solicitud`";
+						$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(`name`,'" . ew_ValueSeparator(1, $this->id_solicitud) . "',`lastname`) LIKE '{query_value}%'";
+						$fld->LookupFilters = array();
+						break;
+					default:
+						$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld` FROM `solicitud`";
+						$sWhereWrk = "`name` LIKE '{query_value}%' OR CONCAT(`name`,'" . ew_ValueSeparator(1, $this->id_solicitud) . "',`lastname`) LIKE '{query_value}%'";
+						$fld->LookupFilters = array();
+						break;
+				}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
@@ -2780,6 +4001,9 @@ class cavaluo_list extends cavaluo {
 			if ($sSqlWrk <> "")
 				$fld->LookupFilters["s"] .= $sSqlWrk;
 			break;
+			}
+		} elseif ($pageId == "extbs") {
+			switch ($fld->FldVar) {
 			}
 		}
 	}
@@ -2832,7 +4056,7 @@ class cavaluo_list extends cavaluo {
 	function Page_DataRendering(&$header) {
 
 		// Example:
-		//$header = "your header";
+		//$header ="<iframe src=\"reservacion.php\" height=\"900\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\"></iframe>";
 
 	}
 
@@ -2842,6 +4066,18 @@ class cavaluo_list extends cavaluo {
 		// Example:
 		//$footer = "your footer";
 
+		if (isset($_GET ["fk_id"]))
+		{
+		 $footer = "<div class=\"card-body p-0\">";
+		 $footer .= "<iframe src=\"historicolist.php?avaluo=".$_GET ["fk_id"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"frame\"></iframe>";
+		 $footer .= "</div>";
+		}
+		if (isset($_GET ["id"]))
+		{
+		 $footer = "<div class=\"card-body p-0\">";
+		 $footer .= "<iframe src=\"historicolist.php?avaluo=".$_GET ["id"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"frame\"></iframe>";
+		 $footer .= "</div>";
+		}
 	}
 
 	// Form Custom Validate event
@@ -2859,12 +4095,20 @@ class cavaluo_list extends cavaluo {
 		//$opt->Header = "xxx";
 		//$opt->OnLeft = TRUE; // Link on left
 		//$opt->MoveTo(0); // Move to first column
-			//$this->ListOptions->Add("ESTADO"); // Replace abclink with your name of the link
+		//	$this->ListOptions->Add("ESTADO"); // Replace abclink with your name of the link
 			//$this->ListOptions->Items["ESTADO"]->Header = "<b>ESTADO</b>";
 			//$this->ListOptions->Add("ESTADOPAGO"); // Replace abclink with your name of the link
 			//$this->ListOptions->Items["ESTADOPAGO"]->Header = "<b>ESTADO PAGO</b>";
 				//$this->ListOptions->Add("ESTADOINTERNO"); // Replace abclink with your name of the link
-			//$this->ListOptions->Items["ESTADOINTERNO"]->Header = "<b>ESTADO INTERNO</b>"; 
+			//$this->ListOptions->Items["ESTADOINTERNO"]->Header = "<b>ESTADO INTERNO</b>";
+
+				$opt = &$this->ListOptions->Add("nuevo");
+		$opt->Header = "Notificaciones";
+		$opt->OnLeft = TRUE; // Link on left
+		$opt->MoveTo(0); // Move to first column
+
+		//$this->ListOptions->Add("print_x"); // Replace abclink with your name of the link
+		//$this->ListOptions->Items["print_x"]->Header = "<b>Print X</b>";
 
 	}
 
@@ -2885,10 +4129,26 @@ class cavaluo_list extends cavaluo {
 		//$this->ListOptions->Items["ESTADO"]->Body = "<a href='./fpdf/report.php?id=".CurrentTable()->id->CurrentValue."' target='_blank'>ESTADO</a>";
 		//$this->ListOptions->Items["ESTADOPAGO"]->Body = "<a href='./fpdf/report.php?id=".CurrentTable()->id->CurrentValue."' target='_blank'>ESTADOPAGO</a>";
 		//$this->ListOptions->Items["ESTADOINTERNO"]->Body = "<a href='./fpdf/report.php?id=".CurrentTable()->id->CurrentValue."' target='_blank'>ESTADOINTERNO</a>";
-
-		$this->ListOptions->Items["edit"]->Visible = FALSE;
-
+		//$this->ListOptions->Items["edit"]->Visible = FALSE;
 		//var_dump($this->ListOptions);
+
+		$url="documentosavaluoadd.php?showmaster=avaluo&fk_id=".CurrentTable()->id->CurrentValue;
+		$urlview="documentosavaluolist.php?cmd=search&t=documentosavaluo&z_avaluo=%3D&x_avaluo=".CurrentTable()->id->CurrentValue;
+				$button="<div class=\"btn-group\" role=\"group\" aria-label=\"Button group with nested dropdown\">";
+			$button.=	"<button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+			$button.="Notificaciones de Adjuntos";
+			$button.="</button>";
+			$button.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
+			$button.="<li><a class=\"dropdown-item\" href=core.php?case=sec&type=sms&id=".CurrentTable()->id->CurrentValue.">Enviar SMS</a></li>";
+			$button.="<li><a class=\"dropdown-item\" href=core.php?case=sec&type=email&id=".CurrentTable()->id->CurrentValue.">Enviar Email</a></li>";
+			$button.="<li><a class=\"dropdown-item\" href=core.php?case=sec&type=whataspp&id=".CurrentTable()->id->CurrentValue.">Enviar Whatsapp</a></li>";
+			$button.= "<li><a class=\"dropdown-item\" title=\"Adjuntar documentos\" data-table=\"avaluo\" data-caption=\"test\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'AddBtn',url:'" . ew_HtmlEncode($url) . "'});\">Adjuntar</a></li>";
+			$button.= "<li><a class=\"dropdown-item\" title=\"Adjuntar documentos\" data-table=\"avaluo\" data-caption=\"test\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'AddBtn',url:'" . ew_HtmlEncode($urlview) . "'});\">Ver Adjuntar</a></li>";
+			$button.="</ul>";
+			$button.="</div>";
+			$this->ListOptions->Items["nuevo"]->Body = $button;
+
+		//$this->ListOptions->Items["new"]->Body = "<a href='core.php?id=".CurrentTable()->id->CurrentValue."' class='btn btn-primary'>Terminar Inspeccion</a>";
 	}
 
 	// Row Custom Action event
@@ -2968,6 +4228,44 @@ var CurrentPageID = EW_PAGE_ID = "list";
 var CurrentForm = favaluolist = new ew_Form("favaluolist", "list");
 favaluolist.FormKeyCountName = '<?php echo $avaluo_list->FormKeyCountName ?>';
 
+// Validate form
+favaluolist.Validate = function() {
+	if (!this.ValidateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.GetForm(), $fobj = $(fobj);
+	if ($fobj.find("#a_confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.FormKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = $fobj.find("#a_list").val() == "gridinsert";
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+			elm = this.GetElements("x" + infix + "_codigoavaluo");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->codigoavaluo->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_id_solicitud");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->id_solicitud->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_fecha_avaluo");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $avaluo->fecha_avaluo->FldCaption(), $avaluo->fecha_avaluo->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_fecha_avaluo");
+			if (elm && !ew_CheckEuroDate(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->fecha_avaluo->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_monto_pago");
+			if (elm && !ew_CheckNumber(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->monto_pago->FldErrMsg()) ?>");
+
+			// Fire Form_CustomValidate event
+			if (!this.Form_CustomValidate(fobj))
+				return false;
+	}
+	return true;
+}
+
 // Form_CustomValidate event
 favaluolist.Form_CustomValidate = 
  function(fobj) { // DO NOT CHANGE THIS LINE!
@@ -2987,8 +4285,8 @@ favaluolist.Lists["x_id_solicitud"].Data = "<?php echo $avaluo_list->id_solicitu
 favaluolist.AutoSuggests["x_id_solicitud"] = <?php echo json_encode(array("data" => "ajax=autosuggest&" . $avaluo_list->id_solicitud->LookupFilterQuery(TRUE, "list"))) ?>;
 favaluolist.Lists["x_id_oficialcredito"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","x_apellido","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"oficialcredito"};
 favaluolist.Lists["x_id_oficialcredito"].Data = "<?php echo $avaluo_list->id_oficialcredito->LookupFilterQuery(FALSE, "list") ?>";
-favaluolist.Lists["x_id_cliente"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"cliente"};
-favaluolist.Lists["x_id_cliente"].Data = "<?php echo $avaluo_list->id_cliente->LookupFilterQuery(FALSE, "list") ?>";
+favaluolist.Lists["x_id_inspector"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_apellido","x_nombre","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"inspector"};
+favaluolist.Lists["x_id_inspector"].Data = "<?php echo $avaluo_list->id_inspector->LookupFilterQuery(FALSE, "list") ?>";
 favaluolist.Lists["x_estado"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estado"};
 favaluolist.Lists["x_estado"].Data = "<?php echo $avaluo_list->estado->LookupFilterQuery(FALSE, "list") ?>";
 favaluolist.Lists["x_estadointerno"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadointerno"};
@@ -3005,12 +4303,9 @@ favaluolistsrch.Validate = function(fobj) {
 		return true; // Ignore validation
 	fobj = fobj || this.Form;
 	var infix = "";
-	elm = this.GetElements("x" + infix + "_id_solicitud");
+	elm = this.GetElements("x" + infix + "_codigoavaluo");
 	if (elm && !ew_CheckInteger(elm.value))
-		return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->id_solicitud->FldErrMsg()) ?>");
-	elm = this.GetElements("x" + infix + "_fecha_avaluo");
-	if (elm && !ew_CheckUSDate(elm.value))
-		return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->fecha_avaluo->FldErrMsg()) ?>");
+		return this.OnError(elm, "<?php echo ew_JsEncode2($avaluo->codigoavaluo->FldErrMsg()) ?>");
 
 	// Fire Form_CustomValidate event
 	if (!this.Form_CustomValidate(fobj))
@@ -3030,17 +4325,6 @@ favaluolistsrch.Form_CustomValidate =
 favaluolistsrch.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-favaluolistsrch.Lists["x_id_solicitud"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"solicitud"};
-favaluolistsrch.Lists["x_id_solicitud"].Data = "<?php echo $avaluo_list->id_solicitud->LookupFilterQuery(FALSE, "extbs") ?>";
-favaluolistsrch.AutoSuggests["x_id_solicitud"] = <?php echo json_encode(array("data" => "ajax=autosuggest&" . $avaluo_list->id_solicitud->LookupFilterQuery(TRUE, "extbs"))) ?>;
-favaluolistsrch.Lists["x_id_oficialcredito"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","x_apellido","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"oficialcredito"};
-favaluolistsrch.Lists["x_id_oficialcredito"].Data = "<?php echo $avaluo_list->id_oficialcredito->LookupFilterQuery(FALSE, "extbs") ?>";
-favaluolistsrch.Lists["x_id_cliente"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"cliente"};
-favaluolistsrch.Lists["x_id_cliente"].Data = "<?php echo $avaluo_list->id_cliente->LookupFilterQuery(FALSE, "extbs") ?>";
-favaluolistsrch.Lists["x_estado"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estado"};
-favaluolistsrch.Lists["x_estado"].Data = "<?php echo $avaluo_list->estado->LookupFilterQuery(FALSE, "extbs") ?>";
-favaluolistsrch.Lists["x_estadointerno"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadointerno"};
-favaluolistsrch.Lists["x_estadointerno"].Data = "<?php echo $avaluo_list->estadointerno->LookupFilterQuery(FALSE, "extbs") ?>";
 </script>
 <script type="text/javascript">
 
@@ -3127,99 +4411,17 @@ $avaluo->ResetAttrs();
 $avaluo_list->RenderRow();
 ?>
 <div id="xsr_1" class="ewRow">
-<?php if ($avaluo->id_solicitud->Visible) { // id_solicitud ?>
-	<div id="xsc_id_solicitud" class="ewCell form-group">
-		<label class="ewSearchCaption ewLabel"><?php echo $avaluo->id_solicitud->FldCaption() ?></label>
-		<span class="ewSearchOperator"><?php echo $Language->Phrase("=") ?><input type="hidden" name="z_id_solicitud" id="z_id_solicitud" value="="></span>
+<?php if ($avaluo->codigoavaluo->Visible) { // codigoavaluo ?>
+	<div id="xsc_codigoavaluo" class="ewCell form-group">
+		<label for="x_codigoavaluo" class="ewSearchCaption ewLabel"><?php echo $avaluo->codigoavaluo->FldCaption() ?></label>
+		<span class="ewSearchOperator"><?php echo $Language->Phrase("LIKE") ?><input type="hidden" name="z_codigoavaluo" id="z_codigoavaluo" value="LIKE"></span>
 		<span class="ewSearchField">
-<?php
-$wrkonchange = trim(" " . @$avaluo->id_solicitud->EditAttrs["onchange"]);
-if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
-$avaluo->id_solicitud->EditAttrs["onchange"] = "";
-?>
-<span id="as_x_id_solicitud" style="white-space: nowrap; z-index: 8960">
-	<input type="text" name="sv_x_id_solicitud" id="sv_x_id_solicitud" value="<?php echo $avaluo->id_solicitud->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($avaluo->id_solicitud->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($avaluo->id_solicitud->getPlaceHolder()) ?>"<?php echo $avaluo->id_solicitud->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="avaluo" data-field="x_id_solicitud" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->id_solicitud->DisplayValueSeparatorAttribute() ?>" name="x_id_solicitud" id="x_id_solicitud" value="<?php echo ew_HtmlEncode($avaluo->id_solicitud->AdvancedSearch->SearchValue) ?>"<?php echo $wrkonchange ?>>
-<script type="text/javascript">
-favaluolistsrch.CreateAutoSuggest({"id":"x_id_solicitud","forceSelect":false});
-</script>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->id_solicitud->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_solicitud',m:0,n:10,srch:true});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->id_solicitud->ReadOnly || $avaluo->id_solicitud->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="text" data-table="avaluo" data-field="x_codigoavaluo" name="x_codigoavaluo" id="x_codigoavaluo" size="10" maxlength="50" placeholder="<?php echo ew_HtmlEncode($avaluo->codigoavaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->codigoavaluo->EditValue ?>"<?php echo $avaluo->codigoavaluo->EditAttributes() ?>>
 </span>
 	</div>
 <?php } ?>
 </div>
 <div id="xsr_2" class="ewRow">
-<?php if ($avaluo->id_oficialcredito->Visible) { // id_oficialcredito ?>
-	<div id="xsc_id_oficialcredito" class="ewCell form-group">
-		<label for="x_id_oficialcredito" class="ewSearchCaption ewLabel"><?php echo $avaluo->id_oficialcredito->FldCaption() ?></label>
-		<span class="ewSearchOperator"><?php echo $Language->Phrase("=") ?><input type="hidden" name="z_id_oficialcredito" id="z_id_oficialcredito" value="="></span>
-		<span class="ewSearchField">
-<input type="text" data-table="avaluo" data-field="x_id_oficialcredito" name="x_id_oficialcredito" id="x_id_oficialcredito" size="30" placeholder="<?php echo ew_HtmlEncode($avaluo->id_oficialcredito->getPlaceHolder()) ?>" value="<?php echo $avaluo->id_oficialcredito->EditValue ?>"<?php echo $avaluo->id_oficialcredito->EditAttributes() ?>>
-</span>
-	</div>
-<?php } ?>
-</div>
-<div id="xsr_3" class="ewRow">
-<?php if ($avaluo->id_cliente->Visible) { // id_cliente ?>
-	<div id="xsc_id_cliente" class="ewCell form-group">
-		<label for="x_id_cliente" class="ewSearchCaption ewLabel"><?php echo $avaluo->id_cliente->FldCaption() ?></label>
-		<span class="ewSearchOperator"><?php echo $Language->Phrase("=") ?><input type="hidden" name="z_id_cliente" id="z_id_cliente" value="="></span>
-		<span class="ewSearchField">
-<select data-table="avaluo" data-field="x_id_cliente" data-value-separator="<?php echo $avaluo->id_cliente->DisplayValueSeparatorAttribute() ?>" id="x_id_cliente" name="x_id_cliente"<?php echo $avaluo->id_cliente->EditAttributes() ?>>
-<?php echo $avaluo->id_cliente->SelectOptionListHtml("x_id_cliente") ?>
-</select>
-</span>
-	</div>
-<?php } ?>
-</div>
-<div id="xsr_4" class="ewRow">
-<?php if ($avaluo->estado->Visible) { // estado ?>
-	<div id="xsc_estado" class="ewCell form-group">
-		<label for="x_estado" class="ewSearchCaption ewLabel"><?php echo $avaluo->estado->FldCaption() ?></label>
-		<span class="ewSearchOperator"><?php echo $Language->Phrase("=") ?><input type="hidden" name="z_estado" id="z_estado" value="="></span>
-		<span class="ewSearchField">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_estado"><?php echo (strval($avaluo->estado->AdvancedSearch->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->estado->AdvancedSearch->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->estado->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_estado',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->estado->ReadOnly || $avaluo->estado->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="avaluo" data-field="x_estado" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->estado->DisplayValueSeparatorAttribute() ?>" name="x_estado" id="x_estado" value="<?php echo $avaluo->estado->AdvancedSearch->SearchValue ?>"<?php echo $avaluo->estado->EditAttributes() ?>>
-</span>
-	</div>
-<?php } ?>
-</div>
-<div id="xsr_5" class="ewRow">
-<?php if ($avaluo->estadointerno->Visible) { // estadointerno ?>
-	<div id="xsc_estadointerno" class="ewCell form-group">
-		<label for="x_estadointerno" class="ewSearchCaption ewLabel"><?php echo $avaluo->estadointerno->FldCaption() ?></label>
-		<span class="ewSearchOperator"><?php echo $Language->Phrase("=") ?><input type="hidden" name="z_estadointerno" id="z_estadointerno" value="="></span>
-		<span class="ewSearchField">
-<span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_estadointerno"><?php echo (strval($avaluo->estadointerno->AdvancedSearch->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $avaluo->estadointerno->AdvancedSearch->ViewValue); ?></span>
-</span>
-<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($avaluo->estadointerno->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_estadointerno',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($avaluo->estadointerno->ReadOnly || $avaluo->estadointerno->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
-<input type="hidden" data-table="avaluo" data-field="x_estadointerno" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $avaluo->estadointerno->DisplayValueSeparatorAttribute() ?>" name="x_estadointerno" id="x_estadointerno" value="<?php echo $avaluo->estadointerno->AdvancedSearch->SearchValue ?>"<?php echo $avaluo->estadointerno->EditAttributes() ?>>
-</span>
-	</div>
-<?php } ?>
-</div>
-<div id="xsr_6" class="ewRow">
-<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
-	<div id="xsc_fecha_avaluo" class="ewCell form-group">
-		<label for="x_fecha_avaluo" class="ewSearchCaption ewLabel"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></label>
-		<span class="ewSearchOperator"><?php echo $Language->Phrase("=") ?><input type="hidden" name="z_fecha_avaluo" id="z_fecha_avaluo" value="="></span>
-		<span class="ewSearchField">
-<input type="text" data-table="avaluo" data-field="x_fecha_avaluo" data-format="10" name="x_fecha_avaluo" id="x_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->fecha_avaluo->EditValue ?>"<?php echo $avaluo->fecha_avaluo->EditAttributes() ?>>
-<?php if (!$avaluo->fecha_avaluo->ReadOnly && !$avaluo->fecha_avaluo->Disabled && !isset($avaluo->fecha_avaluo->EditAttrs["readonly"]) && !isset($avaluo->fecha_avaluo->EditAttrs["disabled"])) { ?>
-<script type="text/javascript">
-ew_CreateDateTimePicker("favaluolistsrch", "x_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":10});
-</script>
-<?php } ?>
-</span>
-	</div>
-<?php } ?>
-</div>
-<div id="xsr_7" class="ewRow">
 	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("SearchBtn") ?></button>
 </div>
 	</div>
@@ -3262,7 +4464,7 @@ $avaluo_list->ListOptions->Render("header", "left");
 	<?php if ($avaluo->SortUrl($avaluo->codigoavaluo) == "") { ?>
 		<th data-name="codigoavaluo" class="<?php echo $avaluo->codigoavaluo->HeaderCellClass() ?>"><div id="elh_avaluo_codigoavaluo" class="avaluo_codigoavaluo"><div class="ewTableHeaderCaption"><?php echo $avaluo->codigoavaluo->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="codigoavaluo" class="<?php echo $avaluo->codigoavaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->codigoavaluo) ?>',2);"><div id="elh_avaluo_codigoavaluo" class="avaluo_codigoavaluo">
+		<th data-name="codigoavaluo" class="<?php echo $avaluo->codigoavaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->codigoavaluo) ?>',1);"><div id="elh_avaluo_codigoavaluo" class="avaluo_codigoavaluo">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->codigoavaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->codigoavaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->codigoavaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
@@ -3271,7 +4473,7 @@ $avaluo_list->ListOptions->Render("header", "left");
 	<?php if ($avaluo->SortUrl($avaluo->tipoinmueble) == "") { ?>
 		<th data-name="tipoinmueble" class="<?php echo $avaluo->tipoinmueble->HeaderCellClass() ?>"><div id="elh_avaluo_tipoinmueble" class="avaluo_tipoinmueble"><div class="ewTableHeaderCaption"><?php echo $avaluo->tipoinmueble->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="tipoinmueble" class="<?php echo $avaluo->tipoinmueble->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->tipoinmueble) ?>',2);"><div id="elh_avaluo_tipoinmueble" class="avaluo_tipoinmueble">
+		<th data-name="tipoinmueble" class="<?php echo $avaluo->tipoinmueble->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->tipoinmueble) ?>',1);"><div id="elh_avaluo_tipoinmueble" class="avaluo_tipoinmueble">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->tipoinmueble->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->tipoinmueble->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->tipoinmueble->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
@@ -3280,7 +4482,7 @@ $avaluo_list->ListOptions->Render("header", "left");
 	<?php if ($avaluo->SortUrl($avaluo->id_solicitud) == "") { ?>
 		<th data-name="id_solicitud" class="<?php echo $avaluo->id_solicitud->HeaderCellClass() ?>"><div id="elh_avaluo_id_solicitud" class="avaluo_id_solicitud"><div class="ewTableHeaderCaption"><?php echo $avaluo->id_solicitud->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_solicitud" class="<?php echo $avaluo->id_solicitud->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->id_solicitud) ?>',2);"><div id="elh_avaluo_id_solicitud" class="avaluo_id_solicitud">
+		<th data-name="id_solicitud" class="<?php echo $avaluo->id_solicitud->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->id_solicitud) ?>',1);"><div id="elh_avaluo_id_solicitud" class="avaluo_id_solicitud">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->id_solicitud->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->id_solicitud->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->id_solicitud->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
@@ -3289,17 +4491,17 @@ $avaluo_list->ListOptions->Render("header", "left");
 	<?php if ($avaluo->SortUrl($avaluo->id_oficialcredito) == "") { ?>
 		<th data-name="id_oficialcredito" class="<?php echo $avaluo->id_oficialcredito->HeaderCellClass() ?>"><div id="elh_avaluo_id_oficialcredito" class="avaluo_id_oficialcredito"><div class="ewTableHeaderCaption"><?php echo $avaluo->id_oficialcredito->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_oficialcredito" class="<?php echo $avaluo->id_oficialcredito->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->id_oficialcredito) ?>',2);"><div id="elh_avaluo_id_oficialcredito" class="avaluo_id_oficialcredito">
+		<th data-name="id_oficialcredito" class="<?php echo $avaluo->id_oficialcredito->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->id_oficialcredito) ?>',1);"><div id="elh_avaluo_id_oficialcredito" class="avaluo_id_oficialcredito">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->id_oficialcredito->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->id_oficialcredito->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->id_oficialcredito->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($avaluo->id_cliente->Visible) { // id_cliente ?>
-	<?php if ($avaluo->SortUrl($avaluo->id_cliente) == "") { ?>
-		<th data-name="id_cliente" class="<?php echo $avaluo->id_cliente->HeaderCellClass() ?>"><div id="elh_avaluo_id_cliente" class="avaluo_id_cliente"><div class="ewTableHeaderCaption"><?php echo $avaluo->id_cliente->FldCaption() ?></div></div></th>
+<?php if ($avaluo->id_inspector->Visible) { // id_inspector ?>
+	<?php if ($avaluo->SortUrl($avaluo->id_inspector) == "") { ?>
+		<th data-name="id_inspector" class="<?php echo $avaluo->id_inspector->HeaderCellClass() ?>"><div id="elh_avaluo_id_inspector" class="avaluo_id_inspector"><div class="ewTableHeaderCaption"><?php echo $avaluo->id_inspector->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_cliente" class="<?php echo $avaluo->id_cliente->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->id_cliente) ?>',2);"><div id="elh_avaluo_id_cliente" class="avaluo_id_cliente">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->id_cliente->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->id_cliente->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->id_cliente->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="id_inspector" class="<?php echo $avaluo->id_inspector->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->id_inspector) ?>',1);"><div id="elh_avaluo_id_inspector" class="avaluo_id_inspector">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->id_inspector->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->id_inspector->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->id_inspector->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -3307,7 +4509,7 @@ $avaluo_list->ListOptions->Render("header", "left");
 	<?php if ($avaluo->SortUrl($avaluo->estado) == "") { ?>
 		<th data-name="estado" class="<?php echo $avaluo->estado->HeaderCellClass() ?>"><div id="elh_avaluo_estado" class="avaluo_estado"><div class="ewTableHeaderCaption"><?php echo $avaluo->estado->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="estado" class="<?php echo $avaluo->estado->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->estado) ?>',2);"><div id="elh_avaluo_estado" class="avaluo_estado">
+		<th data-name="estado" class="<?php echo $avaluo->estado->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->estado) ?>',1);"><div id="elh_avaluo_estado" class="avaluo_estado">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->estado->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->estado->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->estado->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
@@ -3316,7 +4518,7 @@ $avaluo_list->ListOptions->Render("header", "left");
 	<?php if ($avaluo->SortUrl($avaluo->estadointerno) == "") { ?>
 		<th data-name="estadointerno" class="<?php echo $avaluo->estadointerno->HeaderCellClass() ?>"><div id="elh_avaluo_estadointerno" class="avaluo_estadointerno"><div class="ewTableHeaderCaption"><?php echo $avaluo->estadointerno->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="estadointerno" class="<?php echo $avaluo->estadointerno->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->estadointerno) ?>',2);"><div id="elh_avaluo_estadointerno" class="avaluo_estadointerno">
+		<th data-name="estadointerno" class="<?php echo $avaluo->estadointerno->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->estadointerno) ?>',1);"><div id="elh_avaluo_estadointerno" class="avaluo_estadointerno">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->estadointerno->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->estadointerno->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->estadointerno->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
@@ -3325,7 +4527,7 @@ $avaluo_list->ListOptions->Render("header", "left");
 	<?php if ($avaluo->SortUrl($avaluo->estadopago) == "") { ?>
 		<th data-name="estadopago" class="<?php echo $avaluo->estadopago->HeaderCellClass() ?>"><div id="elh_avaluo_estadopago" class="avaluo_estadopago"><div class="ewTableHeaderCaption"><?php echo $avaluo->estadopago->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="estadopago" class="<?php echo $avaluo->estadopago->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->estadopago) ?>',2);"><div id="elh_avaluo_estadopago" class="avaluo_estadopago">
+		<th data-name="estadopago" class="<?php echo $avaluo->estadopago->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->estadopago) ?>',1);"><div id="elh_avaluo_estadopago" class="avaluo_estadopago">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->estadopago->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->estadopago->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->estadopago->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
@@ -3334,8 +4536,35 @@ $avaluo_list->ListOptions->Render("header", "left");
 	<?php if ($avaluo->SortUrl($avaluo->fecha_avaluo) == "") { ?>
 		<th data-name="fecha_avaluo" class="<?php echo $avaluo->fecha_avaluo->HeaderCellClass() ?>"><div id="elh_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo"><div class="ewTableHeaderCaption"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="fecha_avaluo" class="<?php echo $avaluo->fecha_avaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->fecha_avaluo) ?>',2);"><div id="elh_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo">
+		<th data-name="fecha_avaluo" class="<?php echo $avaluo->fecha_avaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->fecha_avaluo) ?>',1);"><div id="elh_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->fecha_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->fecha_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->fecha_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($avaluo->monto_pago->Visible) { // monto_pago ?>
+	<?php if ($avaluo->SortUrl($avaluo->monto_pago) == "") { ?>
+		<th data-name="monto_pago" class="<?php echo $avaluo->monto_pago->HeaderCellClass() ?>"><div id="elh_avaluo_monto_pago" class="avaluo_monto_pago"><div class="ewTableHeaderCaption"><?php echo $avaluo->monto_pago->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="monto_pago" class="<?php echo $avaluo->monto_pago->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->monto_pago) ?>',1);"><div id="elh_avaluo_monto_pago" class="avaluo_monto_pago">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->monto_pago->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->monto_pago->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->monto_pago->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($avaluo->montoincial->Visible) { // montoincial ?>
+	<?php if ($avaluo->SortUrl($avaluo->montoincial) == "") { ?>
+		<th data-name="montoincial" class="<?php echo $avaluo->montoincial->HeaderCellClass() ?>"><div id="elh_avaluo_montoincial" class="avaluo_montoincial"><div class="ewTableHeaderCaption"><?php echo $avaluo->montoincial->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="montoincial" class="<?php echo $avaluo->montoincial->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->montoincial) ?>',1);"><div id="elh_avaluo_montoincial" class="avaluo_montoincial">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->montoincial->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->montoincial->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->montoincial->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
+<?php if ($avaluo->comentario->Visible) { // comentario ?>
+	<?php if ($avaluo->SortUrl($avaluo->comentario) == "") { ?>
+		<th data-name="comentario" class="<?php echo $avaluo->comentario->HeaderCellClass() ?>"><div id="elh_avaluo_comentario" class="avaluo_comentario"><div class="ewTableHeaderCaption"><?php echo $avaluo->comentario->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="comentario" class="<?php echo $avaluo->comentario->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $avaluo->SortUrl($avaluo->comentario) ?>',1);"><div id="elh_avaluo_comentario" class="avaluo_comentario">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $avaluo->comentario->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($avaluo->comentario->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($avaluo->comentario->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -3358,6 +4587,15 @@ if ($avaluo->ExportAll && $avaluo->Export <> "") {
 	else
 		$avaluo_list->StopRec = $avaluo_list->TotalRecs;
 }
+
+// Restore number of post back records
+if ($objForm) {
+	$objForm->Index = -1;
+	if ($objForm->HasValue($avaluo_list->FormKeyCountName) && ($avaluo->CurrentAction == "gridadd" || $avaluo->CurrentAction == "gridedit" || $avaluo->CurrentAction == "F")) {
+		$avaluo_list->KeyCount = $objForm->GetValue($avaluo_list->FormKeyCountName);
+		$avaluo_list->StopRec = $avaluo_list->StartRec + $avaluo_list->KeyCount - 1;
+	}
+}
 $avaluo_list->RecCnt = $avaluo_list->StartRec - 1;
 if ($avaluo_list->Recordset && !$avaluo_list->Recordset->EOF) {
 	$avaluo_list->Recordset->MoveFirst();
@@ -3372,6 +4610,9 @@ if ($avaluo_list->Recordset && !$avaluo_list->Recordset->EOF) {
 $avaluo->RowType = EW_ROWTYPE_AGGREGATEINIT;
 $avaluo->ResetAttrs();
 $avaluo_list->RenderRow();
+$avaluo_list->EditRowCnt = 0;
+if ($avaluo->CurrentAction == "edit")
+	$avaluo_list->RowIndex = 1;
 while ($avaluo_list->RecCnt < $avaluo_list->StopRec) {
 	$avaluo_list->RecCnt++;
 	if (intval($avaluo_list->RecCnt) >= intval($avaluo_list->StartRec)) {
@@ -3384,10 +4625,22 @@ while ($avaluo_list->RecCnt < $avaluo_list->StopRec) {
 		$avaluo->ResetAttrs();
 		$avaluo->CssClass = "";
 		if ($avaluo->CurrentAction == "gridadd") {
+			$avaluo_list->LoadRowValues(); // Load default values
 		} else {
 			$avaluo_list->LoadRowValues($avaluo_list->Recordset); // Load row values
 		}
 		$avaluo->RowType = EW_ROWTYPE_VIEW; // Render view
+		if ($avaluo->CurrentAction == "edit") {
+			if ($avaluo_list->CheckInlineEditKey() && $avaluo_list->EditRowCnt == 0) { // Inline edit
+				$avaluo->RowType = EW_ROWTYPE_EDIT; // Render edit
+			}
+		}
+		if ($avaluo->CurrentAction == "edit" && $avaluo->RowType == EW_ROWTYPE_EDIT && $avaluo->EventCancelled) { // Update failed
+			$objForm->Index = 1;
+			$avaluo_list->RestoreFormValues(); // Restore form values
+		}
+		if ($avaluo->RowType == EW_ROWTYPE_EDIT) // Edit row
+			$avaluo_list->EditRowCnt++;
 
 		// Set up row id / data-rowindex
 		$avaluo->RowAttrs = array_merge($avaluo->RowAttrs, array('data-rowindex'=>$avaluo_list->RowCnt, 'id'=>'r' . $avaluo_list->RowCnt . '_avaluo', 'data-rowtype'=>$avaluo->RowType));
@@ -3406,74 +4659,223 @@ $avaluo_list->ListOptions->Render("body", "left", $avaluo_list->RowCnt);
 ?>
 	<?php if ($avaluo->codigoavaluo->Visible) { // codigoavaluo ?>
 		<td data-name="codigoavaluo"<?php echo $avaluo->codigoavaluo->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_codigoavaluo" class="form-group avaluo_codigoavaluo">
+<input type="text" data-table="avaluo" data-field="x_codigoavaluo" name="x<?php echo $avaluo_list->RowIndex ?>_codigoavaluo" id="x<?php echo $avaluo_list->RowIndex ?>_codigoavaluo" size="10" maxlength="50" placeholder="<?php echo ew_HtmlEncode($avaluo->codigoavaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->codigoavaluo->EditValue ?>"<?php echo $avaluo->codigoavaluo->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_codigoavaluo" class="avaluo_codigoavaluo">
 <span<?php echo $avaluo->codigoavaluo->ViewAttributes() ?>>
 <?php echo $avaluo->codigoavaluo->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT || $avaluo->CurrentMode == "edit") { ?>
+<input type="hidden" data-table="avaluo" data-field="x_id" name="x<?php echo $avaluo_list->RowIndex ?>_id" id="x<?php echo $avaluo_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($avaluo->id->CurrentValue) ?>">
+<?php } ?>
 	<?php if ($avaluo->tipoinmueble->Visible) { // tipoinmueble ?>
 		<td data-name="tipoinmueble"<?php echo $avaluo->tipoinmueble->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_tipoinmueble" class="form-group avaluo_tipoinmueble">
+<select data-table="avaluo" data-field="x_tipoinmueble" data-value-separator="<?php echo $avaluo->tipoinmueble->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_list->RowIndex ?>_tipoinmueble" name="x<?php echo $avaluo_list->RowIndex ?>_tipoinmueble"<?php echo $avaluo->tipoinmueble->EditAttributes() ?>>
+<?php echo $avaluo->tipoinmueble->SelectOptionListHtml("x<?php echo $avaluo_list->RowIndex ?>_tipoinmueble") ?>
+</select>
+</span>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_tipoinmueble" class="avaluo_tipoinmueble">
 <span<?php echo $avaluo->tipoinmueble->ViewAttributes() ?>>
 <?php echo $avaluo->tipoinmueble->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($avaluo->id_solicitud->Visible) { // id_solicitud ?>
 		<td data-name="id_solicitud"<?php echo $avaluo->id_solicitud->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<?php if ($avaluo->id_solicitud->getSessionValue() <> "") { ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_id_solicitud" class="form-group avaluo_id_solicitud">
+<span<?php echo $avaluo->id_solicitud->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->id_solicitud->ViewValue ?></p></span>
+</span>
+<input type="hidden" id="x<?php echo $avaluo_list->RowIndex ?>_id_solicitud" name="x<?php echo $avaluo_list->RowIndex ?>_id_solicitud" value="<?php echo ew_HtmlEncode($avaluo->id_solicitud->CurrentValue) ?>">
+<?php } else { ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_id_solicitud" class="form-group avaluo_id_solicitud">
+<?php
+$wrkonchange = trim(" " . @$avaluo->id_solicitud->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$avaluo->id_solicitud->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $avaluo_list->RowIndex ?>_id_solicitud" style="white-space: nowrap; z-index: <?php echo (9000 - $avaluo_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $avaluo_list->RowIndex ?>_id_solicitud" id="sv_x<?php echo $avaluo_list->RowIndex ?>_id_solicitud" value="<?php echo $avaluo->id_solicitud->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($avaluo->id_solicitud->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($avaluo->id_solicitud->getPlaceHolder()) ?>"<?php echo $avaluo->id_solicitud->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_id_solicitud" data-value-separator="<?php echo $avaluo->id_solicitud->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $avaluo_list->RowIndex ?>_id_solicitud" id="x<?php echo $avaluo_list->RowIndex ?>_id_solicitud" value="<?php echo ew_HtmlEncode($avaluo->id_solicitud->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<script type="text/javascript">
+favaluolist.CreateAutoSuggest({"id":"x<?php echo $avaluo_list->RowIndex ?>_id_solicitud","forceSelect":false});
+</script>
+</span>
+<?php } ?>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_id_solicitud" class="avaluo_id_solicitud">
 <span<?php echo $avaluo->id_solicitud->ViewAttributes() ?>>
 <?php echo $avaluo->id_solicitud->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($avaluo->id_oficialcredito->Visible) { // id_oficialcredito ?>
 		<td data-name="id_oficialcredito"<?php echo $avaluo->id_oficialcredito->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_id_oficialcredito" class="form-group avaluo_id_oficialcredito">
+<select data-table="avaluo" data-field="x_id_oficialcredito" data-value-separator="<?php echo $avaluo->id_oficialcredito->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_list->RowIndex ?>_id_oficialcredito" name="x<?php echo $avaluo_list->RowIndex ?>_id_oficialcredito"<?php echo $avaluo->id_oficialcredito->EditAttributes() ?>>
+<?php echo $avaluo->id_oficialcredito->SelectOptionListHtml("x<?php echo $avaluo_list->RowIndex ?>_id_oficialcredito") ?>
+</select>
+</span>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_id_oficialcredito" class="avaluo_id_oficialcredito">
 <span<?php echo $avaluo->id_oficialcredito->ViewAttributes() ?>>
 <?php echo $avaluo->id_oficialcredito->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($avaluo->id_cliente->Visible) { // id_cliente ?>
-		<td data-name="id_cliente"<?php echo $avaluo->id_cliente->CellAttributes() ?>>
-<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_id_cliente" class="avaluo_id_cliente">
-<span<?php echo $avaluo->id_cliente->ViewAttributes() ?>>
-<?php echo $avaluo->id_cliente->ListViewValue() ?></span>
+	<?php if ($avaluo->id_inspector->Visible) { // id_inspector ?>
+		<td data-name="id_inspector"<?php echo $avaluo->id_inspector->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_id_inspector" class="form-group avaluo_id_inspector">
+<select data-table="avaluo" data-field="x_id_inspector" data-value-separator="<?php echo $avaluo->id_inspector->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $avaluo_list->RowIndex ?>_id_inspector" name="x<?php echo $avaluo_list->RowIndex ?>_id_inspector"<?php echo $avaluo->id_inspector->EditAttributes() ?>>
+<?php echo $avaluo->id_inspector->SelectOptionListHtml("x<?php echo $avaluo_list->RowIndex ?>_id_inspector") ?>
+</select>
 </span>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_id_inspector" class="avaluo_id_inspector">
+<span<?php echo $avaluo->id_inspector->ViewAttributes() ?>>
+<?php echo $avaluo->id_inspector->ListViewValue() ?></span>
+</span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($avaluo->estado->Visible) { // estado ?>
 		<td data-name="estado"<?php echo $avaluo->estado->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_estado" class="form-group avaluo_estado">
+<span<?php echo $avaluo->estado->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->estado->EditValue ?></p></span>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_estado" name="x<?php echo $avaluo_list->RowIndex ?>_estado" id="x<?php echo $avaluo_list->RowIndex ?>_estado" value="<?php echo ew_HtmlEncode($avaluo->estado->CurrentValue) ?>">
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_estado" class="avaluo_estado">
 <span<?php echo $avaluo->estado->ViewAttributes() ?>>
 <?php echo $avaluo->estado->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($avaluo->estadointerno->Visible) { // estadointerno ?>
 		<td data-name="estadointerno"<?php echo $avaluo->estadointerno->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_estadointerno" class="form-group avaluo_estadointerno">
+<span<?php echo $avaluo->estadointerno->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->estadointerno->EditValue ?></p></span>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_estadointerno" name="x<?php echo $avaluo_list->RowIndex ?>_estadointerno" id="x<?php echo $avaluo_list->RowIndex ?>_estadointerno" value="<?php echo ew_HtmlEncode($avaluo->estadointerno->CurrentValue) ?>">
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_estadointerno" class="avaluo_estadointerno">
 <span<?php echo $avaluo->estadointerno->ViewAttributes() ?>>
 <?php echo $avaluo->estadointerno->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($avaluo->estadopago->Visible) { // estadopago ?>
 		<td data-name="estadopago"<?php echo $avaluo->estadopago->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_estadopago" class="form-group avaluo_estadopago">
+<span<?php echo $avaluo->estadopago->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->estadopago->EditValue ?></p></span>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_estadopago" name="x<?php echo $avaluo_list->RowIndex ?>_estadopago" id="x<?php echo $avaluo_list->RowIndex ?>_estadopago" value="<?php echo ew_HtmlEncode($avaluo->estadopago->CurrentValue) ?>">
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_estadopago" class="avaluo_estadopago">
 <span<?php echo $avaluo->estadopago->ViewAttributes() ?>>
 <?php echo $avaluo->estadopago->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($avaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
 		<td data-name="fecha_avaluo"<?php echo $avaluo->fecha_avaluo->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_fecha_avaluo" class="form-group avaluo_fecha_avaluo">
+<input type="text" data-table="avaluo" data-field="x_fecha_avaluo" data-format="11" name="x<?php echo $avaluo_list->RowIndex ?>_fecha_avaluo" id="x<?php echo $avaluo_list->RowIndex ?>_fecha_avaluo" placeholder="<?php echo ew_HtmlEncode($avaluo->fecha_avaluo->getPlaceHolder()) ?>" value="<?php echo $avaluo->fecha_avaluo->EditValue ?>"<?php echo $avaluo->fecha_avaluo->EditAttributes() ?>>
+<?php if (!$avaluo->fecha_avaluo->ReadOnly && !$avaluo->fecha_avaluo->Disabled && !isset($avaluo->fecha_avaluo->EditAttrs["readonly"]) && !isset($avaluo->fecha_avaluo->EditAttrs["disabled"])) { ?>
+<script type="text/javascript">
+ew_CreateDateTimePicker("favaluolist", "x<?php echo $avaluo_list->RowIndex ?>_fecha_avaluo", {"ignoreReadonly":true,"useCurrent":false,"format":11});
+</script>
+<?php } ?>
+</span>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_fecha_avaluo" class="avaluo_fecha_avaluo">
 <span<?php echo $avaluo->fecha_avaluo->ViewAttributes() ?>>
 <?php echo $avaluo->fecha_avaluo->ListViewValue() ?></span>
 </span>
+<?php } ?>
+</td>
+	<?php } ?>
+	<?php if ($avaluo->monto_pago->Visible) { // monto_pago ?>
+		<td data-name="monto_pago"<?php echo $avaluo->monto_pago->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_monto_pago" class="form-group avaluo_monto_pago">
+<input type="text" data-table="avaluo" data-field="x_monto_pago" name="x<?php echo $avaluo_list->RowIndex ?>_monto_pago" id="x<?php echo $avaluo_list->RowIndex ?>_monto_pago" size="5" placeholder="<?php echo ew_HtmlEncode($avaluo->monto_pago->getPlaceHolder()) ?>" value="<?php echo $avaluo->monto_pago->EditValue ?>"<?php echo $avaluo->monto_pago->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_monto_pago" class="avaluo_monto_pago">
+<span<?php echo $avaluo->monto_pago->ViewAttributes() ?>>
+<?php echo $avaluo->monto_pago->ListViewValue() ?></span>
+</span>
+<?php } ?>
+</td>
+	<?php } ?>
+	<?php if ($avaluo->montoincial->Visible) { // montoincial ?>
+		<td data-name="montoincial"<?php echo $avaluo->montoincial->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_montoincial" class="form-group avaluo_montoincial">
+<span<?php echo $avaluo->montoincial->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $avaluo->montoincial->EditValue ?></p></span>
+</span>
+<input type="hidden" data-table="avaluo" data-field="x_montoincial" name="x<?php echo $avaluo_list->RowIndex ?>_montoincial" id="x<?php echo $avaluo_list->RowIndex ?>_montoincial" value="<?php echo ew_HtmlEncode($avaluo->montoincial->CurrentValue) ?>">
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_montoincial" class="avaluo_montoincial">
+<span<?php echo $avaluo->montoincial->ViewAttributes() ?>>
+<?php echo $avaluo->montoincial->ListViewValue() ?></span>
+</span>
+<?php } ?>
+</td>
+	<?php } ?>
+	<?php if ($avaluo->comentario->Visible) { // comentario ?>
+		<td data-name="comentario"<?php echo $avaluo->comentario->CellAttributes() ?>>
+<?php if ($avaluo->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_comentario" class="form-group avaluo_comentario">
+<textarea data-table="avaluo" data-field="x_comentario" name="x<?php echo $avaluo_list->RowIndex ?>_comentario" id="x<?php echo $avaluo_list->RowIndex ?>_comentario" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($avaluo->comentario->getPlaceHolder()) ?>"<?php echo $avaluo->comentario->EditAttributes() ?>><?php echo $avaluo->comentario->EditValue ?></textarea>
+</span>
+<?php } ?>
+<?php if ($avaluo->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $avaluo_list->RowCnt ?>_avaluo_comentario" class="avaluo_comentario">
+<span<?php echo $avaluo->comentario->ViewAttributes() ?>>
+<?php echo $avaluo->comentario->ListViewValue() ?></span>
+</span>
+<?php } ?>
 </td>
 	<?php } ?>
 <?php
@@ -3482,6 +4884,11 @@ $avaluo_list->ListOptions->Render("body", "left", $avaluo_list->RowCnt);
 $avaluo_list->ListOptions->Render("body", "right", $avaluo_list->RowCnt);
 ?>
 	</tr>
+<?php if ($avaluo->RowType == EW_ROWTYPE_ADD || $avaluo->RowType == EW_ROWTYPE_EDIT) { ?>
+<script type="text/javascript">
+favaluolist.UpdateOpts(<?php echo $avaluo_list->RowIndex ?>);
+</script>
+<?php } ?>
 <?php
 	}
 	if ($avaluo->CurrentAction <> "gridadd")
@@ -3490,6 +4897,9 @@ $avaluo_list->ListOptions->Render("body", "right", $avaluo_list->RowCnt);
 ?>
 </tbody>
 </table>
+<?php } ?>
+<?php if ($avaluo->CurrentAction == "edit") { ?>
+<input type="hidden" name="<?php echo $avaluo_list->FormKeyCountName ?>" id="<?php echo $avaluo_list->FormKeyCountName ?>" value="<?php echo $avaluo_list->KeyCount ?>">
 <?php } ?>
 <?php if ($avaluo->CurrentAction == "") { ?>
 <input type="hidden" name="a_list" id="a_list" value="">

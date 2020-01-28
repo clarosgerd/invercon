@@ -342,6 +342,7 @@ class casesor_edit extends casesor {
 		$this->id_institucion->SetVisibility();
 		$this->especialidad->SetVisibility();
 		$this->status->SetVisibility();
+		$this->codigo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -629,6 +630,9 @@ class casesor_edit extends casesor {
 		if (!$this->status->FldIsDetailKey) {
 			$this->status->setFormValue($objForm->GetValue("x_status"));
 		}
+		if (!$this->codigo->FldIsDetailKey) {
+			$this->codigo->setFormValue($objForm->GetValue("x_codigo"));
+		}
 	}
 
 	// Restore form values
@@ -651,6 +655,7 @@ class casesor_edit extends casesor {
 		$this->id_institucion->CurrentValue = $this->id_institucion->FormValue;
 		$this->especialidad->CurrentValue = $this->especialidad->FormValue;
 		$this->status->CurrentValue = $this->status->FormValue;
+		$this->codigo->CurrentValue = $this->codigo->FormValue;
 	}
 
 	// Load row based on key values
@@ -703,6 +708,7 @@ class casesor_edit extends casesor {
 		$this->id_institucion->setDbValue($row['id_institucion']);
 		$this->especialidad->setDbValue($row['especialidad']);
 		$this->status->setDbValue($row['status']);
+		$this->codigo->setDbValue($row['codigo']);
 	}
 
 	// Return a row with default values
@@ -725,6 +731,7 @@ class casesor_edit extends casesor {
 		$row['id_institucion'] = NULL;
 		$row['especialidad'] = NULL;
 		$row['status'] = NULL;
+		$row['codigo'] = NULL;
 		return $row;
 	}
 
@@ -750,6 +757,7 @@ class casesor_edit extends casesor {
 		$this->id_institucion->DbValue = $row['id_institucion'];
 		$this->especialidad->DbValue = $row['especialidad'];
 		$this->status->DbValue = $row['status'];
+		$this->codigo->DbValue = $row['codigo'];
 	}
 
 	// Load old record
@@ -801,6 +809,7 @@ class casesor_edit extends casesor {
 		// id_institucion
 		// especialidad
 		// status
+		// codigo
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -828,9 +837,23 @@ class casesor_edit extends casesor {
 		$this->id_rol->ViewValue = $this->id_rol->CurrentValue;
 		if (strval($this->id_rol->CurrentValue) <> "") {
 			$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-		$sWhereWrk = "";
-		$this->id_rol->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -851,9 +874,23 @@ class casesor_edit extends casesor {
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -914,6 +951,10 @@ class casesor_edit extends casesor {
 			$this->status->ViewValue = NULL;
 		}
 		$this->status->ViewCustomAttributes = "";
+
+		// codigo
+		$this->codigo->ViewValue = $this->codigo->CurrentValue;
+		$this->codigo->ViewCustomAttributes = "";
 
 			// nombre
 			$this->nombre->LinkCustomAttributes = "";
@@ -999,6 +1040,11 @@ class casesor_edit extends casesor {
 			$this->status->LinkCustomAttributes = "";
 			$this->status->HrefValue = "";
 			$this->status->TooltipValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
+			$this->codigo->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// nombre
@@ -1037,9 +1083,23 @@ class casesor_edit extends casesor {
 			$this->id_rol->EditValue = $this->id_rol->CurrentValue;
 			if (strval($this->id_rol->CurrentValue) <> "") {
 				$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-			$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-			$sWhereWrk = "";
-			$this->id_rol->LookupFilters = array();
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array();
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array();
+					break;
+				default:
+					$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+					$sWhereWrk = "";
+					$this->id_rol->LookupFilters = array();
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1064,9 +1124,23 @@ class casesor_edit extends casesor {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
-			$sWhereWrk = "";
-			$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+					$sWhereWrk = "";
+					$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+					break;
+			}
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1140,6 +1214,12 @@ class casesor_edit extends casesor {
 			$this->status->EditCustomAttributes = "";
 			$this->status->EditValue = $this->status->Options(FALSE);
 
+			// codigo
+			$this->codigo->EditAttrs["class"] = "form-control";
+			$this->codigo->EditCustomAttributes = "";
+			$this->codigo->EditValue = ew_HtmlEncode($this->codigo->CurrentValue);
+			$this->codigo->PlaceHolder = ew_RemoveHtml($this->codigo->FldTitle());
+
 			// Edit refer script
 			// nombre
 
@@ -1210,6 +1290,10 @@ class casesor_edit extends casesor {
 			// status
 			$this->status->LinkCustomAttributes = "";
 			$this->status->HrefValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1342,6 +1426,9 @@ class casesor_edit extends casesor {
 			// status
 			$this->status->SetDbValueDef($rsnew, $this->status->CurrentValue, NULL, $this->status->ReadOnly);
 
+			// codigo
+			$this->codigo->SetDbValueDef($rsnew, $this->codigo->CurrentValue, NULL, $this->codigo->ReadOnly);
+
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
 			if ($bUpdateRow) {
@@ -1391,9 +1478,23 @@ class casesor_edit extends casesor {
 		switch ($fld->FldVar) {
 		case "x_id_sucursal":
 			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-			$sWhereWrk = "{filter}";
-			$fld->LookupFilters = array("dx1" => '`nombre`');
+			switch (@$gsLanguage) {
+				case "en":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`nombre`');
+					break;
+				case "es":
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`nombre`');
+					break;
+				default:
+					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+					$sWhereWrk = "{filter}";
+					$fld->LookupFilters = array("dx1" => '`nombre`');
+					break;
+			}
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
@@ -1765,7 +1866,7 @@ $asesor_edit->ShowMessage();
 		<div class="<?php echo $asesor_edit->RightColumnClass ?>"><div<?php echo $asesor->id_sucursal->CellAttributes() ?>>
 <span id="el_asesor_id_sucursal">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($asesor->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $asesor->id_sucursal->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($asesor->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $asesor->id_sucursal->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($asesor->id_sucursal->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_sucursal',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($asesor->id_sucursal->ReadOnly || $asesor->id_sucursal->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="asesor" data-field="x_id_sucursal" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $asesor->id_sucursal->DisplayValueSeparatorAttribute() ?>" name="x_id_sucursal" id="x_id_sucursal" value="<?php echo $asesor->id_sucursal->CurrentValue ?>"<?php echo $asesor->id_sucursal->EditAttributes() ?>>
@@ -1778,7 +1879,7 @@ $asesor_edit->ShowMessage();
 		<td<?php echo $asesor->id_sucursal->CellAttributes() ?>>
 <span id="el_asesor_id_sucursal">
 <span class="ewLookupList">
-	<span onclick="jQuery(this).parent().next(":not([disabled])").click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($asesor->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $asesor->id_sucursal->ViewValue); ?></span>
+	<span onclick="jQuery(this).parent().next().click();" tabindex="-1" class="form-control ewLookupText" id="lu_x_id_sucursal"><?php echo (strval($asesor->id_sucursal->ViewValue) == "" ? $Language->Phrase("PleaseSelect") : $asesor->id_sucursal->ViewValue); ?></span>
 </span>
 <button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($asesor->id_sucursal->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x_id_sucursal',m:0,n:10});" class="ewLookupBtn btn btn-default btn-sm"<?php echo (($asesor->id_sucursal->ReadOnly || $asesor->id_sucursal->Disabled) ? " disabled" : "")?>><span class="glyphicon glyphicon-search ewIcon"></span></button>
 <input type="hidden" data-table="asesor" data-field="x_id_sucursal" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $asesor->id_sucursal->DisplayValueSeparatorAttribute() ?>" name="x_id_sucursal" id="x_id_sucursal" value="<?php echo $asesor->id_sucursal->CurrentValue ?>"<?php echo $asesor->id_sucursal->EditAttributes() ?>>
@@ -2000,6 +2101,27 @@ $asesor_edit->ShowMessage();
 </div></div>
 </span>
 <?php echo $asesor->status->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php } ?>
+<?php if ($asesor->codigo->Visible) { // codigo ?>
+<?php if ($asesor_edit->IsMobileOrModal) { ?>
+	<div id="r_codigo" class="form-group">
+		<label id="elh_asesor_codigo" for="x_codigo" class="<?php echo $asesor_edit->LeftColumnClass ?>"><?php echo $asesor->codigo->FldCaption() ?></label>
+		<div class="<?php echo $asesor_edit->RightColumnClass ?>"><div<?php echo $asesor->codigo->CellAttributes() ?>>
+<span id="el_asesor_codigo">
+<input type="text" data-table="asesor" data-field="x_codigo" name="x_codigo" id="x_codigo" size="30" maxlength="5" placeholder="<?php echo ew_HtmlEncode($asesor->codigo->getPlaceHolder()) ?>" value="<?php echo $asesor->codigo->EditValue ?>"<?php echo $asesor->codigo->EditAttributes() ?>>
+</span>
+<?php echo $asesor->codigo->CustomMsg ?></div></div>
+	</div>
+<?php } else { ?>
+	<tr id="r_codigo">
+		<td class="col-sm-3"><span id="elh_asesor_codigo"><?php echo $asesor->codigo->FldCaption() ?></span></td>
+		<td<?php echo $asesor->codigo->CellAttributes() ?>>
+<span id="el_asesor_codigo">
+<input type="text" data-table="asesor" data-field="x_codigo" name="x_codigo" id="x_codigo" size="30" maxlength="5" placeholder="<?php echo ew_HtmlEncode($asesor->codigo->getPlaceHolder()) ?>" value="<?php echo $asesor->codigo->EditValue ?>"<?php echo $asesor->codigo->EditAttributes() ?>>
+</span>
+<?php echo $asesor->codigo->CustomMsg ?></td>
 	</tr>
 <?php } ?>
 <?php } ?>

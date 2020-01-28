@@ -9,6 +9,8 @@ $estadointerno = NULL;
 class cestadointerno extends cTable {
 	var $id;
 	var $descripcion;
+	var $owner;
+	var $time;
 
 	//
 	// Table class constructor
@@ -52,6 +54,19 @@ class cestadointerno extends cTable {
 		$this->descripcion = new cField('estadointerno', 'estadointerno', 'x_descripcion', 'descripcion', '`descripcion`', '`descripcion`', 200, -1, FALSE, '`descripcion`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->descripcion->Sortable = TRUE; // Allow sort
 		$this->fields['descripcion'] = &$this->descripcion;
+
+		// owner
+		$this->owner = new cField('estadointerno', 'estadointerno', 'x_owner', 'owner', '`owner`', '`owner`', 200, -1, FALSE, '`owner`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->owner->Sortable = TRUE; // Allow sort
+		$this->owner->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->owner->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
+		$this->fields['owner'] = &$this->owner;
+
+		// time
+		$this->time = new cField('estadointerno', 'estadointerno', 'x_time', 'time', '`time`', '`time`', 3, -1, FALSE, '`time`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->time->Sortable = TRUE; // Allow sort
+		$this->time->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['time'] = &$this->time;
 	}
 
 	// Field Visibility
@@ -581,6 +596,8 @@ class cestadointerno extends cTable {
 	function LoadListRowValues(&$rs) {
 		$this->id->setDbValue($rs->fields('id'));
 		$this->descripcion->setDbValue($rs->fields('descripcion'));
+		$this->owner->setDbValue($rs->fields('owner'));
+		$this->time->setDbValue($rs->fields('time'));
 	}
 
 	// Render list row values
@@ -593,6 +610,8 @@ class cestadointerno extends cTable {
 	// Common render codes
 		// id
 		// descripcion
+		// owner
+		// time
 		// id
 
 		$this->id->ViewValue = $this->id->CurrentValue;
@@ -601,6 +620,47 @@ class cestadointerno extends cTable {
 		// descripcion
 		$this->descripcion->ViewValue = $this->descripcion->CurrentValue;
 		$this->descripcion->ViewCustomAttributes = "";
+
+		// owner
+		if (strval($this->owner->CurrentValue) <> "") {
+			$sFilterWrk = "`userlevelname`" . ew_SearchString("=", $this->owner->CurrentValue, EW_DATATYPE_STRING, "");
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->owner->LookupFilters = array();
+				break;
+		}
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->owner, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->owner->ViewValue = $this->owner->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->owner->ViewValue = $this->owner->CurrentValue;
+			}
+		} else {
+			$this->owner->ViewValue = NULL;
+		}
+		$this->owner->ViewCustomAttributes = "";
+
+		// time
+		$this->time->ViewValue = $this->time->CurrentValue;
+		$this->time->ViewCustomAttributes = "";
 
 		// id
 		$this->id->LinkCustomAttributes = "";
@@ -611,6 +671,16 @@ class cestadointerno extends cTable {
 		$this->descripcion->LinkCustomAttributes = "";
 		$this->descripcion->HrefValue = "";
 		$this->descripcion->TooltipValue = "";
+
+		// owner
+		$this->owner->LinkCustomAttributes = "";
+		$this->owner->HrefValue = "";
+		$this->owner->TooltipValue = "";
+
+		// time
+		$this->time->LinkCustomAttributes = "";
+		$this->time->HrefValue = "";
+		$this->time->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -637,6 +707,16 @@ class cestadointerno extends cTable {
 		$this->descripcion->EditCustomAttributes = "";
 		$this->descripcion->EditValue = $this->descripcion->CurrentValue;
 		$this->descripcion->PlaceHolder = ew_RemoveHtml($this->descripcion->FldTitle());
+
+		// owner
+		$this->owner->EditAttrs["class"] = "form-control";
+		$this->owner->EditCustomAttributes = "";
+
+		// time
+		$this->time->EditAttrs["class"] = "form-control";
+		$this->time->EditCustomAttributes = "";
+		$this->time->EditValue = $this->time->CurrentValue;
+		$this->time->PlaceHolder = ew_RemoveHtml($this->time->FldTitle());
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -667,9 +747,13 @@ class cestadointerno extends cTable {
 				if ($ExportPageType == "view") {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->descripcion->Exportable) $Doc->ExportCaption($this->descripcion);
+					if ($this->owner->Exportable) $Doc->ExportCaption($this->owner);
+					if ($this->time->Exportable) $Doc->ExportCaption($this->time);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->descripcion->Exportable) $Doc->ExportCaption($this->descripcion);
+					if ($this->owner->Exportable) $Doc->ExportCaption($this->owner);
+					if ($this->time->Exportable) $Doc->ExportCaption($this->time);
 				}
 				$Doc->EndExportRow();
 			}
@@ -703,9 +787,13 @@ class cestadointerno extends cTable {
 					if ($ExportPageType == "view") {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->descripcion->Exportable) $Doc->ExportField($this->descripcion);
+						if ($this->owner->Exportable) $Doc->ExportField($this->owner);
+						if ($this->time->Exportable) $Doc->ExportField($this->time);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->descripcion->Exportable) $Doc->ExportField($this->descripcion);
+						if ($this->owner->Exportable) $Doc->ExportField($this->owner);
+						if ($this->time->Exportable) $Doc->ExportField($this->time);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

@@ -469,6 +469,7 @@ class cusuario_list extends cusuario {
 		if ($this->IsAddOrEdit())
 			$this->created_at->Visible = FALSE;
 		$this->color->SetVisibility();
+		$this->codigo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -843,6 +844,7 @@ class cusuario_list extends cusuario {
 		$sFilterList = ew_Concat($sFilterList, $this->especialidad->AdvancedSearch->ToJson(), ","); // Field especialidad
 		$sFilterList = ew_Concat($sFilterList, $this->created_at->AdvancedSearch->ToJson(), ","); // Field created_at
 		$sFilterList = ew_Concat($sFilterList, $this->color->AdvancedSearch->ToJson(), ","); // Field color
+		$sFilterList = ew_Concat($sFilterList, $this->codigo->AdvancedSearch->ToJson(), ","); // Field codigo
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -1038,6 +1040,14 @@ class cusuario_list extends cusuario {
 		$this->color->AdvancedSearch->SearchValue2 = @$filter["y_color"];
 		$this->color->AdvancedSearch->SearchOperator2 = @$filter["w_color"];
 		$this->color->AdvancedSearch->Save();
+
+		// Field codigo
+		$this->codigo->AdvancedSearch->SearchValue = @$filter["x_codigo"];
+		$this->codigo->AdvancedSearch->SearchOperator = @$filter["z_codigo"];
+		$this->codigo->AdvancedSearch->SearchCondition = @$filter["v_codigo"];
+		$this->codigo->AdvancedSearch->SearchValue2 = @$filter["y_codigo"];
+		$this->codigo->AdvancedSearch->SearchOperator2 = @$filter["w_codigo"];
+		$this->codigo->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -1059,6 +1069,7 @@ class cusuario_list extends cusuario {
 		$this->BuildBasicSearchSQL($sWhere, $this->direccion, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->especialidad, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->color, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->codigo, $arKeywords, $type);
 		return $sWhere;
 	}
 
@@ -1223,6 +1234,7 @@ class cusuario_list extends cusuario {
 			$this->UpdateSort($this->especialidad); // especialidad
 			$this->UpdateSort($this->created_at); // created_at
 			$this->UpdateSort($this->color); // color
+			$this->UpdateSort($this->codigo); // codigo
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1273,6 +1285,7 @@ class cusuario_list extends cusuario {
 				$this->especialidad->setSort("");
 				$this->created_at->setSort("");
 				$this->color->setSort("");
+				$this->codigo->setSort("");
 			}
 
 			// Reset start position
@@ -1316,7 +1329,7 @@ class cusuario_list extends cusuario {
 
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
-		$this->ListOptions->UseDropDownButton = TRUE;
+		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
 		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
@@ -1722,6 +1735,7 @@ class cusuario_list extends cusuario {
 			$this->avatar->Upload->DbValue = ew_BytesToStr($this->avatar->Upload->DbValue);
 		$this->created_at->setDbValue($row['created_at']);
 		$this->color->setDbValue($row['color']);
+		$this->codigo->setDbValue($row['codigo']);
 	}
 
 	// Return a row with default values
@@ -1747,6 +1761,7 @@ class cusuario_list extends cusuario {
 		$row['avatar'] = NULL;
 		$row['created_at'] = NULL;
 		$row['color'] = NULL;
+		$row['codigo'] = NULL;
 		return $row;
 	}
 
@@ -1775,6 +1790,7 @@ class cusuario_list extends cusuario {
 		$this->avatar->Upload->DbValue = $row['avatar'];
 		$this->created_at->DbValue = $row['created_at'];
 		$this->color->DbValue = $row['color'];
+		$this->codigo->DbValue = $row['codigo'];
 	}
 
 	// Load old record
@@ -1835,6 +1851,7 @@ class cusuario_list extends cusuario {
 		// avatar
 		// created_at
 		// color
+		// codigo
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -1862,10 +1879,24 @@ class cusuario_list extends cusuario {
 		if ($Security->CanAdmin()) { // System admin
 		if (strval($this->id_rol->CurrentValue) <> "") {
 			$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-		$sWhereWrk = "";
-		$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
-		$lookuptblfilter = "`userlevelid`='1'";
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+				$sWhereWrk = "";
+				$this->id_rol->LookupFilters = array("dx1" => '`userlevelname`');
+				break;
+		}
+		$lookuptblfilter = "`userlevelid`>=1";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
@@ -1894,9 +1925,23 @@ class cusuario_list extends cusuario {
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1937,9 +1982,23 @@ class cusuario_list extends cusuario {
 		// id_institucion
 		if (strval($this->id_institucion->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_institucion->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
-		$sWhereWrk = "";
-		$this->id_institucion->LookupFilters = array();
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
+				$sWhereWrk = "";
+				$this->id_institucion->LookupFilters = array();
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
+				$sWhereWrk = "";
+				$this->id_institucion->LookupFilters = array();
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `banco`";
+				$sWhereWrk = "";
+				$this->id_institucion->LookupFilters = array();
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_institucion, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1973,6 +2032,10 @@ class cusuario_list extends cusuario {
 		// color
 		$this->color->ViewValue = $this->color->CurrentValue;
 		$this->color->ViewCustomAttributes = "";
+
+		// codigo
+		$this->codigo->ViewValue = $this->codigo->CurrentValue;
+		$this->codigo->ViewCustomAttributes = "";
 
 			// nombre
 			$this->nombre->LinkCustomAttributes = "";
@@ -2063,6 +2126,11 @@ class cusuario_list extends cusuario {
 			$this->color->LinkCustomAttributes = "";
 			$this->color->HrefValue = "";
 			$this->color->TooltipValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
+			$this->codigo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -2811,6 +2879,15 @@ $usuario_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($usuario->codigo->Visible) { // codigo ?>
+	<?php if ($usuario->SortUrl($usuario->codigo) == "") { ?>
+		<th data-name="codigo" class="<?php echo $usuario->codigo->HeaderCellClass() ?>"><div id="elh_usuario_codigo" class="usuario_codigo"><div class="ewTableHeaderCaption"><?php echo $usuario->codigo->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="codigo" class="<?php echo $usuario->codigo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $usuario->SortUrl($usuario->codigo) ?>',1);"><div id="elh_usuario_codigo" class="usuario_codigo">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $usuario->codigo->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($usuario->codigo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($usuario->codigo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php
 
 // Render list options (header, right)
@@ -3017,6 +3094,14 @@ $usuario_list->ListOptions->Render("body", "left", $usuario_list->RowCnt);
 <span id="el<?php echo $usuario_list->RowCnt ?>_usuario_color" class="usuario_color">
 <span<?php echo $usuario->color->ViewAttributes() ?>>
 <?php echo $usuario->color->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($usuario->codigo->Visible) { // codigo ?>
+		<td data-name="codigo"<?php echo $usuario->codigo->CellAttributes() ?>>
+<span id="el<?php echo $usuario_list->RowCnt ?>_usuario_codigo" class="usuario_codigo">
+<span<?php echo $usuario->codigo->ViewAttributes() ?>>
+<?php echo $usuario->codigo->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>

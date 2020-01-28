@@ -464,6 +464,7 @@ class coficialcredito_list extends coficialcredito {
 		$this->cargo->SetVisibility();
 		$this->id_institucion->SetVisibility();
 		$this->especialidad->SetVisibility();
+		$this->codigo->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -835,6 +836,7 @@ class coficialcredito_list extends coficialcredito {
 		$sFilterList = ew_Concat($sFilterList, $this->id_institucion->AdvancedSearch->ToJson(), ","); // Field id_institucion
 		$sFilterList = ew_Concat($sFilterList, $this->especialidad->AdvancedSearch->ToJson(), ","); // Field especialidad
 		$sFilterList = ew_Concat($sFilterList, $this->status->AdvancedSearch->ToJson(), ","); // Field status
+		$sFilterList = ew_Concat($sFilterList, $this->codigo->AdvancedSearch->ToJson(), ","); // Field codigo
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -1014,6 +1016,14 @@ class coficialcredito_list extends coficialcredito {
 		$this->status->AdvancedSearch->SearchValue2 = @$filter["y_status"];
 		$this->status->AdvancedSearch->SearchOperator2 = @$filter["w_status"];
 		$this->status->AdvancedSearch->Save();
+
+		// Field codigo
+		$this->codigo->AdvancedSearch->SearchValue = @$filter["x_codigo"];
+		$this->codigo->AdvancedSearch->SearchOperator = @$filter["z_codigo"];
+		$this->codigo->AdvancedSearch->SearchCondition = @$filter["v_codigo"];
+		$this->codigo->AdvancedSearch->SearchValue2 = @$filter["y_codigo"];
+		$this->codigo->AdvancedSearch->SearchOperator2 = @$filter["w_codigo"];
+		$this->codigo->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -1034,6 +1044,7 @@ class coficialcredito_list extends coficialcredito {
 		$this->BuildBasicSearchSQL($sWhere, $this->direccion, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->cargo, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->especialidad, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->codigo, $arKeywords, $type);
 		return $sWhere;
 	}
 
@@ -1195,6 +1206,7 @@ class coficialcredito_list extends coficialcredito {
 			$this->UpdateSort($this->cargo); // cargo
 			$this->UpdateSort($this->id_institucion); // id_institucion
 			$this->UpdateSort($this->especialidad); // especialidad
+			$this->UpdateSort($this->codigo); // codigo
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1242,6 +1254,7 @@ class coficialcredito_list extends coficialcredito {
 				$this->cargo->setSort("");
 				$this->id_institucion->setSort("");
 				$this->especialidad->setSort("");
+				$this->codigo->setSort("");
 			}
 
 			// Reset start position
@@ -1285,7 +1298,7 @@ class coficialcredito_list extends coficialcredito {
 
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
-		$this->ListOptions->UseDropDownButton = TRUE;
+		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
 		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
@@ -1673,6 +1686,7 @@ class coficialcredito_list extends coficialcredito {
 		$this->avatar->Upload->DbValue = $row['avatar'];
 		if (is_array($this->avatar->Upload->DbValue) || is_object($this->avatar->Upload->DbValue)) // Byte array
 			$this->avatar->Upload->DbValue = ew_BytesToStr($this->avatar->Upload->DbValue);
+		$this->codigo->setDbValue($row['codigo']);
 	}
 
 	// Return a row with default values
@@ -1696,6 +1710,7 @@ class coficialcredito_list extends coficialcredito {
 		$row['especialidad'] = NULL;
 		$row['status'] = NULL;
 		$row['avatar'] = NULL;
+		$row['codigo'] = NULL;
 		return $row;
 	}
 
@@ -1722,6 +1737,7 @@ class coficialcredito_list extends coficialcredito {
 		$this->especialidad->DbValue = $row['especialidad'];
 		$this->status->DbValue = $row['status'];
 		$this->avatar->Upload->DbValue = $row['avatar'];
+		$this->codigo->DbValue = $row['codigo'];
 	}
 
 	// Load old record
@@ -1780,6 +1796,7 @@ class coficialcredito_list extends coficialcredito {
 		// especialidad
 		// status
 		// avatar
+		// codigo
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -1810,9 +1827,23 @@ class coficialcredito_list extends coficialcredito {
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-		$sWhereWrk = "";
-		$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+		switch (@$gsLanguage) {
+			case "en":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			case "es":
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+			default:
+				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+				$sWhereWrk = "";
+				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
+				break;
+		}
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1861,6 +1892,10 @@ class coficialcredito_list extends coficialcredito {
 		// especialidad
 		$this->especialidad->ViewValue = $this->especialidad->CurrentValue;
 		$this->especialidad->ViewCustomAttributes = "";
+
+		// codigo
+		$this->codigo->ViewValue = $this->codigo->CurrentValue;
+		$this->codigo->ViewCustomAttributes = "";
 
 			// nombre
 			$this->nombre->LinkCustomAttributes = "";
@@ -1936,6 +1971,11 @@ class coficialcredito_list extends coficialcredito {
 			$this->especialidad->LinkCustomAttributes = "";
 			$this->especialidad->HrefValue = "";
 			$this->especialidad->TooltipValue = "";
+
+			// codigo
+			$this->codigo->LinkCustomAttributes = "";
+			$this->codigo->HrefValue = "";
+			$this->codigo->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -2645,6 +2685,15 @@ $oficialcredito_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($oficialcredito->codigo->Visible) { // codigo ?>
+	<?php if ($oficialcredito->SortUrl($oficialcredito->codigo) == "") { ?>
+		<th data-name="codigo" class="<?php echo $oficialcredito->codigo->HeaderCellClass() ?>"><div id="elh_oficialcredito_codigo" class="oficialcredito_codigo"><div class="ewTableHeaderCaption"><?php echo $oficialcredito->codigo->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="codigo" class="<?php echo $oficialcredito->codigo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $oficialcredito->SortUrl($oficialcredito->codigo) ?>',1);"><div id="elh_oficialcredito_codigo" class="oficialcredito_codigo">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $oficialcredito->codigo->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($oficialcredito->codigo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($oficialcredito->codigo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php
 
 // Render list options (header, right)
@@ -2827,6 +2876,14 @@ $oficialcredito_list->ListOptions->Render("body", "left", $oficialcredito_list->
 <span id="el<?php echo $oficialcredito_list->RowCnt ?>_oficialcredito_especialidad" class="oficialcredito_especialidad">
 <span<?php echo $oficialcredito->especialidad->ViewAttributes() ?>>
 <?php echo $oficialcredito->especialidad->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($oficialcredito->codigo->Visible) { // codigo ?>
+		<td data-name="codigo"<?php echo $oficialcredito->codigo->CellAttributes() ?>>
+<span id="el<?php echo $oficialcredito_list->RowCnt ?>_oficialcredito_codigo" class="oficialcredito_codigo">
+<span<?php echo $oficialcredito->codigo->ViewAttributes() ?>>
+<?php echo $oficialcredito->codigo->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
