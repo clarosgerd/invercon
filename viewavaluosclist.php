@@ -3932,12 +3932,12 @@ class cviewavaluosc_list extends cviewavaluosc {
 		 $footer .= "</td><td></td>";
 		  $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
-		 $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["avaluo"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
+		 $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["avaluo"]."\" height=\"200\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 	  $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
-		 $footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$_GET ["avaluo"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
+		 $footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$_GET ["avaluo"]."\" height=\"200\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";

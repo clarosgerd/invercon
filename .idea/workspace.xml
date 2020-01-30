@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0eaa19a0-4102-40fb-9210-8f183fa97c48" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ewcfg14.php" afterPath="$PROJECT_DIR$/ewcfg14.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pmp/invercon.pmp" afterPath="$PROJECT_DIR$/pmp/invercon.pmp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluoscinfo.php" afterPath="$PROJECT_DIR$/viewavaluoscinfo.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewavaluosclist.php" afterPath="$PROJECT_DIR$/viewavaluosclist.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/viewsolicitudframeinfo.php" afterPath="$PROJECT_DIR$/viewsolicitudframeinfo.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,7 +15,303 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="avaluoinfo.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/avaluoinfo.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="37842">
+              <caret line="2226" column="0" lean-forward="false" selection-start-line="2226" selection-start-column="0" selection-end-line="2226" selection-end-column="0" />
+              <folding>
+                <marker date="1580173093943" expanded="true" signature="18123:18137" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1580173093943" expanded="true" signature="18487:19016" ph="SELECT * FRO... *" />
+                <marker date="1580173093943" expanded="true" signature="18511:18991" ph="SELECT *, (S... avaluo" />
+                <marker date="1580173093943" expanded="true" signature="19054:19583" ph="SELECT * FRO... *" />
+                <marker date="1580173093943" expanded="true" signature="19078:19558" ph="SELECT *, (S... avaluo" />
+                <marker date="1580173093943" expanded="true" signature="24598:24648" ph="SELECT COUNT... ${$sql}" />
+                <marker date="1580173093943" expanded="true" signature="25167:25181" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1580173093943" expanded="true" signature="26021:26035" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1580173093943" expanded="true" signature="27139:27203" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
+                <marker date="1580173093943" expanded="true" signature="32131:32175" ph="DELETE FROM " />
+                <marker date="1580173093943" expanded="true" signature="44272:44384" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093943" expanded="true" signature="44499:44611" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093943" expanded="true" signature="44724:44836" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093943" expanded="true" signature="45877:45988" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093943" expanded="true" signature="46103:46214" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093943" expanded="true" signature="46327:46438" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093943" expanded="true" signature="47617:47738" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093943" expanded="true" signature="47858:47979" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093943" expanded="true" signature="48097:48218" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093943" expanded="true" signature="49411:49527" ph="SELECT `logi... inspector" />
+                <marker date="1580173093943" expanded="true" signature="49642:49758" ph="SELECT `logi... inspector" />
+                <marker date="1580173093943" expanded="true" signature="49871:49987" ph="SELECT `logi... inspector" />
+                <marker date="1580173093943" expanded="true" signature="51485:51594" ph="SELECT `id`,... cliente" />
+                <marker date="1580173093943" expanded="true" signature="51707:51816" ph="SELECT `id`,... cliente" />
+                <marker date="1580173093943" expanded="true" signature="51927:52036" ph="SELECT `id`,... cliente" />
+                <marker date="1580173093943" expanded="true" signature="53017:53124" ph="SELECT `id`,... estado" />
+                <marker date="1580173093943" expanded="true" signature="53257:53364" ph="SELECT `id`,... estado" />
+                <marker date="1580173093943" expanded="true" signature="53495:53602" ph="SELECT `id`,... estado" />
+                <marker date="1580173093943" expanded="true" signature="54552:54666" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093943" expanded="true" signature="54806:54920" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093943" expanded="true" signature="55058:55172" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093943" expanded="true" signature="56169:56280" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093943" expanded="true" signature="56417:56528" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093943" expanded="true" signature="56663:56774" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093943" expanded="true" signature="57985:58095" ph="SELECT `id`,... metodopago" />
+                <marker date="1580173093943" expanded="true" signature="58211:58321" ph="SELECT `id`,... metodopago" />
+                <marker date="1580173093943" expanded="true" signature="58435:58545" ph="SELECT `id`,... metodopago" />
+                <marker date="1580173093943" expanded="true" signature="67436:67547" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093943" expanded="true" signature="67662:67773" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093943" expanded="true" signature="67886:67997" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093943" expanded="true" signature="70135:70242" ph="SELECT `id`,... estado" />
+                <marker date="1580173093943" expanded="true" signature="70375:70482" ph="SELECT `id`,... estado" />
+                <marker date="1580173093943" expanded="true" signature="70613:70720" ph="SELECT `id`,... estado" />
+                <marker date="1580173093943" expanded="true" signature="71782:71896" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093943" expanded="true" signature="72036:72150" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093943" expanded="true" signature="72288:72402" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093943" expanded="true" signature="73505:73616" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093943" expanded="true" signature="73753:73864" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093943" expanded="true" signature="73999:74110" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093943" expanded="true" signature="89263:89344" ph="SELECT * FRO... solicitud" />
+                <marker date="1580173093943" expanded="true" signature="96931:97204" ph="INSERT INTO `emailnotificaciones`... " />
+                <marker date="1580173093943" expanded="true" signature="97237:97455" ph="INSERT INTO `notificaciones`... " />
+                <marker date="1580173093943" expanded="true" signature="97565:97843" ph="INSERT INTO `emailnotificaciones`... " />
+                <marker date="1580173093943" expanded="true" signature="101858:102123" ph="INSERT INTO `emailnotificaciones`... " />
+                <marker date="1580173093943" expanded="true" signature="102156:102388" ph="INSERT INTO `notificaciones`... " />
+                <marker date="1580173093943" expanded="true" signature="102498:102768" ph="INSERT INTO `emailnotificaciones`... " />
+                <marker date="1580173093943" expanded="true" signature="102801:103038" ph="INSERT INTO `notificaciones`... " />
+                <marker date="1580173093943" expanded="true" signature="103067:103181" ph="INSERT INTO `comentariosavaluo`... " />
+                <marker date="1580173093943" expanded="true" signature="103208:103459" ph="INSERT INTO `historico`... " />
+                <marker date="1580173093943" expanded="true" signature="104044:104158" ph="INSERT INTO `comentariosavaluo`... " />
+                <marker date="1580173093943" expanded="true" signature="104185:104436" ph="INSERT INTO `historico`... " />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="avaluolist.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/avaluolist.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+              <folding>
+                <marker date="1580173093951" expanded="true" signature="4300:4307" ph="×" />
+                <marker date="1580173093951" expanded="true" signature="4821:4828" ph="×" />
+                <marker date="1580173093951" expanded="true" signature="5370:5377" ph="×" />
+                <marker date="1580173093951" expanded="true" signature="5911:5918" ph="×" />
+                <marker date="1580173093951" expanded="true" signature="82163:82275" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093951" expanded="true" signature="82390:82502" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093951" expanded="true" signature="82615:82727" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093951" expanded="true" signature="83768:83879" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="83994:84105" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="84218:84329" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="85508:85629" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093951" expanded="true" signature="85749:85870" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093951" expanded="true" signature="85988:86109" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093951" expanded="true" signature="87302:87418" ph="SELECT `logi... inspector" />
+                <marker date="1580173093951" expanded="true" signature="87533:87649" ph="SELECT `logi... inspector" />
+                <marker date="1580173093951" expanded="true" signature="87762:87878" ph="SELECT `logi... inspector" />
+                <marker date="1580173093951" expanded="true" signature="89148:89255" ph="SELECT `id`,... estado" />
+                <marker date="1580173093951" expanded="true" signature="89388:89495" ph="SELECT `id`,... estado" />
+                <marker date="1580173093951" expanded="true" signature="89626:89733" ph="SELECT `id`,... estado" />
+                <marker date="1580173093951" expanded="true" signature="90683:90797" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093951" expanded="true" signature="90937:91051" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093951" expanded="true" signature="91189:91303" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093951" expanded="true" signature="92300:92411" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093951" expanded="true" signature="92548:92659" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093951" expanded="true" signature="92794:92905" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093951" expanded="true" signature="97246:97357" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="97477:97588" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="97706:97817" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="103151:103366" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093951" expanded="true" signature="103486:103701" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093951" expanded="true" signature="103819:104034" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093951" expanded="true" signature="105046:105157" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="105277:105388" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="105506:105617" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="106737:106848" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="106968:107079" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="107197:107308" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="108623:108847" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093951" expanded="true" signature="108972:109196" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093951" expanded="true" signature="109319:109543" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093951" expanded="true" signature="110415:110634" ph="SELECT `logi... inspector" />
+                <marker date="1580173093951" expanded="true" signature="110754:110973" ph="SELECT `logi... inspector" />
+                <marker date="1580173093951" expanded="true" signature="111091:111310" ph="SELECT `logi... inspector" />
+                <marker date="1580173093951" expanded="true" signature="112086:112193" ph="SELECT `id`,... estado" />
+                <marker date="1580173093951" expanded="true" signature="112331:112438" ph="SELECT `id`,... estado" />
+                <marker date="1580173093951" expanded="true" signature="112574:112681" ph="SELECT `id`,... estado" />
+                <marker date="1580173093951" expanded="true" signature="113771:113885" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093951" expanded="true" signature="114030:114144" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093951" expanded="true" signature="114287:114401" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580173093951" expanded="true" signature="115532:115643" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093951" expanded="true" signature="115785:115896" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093951" expanded="true" signature="116036:116147" ph="SELECT `id`,... estadopago" />
+                <marker date="1580173093951" expanded="true" signature="146314:146439" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093951" expanded="true" signature="146549:146674" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093951" expanded="true" signature="146782:146907" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580173093951" expanded="true" signature="147465:147589" ph="SELECT `id` solicitud" />
+                <marker date="1580173093951" expanded="true" signature="147707:147831" ph="SELECT `id` solicitud" />
+                <marker date="1580173093951" expanded="true" signature="147947:148071" ph="SELECT `id` solicitud" />
+                <marker date="1580173093951" expanded="true" signature="148636:148770" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093951" expanded="true" signature="148880:149014" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093951" expanded="true" signature="149122:149256" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580173093951" expanded="true" signature="149818:149947" ph="SELECT `logi... inspector" />
+                <marker date="1580173093951" expanded="true" signature="150057:150186" ph="SELECT `logi... inspector" />
+                <marker date="1580173093951" expanded="true" signature="150294:150423" ph="SELECT `logi... inspector" />
+                <marker date="1580173093951" expanded="true" signature="150974:151094" ph="SELECT `id` estado" />
+                <marker date="1580173093951" expanded="true" signature="151236:151356" ph="SELECT `id` estado" />
+                <marker date="1580173093951" expanded="true" signature="151496:151616" ph="SELECT `id` estado" />
+                <marker date="1580173093951" expanded="true" signature="152195:152322" ph="SELECT `id` estadointerno" />
+                <marker date="1580173093951" expanded="true" signature="152464:152591" ph="SELECT `id` estadointerno" />
+                <marker date="1580173093951" expanded="true" signature="152731:152858" ph="SELECT `id` estadointerno" />
+                <marker date="1580173093951" expanded="true" signature="153441:153565" ph="SELECT `id` estadopago" />
+                <marker date="1580173093951" expanded="true" signature="153707:153831" ph="SELECT `id` estadopago" />
+                <marker date="1580173093951" expanded="true" signature="153971:154095" ph="SELECT `id` estadopago" />
+                <marker date="1580173093951" expanded="true" signature="154969:155044" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="155285:155360" ph="SELECT `id`,... solicitud" />
+                <marker date="1580173093951" expanded="true" signature="155599:155674" ph="SELECT `id`,... solicitud" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ewcfg14.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ewcfg14.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="81" column="140" lean-forward="false" selection-start-line="81" selection-start-column="140" selection-end-line="81" selection-end-column="140" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="viewsolicitudframeinfo.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/viewsolicitudframeinfo.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="510" column="5" lean-forward="false" selection-start-line="510" selection-start-column="5" selection-end-line="510" selection-end-column="5" />
+              <folding>
+                <marker date="1580257402088" expanded="true" signature="30055:30069" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1580257402088" expanded="true" signature="33940:33990" ph="SELECT COUNT... ${$sql}" />
+                <marker date="1580257402088" expanded="true" signature="34509:34523" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1580257402088" expanded="true" signature="35363:35377" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+                <marker date="1580257402088" expanded="true" signature="36326:36390" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
+                <marker date="1580257402088" expanded="true" signature="37646:37690" ph="DELETE FROM " />
+                <marker date="1580257402088" expanded="true" signature="53520:53632" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="53766:53878" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="54010:54122" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="55455:55563" ph="SELECT `id`,... departamento" />
+                <marker date="1580257402088" expanded="true" signature="55684:55792" ph="SELECT `id`,... departamento" />
+                <marker date="1580257402088" expanded="true" signature="55911:56019" ph="SELECT `id`,... departamento" />
+                <marker date="1580257402088" expanded="true" signature="57065:57170" ph="SELECT `id`,... provincia" />
+                <marker date="1580257402088" expanded="true" signature="57294:57399" ph="SELECT `id`,... provincia" />
+                <marker date="1580257402088" expanded="true" signature="57521:57626" ph="SELECT `id`,... provincia" />
+                <marker date="1580257402088" expanded="true" signature="62467:62579" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="62713:62825" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="62957:63069" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="64402:64510" ph="SELECT `id`,... departamento" />
+                <marker date="1580257402088" expanded="true" signature="64631:64739" ph="SELECT `id`,... departamento" />
+                <marker date="1580257402088" expanded="true" signature="64858:64966" ph="SELECT `id`,... departamento" />
+                <marker date="1580257402088" expanded="true" signature="66012:66117" ph="SELECT `id`,... provincia" />
+                <marker date="1580257402088" expanded="true" signature="66241:66346" ph="SELECT `id`,... provincia" />
+                <marker date="1580257402088" expanded="true" signature="66468:66573" ph="SELECT `id`,... provincia" />
+                <marker date="1580257402088" expanded="true" signature="71420:71532" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="71668:71780" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="71914:72026" ph="SELECT `nomb... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="73387:73495" ph="SELECT `id`,... departamento" />
+                <marker date="1580257402088" expanded="true" signature="73618:73726" ph="SELECT `id`,... departamento" />
+                <marker date="1580257402088" expanded="true" signature="73847:73955" ph="SELECT `id`,... departamento" />
+                <marker date="1580257402088" expanded="true" signature="75023:75128" ph="SELECT `id`,... provincia" />
+                <marker date="1580257402088" expanded="true" signature="75254:75359" ph="SELECT `id`,... provincia" />
+                <marker date="1580257402088" expanded="true" signature="75483:75588" ph="SELECT `id`,... provincia" />
+                <marker date="1580257402088" expanded="true" signature="80588:80709" ph="SELECT `id_t... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="80845:80966" ph="SELECT `id_t... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="81100:81221" ph="SELECT `id_t... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="83214:83335" ph="SELECT `id_t... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="83469:83590" ph="SELECT `id_t... tipoinmueble" />
+                <marker date="1580257402088" expanded="true" signature="83722:83843" ph="SELECT `id_t... tipoinmueble" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="viewavaluosclist.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/viewavaluosclist.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="3944" column="13" lean-forward="false" selection-start-line="3944" selection-start-column="13" selection-end-line="3944" selection-end-column="13" />
+              <folding>
+                <marker date="1580257787221" expanded="true" signature="4057:4064" ph="×" />
+                <marker date="1580257787221" expanded="true" signature="4578:4585" ph="×" />
+                <marker date="1580257787221" expanded="true" signature="5127:5134" ph="×" />
+                <marker date="1580257787221" expanded="true" signature="5668:5675" ph="×" />
+                <marker date="1580257787221" expanded="true" signature="89499:89617" ph="SELECT `id`,... solicitud" />
+                <marker date="1580257787221" expanded="true" signature="89809:89927" ph="SELECT `id`,... solicitud" />
+                <marker date="1580257787221" expanded="true" signature="90117:90235" ph="SELECT `id`,... solicitud" />
+                <marker date="1580257787221" expanded="true" signature="91579:91700" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="91862:91983" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="92143:92264" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="93499:93615" ph="SELECT `logi... inspector" />
+                <marker date="1580257787221" expanded="true" signature="93772:93888" ph="SELECT `logi... inspector" />
+                <marker date="1580257787221" expanded="true" signature="94043:94159" ph="SELECT `logi... inspector" />
+                <marker date="1580257787221" expanded="true" signature="95214:95323" ph="SELECT `id`,... cliente" />
+                <marker date="1580257787221" expanded="true" signature="95436:95545" ph="SELECT `id`,... cliente" />
+                <marker date="1580257787221" expanded="true" signature="95656:95765" ph="SELECT `id`,... cliente" />
+                <marker date="1580257787221" expanded="true" signature="97015:97122" ph="SELECT `id`,... estado" />
+                <marker date="1580257787221" expanded="true" signature="97231:97338" ph="SELECT `id`,... estado" />
+                <marker date="1580257787221" expanded="true" signature="97445:97552" ph="SELECT `id`,... estado" />
+                <marker date="1580257787221" expanded="true" signature="98478:98592" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580257787221" expanded="true" signature="98708:98822" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580257787221" expanded="true" signature="98936:99050" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580257787221" expanded="true" signature="100023:100134" ph="SELECT `id`,... estadopago" />
+                <marker date="1580257787221" expanded="true" signature="100247:100358" ph="SELECT `id`,... estadopago" />
+                <marker date="1580257787221" expanded="true" signature="100469:100580" ph="SELECT `id`,... estadopago" />
+                <marker date="1580257787221" expanded="true" signature="110393:110514" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="110681:110802" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="110967:111088" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="112466:112582" ph="SELECT `logi... inspector" />
+                <marker date="1580257787221" expanded="true" signature="112744:112860" ph="SELECT `logi... inspector" />
+                <marker date="1580257787221" expanded="true" signature="113020:113136" ph="SELECT `logi... inspector" />
+                <marker date="1580257787221" expanded="true" signature="114375:114587" ph="SELECT `id`,... cliente" />
+                <marker date="1580257787221" expanded="true" signature="114705:114917" ph="SELECT `id`,... cliente" />
+                <marker date="1580257787221" expanded="true" signature="115033:115245" ph="SELECT `id`,... cliente" />
+                <marker date="1580257787221" expanded="true" signature="116098:116315" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580257787221" expanded="true" signature="116436:116653" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580257787221" expanded="true" signature="116772:116989" ph="SELECT `id`,... estadointerno" />
+                <marker date="1580257787221" expanded="true" signature="117836:118050" ph="SELECT `id`,... estadopago" />
+                <marker date="1580257787221" expanded="true" signature="118168:118382" ph="SELECT `id`,... estadopago" />
+                <marker date="1580257787221" expanded="true" signature="118498:118712" ph="SELECT `id`,... estadopago" />
+                <marker date="1580257787221" expanded="true" signature="146197:146331" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="146491:146625" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="146783:146917" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="147529:147658" ph="SELECT `logi... inspector" />
+                <marker date="1580257787221" expanded="true" signature="147818:147947" ph="SELECT `logi... inspector" />
+                <marker date="1580257787221" expanded="true" signature="148105:148234" ph="SELECT `logi... inspector" />
+                <marker date="1580257787221" expanded="true" signature="148839:148961" ph="SELECT `id` cliente" />
+                <marker date="1580257787221" expanded="true" signature="149071:149193" ph="SELECT `id` cliente" />
+                <marker date="1580257787221" expanded="true" signature="149301:149423" ph="SELECT `id` cliente" />
+                <marker date="1580257787221" expanded="true" signature="149974:150101" ph="SELECT `id` estadointerno" />
+                <marker date="1580257787221" expanded="true" signature="150211:150338" ph="SELECT `id` estadointerno" />
+                <marker date="1580257787221" expanded="true" signature="150446:150573" ph="SELECT `id` estadointerno" />
+                <marker date="1580257787221" expanded="true" signature="151124:151248" ph="SELECT `id` estadopago" />
+                <marker date="1580257787221" expanded="true" signature="151358:151482" ph="SELECT `id` estadopago" />
+                <marker date="1580257787221" expanded="true" signature="151590:151714" ph="SELECT `id` estadopago" />
+                <marker date="1580257787221" expanded="true" signature="152335:152469" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="152629:152763" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="152921:153055" ph="SELECT `logi... oficialcredito" />
+                <marker date="1580257787221" expanded="true" signature="154761:154797" ph="..." />
+                <marker date="1580257787221" expanded="true" signature="155212:155248" ph="..." />
+                <marker date="1580257787221" expanded="true" signature="155813:155849" ph="..." />
+                <marker date="1580257787221" expanded="true" signature="156893:156929" ph="..." />
+                <marker date="1580257787221" expanded="true" signature="157946:157982" ph="..." />
+                <marker date="1580257787221" expanded="true" signature="160332:160425" ph="SELECT solic... solicitud" />
+                <marker date="1580257787221" expanded="true" signature="160784:160878" ph="SELECT solic... solicitud" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -48,7 +343,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="develop" />
       </map>
     </option>
   </component>
@@ -68,8 +363,8 @@
         <option value="$PROJECT_DIR$/viewpagoavaluoslist.php" />
         <option value="$PROJECT_DIR$/solicitudinfo.php" />
         <option value="$PROJECT_DIR$/viewavaluoscinfo.php" />
-        <option value="$PROJECT_DIR$/ewcfg14.php" />
         <option value="$PROJECT_DIR$/viewsolicitudframeinfo.php" />
+        <option value="$PROJECT_DIR$/ewcfg14.php" />
         <option value="$PROJECT_DIR$/viewavaluosclist.php" />
       </list>
     </option>
@@ -81,7 +376,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1378" />
@@ -103,8 +398,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -116,13 +409,15 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path" value="C:/Program Files/nodejs/node" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="SearchEverywhereHistoryKey" value="solicitud&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/solicitudinfo.php&#10;solic&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/solicitudlist.php&#10;viewsolicitudframee&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/viewsolicitudframeedit.php&#10;solicitude&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/solicitudedit.php&#10;viewsolicitudframeinfo.php&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/viewsolicitudframeinfo.php&#10;viewavaluosclis&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/viewavaluosclist.php&#10;avaluolist&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/avaluolist.php&#10;avaluoadd.php&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/avaluoadd.php&#10;avalu&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/avaluoinfo.php&#10;viewavaluoscedit&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/viewavaluoscedit.php&#10;viewsolicitudframeinfo.ph&#9;FILE&#9;file://C:/Users/gerdclaros/Desktop/xampp/htdocs/invercon/viewsolicitudframeinfo.php&#10;viewsoli&#9;null&#9;null&#10;viewaval&#9;null&#9;null&#10;viewa&#9;null&#9;null&#10;viewavaluoinsp&#9;null&#9;null&#10;ewGrid&#9;null&#9;null&#10;get&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/getApiRestWordPress.php&#10;soli&#9;null&#9;null" />
+    <property name="SearchEverywhereHistoryKey" value="view&#9;FILE&#9;file://C:/Users/gerdclaros/Desktop/xampp/htdocs/invercon/viewavaluosclist.php&#10;solicitud&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/solicitudinfo.php&#10;solic&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/solicitudlist.php&#10;viewsolicitudframee&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/viewsolicitudframeedit.php&#10;solicitude&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/solicitudedit.php&#10;viewsolicitudframeinfo.php&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/viewsolicitudframeinfo.php&#10;viewavaluosclis&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/viewavaluosclist.php&#10;avaluolist&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/avaluolist.php&#10;avaluoadd.php&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/avaluoadd.php&#10;avalu&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/avaluoinfo.php&#10;viewavaluoscedit&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/viewavaluoscedit.php&#10;viewsolicitudframeinfo.ph&#9;FILE&#9;file://C:/Users/gerdclaros/Desktop/xampp/htdocs/invercon/viewsolicitudframeinfo.php&#10;viewsoli&#9;null&#9;null&#10;viewaval&#9;null&#9;null&#10;viewa&#9;null&#9;null&#10;viewavaluoinsp&#9;null&#9;null&#10;ewGrid&#9;null&#9;null&#10;get&#9;FILE&#9;file://C:/Users/User/Desktop/xampp/htdocs/invercon/getApiRestWordPress.php&#10;soli&#9;null&#9;null" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -173,7 +468,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="57937000" />
+    <option name="totallyTimeSpent" value="60121000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -185,21 +480,22 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1378" height="780" extended-state="0" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16767372" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35756242" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.50254667" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31184408" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293718" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32993197" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
@@ -307,7 +603,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="20" column="5" lean-forward="false" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -494,7 +789,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="26" lean-forward="false" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -510,7 +804,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="12427">
           <caret line="731" column="12" lean-forward="false" selection-start-line="731" selection-start-column="12" selection-end-line="731" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -518,7 +811,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="3225" column="0" lean-forward="false" selection-start-line="3225" selection-start-column="0" selection-end-line="3225" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -542,51 +834,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="229">
           <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding>
-            <marker date="1580218613807" expanded="true" signature="3477:3484" ph="×" />
-            <marker date="1580218613807" expanded="true" signature="3998:4005" ph="×" />
-            <marker date="1580218613807" expanded="true" signature="4547:4554" ph="×" />
-            <marker date="1580218613807" expanded="true" signature="5088:5095" ph="×" />
-            <marker date="1580218613807" expanded="true" signature="28864:28976" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613807" expanded="true" signature="29091:29203" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613807" expanded="true" signature="29316:29428" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613807" expanded="true" signature="30469:30580" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="30695:30806" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="30919:31030" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="32209:32330" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613807" expanded="true" signature="32450:32571" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613807" expanded="true" signature="32689:32810" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613807" expanded="true" signature="34120:34227" ph="SELECT `id`,... estado" />
-            <marker date="1580218613807" expanded="true" signature="34360:34467" ph="SELECT `id`,... estado" />
-            <marker date="1580218613807" expanded="true" signature="34598:34705" ph="SELECT `id`,... estado" />
-            <marker date="1580218613807" expanded="true" signature="35655:35769" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613807" expanded="true" signature="35909:36023" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613807" expanded="true" signature="36161:36275" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613807" expanded="true" signature="39579:39794" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613807" expanded="true" signature="39914:40129" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613807" expanded="true" signature="40247:40462" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613807" expanded="true" signature="41474:41585" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="41705:41816" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="41934:42045" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="43165:43276" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="43396:43507" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="43625:43736" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="45051:45275" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613807" expanded="true" signature="45400:45624" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613807" expanded="true" signature="45747:45971" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613807" expanded="true" signature="62827:62952" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613807" expanded="true" signature="63057:63182" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613807" expanded="true" signature="63285:63410" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613807" expanded="true" signature="63959:64083" ph="SELECT `id` solicitud" />
-            <marker date="1580218613807" expanded="true" signature="64196:64320" ph="SELECT `id` solicitud" />
-            <marker date="1580218613807" expanded="true" signature="64431:64555" ph="SELECT `id` solicitud" />
-            <marker date="1580218613807" expanded="true" signature="65111:65245" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613807" expanded="true" signature="65350:65484" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613807" expanded="true" signature="65587:65721" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613807" expanded="true" signature="66467:66542" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="66778:66853" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613807" expanded="true" signature="67087:67162" ph="SELECT `id`,... solicitud" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -594,108 +842,75 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="376">
           <caret line="1669" column="21" lean-forward="true" selection-start-line="1669" selection-start-column="21" selection-end-line="1669" selection-end-column="21" />
-          <folding>
-            <marker date="1580218614256" expanded="true" signature="3232:3239" ph="×" />
-            <marker date="1580218614256" expanded="true" signature="3753:3760" ph="×" />
-            <marker date="1580218614256" expanded="true" signature="4302:4309" ph="×" />
-            <marker date="1580218614256" expanded="true" signature="4843:4850" ph="×" />
-            <marker date="1580218614256" expanded="true" signature="26672:26790" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614256" expanded="true" signature="26982:27100" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614256" expanded="true" signature="27290:27408" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614256" expanded="true" signature="28752:28873" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614256" expanded="true" signature="29035:29156" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614256" expanded="true" signature="29316:29437" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614256" expanded="true" signature="30672:30788" ph="SELECT `logi... inspector" />
-            <marker date="1580218614256" expanded="true" signature="30945:31061" ph="SELECT `logi... inspector" />
-            <marker date="1580218614256" expanded="true" signature="31216:31332" ph="SELECT `logi... inspector" />
-            <marker date="1580218614256" expanded="true" signature="32644:32751" ph="SELECT `id`,... estado" />
-            <marker date="1580218614256" expanded="true" signature="32860:32967" ph="SELECT `id`,... estado" />
-            <marker date="1580218614256" expanded="true" signature="33074:33181" ph="SELECT `id`,... estado" />
-            <marker date="1580218614256" expanded="true" signature="34107:34221" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218614256" expanded="true" signature="34337:34451" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218614256" expanded="true" signature="34565:34679" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218614256" expanded="true" signature="35652:35763" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218614256" expanded="true" signature="35876:35987" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218614256" expanded="true" signature="36098:36209" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218614256" expanded="true" signature="40141:40259" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614256" expanded="true" signature="40456:40574" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614256" expanded="true" signature="40769:40887" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614256" expanded="true" signature="42385:42506" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614256" expanded="true" signature="42673:42794" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614256" expanded="true" signature="42959:43080" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614256" expanded="true" signature="44458:44574" ph="SELECT `logi... inspector" />
-            <marker date="1580218614256" expanded="true" signature="44736:44852" ph="SELECT `logi... inspector" />
-            <marker date="1580218614256" expanded="true" signature="45012:45128" ph="SELECT `logi... inspector" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/avaluoinfo.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="2228" column="21" lean-forward="false" selection-start-line="2228" selection-start-column="20" selection-end-line="2228" selection-end-column="21" />
+        <state relative-caret-position="37842">
+          <caret line="2226" column="0" lean-forward="false" selection-start-line="2226" selection-start-column="0" selection-end-line="2226" selection-end-column="0" />
           <folding>
-            <marker date="1580218613814" expanded="true" signature="18123:18137" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580218613814" expanded="true" signature="18487:19016" ph="SELECT * FRO... *" />
-            <marker date="1580218613814" expanded="true" signature="18511:18991" ph="SELECT *, (S... avaluo" />
-            <marker date="1580218613814" expanded="true" signature="19054:19583" ph="SELECT * FRO... *" />
-            <marker date="1580218613814" expanded="true" signature="19078:19558" ph="SELECT *, (S... avaluo" />
-            <marker date="1580218613814" expanded="true" signature="24598:24648" ph="SELECT COUNT... ${$sql}" />
-            <marker date="1580218613814" expanded="true" signature="25167:25181" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580218613814" expanded="true" signature="26021:26035" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580218613814" expanded="true" signature="27139:27203" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
-            <marker date="1580218613814" expanded="true" signature="32131:32175" ph="DELETE FROM " />
-            <marker date="1580218613814" expanded="true" signature="44272:44384" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613814" expanded="true" signature="44499:44611" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613814" expanded="true" signature="44724:44836" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218613814" expanded="true" signature="45877:45988" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613814" expanded="true" signature="46103:46214" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613814" expanded="true" signature="46327:46438" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613814" expanded="true" signature="47617:47738" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613814" expanded="true" signature="47858:47979" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613814" expanded="true" signature="48097:48218" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613814" expanded="true" signature="49411:49527" ph="SELECT `logi... inspector" />
-            <marker date="1580218613814" expanded="true" signature="49642:49758" ph="SELECT `logi... inspector" />
-            <marker date="1580218613814" expanded="true" signature="49871:49987" ph="SELECT `logi... inspector" />
-            <marker date="1580218613814" expanded="true" signature="51485:51594" ph="SELECT `id`,... cliente" />
-            <marker date="1580218613814" expanded="true" signature="51707:51816" ph="SELECT `id`,... cliente" />
-            <marker date="1580218613814" expanded="true" signature="51927:52036" ph="SELECT `id`,... cliente" />
-            <marker date="1580218613814" expanded="true" signature="53017:53124" ph="SELECT `id`,... estado" />
-            <marker date="1580218613814" expanded="true" signature="53257:53364" ph="SELECT `id`,... estado" />
-            <marker date="1580218613814" expanded="true" signature="53495:53602" ph="SELECT `id`,... estado" />
-            <marker date="1580218613814" expanded="true" signature="54552:54666" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613814" expanded="true" signature="54806:54920" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613814" expanded="true" signature="55058:55172" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613814" expanded="true" signature="56169:56280" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218613814" expanded="true" signature="56417:56528" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218613814" expanded="true" signature="56663:56774" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218613814" expanded="true" signature="57985:58095" ph="SELECT `id`,... metodopago" />
-            <marker date="1580218613814" expanded="true" signature="58211:58321" ph="SELECT `id`,... metodopago" />
-            <marker date="1580218613814" expanded="true" signature="58435:58545" ph="SELECT `id`,... metodopago" />
-            <marker date="1580218613814" expanded="true" signature="67436:67547" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613814" expanded="true" signature="67662:67773" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613814" expanded="true" signature="67886:67997" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613814" expanded="true" signature="70135:70242" ph="SELECT `id`,... estado" />
-            <marker date="1580218613814" expanded="true" signature="70375:70482" ph="SELECT `id`,... estado" />
-            <marker date="1580218613814" expanded="true" signature="70613:70720" ph="SELECT `id`,... estado" />
-            <marker date="1580218613814" expanded="true" signature="71782:71896" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613814" expanded="true" signature="72036:72150" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613814" expanded="true" signature="72288:72402" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613814" expanded="true" signature="73505:73616" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218613814" expanded="true" signature="73753:73864" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218613814" expanded="true" signature="73999:74110" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218613814" expanded="true" signature="89263:89344" ph="SELECT * FRO... solicitud" />
-            <marker date="1580218613814" expanded="true" signature="96931:97204" ph="INSERT INTO `emailnotificaciones`... " />
-            <marker date="1580218613814" expanded="true" signature="97237:97455" ph="INSERT INTO `notificaciones`... " />
-            <marker date="1580218613814" expanded="true" signature="97565:97843" ph="INSERT INTO `emailnotificaciones`... " />
-            <marker date="1580218613814" expanded="true" signature="101858:102123" ph="INSERT INTO `emailnotificaciones`... " />
-            <marker date="1580218613814" expanded="true" signature="102156:102388" ph="INSERT INTO `notificaciones`... " />
-            <marker date="1580218613814" expanded="true" signature="102498:102768" ph="INSERT INTO `emailnotificaciones`... " />
-            <marker date="1580218613814" expanded="true" signature="102801:103038" ph="INSERT INTO `notificaciones`... " />
-            <marker date="1580218613814" expanded="true" signature="103067:103181" ph="INSERT INTO `comentariosavaluo`... " />
-            <marker date="1580218613814" expanded="true" signature="103208:103459" ph="INSERT INTO `historico`... " />
-            <marker date="1580218613814" expanded="true" signature="104044:104158" ph="INSERT INTO `comentariosavaluo`... " />
-            <marker date="1580218613814" expanded="true" signature="104185:104436" ph="INSERT INTO `historico`... " />
+            <marker date="1580173093943" expanded="true" signature="18123:18137" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1580173093943" expanded="true" signature="18487:19016" ph="SELECT * FRO... *" />
+            <marker date="1580173093943" expanded="true" signature="18511:18991" ph="SELECT *, (S... avaluo" />
+            <marker date="1580173093943" expanded="true" signature="19054:19583" ph="SELECT * FRO... *" />
+            <marker date="1580173093943" expanded="true" signature="19078:19558" ph="SELECT *, (S... avaluo" />
+            <marker date="1580173093943" expanded="true" signature="24598:24648" ph="SELECT COUNT... ${$sql}" />
+            <marker date="1580173093943" expanded="true" signature="25167:25181" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1580173093943" expanded="true" signature="26021:26035" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1580173093943" expanded="true" signature="27139:27203" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
+            <marker date="1580173093943" expanded="true" signature="32131:32175" ph="DELETE FROM " />
+            <marker date="1580173093943" expanded="true" signature="44272:44384" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093943" expanded="true" signature="44499:44611" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093943" expanded="true" signature="44724:44836" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093943" expanded="true" signature="45877:45988" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093943" expanded="true" signature="46103:46214" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093943" expanded="true" signature="46327:46438" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093943" expanded="true" signature="47617:47738" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093943" expanded="true" signature="47858:47979" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093943" expanded="true" signature="48097:48218" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093943" expanded="true" signature="49411:49527" ph="SELECT `logi... inspector" />
+            <marker date="1580173093943" expanded="true" signature="49642:49758" ph="SELECT `logi... inspector" />
+            <marker date="1580173093943" expanded="true" signature="49871:49987" ph="SELECT `logi... inspector" />
+            <marker date="1580173093943" expanded="true" signature="51485:51594" ph="SELECT `id`,... cliente" />
+            <marker date="1580173093943" expanded="true" signature="51707:51816" ph="SELECT `id`,... cliente" />
+            <marker date="1580173093943" expanded="true" signature="51927:52036" ph="SELECT `id`,... cliente" />
+            <marker date="1580173093943" expanded="true" signature="53017:53124" ph="SELECT `id`,... estado" />
+            <marker date="1580173093943" expanded="true" signature="53257:53364" ph="SELECT `id`,... estado" />
+            <marker date="1580173093943" expanded="true" signature="53495:53602" ph="SELECT `id`,... estado" />
+            <marker date="1580173093943" expanded="true" signature="54552:54666" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093943" expanded="true" signature="54806:54920" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093943" expanded="true" signature="55058:55172" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093943" expanded="true" signature="56169:56280" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093943" expanded="true" signature="56417:56528" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093943" expanded="true" signature="56663:56774" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093943" expanded="true" signature="57985:58095" ph="SELECT `id`,... metodopago" />
+            <marker date="1580173093943" expanded="true" signature="58211:58321" ph="SELECT `id`,... metodopago" />
+            <marker date="1580173093943" expanded="true" signature="58435:58545" ph="SELECT `id`,... metodopago" />
+            <marker date="1580173093943" expanded="true" signature="67436:67547" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093943" expanded="true" signature="67662:67773" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093943" expanded="true" signature="67886:67997" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093943" expanded="true" signature="70135:70242" ph="SELECT `id`,... estado" />
+            <marker date="1580173093943" expanded="true" signature="70375:70482" ph="SELECT `id`,... estado" />
+            <marker date="1580173093943" expanded="true" signature="70613:70720" ph="SELECT `id`,... estado" />
+            <marker date="1580173093943" expanded="true" signature="71782:71896" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093943" expanded="true" signature="72036:72150" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093943" expanded="true" signature="72288:72402" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093943" expanded="true" signature="73505:73616" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093943" expanded="true" signature="73753:73864" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093943" expanded="true" signature="73999:74110" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093943" expanded="true" signature="89263:89344" ph="SELECT * FRO... solicitud" />
+            <marker date="1580173093943" expanded="true" signature="96931:97204" ph="INSERT INTO `emailnotificaciones`... " />
+            <marker date="1580173093943" expanded="true" signature="97237:97455" ph="INSERT INTO `notificaciones`... " />
+            <marker date="1580173093943" expanded="true" signature="97565:97843" ph="INSERT INTO `emailnotificaciones`... " />
+            <marker date="1580173093943" expanded="true" signature="101858:102123" ph="INSERT INTO `emailnotificaciones`... " />
+            <marker date="1580173093943" expanded="true" signature="102156:102388" ph="INSERT INTO `notificaciones`... " />
+            <marker date="1580173093943" expanded="true" signature="102498:102768" ph="INSERT INTO `emailnotificaciones`... " />
+            <marker date="1580173093943" expanded="true" signature="102801:103038" ph="INSERT INTO `notificaciones`... " />
+            <marker date="1580173093943" expanded="true" signature="103067:103181" ph="INSERT INTO `comentariosavaluo`... " />
+            <marker date="1580173093943" expanded="true" signature="103208:103459" ph="INSERT INTO `historico`... " />
+            <marker date="1580173093943" expanded="true" signature="104044:104158" ph="INSERT INTO `comentariosavaluo`... " />
+            <marker date="1580173093943" expanded="true" signature="104185:104436" ph="INSERT INTO `historico`... " />
           </folding>
         </state>
       </provider>
@@ -704,51 +919,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
           <caret line="29" column="34" lean-forward="false" selection-start-line="29" selection-start-column="22" selection-end-line="29" selection-end-column="34" />
-          <folding>
-            <marker date="1580218614254" expanded="true" signature="3228:3235" ph="×" />
-            <marker date="1580218614254" expanded="true" signature="3749:3756" ph="×" />
-            <marker date="1580218614254" expanded="true" signature="4298:4305" ph="×" />
-            <marker date="1580218614254" expanded="true" signature="4839:4846" ph="×" />
-            <marker date="1580218614254" expanded="true" signature="27787:27905" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614254" expanded="true" signature="28097:28215" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614254" expanded="true" signature="28405:28523" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614254" expanded="true" signature="29867:29988" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614254" expanded="true" signature="30150:30271" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614254" expanded="true" signature="30431:30552" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614254" expanded="true" signature="31787:31903" ph="SELECT `logi... inspector" />
-            <marker date="1580218614254" expanded="true" signature="32060:32176" ph="SELECT `logi... inspector" />
-            <marker date="1580218614254" expanded="true" signature="32331:32447" ph="SELECT `logi... inspector" />
-            <marker date="1580218614254" expanded="true" signature="33759:33866" ph="SELECT `id`,... estado" />
-            <marker date="1580218614254" expanded="true" signature="33975:34082" ph="SELECT `id`,... estado" />
-            <marker date="1580218614254" expanded="true" signature="34189:34296" ph="SELECT `id`,... estado" />
-            <marker date="1580218614254" expanded="true" signature="35222:35336" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218614254" expanded="true" signature="35452:35566" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218614254" expanded="true" signature="35680:35794" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218614254" expanded="true" signature="36767:36878" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218614254" expanded="true" signature="36991:37102" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218614254" expanded="true" signature="37213:37324" ph="SELECT `id`,... estadopago" />
-            <marker date="1580218614254" expanded="true" signature="41319:41437" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614254" expanded="true" signature="41634:41752" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614254" expanded="true" signature="41947:42065" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614254" expanded="true" signature="43506:43730" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614254" expanded="true" signature="43897:44121" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614254" expanded="true" signature="44286:44510" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614254" expanded="true" signature="45742:45961" ph="SELECT `logi... inspector" />
-            <marker date="1580218614254" expanded="true" signature="46123:46342" ph="SELECT `logi... inspector" />
-            <marker date="1580218614254" expanded="true" signature="46502:46721" ph="SELECT `logi... inspector" />
-            <marker date="1580218614254" expanded="true" signature="59367:59498" ph="SELECT `id` solicitud" />
-            <marker date="1580218614254" expanded="true" signature="59688:59819" ph="SELECT `id` solicitud" />
-            <marker date="1580218614254" expanded="true" signature="60007:60138" ph="SELECT `id` solicitud" />
-            <marker date="1580218614254" expanded="true" signature="60771:60905" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614254" expanded="true" signature="61060:61194" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614254" expanded="true" signature="61347:61481" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614254" expanded="true" signature="62084:62213" ph="SELECT `logi... inspector" />
-            <marker date="1580218614254" expanded="true" signature="62368:62497" ph="SELECT `logi... inspector" />
-            <marker date="1580218614254" expanded="true" signature="62650:62779" ph="SELECT `logi... inspector" />
-            <marker date="1580218614254" expanded="true" signature="63570:63688" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614254" expanded="true" signature="64116:64234" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218614254" expanded="true" signature="64660:64778" ph="SELECT `id`,... solicitud" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -756,32 +927,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3537">
           <caret line="2023" column="0" lean-forward="false" selection-start-line="2023" selection-start-column="0" selection-end-line="2023" selection-end-column="0" />
-          <folding>
-            <marker date="1580218613808" expanded="true" signature="3381:3388" ph="×" />
-            <marker date="1580218613808" expanded="true" signature="3902:3909" ph="×" />
-            <marker date="1580218613808" expanded="true" signature="4451:4458" ph="×" />
-            <marker date="1580218613808" expanded="true" signature="4992:4999" ph="×" />
-            <marker date="1580218613808" expanded="true" signature="25545:25656" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613808" expanded="true" signature="26814:26935" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613808" expanded="true" signature="28109:28225" ph="SELECT `logi... inspector" />
-            <marker date="1580218613808" expanded="true" signature="29476:29583" ph="SELECT `id`,... estado" />
-            <marker date="1580218613808" expanded="true" signature="30472:30586" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580218613808" expanded="true" signature="33957:34068" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613808" expanded="true" signature="35163:35274" ph="SELECT `id`,... solicitud" />
-            <marker date="1580218613808" expanded="true" signature="36498:36722" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613808" expanded="true" signature="37889:38108" ph="SELECT `logi... inspector" />
-            <marker date="1580218613808" expanded="true" signature="51201:51325" ph="SELECT `id` solicitud" />
-            <marker date="1580218613808" expanded="true" signature="51856:51990" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218613808" expanded="true" signature="52528:52657" ph="SELECT `logi... inspector" />
-            <marker date="1580218613808" expanded="true" signature="53383:53458" ph="SELECT `id`,... solicitud" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/avaluolist.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="359">
-          <caret line="4111" column="0" lean-forward="false" selection-start-line="4111" selection-start-column="0" selection-end-line="4111" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -790,49 +935,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="2098" column="0" lean-forward="false" selection-start-line="2098" selection-start-column="0" selection-end-line="2098" selection-end-column="10" />
-          <folding>
-            <marker date="1580159662704" expanded="true" signature="3151:3158" ph="×" />
-            <marker date="1580159662704" expanded="true" signature="3672:3679" ph="×" />
-            <marker date="1580159662704" expanded="true" signature="4221:4228" ph="×" />
-            <marker date="1580159662704" expanded="true" signature="4762:4769" ph="×" />
-            <marker date="1580159662704" expanded="true" signature="39277:39389" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="39504:39616" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="39729:39841" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="41155:41263" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662704" expanded="true" signature="41384:41492" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662704" expanded="true" signature="41611:41719" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662704" expanded="true" signature="42765:42870" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662704" expanded="true" signature="42994:43099" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662704" expanded="true" signature="43221:43326" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662704" expanded="true" signature="44519:44631" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="44746:44858" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="44971:45083" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="46397:46505" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662704" expanded="true" signature="46626:46734" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662704" expanded="true" signature="46853:46961" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662704" expanded="true" signature="48007:48112" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662704" expanded="true" signature="48236:48341" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662704" expanded="true" signature="48463:48568" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662704" expanded="true" signature="49767:49879" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="49996:50108" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="50223:50335" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="51677:51785" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662704" expanded="true" signature="51908:52016" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662704" expanded="true" signature="52137:52245" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662704" expanded="true" signature="53313:53418" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662704" expanded="true" signature="53544:53649" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662704" expanded="true" signature="53773:53878" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662704" expanded="true" signature="55102:55223" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="55340:55461" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="55576:55697" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="57345:57466" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="57581:57702" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="57815:57936" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662704" expanded="true" signature="59241:59362" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580159662704" expanded="true" signature="59521:59642" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580159662704" expanded="true" signature="59799:59920" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580159662704" expanded="true" signature="75439:75451" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -842,150 +944,6 @@
           <caret line="5329" column="25" lean-forward="false" selection-start-line="5329" selection-start-column="25" selection-end-line="5329" selection-end-column="25" />
           <folding>
             <element signature="e#163411#163438#0#PHP" expanded="true" />
-            <marker date="1580218614139" expanded="true" signature="16592:16618" ph="..." />
-            <marker date="1580218614139" expanded="true" signature="27531:27555" ph="..." />
-            <marker date="1580218614139" expanded="true" signature="27558:27564" ph=" " />
-            <marker date="1580218614139" expanded="true" signature="47375:47387" ph="DELETE FROM " />
-            <marker date="1580218614139" expanded="true" signature="106383:106400" ph="..." />
-            <marker date="1580218614139" expanded="true" signature="141891:141981" ph="SELECT COUNT... ${EW_USER_LEVEL_TABLE}" />
-            <marker date="1580218614139" expanded="true" signature="142041:142244" ph="INSERT INTO ${EW_USER_LEVEL_TABLE}... " />
-            <marker date="1580218614139" expanded="true" signature="142657:142768" ph="SELECT COUNT... ${EW_USER_LEVEL_PRIV_TABLE}" />
-            <marker date="1580218614139" expanded="true" signature="143249:143542" ph="INSERT INTO ${EW_USER_LEVEL_PRIV_TABLE}... " />
-            <marker date="1580218614139" expanded="true" signature="144871:145031" ph="ALTER TABLE ${EW_USER_LEVEL_PRIV_TABLE}... " />
-            <marker date="1580218614139" expanded="true" signature="145239:145421" ph="SELECT COUNT... ${EW_USER_LEVEL_PRIV_TABLE}" />
-            <marker date="1580218614139" expanded="true" signature="145306:145420" ph="SELECT * FRO... ${EW_USER_LEVEL_PRIV_TABLE}" />
-            <marker date="1580218614139" expanded="true" signature="146072:146315" ph="SELECT COUNT... ${EW_USER_LEVEL_PRIV_TABLE}" />
-            <marker date="1580218614139" expanded="true" signature="146139:146314" ph="SELECT * FRO... ${EW_USER_LEVEL_PRIV_TABLE}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ewcfg14.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="81" column="164" lean-forward="false" selection-start-line="81" selection-start-column="164" selection-end-line="81" selection-end-column="164" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/viewavaluosclist.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="4066" column="35" lean-forward="false" selection-start-line="4066" selection-start-column="35" selection-end-line="4077" selection-end-column="54" />
-          <folding>
-            <marker date="1580232103784" expanded="true" signature="4057:4064" ph="×" />
-            <marker date="1580232103784" expanded="true" signature="4578:4585" ph="×" />
-            <marker date="1580232103784" expanded="true" signature="5127:5134" ph="×" />
-            <marker date="1580232103784" expanded="true" signature="5668:5675" ph="×" />
-            <marker date="1580232103784" expanded="true" signature="89499:89617" ph="SELECT `id`,... solicitud" />
-            <marker date="1580232103784" expanded="true" signature="89809:89927" ph="SELECT `id`,... solicitud" />
-            <marker date="1580232103784" expanded="true" signature="90117:90235" ph="SELECT `id`,... solicitud" />
-            <marker date="1580232103784" expanded="true" signature="91579:91700" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="91862:91983" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="92143:92264" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="93499:93615" ph="SELECT `logi... inspector" />
-            <marker date="1580232103784" expanded="true" signature="93772:93888" ph="SELECT `logi... inspector" />
-            <marker date="1580232103784" expanded="true" signature="94043:94159" ph="SELECT `logi... inspector" />
-            <marker date="1580232103784" expanded="true" signature="95214:95323" ph="SELECT `id`,... cliente" />
-            <marker date="1580232103784" expanded="true" signature="95436:95545" ph="SELECT `id`,... cliente" />
-            <marker date="1580232103784" expanded="true" signature="95656:95765" ph="SELECT `id`,... cliente" />
-            <marker date="1580232103784" expanded="true" signature="97015:97122" ph="SELECT `id`,... estado" />
-            <marker date="1580232103784" expanded="true" signature="97231:97338" ph="SELECT `id`,... estado" />
-            <marker date="1580232103784" expanded="true" signature="97445:97552" ph="SELECT `id`,... estado" />
-            <marker date="1580232103784" expanded="true" signature="98478:98592" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580232103784" expanded="true" signature="98708:98822" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580232103784" expanded="true" signature="98936:99050" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580232103784" expanded="true" signature="100023:100134" ph="SELECT `id`,... estadopago" />
-            <marker date="1580232103784" expanded="true" signature="100247:100358" ph="SELECT `id`,... estadopago" />
-            <marker date="1580232103784" expanded="true" signature="100469:100580" ph="SELECT `id`,... estadopago" />
-            <marker date="1580232103784" expanded="true" signature="110393:110514" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="110681:110802" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="110967:111088" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="112466:112582" ph="SELECT `logi... inspector" />
-            <marker date="1580232103784" expanded="true" signature="112744:112860" ph="SELECT `logi... inspector" />
-            <marker date="1580232103784" expanded="true" signature="113020:113136" ph="SELECT `logi... inspector" />
-            <marker date="1580232103784" expanded="true" signature="114375:114587" ph="SELECT `id`,... cliente" />
-            <marker date="1580232103784" expanded="true" signature="114705:114917" ph="SELECT `id`,... cliente" />
-            <marker date="1580232103784" expanded="true" signature="115033:115245" ph="SELECT `id`,... cliente" />
-            <marker date="1580232103784" expanded="true" signature="116098:116315" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580232103784" expanded="true" signature="116436:116653" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580232103784" expanded="true" signature="116772:116989" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580232103784" expanded="true" signature="117836:118050" ph="SELECT `id`,... estadopago" />
-            <marker date="1580232103784" expanded="true" signature="118168:118382" ph="SELECT `id`,... estadopago" />
-            <marker date="1580232103784" expanded="true" signature="118498:118712" ph="SELECT `id`,... estadopago" />
-            <marker date="1580232103784" expanded="true" signature="146197:146331" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="146491:146625" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="146783:146917" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="147529:147658" ph="SELECT `logi... inspector" />
-            <marker date="1580232103784" expanded="true" signature="147818:147947" ph="SELECT `logi... inspector" />
-            <marker date="1580232103784" expanded="true" signature="148105:148234" ph="SELECT `logi... inspector" />
-            <marker date="1580232103784" expanded="true" signature="148839:148961" ph="SELECT `id` cliente" />
-            <marker date="1580232103784" expanded="true" signature="149071:149193" ph="SELECT `id` cliente" />
-            <marker date="1580232103784" expanded="true" signature="149301:149423" ph="SELECT `id` cliente" />
-            <marker date="1580232103784" expanded="true" signature="149974:150101" ph="SELECT `id` estadointerno" />
-            <marker date="1580232103784" expanded="true" signature="150211:150338" ph="SELECT `id` estadointerno" />
-            <marker date="1580232103784" expanded="true" signature="150446:150573" ph="SELECT `id` estadointerno" />
-            <marker date="1580232103784" expanded="true" signature="151124:151248" ph="SELECT `id` estadopago" />
-            <marker date="1580232103784" expanded="true" signature="151358:151482" ph="SELECT `id` estadopago" />
-            <marker date="1580232103784" expanded="true" signature="151590:151714" ph="SELECT `id` estadopago" />
-            <marker date="1580232103784" expanded="true" signature="152335:152469" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="152629:152763" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="152921:153055" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580232103784" expanded="true" signature="154761:154797" ph="..." />
-            <marker date="1580232103784" expanded="true" signature="155212:155248" ph="..." />
-            <marker date="1580232103784" expanded="true" signature="155813:155849" ph="..." />
-            <marker date="1580232103784" expanded="true" signature="156893:156929" ph="..." />
-            <marker date="1580232103784" expanded="true" signature="157946:157982" ph="..." />
-            <marker date="1580232103784" expanded="true" signature="160332:160425" ph="SELECT solic... solicitud" />
-            <marker date="1580232103784" expanded="true" signature="160784:160878" ph="SELECT solic... solicitud" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/viewsolicitudframeinfo.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-68">
-          <caret line="173" column="66" lean-forward="false" selection-start-line="173" selection-start-column="66" selection-end-line="173" selection-end-column="66" />
-          <folding>
-            <marker date="1580225977001" expanded="true" signature="30055:30069" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580225977001" expanded="true" signature="33940:33990" ph="SELECT COUNT... ${$sql}" />
-            <marker date="1580225977001" expanded="true" signature="34509:34523" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580225977001" expanded="true" signature="35363:35377" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580225977001" expanded="true" signature="36326:36390" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
-            <marker date="1580225977001" expanded="true" signature="37646:37690" ph="DELETE FROM " />
-            <marker date="1580225977001" expanded="true" signature="53520:53632" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="53766:53878" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="54010:54122" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="55455:55563" ph="SELECT `id`,... departamento" />
-            <marker date="1580225977001" expanded="true" signature="55684:55792" ph="SELECT `id`,... departamento" />
-            <marker date="1580225977001" expanded="true" signature="55911:56019" ph="SELECT `id`,... departamento" />
-            <marker date="1580225977001" expanded="true" signature="57065:57170" ph="SELECT `id`,... provincia" />
-            <marker date="1580225977001" expanded="true" signature="57294:57399" ph="SELECT `id`,... provincia" />
-            <marker date="1580225977001" expanded="true" signature="57521:57626" ph="SELECT `id`,... provincia" />
-            <marker date="1580225977001" expanded="true" signature="62467:62579" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="62713:62825" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="62957:63069" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="64402:64510" ph="SELECT `id`,... departamento" />
-            <marker date="1580225977001" expanded="true" signature="64631:64739" ph="SELECT `id`,... departamento" />
-            <marker date="1580225977001" expanded="true" signature="64858:64966" ph="SELECT `id`,... departamento" />
-            <marker date="1580225977001" expanded="true" signature="66012:66117" ph="SELECT `id`,... provincia" />
-            <marker date="1580225977001" expanded="true" signature="66241:66346" ph="SELECT `id`,... provincia" />
-            <marker date="1580225977001" expanded="true" signature="66468:66573" ph="SELECT `id`,... provincia" />
-            <marker date="1580225977001" expanded="true" signature="71420:71532" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="71668:71780" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="71914:72026" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="73387:73495" ph="SELECT `id`,... departamento" />
-            <marker date="1580225977001" expanded="true" signature="73618:73726" ph="SELECT `id`,... departamento" />
-            <marker date="1580225977001" expanded="true" signature="73847:73955" ph="SELECT `id`,... departamento" />
-            <marker date="1580225977001" expanded="true" signature="75023:75128" ph="SELECT `id`,... provincia" />
-            <marker date="1580225977001" expanded="true" signature="75254:75359" ph="SELECT `id`,... provincia" />
-            <marker date="1580225977001" expanded="true" signature="75483:75588" ph="SELECT `id`,... provincia" />
-            <marker date="1580225977001" expanded="true" signature="80588:80709" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="80845:80966" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="81100:81221" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="83214:83335" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="83469:83590" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580225977001" expanded="true" signature="83722:83843" ph="SELECT `id_t... tipoinmueble" />
           </folding>
         </state>
       </provider>
@@ -994,18 +952,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="112">
           <caret line="1485" column="15" lean-forward="false" selection-start-line="1485" selection-start-column="6" selection-end-line="1485" selection-end-column="15" />
-          <folding>
-            <marker date="1580218614326" expanded="true" signature="3163:3170" ph="×" />
-            <marker date="1580218614326" expanded="true" signature="3684:3691" ph="×" />
-            <marker date="1580218614326" expanded="true" signature="4233:4240" ph="×" />
-            <marker date="1580218614326" expanded="true" signature="4774:4781" ph="×" />
-            <marker date="1580218614326" expanded="true" signature="39031:39152" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614326" expanded="true" signature="39288:39409" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614326" expanded="true" signature="39543:39664" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614326" expanded="true" signature="41014:41135" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614326" expanded="true" signature="41269:41390" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614326" expanded="true" signature="41522:41643" ph="SELECT `id_t... tipoinmueble" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1013,7 +960,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2446">
           <caret line="1933" column="80" lean-forward="false" selection-start-line="1933" selection-start-column="57" selection-end-line="1933" selection-end-column="80" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1021,59 +967,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="172">
           <caret line="1972" column="32" lean-forward="false" selection-start-line="1972" selection-start-column="19" selection-end-line="1972" selection-end-column="32" />
-          <folding>
-            <marker date="1580221900749" expanded="true" signature="15943:15957" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580221900749" expanded="true" signature="16307:16854" ph="SELECT * FRO... *" />
-            <marker date="1580221900749" expanded="true" signature="16331:16829" ph="SELECT *, (S... viewavaluosc" />
-            <marker date="1580221900749" expanded="true" signature="16892:17439" ph="SELECT * FRO... *" />
-            <marker date="1580221900749" expanded="true" signature="16916:17414" ph="SELECT *, (S... viewavaluosc" />
-            <marker date="1580221900749" expanded="true" signature="22474:22524" ph="SELECT COUNT... ${$sql}" />
-            <marker date="1580221900749" expanded="true" signature="23043:23057" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580221900749" expanded="true" signature="23897:23911" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580221900749" expanded="true" signature="25015:25079" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
-            <marker date="1580221900749" expanded="true" signature="27514:27558" ph="DELETE FROM " />
-            <marker date="1580221900749" expanded="true" signature="38501:38613" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580221900749" expanded="true" signature="38728:38840" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580221900749" expanded="true" signature="38953:39065" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580221900749" expanded="true" signature="40106:40224" ph="SELECT `id`,... solicitud" />
-            <marker date="1580221900749" expanded="true" signature="40416:40534" ph="SELECT `id`,... solicitud" />
-            <marker date="1580221900749" expanded="true" signature="40724:40842" ph="SELECT `id`,... solicitud" />
-            <marker date="1580221900749" expanded="true" signature="42186:42307" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580221900749" expanded="true" signature="42469:42590" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580221900749" expanded="true" signature="42750:42871" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580221900749" expanded="true" signature="44106:44222" ph="SELECT `logi... inspector" />
-            <marker date="1580221900749" expanded="true" signature="44379:44495" ph="SELECT `logi... inspector" />
-            <marker date="1580221900749" expanded="true" signature="44650:44766" ph="SELECT `logi... inspector" />
-            <marker date="1580221900749" expanded="true" signature="45821:45930" ph="SELECT `id`,... cliente" />
-            <marker date="1580221900749" expanded="true" signature="46043:46152" ph="SELECT `id`,... cliente" />
-            <marker date="1580221900749" expanded="true" signature="46263:46372" ph="SELECT `id`,... cliente" />
-            <marker date="1580221900749" expanded="true" signature="47622:47729" ph="SELECT `id`,... estado" />
-            <marker date="1580221900749" expanded="true" signature="47838:47945" ph="SELECT `id`,... estado" />
-            <marker date="1580221900749" expanded="true" signature="48052:48159" ph="SELECT `id`,... estado" />
-            <marker date="1580221900749" expanded="true" signature="49085:49199" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580221900749" expanded="true" signature="49315:49429" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580221900749" expanded="true" signature="49543:49657" ph="SELECT `id`,... estadointerno" />
-            <marker date="1580221900749" expanded="true" signature="50630:50741" ph="SELECT `id`,... estadopago" />
-            <marker date="1580221900749" expanded="true" signature="50854:50965" ph="SELECT `id`,... estadopago" />
-            <marker date="1580221900749" expanded="true" signature="51076:51187" ph="SELECT `id`,... estadopago" />
-            <marker date="1580221900749" expanded="true" signature="52606:52716" ph="SELECT `id`,... metodopago" />
-            <marker date="1580221900749" expanded="true" signature="52832:52942" ph="SELECT `id`,... metodopago" />
-            <marker date="1580221900749" expanded="true" signature="53056:53166" ph="SELECT `id`,... metodopago" />
-            <marker date="1580221900749" expanded="true" signature="60725:60843" ph="SELECT `id`,... solicitud" />
-            <marker date="1580221900749" expanded="true" signature="61035:61153" ph="SELECT `id`,... solicitud" />
-            <marker date="1580221900749" expanded="true" signature="61343:61461" ph="SELECT `id`,... solicitud" />
-            <marker date="1580221900749" expanded="true" signature="62925:63046" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580221900749" expanded="true" signature="63208:63329" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580221900749" expanded="true" signature="63489:63610" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580221900749" expanded="true" signature="64955:65071" ph="SELECT `logi... inspector" />
-            <marker date="1580221900749" expanded="true" signature="65228:65344" ph="SELECT `logi... inspector" />
-            <marker date="1580221900749" expanded="true" signature="65499:65615" ph="SELECT `logi... inspector" />
-            <marker date="1580221900749" expanded="true" signature="79628:79742" ph="INSERT INTO `comentariosavaluo`... " />
-            <marker date="1580221900749" expanded="true" signature="79769:80014" ph="INSERT INTO `historico`... " />
-            <marker date="1580221900749" expanded="true" signature="80508:80699" ph="INSERT INTO `pago_avaluo`... " />
-            <marker date="1580221900749" expanded="true" signature="80894:81085" ph="INSERT INTO `pago_avaluo`... " />
-            <marker date="1580221900749" expanded="true" signature="81439:81630" ph="INSERT INTO `pago_avaluo`... " />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1081,48 +975,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
           <caret line="28" column="31" lean-forward="false" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="31" />
-          <folding>
-            <marker date="1580218614209" expanded="true" signature="3973:3980" ph="×" />
-            <marker date="1580218614209" expanded="true" signature="4494:4501" ph="×" />
-            <marker date="1580218614209" expanded="true" signature="5043:5050" ph="×" />
-            <marker date="1580218614209" expanded="true" signature="5584:5591" ph="×" />
-            <marker date="1580218614209" expanded="true" signature="105485:105597" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="105712:105824" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="105937:106049" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="107363:107471" ph="SELECT `id`,... departamento" />
-            <marker date="1580218614209" expanded="true" signature="107592:107700" ph="SELECT `id`,... departamento" />
-            <marker date="1580218614209" expanded="true" signature="107819:107927" ph="SELECT `id`,... departamento" />
-            <marker date="1580218614209" expanded="true" signature="108973:109078" ph="SELECT `id`,... provincia" />
-            <marker date="1580218614209" expanded="true" signature="109202:109307" ph="SELECT `id`,... provincia" />
-            <marker date="1580218614209" expanded="true" signature="109429:109534" ph="SELECT `id`,... provincia" />
-            <marker date="1580218614209" expanded="true" signature="110727:110839" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="110954:111066" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="111179:111291" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="112605:112713" ph="SELECT `id`,... departamento" />
-            <marker date="1580218614209" expanded="true" signature="112834:112942" ph="SELECT `id`,... departamento" />
-            <marker date="1580218614209" expanded="true" signature="113061:113169" ph="SELECT `id`,... departamento" />
-            <marker date="1580218614209" expanded="true" signature="114215:114320" ph="SELECT `id`,... provincia" />
-            <marker date="1580218614209" expanded="true" signature="114444:114549" ph="SELECT `id`,... provincia" />
-            <marker date="1580218614209" expanded="true" signature="114671:114776" ph="SELECT `id`,... provincia" />
-            <marker date="1580218614209" expanded="true" signature="115975:116087" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="116204:116316" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="116431:116543" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="117885:117993" ph="SELECT `id`,... departamento" />
-            <marker date="1580218614209" expanded="true" signature="118116:118224" ph="SELECT `id`,... departamento" />
-            <marker date="1580218614209" expanded="true" signature="118345:118453" ph="SELECT `id`,... departamento" />
-            <marker date="1580218614209" expanded="true" signature="119521:119626" ph="SELECT `id`,... provincia" />
-            <marker date="1580218614209" expanded="true" signature="119752:119857" ph="SELECT `id`,... provincia" />
-            <marker date="1580218614209" expanded="true" signature="119981:120086" ph="SELECT `id`,... provincia" />
-            <marker date="1580218614209" expanded="true" signature="121310:121431" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="121548:121669" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="121784:121905" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="123553:123674" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="123789:123910" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="124023:124144" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580218614209" expanded="true" signature="125449:125570" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614209" expanded="true" signature="125729:125850" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580218614209" expanded="true" signature="126007:126128" ph="SELECT `logi... oficialcredito" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1130,59 +982,221 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="444">
           <caret line="3181" column="49" lean-forward="false" selection-start-line="3181" selection-start-column="49" selection-end-line="3181" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ewcfg14.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="81" column="140" lean-forward="false" selection-start-line="81" selection-start-column="140" selection-end-line="81" selection-end-column="140" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/avaluolist.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
           <folding>
-            <marker date="1580159662279" expanded="true" signature="30283:30297" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580159662279" expanded="true" signature="33920:33970" ph="SELECT COUNT... ${$sql}" />
-            <marker date="1580159662279" expanded="true" signature="34489:34503" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580159662279" expanded="true" signature="35343:35357" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
-            <marker date="1580159662279" expanded="true" signature="36306:36370" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
-            <marker date="1580159662279" expanded="true" signature="38695:38739" ph="DELETE FROM " />
-            <marker date="1580159662279" expanded="true" signature="54673:54799" ph="SELECT `desc... documentosavaluo" />
-            <marker date="1580159662279" expanded="true" signature="54936:55062" ph="SELECT `desc... documentosavaluo" />
-            <marker date="1580159662279" expanded="true" signature="55197:55323" ph="SELECT `desc... documentosavaluo" />
-            <marker date="1580159662279" expanded="true" signature="57762:57874" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="57989:58101" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="58214:58326" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="59640:59748" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662279" expanded="true" signature="59869:59977" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662279" expanded="true" signature="60096:60204" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662279" expanded="true" signature="61250:61355" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662279" expanded="true" signature="61479:61584" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662279" expanded="true" signature="61706:61811" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662279" expanded="true" signature="66580:66692" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="66807:66919" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="67032:67144" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="68458:68566" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662279" expanded="true" signature="68687:68795" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662279" expanded="true" signature="68914:69022" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662279" expanded="true" signature="70068:70173" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662279" expanded="true" signature="70297:70402" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662279" expanded="true" signature="70524:70629" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662279" expanded="true" signature="75404:75516" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="75633:75745" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="75860:75972" ph="SELECT `nomb... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="77314:77422" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662279" expanded="true" signature="77545:77653" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662279" expanded="true" signature="77774:77882" ph="SELECT `id`,... departamento" />
-            <marker date="1580159662279" expanded="true" signature="78950:79055" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662279" expanded="true" signature="79181:79286" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662279" expanded="true" signature="79410:79515" ph="SELECT `id`,... provincia" />
-            <marker date="1580159662279" expanded="true" signature="84443:84564" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="84681:84802" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="84917:85038" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="87149:87270" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="87385:87506" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="87619:87740" ph="SELECT `id_t... tipoinmueble" />
-            <marker date="1580159662279" expanded="true" signature="89524:89645" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580159662279" expanded="true" signature="89804:89925" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580159662279" expanded="true" signature="90082:90203" ph="SELECT `logi... oficialcredito" />
-            <marker date="1580159662279" expanded="true" signature="148388:148616" ph="INSERT INTO `cliente`... " />
-            <marker date="1580159662279" expanded="true" signature="149115:149408" ph="INSERT INTO `avaluo`... " />
-            <marker date="1580159662279" expanded="true" signature="149535:149828" ph="INSERT INTO `avaluo`... " />
-            <marker date="1580159662279" expanded="true" signature="149960:150255" ph="INSERT INTO `avaluo`... " />
-            <marker date="1580159662279" expanded="true" signature="150383:150676" ph="INSERT INTO `avaluo`... " />
-            <marker date="1580159662279" expanded="true" signature="151070:151332" ph="INSERT INTO `emailnotificaciones`... " />
-            <marker date="1580159662279" expanded="true" signature="151378:151611" ph="INSERT INTO `notificaciones`... " />
+            <marker date="1580173093951" expanded="true" signature="4300:4307" ph="×" />
+            <marker date="1580173093951" expanded="true" signature="4821:4828" ph="×" />
+            <marker date="1580173093951" expanded="true" signature="5370:5377" ph="×" />
+            <marker date="1580173093951" expanded="true" signature="5911:5918" ph="×" />
+            <marker date="1580173093951" expanded="true" signature="82163:82275" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093951" expanded="true" signature="82390:82502" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093951" expanded="true" signature="82615:82727" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093951" expanded="true" signature="83768:83879" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="83994:84105" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="84218:84329" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="85508:85629" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093951" expanded="true" signature="85749:85870" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093951" expanded="true" signature="85988:86109" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093951" expanded="true" signature="87302:87418" ph="SELECT `logi... inspector" />
+            <marker date="1580173093951" expanded="true" signature="87533:87649" ph="SELECT `logi... inspector" />
+            <marker date="1580173093951" expanded="true" signature="87762:87878" ph="SELECT `logi... inspector" />
+            <marker date="1580173093951" expanded="true" signature="89148:89255" ph="SELECT `id`,... estado" />
+            <marker date="1580173093951" expanded="true" signature="89388:89495" ph="SELECT `id`,... estado" />
+            <marker date="1580173093951" expanded="true" signature="89626:89733" ph="SELECT `id`,... estado" />
+            <marker date="1580173093951" expanded="true" signature="90683:90797" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093951" expanded="true" signature="90937:91051" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093951" expanded="true" signature="91189:91303" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093951" expanded="true" signature="92300:92411" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093951" expanded="true" signature="92548:92659" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093951" expanded="true" signature="92794:92905" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093951" expanded="true" signature="97246:97357" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="97477:97588" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="97706:97817" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="103151:103366" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093951" expanded="true" signature="103486:103701" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093951" expanded="true" signature="103819:104034" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093951" expanded="true" signature="105046:105157" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="105277:105388" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="105506:105617" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="106737:106848" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="106968:107079" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="107197:107308" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="108623:108847" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093951" expanded="true" signature="108972:109196" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093951" expanded="true" signature="109319:109543" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093951" expanded="true" signature="110415:110634" ph="SELECT `logi... inspector" />
+            <marker date="1580173093951" expanded="true" signature="110754:110973" ph="SELECT `logi... inspector" />
+            <marker date="1580173093951" expanded="true" signature="111091:111310" ph="SELECT `logi... inspector" />
+            <marker date="1580173093951" expanded="true" signature="112086:112193" ph="SELECT `id`,... estado" />
+            <marker date="1580173093951" expanded="true" signature="112331:112438" ph="SELECT `id`,... estado" />
+            <marker date="1580173093951" expanded="true" signature="112574:112681" ph="SELECT `id`,... estado" />
+            <marker date="1580173093951" expanded="true" signature="113771:113885" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093951" expanded="true" signature="114030:114144" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093951" expanded="true" signature="114287:114401" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580173093951" expanded="true" signature="115532:115643" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093951" expanded="true" signature="115785:115896" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093951" expanded="true" signature="116036:116147" ph="SELECT `id`,... estadopago" />
+            <marker date="1580173093951" expanded="true" signature="146314:146439" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093951" expanded="true" signature="146549:146674" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093951" expanded="true" signature="146782:146907" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580173093951" expanded="true" signature="147465:147589" ph="SELECT `id` solicitud" />
+            <marker date="1580173093951" expanded="true" signature="147707:147831" ph="SELECT `id` solicitud" />
+            <marker date="1580173093951" expanded="true" signature="147947:148071" ph="SELECT `id` solicitud" />
+            <marker date="1580173093951" expanded="true" signature="148636:148770" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093951" expanded="true" signature="148880:149014" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093951" expanded="true" signature="149122:149256" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580173093951" expanded="true" signature="149818:149947" ph="SELECT `logi... inspector" />
+            <marker date="1580173093951" expanded="true" signature="150057:150186" ph="SELECT `logi... inspector" />
+            <marker date="1580173093951" expanded="true" signature="150294:150423" ph="SELECT `logi... inspector" />
+            <marker date="1580173093951" expanded="true" signature="150974:151094" ph="SELECT `id` estado" />
+            <marker date="1580173093951" expanded="true" signature="151236:151356" ph="SELECT `id` estado" />
+            <marker date="1580173093951" expanded="true" signature="151496:151616" ph="SELECT `id` estado" />
+            <marker date="1580173093951" expanded="true" signature="152195:152322" ph="SELECT `id` estadointerno" />
+            <marker date="1580173093951" expanded="true" signature="152464:152591" ph="SELECT `id` estadointerno" />
+            <marker date="1580173093951" expanded="true" signature="152731:152858" ph="SELECT `id` estadointerno" />
+            <marker date="1580173093951" expanded="true" signature="153441:153565" ph="SELECT `id` estadopago" />
+            <marker date="1580173093951" expanded="true" signature="153707:153831" ph="SELECT `id` estadopago" />
+            <marker date="1580173093951" expanded="true" signature="153971:154095" ph="SELECT `id` estadopago" />
+            <marker date="1580173093951" expanded="true" signature="154969:155044" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="155285:155360" ph="SELECT `id`,... solicitud" />
+            <marker date="1580173093951" expanded="true" signature="155599:155674" ph="SELECT `id`,... solicitud" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viewsolicitudframeinfo.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="510" column="5" lean-forward="false" selection-start-line="510" selection-start-column="5" selection-end-line="510" selection-end-column="5" />
+          <folding>
+            <marker date="1580257402088" expanded="true" signature="30055:30069" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1580257402088" expanded="true" signature="33940:33990" ph="SELECT COUNT... ${$sql}" />
+            <marker date="1580257402088" expanded="true" signature="34509:34523" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1580257402088" expanded="true" signature="35363:35377" ph="SELECT * FRO... ${$this-&gt;getSqlFrom()}" />
+            <marker date="1580257402088" expanded="true" signature="36326:36390" ph="INSERT INTO ${$this-&gt;UpdateTable}... " />
+            <marker date="1580257402088" expanded="true" signature="37646:37690" ph="DELETE FROM " />
+            <marker date="1580257402088" expanded="true" signature="53520:53632" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="53766:53878" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="54010:54122" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="55455:55563" ph="SELECT `id`,... departamento" />
+            <marker date="1580257402088" expanded="true" signature="55684:55792" ph="SELECT `id`,... departamento" />
+            <marker date="1580257402088" expanded="true" signature="55911:56019" ph="SELECT `id`,... departamento" />
+            <marker date="1580257402088" expanded="true" signature="57065:57170" ph="SELECT `id`,... provincia" />
+            <marker date="1580257402088" expanded="true" signature="57294:57399" ph="SELECT `id`,... provincia" />
+            <marker date="1580257402088" expanded="true" signature="57521:57626" ph="SELECT `id`,... provincia" />
+            <marker date="1580257402088" expanded="true" signature="62467:62579" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="62713:62825" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="62957:63069" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="64402:64510" ph="SELECT `id`,... departamento" />
+            <marker date="1580257402088" expanded="true" signature="64631:64739" ph="SELECT `id`,... departamento" />
+            <marker date="1580257402088" expanded="true" signature="64858:64966" ph="SELECT `id`,... departamento" />
+            <marker date="1580257402088" expanded="true" signature="66012:66117" ph="SELECT `id`,... provincia" />
+            <marker date="1580257402088" expanded="true" signature="66241:66346" ph="SELECT `id`,... provincia" />
+            <marker date="1580257402088" expanded="true" signature="66468:66573" ph="SELECT `id`,... provincia" />
+            <marker date="1580257402088" expanded="true" signature="71420:71532" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="71668:71780" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="71914:72026" ph="SELECT `nomb... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="73387:73495" ph="SELECT `id`,... departamento" />
+            <marker date="1580257402088" expanded="true" signature="73618:73726" ph="SELECT `id`,... departamento" />
+            <marker date="1580257402088" expanded="true" signature="73847:73955" ph="SELECT `id`,... departamento" />
+            <marker date="1580257402088" expanded="true" signature="75023:75128" ph="SELECT `id`,... provincia" />
+            <marker date="1580257402088" expanded="true" signature="75254:75359" ph="SELECT `id`,... provincia" />
+            <marker date="1580257402088" expanded="true" signature="75483:75588" ph="SELECT `id`,... provincia" />
+            <marker date="1580257402088" expanded="true" signature="80588:80709" ph="SELECT `id_t... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="80845:80966" ph="SELECT `id_t... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="81100:81221" ph="SELECT `id_t... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="83214:83335" ph="SELECT `id_t... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="83469:83590" ph="SELECT `id_t... tipoinmueble" />
+            <marker date="1580257402088" expanded="true" signature="83722:83843" ph="SELECT `id_t... tipoinmueble" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viewavaluosclist.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="3944" column="13" lean-forward="false" selection-start-line="3944" selection-start-column="13" selection-end-line="3944" selection-end-column="13" />
+          <folding>
+            <marker date="1580257787221" expanded="true" signature="4057:4064" ph="×" />
+            <marker date="1580257787221" expanded="true" signature="4578:4585" ph="×" />
+            <marker date="1580257787221" expanded="true" signature="5127:5134" ph="×" />
+            <marker date="1580257787221" expanded="true" signature="5668:5675" ph="×" />
+            <marker date="1580257787221" expanded="true" signature="89499:89617" ph="SELECT `id`,... solicitud" />
+            <marker date="1580257787221" expanded="true" signature="89809:89927" ph="SELECT `id`,... solicitud" />
+            <marker date="1580257787221" expanded="true" signature="90117:90235" ph="SELECT `id`,... solicitud" />
+            <marker date="1580257787221" expanded="true" signature="91579:91700" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="91862:91983" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="92143:92264" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="93499:93615" ph="SELECT `logi... inspector" />
+            <marker date="1580257787221" expanded="true" signature="93772:93888" ph="SELECT `logi... inspector" />
+            <marker date="1580257787221" expanded="true" signature="94043:94159" ph="SELECT `logi... inspector" />
+            <marker date="1580257787221" expanded="true" signature="95214:95323" ph="SELECT `id`,... cliente" />
+            <marker date="1580257787221" expanded="true" signature="95436:95545" ph="SELECT `id`,... cliente" />
+            <marker date="1580257787221" expanded="true" signature="95656:95765" ph="SELECT `id`,... cliente" />
+            <marker date="1580257787221" expanded="true" signature="97015:97122" ph="SELECT `id`,... estado" />
+            <marker date="1580257787221" expanded="true" signature="97231:97338" ph="SELECT `id`,... estado" />
+            <marker date="1580257787221" expanded="true" signature="97445:97552" ph="SELECT `id`,... estado" />
+            <marker date="1580257787221" expanded="true" signature="98478:98592" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580257787221" expanded="true" signature="98708:98822" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580257787221" expanded="true" signature="98936:99050" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580257787221" expanded="true" signature="100023:100134" ph="SELECT `id`,... estadopago" />
+            <marker date="1580257787221" expanded="true" signature="100247:100358" ph="SELECT `id`,... estadopago" />
+            <marker date="1580257787221" expanded="true" signature="100469:100580" ph="SELECT `id`,... estadopago" />
+            <marker date="1580257787221" expanded="true" signature="110393:110514" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="110681:110802" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="110967:111088" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="112466:112582" ph="SELECT `logi... inspector" />
+            <marker date="1580257787221" expanded="true" signature="112744:112860" ph="SELECT `logi... inspector" />
+            <marker date="1580257787221" expanded="true" signature="113020:113136" ph="SELECT `logi... inspector" />
+            <marker date="1580257787221" expanded="true" signature="114375:114587" ph="SELECT `id`,... cliente" />
+            <marker date="1580257787221" expanded="true" signature="114705:114917" ph="SELECT `id`,... cliente" />
+            <marker date="1580257787221" expanded="true" signature="115033:115245" ph="SELECT `id`,... cliente" />
+            <marker date="1580257787221" expanded="true" signature="116098:116315" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580257787221" expanded="true" signature="116436:116653" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580257787221" expanded="true" signature="116772:116989" ph="SELECT `id`,... estadointerno" />
+            <marker date="1580257787221" expanded="true" signature="117836:118050" ph="SELECT `id`,... estadopago" />
+            <marker date="1580257787221" expanded="true" signature="118168:118382" ph="SELECT `id`,... estadopago" />
+            <marker date="1580257787221" expanded="true" signature="118498:118712" ph="SELECT `id`,... estadopago" />
+            <marker date="1580257787221" expanded="true" signature="146197:146331" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="146491:146625" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="146783:146917" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="147529:147658" ph="SELECT `logi... inspector" />
+            <marker date="1580257787221" expanded="true" signature="147818:147947" ph="SELECT `logi... inspector" />
+            <marker date="1580257787221" expanded="true" signature="148105:148234" ph="SELECT `logi... inspector" />
+            <marker date="1580257787221" expanded="true" signature="148839:148961" ph="SELECT `id` cliente" />
+            <marker date="1580257787221" expanded="true" signature="149071:149193" ph="SELECT `id` cliente" />
+            <marker date="1580257787221" expanded="true" signature="149301:149423" ph="SELECT `id` cliente" />
+            <marker date="1580257787221" expanded="true" signature="149974:150101" ph="SELECT `id` estadointerno" />
+            <marker date="1580257787221" expanded="true" signature="150211:150338" ph="SELECT `id` estadointerno" />
+            <marker date="1580257787221" expanded="true" signature="150446:150573" ph="SELECT `id` estadointerno" />
+            <marker date="1580257787221" expanded="true" signature="151124:151248" ph="SELECT `id` estadopago" />
+            <marker date="1580257787221" expanded="true" signature="151358:151482" ph="SELECT `id` estadopago" />
+            <marker date="1580257787221" expanded="true" signature="151590:151714" ph="SELECT `id` estadopago" />
+            <marker date="1580257787221" expanded="true" signature="152335:152469" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="152629:152763" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="152921:153055" ph="SELECT `logi... oficialcredito" />
+            <marker date="1580257787221" expanded="true" signature="154761:154797" ph="..." />
+            <marker date="1580257787221" expanded="true" signature="155212:155248" ph="..." />
+            <marker date="1580257787221" expanded="true" signature="155813:155849" ph="..." />
+            <marker date="1580257787221" expanded="true" signature="156893:156929" ph="..." />
+            <marker date="1580257787221" expanded="true" signature="157946:157982" ph="..." />
+            <marker date="1580257787221" expanded="true" signature="160332:160425" ph="SELECT solic... solicitud" />
+            <marker date="1580257787221" expanded="true" signature="160784:160878" ph="SELECT solic... solicitud" />
           </folding>
         </state>
       </provider>
