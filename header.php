@@ -121,7 +121,7 @@ var EW_SEARCH_FILTER_OPTION = "<?php echo EW_SEARCH_FILTER_OPTION ?>";
 $.views.settings.debugMode(EW_DEBUG_ENABLED);
 </script>
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/ewp14.js"></script>
-<script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>jquery/jquery.ewjtable.js"></script>
+<script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>jquery/jquery.ewjtable.min.js"></script>
 <?php } ?>
 <?php if (@$gsExport == "" || @$gsExport == "print") { ?>
 <script type="text/javascript">
@@ -138,7 +138,7 @@ var ewVar = <?php echo json_encode($EW_CLIENT_VAR); ?>;
 // Write your client script here, no need to add script tags.
 </script>
 <?php } ?>
-<meta name="generator" content="PHPMaker v2018.0.6">
+<meta name="generator" content="PHPMaker v2018.0.7">
 </head>
 <body class="<?php echo $EW_BODY_CLASS ?>" dir="<?php echo ($EW_CSS_FLIP) ? "rtl" : "ltr" ?>">
 <?php if (@!$gbSkipHeaderFooter) { ?>

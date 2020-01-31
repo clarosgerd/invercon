@@ -2345,7 +2345,7 @@ $register->ShowMessage();
 		<div class="<?php echo $register->RightColumnClass ?>"><div<?php echo $usuario->avatar->CellAttributes() ?>>
 <span id="el_usuario_avatar">
 <div id="fd_x_avatar">
-<span title="<?php echo $usuario->avatar->FldTitle() ? $usuario->avatar->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($usuario->avatar->ReadOnly || $usuario->avatar->Disabled) echo " hide"; ?>">
+<span title="<?php echo $usuario->avatar->FldTitle() ? $usuario->avatar->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($usuario->avatar->ReadOnly || $usuario->avatar->Disabled) echo " hide"; ?>" data-trigger="hover">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="usuario" data-field="x_avatar" name="x_avatar" id="x_avatar"<?php echo $usuario->avatar->EditAttributes() ?>>
 </span>
@@ -2365,7 +2365,7 @@ $register->ShowMessage();
 		<td<?php echo $usuario->avatar->CellAttributes() ?>>
 <span id="el_usuario_avatar">
 <div id="fd_x_avatar">
-<span title="<?php echo $usuario->avatar->FldTitle() ? $usuario->avatar->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($usuario->avatar->ReadOnly || $usuario->avatar->Disabled) echo " hide"; ?>">
+<span title="<?php echo $usuario->avatar->FldTitle() ? $usuario->avatar->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($usuario->avatar->ReadOnly || $usuario->avatar->Disabled) echo " hide"; ?>" data-trigger="hover">
 	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
 	<input type="file" title=" " data-table="usuario" data-field="x_avatar" name="x_avatar" id="x_avatar"<?php echo $usuario->avatar->EditAttributes() ?>>
 </span>

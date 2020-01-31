@@ -409,18 +409,39 @@ Page_Rendering();
 		</div>
 		<!-- ./col -->
 	  </div>
+	   <div class="box box-primary">
+			<div class="box-header with-border">
+			  <h3 class="box-title">Calendario</h3>
+
+			  <div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+				</button>
+				<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+			  </div>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+			  <ul class="products-list product-list-in-box">
+				<li class="item">
+				  <div class="product-img">
+				
+				  </div>
+				  <div class="product-info">
+				<?php echo "<iframe src=\"reservacionesviewsecretaria.php\" height=\"900\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\"></iframe>"; ?>
+				  </div>
+				</li>
+				<!-- /.item -->
+				
+				<!-- /.item -->
+			  </ul>
+			</div>
+			<!-- /.box-body -->
+		
+			<!-- /.box-footer -->
+		  </div>
 	  <!-- /.row -->
-	 
-
-		</section>
-	
-	
-
-		</section>
-		<!-- right col -->
 	  </div>
 	  <!-- /.row (main row) -->
-
 	</section>
 <?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
 <?php include_once "footer.php" ?>

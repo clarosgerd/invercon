@@ -15,8 +15,8 @@ if (EW_DEBUG_ENABLED) {
 
 // General
 define("EW_IS_WINDOWS", (strtolower(substr(PHP_OS, 0, 3)) === 'win'), TRUE); // Is Windows OS
-define("EW_IS_PHP5", version_compare(PHP_VERSION, "5.4.0") >= 0, TRUE); // Is PHP 5.4 or later
-if (!EW_IS_PHP5) die("This script requires PHP 5.4 or later. You are running " . phpversion() . ".");
+define("EW_IS_PHP5", version_compare(PHP_VERSION, "5.5.0") >= 0, TRUE); // Is PHP 5.5 or later
+if (!EW_IS_PHP5) die("This script requires PHP 5.5 or later. You are running " . phpversion() . ".");
 define("EW_PATH_DELIMITER", ((EW_IS_WINDOWS) ? "\\" : "/"), TRUE); // Physical path delimiter
 $EW_ROOT_RELATIVE_PATH = "."; // Relative path of app root
 define("EW_UNFORMAT_YEAR", 50, TRUE); // Unformat year
@@ -25,7 +25,7 @@ define("EW_CONFIG_FILE_FOLDER", EW_PROJECT_NAME, TRUE); // Config file name
 define("EW_PROJECT_ID", "{30AA0C25-B486-48CC-AF92-47D039BF725C}", TRUE); // Project ID (GUID)
 $EW_RELATED_PROJECT_ID = "";
 $EW_RELATED_LANGUAGE_FOLDER = "";
-define("EW_RANDOM_KEY", 'y4AtuGMePkR8ua3G', TRUE); // Random key for encryption
+define("EW_RANDOM_KEY", 'SN12nx0fQZ61yRcd', TRUE); // Random key for encryption
 define("EW_PROJECT_STYLESHEET_FILENAME", "phpcss/invercon.css", TRUE); // Project stylesheet file name
 define("EW_CHARSET", "utf-8", TRUE); // Project charset
 define("EW_EMAIL_CHARSET", EW_CHARSET, TRUE); // Email charset
@@ -79,7 +79,7 @@ if (!defined("EW_USE_MYSQLI"))
 	define('EW_USE_MYSQLI', extension_loaded("mysqli"), TRUE); // Use MySQLi
 if (!defined("EW_USE_MSSQL_NATIVE"))
 	define("EW_USE_MSSQL_NATIVE", FALSE, TRUE); // Use ADOdb "mssqlnative" driver for MSSQL
-$EW_CONN["DB"] = array("conn" => NULL, "id" => "DB", "type" => "MYSQL", "host" => "localhost", "port" => 3306, "user" => "root", "pass" => "", "db" => "inverconbd", "qs" => "`", "qe" => "`");
+$EW_CONN["DB"] = array("conn" => NULL, "id" => "DB", "type" => "MYSQL", "host" => "localhost", "port" => 3306, "user" => "root", "pass" => "usbw", "db" => "inverconbd", "qs" => "`", "qe" => "`");
 $EW_CONN[0] = &$EW_CONN["DB"];
 
 // Set up database error function
@@ -342,7 +342,7 @@ define("EW_EMAIL_FORGOTPWD_TEMPLATE", "forgotpwd.html", TRUE);
 define("EW_EMAIL_NOTIFY_TEMPLATE", "notify.html", TRUE);
 define("EW_EMAIL_REGISTER_TEMPLATE", "register.html", TRUE);
 define("EW_EMAIL_RESETPWD_TEMPLATE", "resetpwd.html", TRUE);
-define("EW_EMAIL_TEMPLATE_PATH", "phphtml", TRUE); // Template path
+$EW_EMAIL_TEMPLATE_PATH = "phphtml"; // Template path
 
 // Remote file
 $EW_REMOTE_FILE_PATTERN = '/^((https?\:)?|ftps?\:|s3:)\/\//i';
@@ -965,7 +965,7 @@ if (!isset($conn)) {
 
 // Mobile detect
 $MobileDetect = NULL;
-$IsMobile = FALSE;
+$IsMobile = NULL;
 
 // Breadcrumb
 $Breadcrumb = NULL;

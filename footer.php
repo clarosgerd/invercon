@@ -17,7 +17,7 @@
  <?php	
 
 	//echo "SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "'";			
-$count = ew_ExecuteScalar("SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0");
+$count = ew_ExecuteScalar("SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0 AND internal=1");
 if ($count == 0)
 {
 echo "<li class=\"dropdown notifications-menu\">\n";
@@ -36,7 +36,7 @@ echo "</li>\n";
 //$MyField = ew_ExecuteScalar("SELECT MyField FROM MyTable WHERE XXX");
 
 else{				//<!-- inner menu: contains the actual data -->			
-$TheQuery="SELECT * FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0";				
+$TheQuery="SELECT * FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0 AND internal=1";				
 $all_mensaje_result = ew_Execute($TheQuery) or die("error during: ".$TheQuery);
 if ($all_mensaje_result && $all_mensaje_result->RecordCount() > 0) {
 $all_mensaje_result->MoveFirst();
@@ -58,7 +58,7 @@ $mensaje=$all_mensaje_result->fields[1];
 	$recibidopor=$all_mensaje_result->fields[3];
 	$name_enviado = ew_ExecuteScalar("SELECT CONCAT(nombre, ', ', apellido) FROM usuario WHERE login = '" . ew_AdjustSql($creadopor) . "'");
 	$especialidad_enviado = ew_ExecuteScalar("SELECT especialidad FROM usuario WHERE login = '" . ew_AdjustSql($creadopor) . "'");
-	$min_enviado = ew_ExecuteScalar("SELECT TIMESTAMPDIFF(MINUTE,now(),fecha) FROM notificaciones WHERE creadopor = '" . ew_AdjustSql($creadopor) . "' and leido=0");
+	$min_enviado = ew_ExecuteScalar("SELECT TIMESTAMPDIFF(MINUTE,now(),fecha) FROM notificaciones WHERE creadopor = '" . ew_AdjustSql($creadopor) . "' and leido=0 AND internal=1");
 echo "<li><!-- start message -->\n";
 echo "<a href=avaluocore.php?type=notifylearn&id=".$idmensaje.">";
 echo "<div class=\"pull-left\">\n";
@@ -87,7 +87,7 @@ echo "</li>\n";
 }
 
 			//echo "SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "'";			
-$count = ew_ExecuteScalar("SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0");
+$count = ew_ExecuteScalar("SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0 AND internal=0");
 if ($count == 0)
 {
 echo "<li class=\"dropdown notifications-menu\">\n";
@@ -106,7 +106,7 @@ echo "</li>\n";
 //$MyField = ew_ExecuteScalar("SELECT MyField FROM MyTable WHERE XXX");
 
 else{				//<!-- inner menu: contains the actual data -->			
-$TheQuery="SELECT * FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0";				
+$TheQuery="SELECT * FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0 AND internal=0";				
 $all_mensaje_result = ew_Execute($TheQuery) or die("error during: ".$TheQuery);
 if ($all_mensaje_result && $all_mensaje_result->RecordCount() > 0) {
 $all_mensaje_result->MoveFirst();
@@ -128,7 +128,7 @@ $mensaje=$all_mensaje_result->fields[1];
 	$recibidopor=$all_mensaje_result->fields[3];
 	$name_enviado = ew_ExecuteScalar("SELECT CONCAT(nombre, ', ', apellido) FROM usuario WHERE login = '" . ew_AdjustSql($creadopor) . "'");
 	$especialidad_enviado = ew_ExecuteScalar("SELECT especialidad FROM usuario WHERE login = '" . ew_AdjustSql($creadopor) . "'");
-	$min_enviado = ew_ExecuteScalar("SELECT TIMESTAMPDIFF(MINUTE,now(),fecha) FROM notificaciones WHERE creadopor = '" . ew_AdjustSql($creadopor) . "' and leido=0");
+	$min_enviado = ew_ExecuteScalar("SELECT TIMESTAMPDIFF(MINUTE,now(),fecha) FROM notificaciones WHERE creadopor = '" . ew_AdjustSql($creadopor) . "' and leido=0 AND internal=0");
 echo "<li><!-- start message -->\n";
 echo "<a href=avaluocore.php?type=notifylearn&id=".$idmensaje.">";
 echo "<div class=\"pull-left\">\n";

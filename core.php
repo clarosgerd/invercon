@@ -1351,12 +1351,10 @@ switch ($_GET['type']) {
 	   $Sql="SELECT solicitud.cell FROM solicitud  INNER JOIN avaluo ON solicitud.id = avaluo.id_solicitud";
 		$TheQuery=$Sql." WHERE avaluo.id = '" . ew_AdjustSql($_GET['id']) . "'";
 		$celular = ew_ExecuteScalar($TheQuery);
-		
-		$sms_msg= ew_Execute("insert into sms_data (celular,mensaje) values ('".$celular."','Su avaluo fue terminado pase por la oficina para cancelar el costo')");
-		
+		$sms_msg= ew_Execute("insert into sms_data (celular,mensaje) values ('".$celular."','Su avaluo fue terminado pase por la oficina para cancelar el saldo')");
 		$core_php->setSuccessMessage("SMS enviado");
-	header('Location:viewavaluosclist.php');
-	exit;
+	    header('Location:viewavaluosclist.php');
+	    exit;
 		break;
 }
 }

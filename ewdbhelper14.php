@@ -31,7 +31,7 @@ class cinverconbd_db extends cDbHelper {
 	var $Host = 'localhost';
 	var $Port = 3306;
 	var $Username = 'root';
-	var $Password = '';
+	var $Password = 'usbw';
 	var $DbName = 'inverconbd';
 	var $CharSet = "utf-8";
 

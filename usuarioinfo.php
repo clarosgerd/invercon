@@ -1481,7 +1481,7 @@ class cusuario extends cTable {
 		$Email->ReplaceContent('<!--FieldCaption_avatar-->', $this->avatar->FldCaption());
 		$Email->ReplaceContent('<!--avatar-->', ($row == NULL) ? strval($this->avatar->FormValue) : $row['avatar']);
 		$sLoginID = ($row == NULL) ? $this->_login->CurrentValue : $row['login'];
-		$sPassword = ($row == NULL) ? $this->password->CurrentValue : $row['password'];
+		$sPassword = ($row == NULL) ? $this->password->FormValue : $row['password'];
 		$sActivateLink = ew_FullUrl("register.php", "activate") . "?action=confirm";
 		$sActivateLink .= "&email=" . $sReceiverEmail;
 		$sToken = ew_Encrypt($sReceiverEmail) . "," . ew_Encrypt($sLoginID) . "," . ew_Encrypt($sPassword);

@@ -605,13 +605,13 @@ $changepwd->ShowMessage();
 <p class="login-box-msg"><?php echo $Language->Phrase("ChangePwd") ?></p>
 <?php if (!IsPasswordReset()) { ?>
 	<div class="form-group">
-		<div><input type="password" name="opwd" id="opwd" class="form-control ewControl"></div>
+		<div><input type="password" name="opwd" id="opwd" class="form-control ewControl" placeholder="<?php echo ew_HtmlEncode($Language->Phrase("OldPassword")) ?>"></div>
 	</div>
 <?php } ?>
 	<div class="form-group">
 		<div>
 		<div class="input-group" id="ignpwd">
-		<input type="password" data-password-strength="pst_npwd" data-password-generated="pgt_npwd" name="npwd" id="npwd" class="form-control ewControl ewPasswordStrength">
+		<input type="password" data-password-strength="pst_npwd" data-password-generated="pgt_npwd" name="npwd" id="npwd" class="form-control ewControl ewPasswordStrength" placeholder="<?php echo ew_HtmlEncode($Language->Phrase("NewPassword")) ?>">
 		<span class="input-group-btn">
 			<button type="button" class="btn btn-default ewPasswordGenerator" title="<?php echo ew_HtmlTitle($Language->Phrase("GeneratePassword")) ?>" data-password-field="npwd" data-password-confirm="cpwd" data-password-strength="pst_npwd" data-password-generated="pgt_npwd"><?php echo $Language->Phrase("GeneratePassword") ?></button>
 		</span>
@@ -624,7 +624,7 @@ $changepwd->ShowMessage();
 	</div>
 	<div class="form-group">
 		<div>
-			<input type="password" name="cpwd" id="cpwd" class="form-control ewControl">
+			<input type="password" name="cpwd" id="cpwd" class="form-control ewControl" placeholder="<?php echo ew_HtmlEncode($Language->Phrase("ConfirmPassword")) ?>">
 		</div>
 	</div>
 	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("ChangePwdBtn") ?></button>

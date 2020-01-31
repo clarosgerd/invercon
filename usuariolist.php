@@ -821,10 +821,6 @@ class cusuario_list extends cusuario {
 		// Initialize
 		$sFilterList = "";
 		$sSavedFilterList = "";
-
-		// Load server side filters
-		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
-			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "fusuariolistsrch");
 		$sFilterList = ew_Concat($sFilterList, $this->nombre->AdvancedSearch->ToJson(), ","); // Field nombre
 		$sFilterList = ew_Concat($sFilterList, $this->apellido->AdvancedSearch->ToJson(), ","); // Field apellido
 		$sFilterList = ew_Concat($sFilterList, $this->_login->AdvancedSearch->ToJson(), ","); // Field login
