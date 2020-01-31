@@ -66,8 +66,11 @@ class cmetodopago extends cTable {
 		$this->fields['name'] = &$this->name;
 
 		// is_active
-		$this->is_active = new cField('metodopago', 'metodopago', 'x_is_active', 'is_active', '`is_active`', '`is_active`', 16, -1, FALSE, '`is_active`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->is_active = new cField('metodopago', 'metodopago', 'x_is_active', 'is_active', '`is_active`', '`is_active`', 16, -1, FALSE, '`is_active`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->is_active->Sortable = TRUE; // Allow sort
+		$this->is_active->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->is_active->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
+		$this->is_active->OptionCount = 2;
 		$this->is_active->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['is_active'] = &$this->is_active;
 
@@ -676,7 +679,11 @@ class cmetodopago extends cTable {
 		$this->name->ViewCustomAttributes = "";
 
 		// is_active
-		$this->is_active->ViewValue = $this->is_active->CurrentValue;
+		if (strval($this->is_active->CurrentValue) <> "") {
+			$this->is_active->ViewValue = $this->is_active->OptionCaption($this->is_active->CurrentValue);
+		} else {
+			$this->is_active->ViewValue = NULL;
+		}
 		$this->is_active->ViewCustomAttributes = "";
 
 		// DateModified
@@ -781,8 +788,7 @@ class cmetodopago extends cTable {
 		// is_active
 		$this->is_active->EditAttrs["class"] = "form-control";
 		$this->is_active->EditCustomAttributes = "";
-		$this->is_active->EditValue = $this->is_active->CurrentValue;
-		$this->is_active->PlaceHolder = ew_RemoveHtml($this->is_active->FldTitle());
+		$this->is_active->EditValue = $this->is_active->Options(TRUE);
 
 		// DateModified
 		$this->DateModified->EditAttrs["class"] = "form-control";

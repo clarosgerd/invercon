@@ -1,12 +1,10 @@
 <?php
 
-// id_solicitud
+// codigoavaluo
 // id_oficialcredito
-// id_inspector
 // id_cliente
 // estado
 // estadointerno
-// estadopago
 // fecha_avaluo
 // comentario
 
@@ -15,13 +13,13 @@
 <div class="ewMasterDiv">
 <table id="tbl_viewavaluoinspectormaster" class="table ewViewTable ewMasterTable ewVertical">
 	<tbody>
-<?php if ($viewavaluoinspector->id_solicitud->Visible) { // id_solicitud ?>
-		<tr id="r_id_solicitud">
-			<td class="col-sm-3"><?php echo $viewavaluoinspector->id_solicitud->FldCaption() ?></td>
-			<td<?php echo $viewavaluoinspector->id_solicitud->CellAttributes() ?>>
-<span id="el_viewavaluoinspector_id_solicitud">
-<span<?php echo $viewavaluoinspector->id_solicitud->ViewAttributes() ?>>
-<?php echo $viewavaluoinspector->id_solicitud->ListViewValue() ?></span>
+<?php if ($viewavaluoinspector->codigoavaluo->Visible) { // codigoavaluo ?>
+		<tr id="r_codigoavaluo">
+			<td class="col-sm-3"><?php echo $viewavaluoinspector->codigoavaluo->FldCaption() ?></td>
+			<td<?php echo $viewavaluoinspector->codigoavaluo->CellAttributes() ?>>
+<span id="el_viewavaluoinspector_codigoavaluo">
+<span<?php echo $viewavaluoinspector->codigoavaluo->ViewAttributes() ?>>
+<?php echo $viewavaluoinspector->codigoavaluo->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>
@@ -33,17 +31,6 @@
 <span id="el_viewavaluoinspector_id_oficialcredito">
 <span<?php echo $viewavaluoinspector->id_oficialcredito->ViewAttributes() ?>>
 <?php echo $viewavaluoinspector->id_oficialcredito->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($viewavaluoinspector->id_inspector->Visible) { // id_inspector ?>
-		<tr id="r_id_inspector">
-			<td class="col-sm-3"><?php echo $viewavaluoinspector->id_inspector->FldCaption() ?></td>
-			<td<?php echo $viewavaluoinspector->id_inspector->CellAttributes() ?>>
-<span id="el_viewavaluoinspector_id_inspector">
-<span<?php echo $viewavaluoinspector->id_inspector->ViewAttributes() ?>>
-<?php echo $viewavaluoinspector->id_inspector->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>
@@ -77,17 +64,6 @@
 <span id="el_viewavaluoinspector_estadointerno">
 <span<?php echo $viewavaluoinspector->estadointerno->ViewAttributes() ?>>
 <?php echo $viewavaluoinspector->estadointerno->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($viewavaluoinspector->estadopago->Visible) { // estadopago ?>
-		<tr id="r_estadopago">
-			<td class="col-sm-3"><?php echo $viewavaluoinspector->estadopago->FldCaption() ?></td>
-			<td<?php echo $viewavaluoinspector->estadopago->CellAttributes() ?>>
-<span id="el_viewavaluoinspector_estadopago">
-<span<?php echo $viewavaluoinspector->estadopago->ViewAttributes() ?>>
-<?php echo $viewavaluoinspector->estadopago->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>

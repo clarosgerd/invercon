@@ -682,23 +682,9 @@ class ccomentariosavaluo extends cTable {
 		// usuario
 		if (strval($this->usuario->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->usuario->CurrentValue, EW_DATATYPE_STRING, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
-				$sWhereWrk = "";
-				$this->usuario->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
-				$sWhereWrk = "";
-				$this->usuario->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
-				$sWhereWrk = "";
-				$this->usuario->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+		$sWhereWrk = "";
+		$this->usuario->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -723,23 +709,9 @@ class ccomentariosavaluo extends cTable {
 		// id_avaluo
 		if (strval($this->id_avaluo->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$this->id_avaluo->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$this->id_avaluo->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$this->id_avaluo->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+		$sWhereWrk = "";
+		$this->id_avaluo->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_avaluo, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -824,23 +796,9 @@ class ccomentariosavaluo extends cTable {
 			$this->id_avaluo->CurrentValue = $this->id_avaluo->getSessionValue();
 		if (strval($this->id_avaluo->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$this->id_avaluo->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$this->id_avaluo->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$this->id_avaluo->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+		$sWhereWrk = "";
+		$this->id_avaluo->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_avaluo, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;

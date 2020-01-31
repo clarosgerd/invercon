@@ -1425,23 +1425,9 @@ class cpago_grid extends cpago {
 		// cliente_id
 		if (strval($this->cliente_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->cliente_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-				$sWhereWrk = "";
-				$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-				$sWhereWrk = "";
-				$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-				$sWhereWrk = "";
-				$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+		$sWhereWrk = "";
+		$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1463,23 +1449,9 @@ class cpago_grid extends cpago {
 		// status_id
 		if (strval($this->status_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->status_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-				$sWhereWrk = "";
-				$this->status_id->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-				$sWhereWrk = "";
-				$this->status_id->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-				$sWhereWrk = "";
-				$this->status_id->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+		$sWhereWrk = "";
+		$this->status_id->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->status_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1505,23 +1477,9 @@ class cpago_grid extends cpago {
 		// metodopago_id
 		if (strval($this->metodopago_id->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->metodopago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-				$sWhereWrk = "";
-				$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-				$sWhereWrk = "";
-				$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-				$sWhereWrk = "";
-				$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+		$sWhereWrk = "";
+		$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1585,23 +1543,9 @@ class cpago_grid extends cpago {
 				$this->cliente_id->OldValue = $this->cliente_id->CurrentValue;
 			if (strval($this->cliente_id->CurrentValue) <> "") {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->cliente_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+			$sWhereWrk = "";
+			$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1625,23 +1569,9 @@ class cpago_grid extends cpago {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->cliente_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
+			$sWhereWrk = "";
+			$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1667,23 +1597,9 @@ class cpago_grid extends cpago {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->status_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-					$sWhereWrk = "";
-					$this->status_id->LookupFilters = array();
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-					$sWhereWrk = "";
-					$this->status_id->LookupFilters = array();
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-					$sWhereWrk = "";
-					$this->status_id->LookupFilters = array();
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
+			$sWhereWrk = "";
+			$this->status_id->LookupFilters = array();
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->status_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1701,23 +1617,9 @@ class cpago_grid extends cpago {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->metodopago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
-					$sWhereWrk = "";
-					$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
-					$sWhereWrk = "";
-					$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
-					$sWhereWrk = "";
-					$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
+			$sWhereWrk = "";
+			$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1779,23 +1681,9 @@ class cpago_grid extends cpago {
 				$this->cliente_id->OldValue = $this->cliente_id->CurrentValue;
 			if (strval($this->cliente_id->CurrentValue) <> "") {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->cliente_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+			$sWhereWrk = "";
+			$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1819,23 +1707,9 @@ class cpago_grid extends cpago {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->cliente_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
+			$sWhereWrk = "";
+			$this->cliente_id->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1861,23 +1735,9 @@ class cpago_grid extends cpago {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->status_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-					$sWhereWrk = "";
-					$this->status_id->LookupFilters = array();
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-					$sWhereWrk = "";
-					$this->status_id->LookupFilters = array();
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-					$sWhereWrk = "";
-					$this->status_id->LookupFilters = array();
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
+			$sWhereWrk = "";
+			$this->status_id->LookupFilters = array();
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->status_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1895,23 +1755,9 @@ class cpago_grid extends cpago {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->metodopago_id->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
-					$sWhereWrk = "";
-					$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
-					$sWhereWrk = "";
-					$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
-					$sWhereWrk = "";
-					$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `metodopago`";
+			$sWhereWrk = "";
+			$this->metodopago_id->LookupFilters = array("dx1" => '`short_name`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2253,23 +2099,9 @@ class cpago_grid extends cpago {
 		switch ($fld->FldVar) {
 		case "x_cliente_id":
 			$sSqlWrk = "";
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-					$sWhereWrk = "{filter}";
-					$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-					$sWhereWrk = "{filter}";
-					$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-					$sWhereWrk = "{filter}";
-					$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+			$sWhereWrk = "{filter}";
+			$fld->LookupFilters = array("dx1" => '`name`', "dx2" => '`lastname`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->cliente_id, $sWhereWrk); // Call Lookup Selecting
@@ -2279,23 +2111,9 @@ class cpago_grid extends cpago {
 			break;
 		case "x_status_id":
 			$sSqlWrk = "";
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-					$sWhereWrk = "";
-					$fld->LookupFilters = array();
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-					$sWhereWrk = "";
-					$fld->LookupFilters = array();
-					break;
-				default:
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-					$sWhereWrk = "";
-					$fld->LookupFilters = array();
-					break;
-			}
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->status_id, $sWhereWrk); // Call Lookup Selecting
@@ -2305,23 +2123,9 @@ class cpago_grid extends cpago {
 			break;
 		case "x_metodopago_id":
 			$sSqlWrk = "";
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-					$sWhereWrk = "{filter}";
-					$fld->LookupFilters = array("dx1" => '`short_name`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-					$sWhereWrk = "{filter}";
-					$fld->LookupFilters = array("dx1" => '`short_name`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-					$sWhereWrk = "{filter}";
-					$fld->LookupFilters = array("dx1" => '`short_name`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
+			$sWhereWrk = "{filter}";
+			$fld->LookupFilters = array("dx1" => '`short_name`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->metodopago_id, $sWhereWrk); // Call Lookup Selecting

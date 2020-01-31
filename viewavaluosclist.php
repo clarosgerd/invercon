@@ -2280,23 +2280,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 		$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
 		if (strval($this->id_solicitud->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
-				$sWhereWrk = "";
-				$this->id_solicitud->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
-				$sWhereWrk = "";
-				$this->id_solicitud->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
-				$sWhereWrk = "";
-				$this->id_solicitud->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
+		$sWhereWrk = "";
+		$this->id_solicitud->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2323,23 +2309,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 		} else {
 		if (strval($this->id_oficialcredito->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_oficialcredito->CurrentValue, EW_DATATYPE_STRING, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-				$sWhereWrk = "";
-				$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-				$sWhereWrk = "";
-				$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-				$sWhereWrk = "";
-				$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-				break;
-		}
+		$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+		$sWhereWrk = "";
+		$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2365,23 +2337,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 		} else {
 		if (strval($this->id_inspector->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_inspector->CurrentValue, EW_DATATYPE_STRING, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-				$sWhereWrk = "";
-				$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-				$sWhereWrk = "";
-				$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-				$sWhereWrk = "";
-				$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+		$sWhereWrk = "";
+		$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_inspector, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2404,23 +2362,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 		// id_cliente
 		if (strval($this->id_cliente->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_cliente->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-				$sWhereWrk = "";
-				$this->id_cliente->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-				$sWhereWrk = "";
-				$this->id_cliente->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-				$sWhereWrk = "";
-				$this->id_cliente->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+		$sWhereWrk = "";
+		$this->id_cliente->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_cliente, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2450,23 +2394,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 		// estado
 		if (strval($this->estado->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estado->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
-				$sWhereWrk = "";
-				$this->estado->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
-				$sWhereWrk = "";
-				$this->estado->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
-				$sWhereWrk = "";
-				$this->estado->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+		$sWhereWrk = "";
+		$this->estado->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2487,23 +2417,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 		// estadointerno
 		if (strval($this->estadointerno->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-				$sWhereWrk = "";
-				$this->estadointerno->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-				$sWhereWrk = "";
-				$this->estadointerno->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-				$sWhereWrk = "";
-				$this->estadointerno->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+		$sWhereWrk = "";
+		$this->estadointerno->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2524,23 +2440,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 		// estadopago
 		if (strval($this->estadopago->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadopago->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-				$sWhereWrk = "";
-				$this->estadopago->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-				$sWhereWrk = "";
-				$this->estadopago->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-				$sWhereWrk = "";
-				$this->estadopago->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+		$sWhereWrk = "";
+		$this->estadopago->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadopago, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2779,23 +2681,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			} else {
 			if (strval($this->id_oficialcredito->CurrentValue) <> "") {
 				$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_oficialcredito->CurrentValue, EW_DATATYPE_STRING, "");
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-					$sWhereWrk = "";
-					$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-					$sWhereWrk = "";
-					$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-					$sWhereWrk = "";
-					$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-					break;
-			}
+			$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+			$sWhereWrk = "";
+			$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2823,23 +2711,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			} else {
 			if (strval($this->id_inspector->CurrentValue) <> "") {
 				$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_inspector->CurrentValue, EW_DATATYPE_STRING, "");
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-					$sWhereWrk = "";
-					$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-					$sWhereWrk = "";
-					$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-					$sWhereWrk = "";
-					$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
-					break;
-			}
+			$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+			$sWhereWrk = "";
+			$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_inspector, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2867,23 +2741,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_cliente->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->id_cliente->LookupFilters = array();
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->id_cliente->LookupFilters = array();
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
-					$sWhereWrk = "";
-					$this->id_cliente->LookupFilters = array();
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `cliente`";
+			$sWhereWrk = "";
+			$this->id_cliente->LookupFilters = array();
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_cliente, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2900,23 +2760,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadointerno`";
-					$sWhereWrk = "";
-					$this->estadointerno->LookupFilters = array();
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadointerno`";
-					$sWhereWrk = "";
-					$this->estadointerno->LookupFilters = array();
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadointerno`";
-					$sWhereWrk = "";
-					$this->estadointerno->LookupFilters = array();
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadointerno`";
+			$sWhereWrk = "";
+			$this->estadointerno->LookupFilters = array();
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -2933,23 +2779,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadopago->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-					$sWhereWrk = "";
-					$this->estadopago->LookupFilters = array();
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-					$sWhereWrk = "";
-					$this->estadopago->LookupFilters = array();
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
-					$sWhereWrk = "";
-					$this->estadopago->LookupFilters = array();
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadopago`";
+			$sWhereWrk = "";
+			$this->estadopago->LookupFilters = array();
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->estadopago, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -3664,23 +3496,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			switch ($fld->FldVar) {
 		case "x_id_oficialcredito":
 			$sSqlWrk = "";
-				switch (@$gsLanguage) {
-					case "en":
-						$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-						$sWhereWrk = "{filter}";
-						$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-						break;
-					case "es":
-						$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-						$sWhereWrk = "{filter}";
-						$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-						break;
-					default:
-						$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-						$sWhereWrk = "{filter}";
-						$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-						break;
-				}
+				$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "{filter}";
+				$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`login` IN ({filter_value})', "t0" => "200", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
@@ -3690,23 +3508,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			break;
 		case "x_id_inspector":
 			$sSqlWrk = "";
-				switch (@$gsLanguage) {
-					case "en":
-						$sSqlWrk = "SELECT `login` AS `LinkFld`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-						$sWhereWrk = "{filter}";
-						$fld->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
-						break;
-					case "es":
-						$sSqlWrk = "SELECT `login` AS `LinkFld`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-						$sWhereWrk = "{filter}";
-						$fld->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
-						break;
-					default:
-						$sSqlWrk = "SELECT `login` AS `LinkFld`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
-						$sWhereWrk = "{filter}";
-						$fld->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
-						break;
-				}
+				$sSqlWrk = "SELECT `login` AS `LinkFld`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+				$sWhereWrk = "{filter}";
+				$fld->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`login` IN ({filter_value})', "t0" => "200", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->id_inspector, $sWhereWrk); // Call Lookup Selecting
@@ -3716,23 +3520,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			break;
 		case "x_id_cliente":
 			$sSqlWrk = "";
-				switch (@$gsLanguage) {
-					case "en":
-						$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-						$sWhereWrk = "";
-						$fld->LookupFilters = array();
-						break;
-					case "es":
-						$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-						$sWhereWrk = "";
-						$fld->LookupFilters = array();
-						break;
-					default:
-						$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
-						$sWhereWrk = "";
-						$fld->LookupFilters = array();
-						break;
-				}
+				$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+				$sWhereWrk = "";
+				$fld->LookupFilters = array();
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->id_cliente, $sWhereWrk); // Call Lookup Selecting
@@ -3742,23 +3532,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			break;
 		case "x_estadointerno":
 			$sSqlWrk = "";
-				switch (@$gsLanguage) {
-					case "en":
-						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-						$sWhereWrk = "";
-						$fld->LookupFilters = array();
-						break;
-					case "es":
-						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-						$sWhereWrk = "";
-						$fld->LookupFilters = array();
-						break;
-					default:
-						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-						$sWhereWrk = "";
-						$fld->LookupFilters = array();
-						break;
-				}
+				$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+				$sWhereWrk = "";
+				$fld->LookupFilters = array();
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
@@ -3768,23 +3544,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			break;
 		case "x_estadopago":
 			$sSqlWrk = "";
-				switch (@$gsLanguage) {
-					case "en":
-						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-						$sWhereWrk = "";
-						$fld->LookupFilters = array();
-						break;
-					case "es":
-						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-						$sWhereWrk = "";
-						$fld->LookupFilters = array();
-						break;
-					default:
-						$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
-						$sWhereWrk = "";
-						$fld->LookupFilters = array();
-						break;
-				}
+				$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+				$sWhereWrk = "";
+				$fld->LookupFilters = array();
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->estadopago, $sWhereWrk); // Call Lookup Selecting
@@ -3797,23 +3559,9 @@ class cviewavaluosc_list extends cviewavaluosc {
 			switch ($fld->FldVar) {
 		case "x_id_oficialcredito":
 			$sSqlWrk = "";
-				switch (@$gsLanguage) {
-					case "en":
-						$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-						$sWhereWrk = "{filter}";
-						$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-						break;
-					case "es":
-						$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-						$sWhereWrk = "{filter}";
-						$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-						break;
-					default:
-						$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-						$sWhereWrk = "{filter}";
-						$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-						break;
-				}
+				$sSqlWrk = "SELECT `login` AS `LinkFld`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
+				$sWhereWrk = "{filter}";
+				$fld->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`login` IN ({filter_value})', "t0" => "200", "fn0" => "");
 			$sSqlWrk = "";
 				$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
@@ -3888,26 +3636,25 @@ class cviewavaluosc_list extends cviewavaluosc {
 		// Example:
 		//$header = "your header";
 
-		if (!isset($_GET["id"]))
+		if (isset($_GET["id"]))
 		{
-            $var=0;
 		$header = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $header .= "<tr>";
 		 $header .= "<td>";
 		 $header .= "<div class=\"card-body p-0\">";
-		 $header .= "<iframe src=\"viewsolicitudframeedit.php?solicitud=".$var."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
+		 $header .= "<iframe src=\"viewsolicitudframeedit.php?id=".$_GET["id"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
 		 $header .= "</div>";
 		 $header .= "</td>";
 		 $header .= "</tr>";
 		 $header .= "</table>";
 		 }else
 		 {
-
+		 $var=0;
 		 $header = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $header .= "<tr>";
 		 $header .= "<td>";
 		 $header .= "<div class=\"card-body p-0\">";
-		 $header .= "<iframe src=\"viewsolicitudframeedit.php?solicitud=".$_GET["id"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
+		 $header .= "<iframe src=\"viewsolicitudframeedit.php?id=".$var."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
 		 $header .= "</div>";
 		 $header .= "</td>";
 		 $header .= "</tr>";
@@ -3932,12 +3679,12 @@ class cviewavaluosc_list extends cviewavaluosc {
 		 $footer .= "</td><td></td>";
 		  $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
-		 $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["avaluo"]."\" height=\"200\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
+		 $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["avaluo"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 	  $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
-		 $footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$_GET ["avaluo"]."\" height=\"200\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
+		 $footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$_GET ["avaluo"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
@@ -3976,7 +3723,7 @@ class cviewavaluosc_list extends cviewavaluosc {
 		 $footer .= "</td><td></td>";
 		 $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
-		 $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["id"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
+		 $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["a"]."\" height=\"300\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "<td>";
@@ -4045,7 +3792,7 @@ class cviewavaluosc_list extends cviewavaluosc {
 		$TheQuery=$Sql." WHERE avaluo.id = '" . ew_AdjustSql(CurrentTable()->id->CurrentValue) . "'";
 		$email = ew_ExecuteScalar($TheQuery);
 		$button4="<div class=\"btn-group\" role=\"group\" aria-label=\"Button group with nested dropdown\">";
-		$button4.=	"<button class=\"btn btn-primary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+		$button4.=	"<button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
 		$button4.="Tareas Secretaria";
 		$button4.="</button>";
 		$button4.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
@@ -4053,9 +3800,8 @@ class cviewavaluosc_list extends cviewavaluosc {
 		$button4.="<li><a class=\"dropdown-item\" href=core.php?case=sec&type=pagado&id=".CurrentTable()->id->CurrentValue.">Terminado</a></li>";
 		$button4.="</ul>";
 		$button4.="</div>";
-
 			$button="<div class=\"btn-group\" role=\"group\" aria-label=\"Button group with nested dropdown\">";
-		$button.=	"<button class=\"btn btn-danger dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+		$button.=	"<button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
 		$button.="Notificaciones Pago";
 		$button.="</button>";
 		$button.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
@@ -4070,13 +3816,13 @@ class cviewavaluosc_list extends cviewavaluosc {
 		$button.="</ul>";
 		$button.="</div>";
 		$button2="<div class=\"btn-group\" role=\"group\" aria-label=\"Button group with nested dropdown\">";
-		$button2.=	"<button class=\"btn btn-warning dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+		$button2.=	"<button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
 		$button2.="Historiales";
 		$button2.="</button>";
 		$button2.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
 	   $button2.="<li><a class=\"dropdown-item\" href=historicolist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"frame\">Historial</a></li>";
 	   $button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
-	   $button2.="<li><a class=\"dropdown-item\" href=viewsolicitudframelist.php?id=".CurrentTable()->id_solicitud->CurrentValue." target=\"framesol\">Datos Solicitud</a></li>";
+	   $button2.="<li><a class=\"dropdown-item\" href=viewsolicitudframeedit.php?solicitud=".CurrentTable()->id_solicitud->CurrentValue." target=\"framesol\">Datos Solicitud</a></li>";
 	   $button2.="<li><a class=\"dropdown-item\" href=viewpagoavaluoslist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framepagos\">Historial de Pagos</a></li>";
 		$button2.="</ul>";
 		$button2.="</div>";

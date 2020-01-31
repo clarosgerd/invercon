@@ -1324,23 +1324,9 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		// usuario
 		if (strval($this->usuario->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->usuario->CurrentValue, EW_DATATYPE_STRING, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
-				$sWhereWrk = "";
-				$this->usuario->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
-				$sWhereWrk = "";
-				$this->usuario->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
-				$sWhereWrk = "";
-				$this->usuario->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+		$sWhereWrk = "";
+		$this->usuario->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1365,23 +1351,9 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		// id_avaluo
 		if (strval($this->id_avaluo->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_avaluo->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$this->id_avaluo->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$this->id_avaluo->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
-				$sWhereWrk = "";
-				$this->id_avaluo->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `codigoavaluo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `avaluo`";
+		$sWhereWrk = "";
+		$this->id_avaluo->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_avaluo, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1430,23 +1402,9 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 			} else {
 				$sFilterWrk = "`login`" . ew_SearchString("=", $this->usuario->CurrentValue, EW_DATATYPE_STRING, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
-					$sWhereWrk = "";
-					$this->usuario->LookupFilters = array();
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
-					$sWhereWrk = "";
-					$this->usuario->LookupFilters = array();
-					break;
-				default:
-					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
-					$sWhereWrk = "";
-					$this->usuario->LookupFilters = array();
-					break;
-			}
+			$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
+			$sWhereWrk = "";
+			$this->usuario->LookupFilters = array();
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			if (!$GLOBALS["comentariosavaluo"]->UserIDAllow("gridcls")) $sWhereWrk = $GLOBALS["usuario"]->AddUserIDFilter($sWhereWrk);
 			$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
@@ -1491,23 +1449,9 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 			} else {
 				$sFilterWrk = "`login`" . ew_SearchString("=", $this->usuario->CurrentValue, EW_DATATYPE_STRING, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
-					$sWhereWrk = "";
-					$this->usuario->LookupFilters = array();
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
-					$sWhereWrk = "";
-					$this->usuario->LookupFilters = array();
-					break;
-				default:
-					$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
-					$sWhereWrk = "";
-					$this->usuario->LookupFilters = array();
-					break;
-			}
+			$sSqlWrk = "SELECT `login`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `usuario`";
+			$sWhereWrk = "";
+			$this->usuario->LookupFilters = array();
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			if (!$GLOBALS["comentariosavaluo"]->UserIDAllow("gridcls")) $sWhereWrk = $GLOBALS["usuario"]->AddUserIDFilter($sWhereWrk);
 			$this->Lookup_Selecting($this->usuario, $sWhereWrk); // Call Lookup Selecting
@@ -1825,23 +1769,9 @@ class ccomentariosavaluo_grid extends ccomentariosavaluo {
 		switch ($fld->FldVar) {
 		case "x_usuario":
 			$sSqlWrk = "";
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `login` AS `LinkFld`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
-					$sWhereWrk = "";
-					$fld->LookupFilters = array();
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `login` AS `LinkFld`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
-					$sWhereWrk = "";
-					$fld->LookupFilters = array();
-					break;
-				default:
-					$sSqlWrk = "SELECT `login` AS `LinkFld`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
-					$sWhereWrk = "";
-					$fld->LookupFilters = array();
-					break;
-			}
+			$sSqlWrk = "SELECT `login` AS `LinkFld`, `codigo` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `usuario`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
 			if (!$GLOBALS["comentariosavaluo"]->UserIDAllow("gridcls")) $sWhereWrk = $GLOBALS["usuario"]->AddUserIDFilter($sWhereWrk);
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`login` IN ({filter_value})', "t0" => "200", "fn0" => "");
 			$sSqlWrk = "";

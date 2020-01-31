@@ -1610,7 +1610,11 @@ class cmetodopago_list extends cmetodopago {
 		$this->name->ViewCustomAttributes = "";
 
 		// is_active
-		$this->is_active->ViewValue = $this->is_active->CurrentValue;
+		if (strval($this->is_active->CurrentValue) <> "") {
+			$this->is_active->ViewValue = $this->is_active->OptionCaption($this->is_active->CurrentValue);
+		} else {
+			$this->is_active->ViewValue = NULL;
+		}
 		$this->is_active->ViewCustomAttributes = "";
 
 			// id
@@ -2097,8 +2101,10 @@ fmetodopagolist.Form_CustomValidate =
 fmetodopagolist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+fmetodopagolist.Lists["x_is_active"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+fmetodopagolist.Lists["x_is_active"].Options = <?php echo json_encode($metodopago_list->is_active->Options()) ?>;
 
+// Form object for search
 var CurrentSearchForm = fmetodopagolistsrch = new ew_Form("fmetodopagolistsrch");
 </script>
 <script type="text/javascript">

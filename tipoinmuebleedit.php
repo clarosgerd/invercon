@@ -694,7 +694,11 @@ class ctipoinmueble_edit extends ctipoinmueble {
 		$this->tipo->ViewCustomAttributes = "";
 
 		// estado
-		$this->estado->ViewValue = $this->estado->CurrentValue;
+		if (strval($this->estado->CurrentValue) <> "") {
+			$this->estado->ViewValue = $this->estado->OptionCaption($this->estado->CurrentValue);
+		} else {
+			$this->estado->ViewValue = NULL;
+		}
 		$this->estado->ViewCustomAttributes = "";
 
 			// nombre
@@ -728,8 +732,7 @@ class ctipoinmueble_edit extends ctipoinmueble {
 			// estado
 			$this->estado->EditAttrs["class"] = "form-control";
 			$this->estado->EditCustomAttributes = "";
-			$this->estado->EditValue = ew_HtmlEncode($this->estado->CurrentValue);
-			$this->estado->PlaceHolder = ew_RemoveHtml($this->estado->FldTitle());
+			$this->estado->EditValue = $this->estado->Options(TRUE);
 
 			// Edit refer script
 			// nombre
@@ -771,9 +774,6 @@ class ctipoinmueble_edit extends ctipoinmueble {
 		}
 		if (!$this->estado->FldIsDetailKey && !is_null($this->estado->FormValue) && $this->estado->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->estado->FldCaption(), $this->estado->ReqErrMsg));
-		}
-		if (!ew_CheckInteger($this->estado->FormValue)) {
-			ew_AddMessage($gsFormError, $this->estado->FldErrMsg());
 		}
 
 		// Return validate result
@@ -995,9 +995,6 @@ ftipoinmuebleedit.Validate = function() {
 			elm = this.GetElements("x" + infix + "_estado");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $tipoinmueble->estado->FldCaption(), $tipoinmueble->estado->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_estado");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($tipoinmueble->estado->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -1027,8 +1024,10 @@ ftipoinmuebleedit.Form_CustomValidate =
 ftipoinmuebleedit.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+ftipoinmuebleedit.Lists["x_estado"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+ftipoinmuebleedit.Lists["x_estado"].Options = <?php echo json_encode($tipoinmueble_edit->estado->Options()) ?>;
 
+// Form object for search
 </script>
 <script type="text/javascript">
 
@@ -1101,7 +1100,9 @@ $tipoinmueble_edit->ShowMessage();
 		<label id="elh_tipoinmueble_estado" for="x_estado" class="<?php echo $tipoinmueble_edit->LeftColumnClass ?>"><?php echo $tipoinmueble->estado->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $tipoinmueble_edit->RightColumnClass ?>"><div<?php echo $tipoinmueble->estado->CellAttributes() ?>>
 <span id="el_tipoinmueble_estado">
-<input type="text" data-table="tipoinmueble" data-field="x_estado" name="x_estado" id="x_estado" size="30" placeholder="<?php echo ew_HtmlEncode($tipoinmueble->estado->getPlaceHolder()) ?>" value="<?php echo $tipoinmueble->estado->EditValue ?>"<?php echo $tipoinmueble->estado->EditAttributes() ?>>
+<select data-table="tipoinmueble" data-field="x_estado" data-value-separator="<?php echo $tipoinmueble->estado->DisplayValueSeparatorAttribute() ?>" id="x_estado" name="x_estado"<?php echo $tipoinmueble->estado->EditAttributes() ?>>
+<?php echo $tipoinmueble->estado->SelectOptionListHtml("x_estado") ?>
+</select>
 </span>
 <?php echo $tipoinmueble->estado->CustomMsg ?></div></div>
 	</div>
@@ -1110,7 +1111,9 @@ $tipoinmueble_edit->ShowMessage();
 		<td class="col-sm-3"><span id="elh_tipoinmueble_estado"><?php echo $tipoinmueble->estado->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
 		<td<?php echo $tipoinmueble->estado->CellAttributes() ?>>
 <span id="el_tipoinmueble_estado">
-<input type="text" data-table="tipoinmueble" data-field="x_estado" name="x_estado" id="x_estado" size="30" placeholder="<?php echo ew_HtmlEncode($tipoinmueble->estado->getPlaceHolder()) ?>" value="<?php echo $tipoinmueble->estado->EditValue ?>"<?php echo $tipoinmueble->estado->EditAttributes() ?>>
+<select data-table="tipoinmueble" data-field="x_estado" data-value-separator="<?php echo $tipoinmueble->estado->DisplayValueSeparatorAttribute() ?>" id="x_estado" name="x_estado"<?php echo $tipoinmueble->estado->EditAttributes() ?>>
+<?php echo $tipoinmueble->estado->SelectOptionListHtml("x_estado") ?>
+</select>
 </span>
 <?php echo $tipoinmueble->estado->CustomMsg ?></td>
 	</tr>

@@ -1,15 +1,15 @@
 <?php
 
 // Global variable for table object
-$viewavaluosc = NULL;
+$viewavaluosofprocesados = NULL;
 
 //
-// Table class for viewavaluosc
+// Table class for viewavaluosofprocesados
 //
-class cviewavaluosc extends cTable {
+class cviewavaluosofprocesados extends cTable {
 	var $id;
-	var $codigoavaluo;
 	var $tipoinmueble;
+	var $codigoavaluo;
 	var $id_solicitud;
 	var $id_oficialcredito;
 	var $id_inspector;
@@ -27,9 +27,9 @@ class cviewavaluosc extends cTable {
 	var $CreatedBy;
 	var $ModifiedBy;
 	var $DeletedBy;
-	var $monto_pago;
+	var $id_sucursal;
+	var $informe;
 	var $comentario;
-	var $documento_pago;
 
 	//
 	// Table class constructor
@@ -39,12 +39,12 @@ class cviewavaluosc extends cTable {
 
 		// Language object
 		if (!isset($Language)) $Language = new cLanguage();
-		$this->TableVar = 'viewavaluosc';
-		$this->TableName = 'viewavaluosc';
+		$this->TableVar = 'viewavaluosofprocesados';
+		$this->TableName = 'viewavaluosofprocesados';
 		$this->TableType = 'VIEW';
 
 		// Update Table
-		$this->UpdateTable = "`viewavaluosc`";
+		$this->UpdateTable = "`viewavaluosofprocesados`";
 		$this->DBID = 'DB';
 		$this->ExportAll = TRUE;
 		$this->ExportPageBreakCount = 0; // Page break per every n record (PDF only)
@@ -54,57 +54,55 @@ class cviewavaluosc extends cTable {
 		$this->ExportExcelPageSize = ""; // Page size (PHPExcel only)
 		$this->ExportWordPageOrientation = "portrait"; // Page orientation (PHPWord only)
 		$this->ExportWordColumnWidth = NULL; // Cell width (PHPWord only)
-		$this->DetailAdd = TRUE; // Allow detail add
-		$this->DetailEdit = TRUE; // Allow detail edit
+		$this->DetailAdd = FALSE; // Allow detail add
+		$this->DetailEdit = FALSE; // Allow detail edit
 		$this->DetailView = FALSE; // Allow detail view
-		$this->ShowMultipleDetails = TRUE; // Show multiple details
+		$this->ShowMultipleDetails = FALSE; // Show multiple details
 		$this->GridAddRowCount = 3;
 		$this->AllowAddDeleteRow = TRUE; // Allow add/delete row
 		$this->UserIDAllowSecurity = 0; // User ID Allow
 		$this->BasicSearch = new cBasicSearch($this->TableVar);
 
 		// id
-		$this->id = new cField('viewavaluosc', 'viewavaluosc', 'x_id', 'id', '`id`', '`id`', 3, -1, FALSE, '`id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'NO');
+		$this->id = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_id', 'id', '`id`', '`id`', 3, -1, FALSE, '`id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'NO');
 		$this->id->Sortable = FALSE; // Allow sort
 		$this->id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id'] = &$this->id;
 
-		// codigoavaluo
-		$this->codigoavaluo = new cField('viewavaluosc', 'viewavaluosc', 'x_codigoavaluo', 'codigoavaluo', '`codigoavaluo`', '`codigoavaluo`', 200, -1, FALSE, '`codigoavaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->codigoavaluo->Sortable = TRUE; // Allow sort
-		$this->fields['codigoavaluo'] = &$this->codigoavaluo;
-
 		// tipoinmueble
-		$this->tipoinmueble = new cField('viewavaluosc', 'viewavaluosc', 'x_tipoinmueble', 'tipoinmueble', '`tipoinmueble`', '`tipoinmueble`', 200, -1, FALSE, '`tipoinmueble`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->tipoinmueble->Sortable = FALSE; // Allow sort
+		$this->tipoinmueble = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_tipoinmueble', 'tipoinmueble', '`tipoinmueble`', '`tipoinmueble`', 200, -1, FALSE, '`tipoinmueble`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->tipoinmueble->Sortable = TRUE; // Allow sort
 		$this->tipoinmueble->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->tipoinmueble->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->fields['tipoinmueble'] = &$this->tipoinmueble;
 
+		// codigoavaluo
+		$this->codigoavaluo = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_codigoavaluo', 'codigoavaluo', '`codigoavaluo`', '`codigoavaluo`', 200, -1, FALSE, '`codigoavaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->codigoavaluo->Sortable = TRUE; // Allow sort
+		$this->fields['codigoavaluo'] = &$this->codigoavaluo;
+
 		// id_solicitud
-		$this->id_solicitud = new cField('viewavaluosc', 'viewavaluosc', 'x_id_solicitud', 'id_solicitud', '`id_solicitud`', '`id_solicitud`', 3, -1, FALSE, '`id_solicitud`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->id_solicitud = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_id_solicitud', 'id_solicitud', '`id_solicitud`', '`id_solicitud`', 3, -1, FALSE, '`id_solicitud`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->id_solicitud->Sortable = TRUE; // Allow sort
+		$this->id_solicitud->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->id_solicitud->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->id_solicitud->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_solicitud'] = &$this->id_solicitud;
 
 		// id_oficialcredito
-		$this->id_oficialcredito = new cField('viewavaluosc', 'viewavaluosc', 'x_id_oficialcredito', 'id_oficialcredito', '`id_oficialcredito`', '`id_oficialcredito`', 200, -1, FALSE, '`EV__id_oficialcredito`', TRUE, TRUE, TRUE, 'FORMATTED TEXT', 'SELECT');
+		$this->id_oficialcredito = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_id_oficialcredito', 'id_oficialcredito', '`id_oficialcredito`', '`id_oficialcredito`', 200, -1, FALSE, '`id_oficialcredito`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'HIDDEN');
 		$this->id_oficialcredito->Sortable = TRUE; // Allow sort
-		$this->id_oficialcredito->UsePleaseSelect = TRUE; // Use PleaseSelect by default
-		$this->id_oficialcredito->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
-		$this->id_oficialcredito->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_oficialcredito'] = &$this->id_oficialcredito;
 
 		// id_inspector
-		$this->id_inspector = new cField('viewavaluosc', 'viewavaluosc', 'x_id_inspector', 'id_inspector', '`id_inspector`', '`id_inspector`', 200, -1, FALSE, '`EV__id_inspector`', TRUE, TRUE, TRUE, 'FORMATTED TEXT', 'SELECT');
+		$this->id_inspector = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_id_inspector', 'id_inspector', '`id_inspector`', '`id_inspector`', 200, -1, FALSE, '`id_inspector`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->id_inspector->Sortable = TRUE; // Allow sort
 		$this->id_inspector->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->id_inspector->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
-		$this->id_inspector->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_inspector'] = &$this->id_inspector;
 
 		// id_cliente
-		$this->id_cliente = new cField('viewavaluosc', 'viewavaluosc', 'x_id_cliente', 'id_cliente', '`id_cliente`', '`id_cliente`', 3, -1, FALSE, '`id_cliente`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->id_cliente = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_id_cliente', 'id_cliente', '`id_cliente`', '`id_cliente`', 3, -1, FALSE, '`id_cliente`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->id_cliente->Sortable = FALSE; // Allow sort
 		$this->id_cliente->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->id_cliente->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
@@ -112,106 +110,101 @@ class cviewavaluosc extends cTable {
 		$this->fields['id_cliente'] = &$this->id_cliente;
 
 		// is_active
-		$this->is_active = new cField('viewavaluosc', 'viewavaluosc', 'x_is_active', 'is_active', '`is_active`', '`is_active`', 16, -1, FALSE, '`is_active`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->is_active->Sortable = TRUE; // Allow sort
-		$this->is_active->UsePleaseSelect = TRUE; // Use PleaseSelect by default
-		$this->is_active->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
-		$this->is_active->OptionCount = 2;
+		$this->is_active = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_is_active', 'is_active', '`is_active`', '`is_active`', 16, -1, FALSE, '`is_active`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->is_active->Sortable = FALSE; // Allow sort
 		$this->is_active->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['is_active'] = &$this->is_active;
 
 		// estado
-		$this->estado = new cField('viewavaluosc', 'viewavaluosc', 'x_estado', 'estado', '`estado`', '`estado`', 16, -1, FALSE, '`estado`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->estado->Sortable = TRUE; // Allow sort
+		$this->estado = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_estado', 'estado', '`estado`', '`estado`', 16, -1, FALSE, '`estado`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->estado->Sortable = FALSE; // Allow sort
 		$this->estado->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->estado->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->estado->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['estado'] = &$this->estado;
 
 		// estadointerno
-		$this->estadointerno = new cField('viewavaluosc', 'viewavaluosc', 'x_estadointerno', 'estadointerno', '`estadointerno`', '`estadointerno`', 3, -1, FALSE, '`estadointerno`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->estadointerno->Sortable = TRUE; // Allow sort
+		$this->estadointerno = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_estadointerno', 'estadointerno', '`estadointerno`', '`estadointerno`', 3, -1, FALSE, '`estadointerno`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->estadointerno->Sortable = FALSE; // Allow sort
 		$this->estadointerno->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->estadointerno->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->estadointerno->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['estadointerno'] = &$this->estadointerno;
 
 		// estadopago
-		$this->estadopago = new cField('viewavaluosc', 'viewavaluosc', 'x_estadopago', 'estadopago', '`estadopago`', '`estadopago`', 3, -1, FALSE, '`estadopago`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->estadopago->Sortable = TRUE; // Allow sort
+		$this->estadopago = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_estadopago', 'estadopago', '`estadopago`', '`estadopago`', 3, -1, FALSE, '`estadopago`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->estadopago->Sortable = FALSE; // Allow sort
 		$this->estadopago->UsePleaseSelect = TRUE; // Use PleaseSelect by default
 		$this->estadopago->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->estadopago->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['estadopago'] = &$this->estadopago;
 
 		// fecha_avaluo
-		$this->fecha_avaluo = new cField('viewavaluosc', 'viewavaluosc', 'x_fecha_avaluo', 'fecha_avaluo', '`fecha_avaluo`', ew_CastDateFieldForLike('`fecha_avaluo`', 10, "DB"), 135, 10, FALSE, '`fecha_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->fecha_avaluo = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_fecha_avaluo', 'fecha_avaluo', '`fecha_avaluo`', ew_CastDateFieldForLike('`fecha_avaluo`', 0, "DB"), 135, 0, FALSE, '`fecha_avaluo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->fecha_avaluo->Sortable = TRUE; // Allow sort
-		$this->fecha_avaluo->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_SEPARATOR"], $Language->Phrase("IncorrectDateMDY"));
+		$this->fecha_avaluo->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['fecha_avaluo'] = &$this->fecha_avaluo;
 
 		// montoincial
-		$this->montoincial = new cField('viewavaluosc', 'viewavaluosc', 'x_montoincial', 'montoincial', '`montoincial`', '`montoincial`', 5, -1, FALSE, '`montoincial`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->montoincial = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_montoincial', 'montoincial', '`montoincial`', '`montoincial`', 5, -1, FALSE, '`montoincial`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->montoincial->Sortable = FALSE; // Allow sort
 		$this->montoincial->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
 		$this->fields['montoincial'] = &$this->montoincial;
 
 		// id_metodopago
-		$this->id_metodopago = new cField('viewavaluosc', 'viewavaluosc', 'x_id_metodopago', 'id_metodopago', '`id_metodopago`', '`id_metodopago`', 3, -1, FALSE, '`id_metodopago`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->id_metodopago = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_id_metodopago', 'id_metodopago', '`id_metodopago`', '`id_metodopago`', 3, -1, FALSE, '`id_metodopago`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->id_metodopago->Sortable = FALSE; // Allow sort
-		$this->id_metodopago->UsePleaseSelect = TRUE; // Use PleaseSelect by default
-		$this->id_metodopago->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->id_metodopago->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id_metodopago'] = &$this->id_metodopago;
 
 		// created_at
-		$this->created_at = new cField('viewavaluosc', 'viewavaluosc', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->created_at = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->created_at->Sortable = FALSE; // Allow sort
 		$this->created_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['created_at'] = &$this->created_at;
 
 		// DateModified
-		$this->DateModified = new cField('viewavaluosc', 'viewavaluosc', 'x_DateModified', 'DateModified', '`DateModified`', ew_CastDateFieldForLike('`DateModified`', 0, "DB"), 135, 0, FALSE, '`DateModified`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->DateModified = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_DateModified', 'DateModified', '`DateModified`', ew_CastDateFieldForLike('`DateModified`', 0, "DB"), 135, 0, FALSE, '`DateModified`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->DateModified->Sortable = FALSE; // Allow sort
 		$this->DateModified->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['DateModified'] = &$this->DateModified;
 
 		// DateDeleted
-		$this->DateDeleted = new cField('viewavaluosc', 'viewavaluosc', 'x_DateDeleted', 'DateDeleted', '`DateDeleted`', ew_CastDateFieldForLike('`DateDeleted`', 0, "DB"), 135, 0, FALSE, '`DateDeleted`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->DateDeleted = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_DateDeleted', 'DateDeleted', '`DateDeleted`', ew_CastDateFieldForLike('`DateDeleted`', 0, "DB"), 135, 0, FALSE, '`DateDeleted`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->DateDeleted->Sortable = FALSE; // Allow sort
 		$this->DateDeleted->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['DateDeleted'] = &$this->DateDeleted;
 
 		// CreatedBy
-		$this->CreatedBy = new cField('viewavaluosc', 'viewavaluosc', 'x_CreatedBy', 'CreatedBy', '`CreatedBy`', '`CreatedBy`', 200, -1, FALSE, '`CreatedBy`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->CreatedBy = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_CreatedBy', 'CreatedBy', '`CreatedBy`', '`CreatedBy`', 200, -1, FALSE, '`CreatedBy`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->CreatedBy->Sortable = FALSE; // Allow sort
 		$this->fields['CreatedBy'] = &$this->CreatedBy;
 
 		// ModifiedBy
-		$this->ModifiedBy = new cField('viewavaluosc', 'viewavaluosc', 'x_ModifiedBy', 'ModifiedBy', '`ModifiedBy`', '`ModifiedBy`', 200, -1, FALSE, '`ModifiedBy`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->ModifiedBy = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_ModifiedBy', 'ModifiedBy', '`ModifiedBy`', '`ModifiedBy`', 200, -1, FALSE, '`ModifiedBy`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->ModifiedBy->Sortable = FALSE; // Allow sort
 		$this->fields['ModifiedBy'] = &$this->ModifiedBy;
 
 		// DeletedBy
-		$this->DeletedBy = new cField('viewavaluosc', 'viewavaluosc', 'x_DeletedBy', 'DeletedBy', '`DeletedBy`', '`DeletedBy`', 200, -1, FALSE, '`DeletedBy`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->DeletedBy = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_DeletedBy', 'DeletedBy', '`DeletedBy`', '`DeletedBy`', 200, -1, FALSE, '`DeletedBy`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->DeletedBy->Sortable = FALSE; // Allow sort
 		$this->fields['DeletedBy'] = &$this->DeletedBy;
 
-		// monto_pago
-		$this->monto_pago = new cField('viewavaluosc', 'viewavaluosc', 'x_monto_pago', 'monto_pago', '`monto_pago`', '`monto_pago`', 5, -1, FALSE, '`monto_pago`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->monto_pago->Sortable = TRUE; // Allow sort
-		$this->monto_pago->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
-		$this->fields['monto_pago'] = &$this->monto_pago;
+		// id_sucursal
+		$this->id_sucursal = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_id_sucursal', 'id_sucursal', '`id_sucursal`', '`id_sucursal`', 3, -1, FALSE, '`id_sucursal`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'HIDDEN');
+		$this->id_sucursal->Sortable = FALSE; // Allow sort
+		$this->id_sucursal->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['id_sucursal'] = &$this->id_sucursal;
+
+		// informe
+		$this->informe = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_informe', 'informe', '`informe`', '`informe`', 205, -1, TRUE, '`informe`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
+		$this->informe->Sortable = FALSE; // Allow sort
+		$this->fields['informe'] = &$this->informe;
 
 		// comentario
-		$this->comentario = new cField('viewavaluosc', 'viewavaluosc', 'x_comentario', 'comentario', '`comentario`', '`comentario`', 201, -1, FALSE, '`comentario`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
+		$this->comentario = new cField('viewavaluosofprocesados', 'viewavaluosofprocesados', 'x_comentario', 'comentario', '`comentario`', '`comentario`', 201, -1, FALSE, '`comentario`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
 		$this->comentario->Sortable = TRUE; // Allow sort
 		$this->fields['comentario'] = &$this->comentario;
-
-		// documento_pago
-		$this->documento_pago = new cField('viewavaluosc', 'viewavaluosc', 'x_documento_pago', 'documento_pago', '`documento_pago`', '`documento_pago`', 205, -1, TRUE, '`documento_pago`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
-		$this->documento_pago->Sortable = TRUE; // Allow sort
-		$this->fields['documento_pago'] = &$this->documento_pago;
 	}
 
 	// Field Visibility
@@ -246,55 +239,16 @@ class cviewavaluosc extends cTable {
 			}
 			$ofld->setSort($sThisSort);
 			$this->setSessionOrderBy($sSortField . " " . $sThisSort); // Save to Session
-			$sSortFieldList = ($ofld->FldVirtualExpression <> "") ? $ofld->FldVirtualExpression : $sSortField;
-			$this->setSessionOrderByList($sSortFieldList . " " . $sThisSort); // Save to Session
 		} else {
 			$ofld->setSort("");
 		}
-	}
-
-	// Session ORDER BY for List page
-	function getSessionOrderByList() {
-		return @$_SESSION[EW_PROJECT_NAME . "_" . $this->TableVar . "_" . EW_TABLE_ORDER_BY_LIST];
-	}
-
-	function setSessionOrderByList($v) {
-		$_SESSION[EW_PROJECT_NAME . "_" . $this->TableVar . "_" . EW_TABLE_ORDER_BY_LIST] = $v;
-	}
-
-	// Current detail table name
-	function getCurrentDetailTable() {
-		return @$_SESSION[EW_PROJECT_NAME . "_" . $this->TableVar . "_" . EW_TABLE_DETAIL_TABLE];
-	}
-
-	function setCurrentDetailTable($v) {
-		$_SESSION[EW_PROJECT_NAME . "_" . $this->TableVar . "_" . EW_TABLE_DETAIL_TABLE] = $v;
-	}
-
-	// Get detail url
-	function GetDetailUrl() {
-
-		// Detail url
-		$sDetailUrl = "";
-		if ($this->getCurrentDetailTable() == "pago_avaluo") {
-			$sDetailUrl = $GLOBALS["pago_avaluo"]->GetListUrl() . "?" . EW_TABLE_SHOW_MASTER . "=" . $this->TableVar;
-			$sDetailUrl .= "&fk_id=" . urlencode($this->id->CurrentValue);
-		}
-		if ($this->getCurrentDetailTable() == "viewdocumentosavaluosc") {
-			$sDetailUrl = $GLOBALS["viewdocumentosavaluosc"]->GetListUrl() . "?" . EW_TABLE_SHOW_MASTER . "=" . $this->TableVar;
-			$sDetailUrl .= "&fk_id=" . urlencode($this->id->CurrentValue);
-		}
-		if ($sDetailUrl == "") {
-			$sDetailUrl = "viewavaluosclist.php";
-		}
-		return $sDetailUrl;
 	}
 
 	// Table level SQL
 	var $_SqlFrom = "";
 
 	function getSqlFrom() { // From
-		return ($this->_SqlFrom <> "") ? $this->_SqlFrom : "`viewavaluosc`";
+		return ($this->_SqlFrom <> "") ? $this->_SqlFrom : "`viewavaluosofprocesados`";
 	}
 
 	function SqlFrom() { // For backward compatibility
@@ -317,28 +271,11 @@ class cviewavaluosc extends cTable {
 	function setSqlSelect($v) {
 		$this->_SqlSelect = $v;
 	}
-	var $_SqlSelectList = "";
-
-	function getSqlSelectList() { // Select for List page
-		$select = "";
-		$select = "SELECT * FROM (" .
-			"SELECT *, (SELECT CONCAT(`nombre`,'" . ew_ValueSeparator(1, $this->id_oficialcredito) . "',`apellido`) FROM `oficialcredito` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `viewavaluosc`.`id_oficialcredito` LIMIT 1) AS `EV__id_oficialcredito`, (SELECT CONCAT(`apellido`,'" . ew_ValueSeparator(1, $this->id_inspector) . "',`nombre`) FROM `inspector` `EW_TMP_LOOKUPTABLE` WHERE `EW_TMP_LOOKUPTABLE`.`login` = `viewavaluosc`.`id_inspector` LIMIT 1) AS `EV__id_inspector` FROM `viewavaluosc`" .
-			") `EW_TMP_TABLE`";
-		return ($this->_SqlSelectList <> "") ? $this->_SqlSelectList : $select;
-	}
-
-	function SqlSelectList() { // For backward compatibility
-		return $this->getSqlSelectList();
-	}
-
-	function setSqlSelectList($v) {
-		$this->_SqlSelectList = $v;
-	}
 	var $_SqlWhere = "";
 
 	function getSqlWhere() { // Where
 		$sWhere = ($this->_SqlWhere <> "") ? $this->_SqlWhere : "";
-		$this->TableFilter = "`estado`>=2";
+		$this->TableFilter = "`estado`='TERMINADO' AND `id_sucursal`='".$_SESSION["sucursal"]."'";
 		ew_AddFilter($sWhere, $this->TableFilter);
 		return $sWhere;
 	}
@@ -379,7 +316,7 @@ class cviewavaluosc extends cTable {
 	var $_SqlOrderBy = "";
 
 	function getSqlOrderBy() { // Order By
-		return ($this->_SqlOrderBy <> "") ? $this->_SqlOrderBy : "`id` DESC";
+		return ($this->_SqlOrderBy <> "") ? $this->_SqlOrderBy : "";
 	}
 
 	function SqlOrderBy() { // For backward compatibility
@@ -445,44 +382,16 @@ class cviewavaluosc extends cTable {
 		ew_AddFilter($sFilter, $this->CurrentFilter);
 		$sFilter = $this->ApplyUserIDFilters($sFilter);
 		$this->Recordset_Selecting($sFilter);
-		if ($this->UseVirtualFields()) {
-			$sSelect = $this->getSqlSelectList();
-			$sSort = $this->UseSessionForListSQL ? $this->getSessionOrderByList() : "";
-		} else {
-			$sSelect = $this->getSqlSelect();
-			$sSort = $this->UseSessionForListSQL ? $this->getSessionOrderBy() : "";
-		}
+		$sSelect = $this->getSqlSelect();
+		$sSort = $this->UseSessionForListSQL ? $this->getSessionOrderBy() : "";
 		return ew_BuildSelectSql($sSelect, $this->getSqlWhere(), $this->getSqlGroupBy(),
 			$this->getSqlHaving(), $this->getSqlOrderBy(), $sFilter, $sSort);
 	}
 
 	// Get ORDER BY clause
 	function GetOrderBy() {
-		$sSort = ($this->UseVirtualFields()) ? $this->getSessionOrderByList() : $this->getSessionOrderBy();
+		$sSort = $this->getSessionOrderBy();
 		return ew_BuildSelectSql("", "", "", "", $this->getSqlOrderBy(), "", $sSort);
-	}
-
-	// Check if virtual fields is used in SQL
-	function UseVirtualFields() {
-		$sWhere = $this->UseSessionForListSQL ? $this->getSessionWhere() : $this->CurrentFilter;
-		$sOrderBy = $this->UseSessionForListSQL ? $this->getSessionOrderByList() : "";
-		if ($sWhere <> "")
-			$sWhere = " " . str_replace(array("(",")"), array("",""), $sWhere) . " ";
-		if ($sOrderBy <> "")
-			$sOrderBy = " " . str_replace(array("(",")"), array("",""), $sOrderBy) . " ";
-		if ($this->id_oficialcredito->AdvancedSearch->SearchValue <> "" ||
-			$this->id_oficialcredito->AdvancedSearch->SearchValue2 <> "" ||
-			strpos($sWhere, " " . $this->id_oficialcredito->FldVirtualExpression . " ") !== FALSE)
-			return TRUE;
-		if (strpos($sOrderBy, " " . $this->id_oficialcredito->FldVirtualExpression . " ") !== FALSE)
-			return TRUE;
-		if ($this->id_inspector->AdvancedSearch->SearchValue <> "" ||
-			$this->id_inspector->AdvancedSearch->SearchValue2 <> "" ||
-			strpos($sWhere, " " . $this->id_inspector->FldVirtualExpression . " ") !== FALSE)
-			return TRUE;
-		if (strpos($sOrderBy, " " . $this->id_inspector->FldVirtualExpression . " ") !== FALSE)
-			return TRUE;
-		return FALSE;
 	}
 
 	// Try to get record count
@@ -533,10 +442,7 @@ class cviewavaluosc extends cTable {
 		$select = $this->TableType == 'CUSTOMVIEW' ? $this->getSqlSelect() : "SELECT * FROM " . $this->getSqlFrom();
 		$groupBy = $this->TableType == 'CUSTOMVIEW' ? $this->getSqlGroupBy() : "";
 		$having = $this->TableType == 'CUSTOMVIEW' ? $this->getSqlHaving() : "";
-		if ($this->UseVirtualFields())
-			$sql = ew_BuildSelectSql($this->getSqlSelectList(), $this->getSqlWhere(), $groupBy, $having, "", $filter, "");
-		else
-			$sql = ew_BuildSelectSql($select, $this->getSqlWhere(), $groupBy, $having, "", $filter, "");
+		$sql = ew_BuildSelectSql($select, $this->getSqlWhere(), $groupBy, $having, "", $filter, "");
 		$cnt = $this->TryGetRecordCount($sql);
 		if ($cnt == -1) {
 			$conn = &$this->Connection();
@@ -597,35 +503,6 @@ class cviewavaluosc extends cTable {
 	// Update
 	function Update(&$rs, $where = "", $rsold = NULL, $curfilter = TRUE) {
 		$conn = &$this->Connection();
-
-		// Cascade Update detail table 'viewdocumentosavaluosc'
-		$bCascadeUpdate = FALSE;
-		$rscascade = array();
-		if (!is_null($rsold) && (isset($rs['id']) && $rsold['id'] <> $rs['id'])) { // Update detail field 'avaluo'
-			$bCascadeUpdate = TRUE;
-			$rscascade['avaluo'] = $rs['id']; 
-		}
-		if ($bCascadeUpdate) {
-			if (!isset($GLOBALS["viewdocumentosavaluosc"])) $GLOBALS["viewdocumentosavaluosc"] = new cviewdocumentosavaluosc();
-			$rswrk = $GLOBALS["viewdocumentosavaluosc"]->LoadRs("`avaluo` = " . ew_QuotedValue($rsold['id'], EW_DATATYPE_NUMBER, 'DB')); 
-			while ($rswrk && !$rswrk->EOF) {
-				$rskey = array();
-				$fldname = 'id';
-				$rskey[$fldname] = $rswrk->fields[$fldname];
-				$rsdtlold = &$rswrk->fields;
-				$rsdtlnew = array_merge($rsdtlold, $rscascade);
-
-				// Call Row_Updating event
-				$bUpdate = $GLOBALS["viewdocumentosavaluosc"]->Row_Updating($rsdtlold, $rsdtlnew);
-				if ($bUpdate)
-					$bUpdate = $GLOBALS["viewdocumentosavaluosc"]->Update($rscascade, $rskey, $rswrk->fields);
-				if (!$bUpdate) return FALSE;
-
-				// Call Row_Updated event
-				$GLOBALS["viewdocumentosavaluosc"]->Row_Updated($rsdtlold, $rsdtlnew);
-				$rswrk->MoveNext();
-			}
-		}
 		$bUpdate = $conn->Execute($this->UpdateSQL($rs, $where, $curfilter));
 		return $bUpdate;
 	}
@@ -652,56 +529,6 @@ class cviewavaluosc extends cTable {
 	function Delete(&$rs, $where = "", $curfilter = TRUE) {
 		$bDelete = TRUE;
 		$conn = &$this->Connection();
-
-		// Cascade delete detail table 'pago_avaluo'
-		if (!isset($GLOBALS["pago_avaluo"])) $GLOBALS["pago_avaluo"] = new cpago_avaluo();
-		$rscascade = $GLOBALS["pago_avaluo"]->LoadRs("`avaluo_id` = " . ew_QuotedValue($rs['id'], EW_DATATYPE_NUMBER, "DB")); 
-		$dtlrows = ($rscascade) ? $rscascade->GetRows() : array();
-
-		// Call Row Deleting event
-		foreach ($dtlrows as $dtlrow) {
-			$bDelete = $GLOBALS["pago_avaluo"]->Row_Deleting($dtlrow);
-			if (!$bDelete) break;
-		}
-		if ($bDelete) {
-			foreach ($dtlrows as $dtlrow) {
-				$bDelete = $GLOBALS["pago_avaluo"]->Delete($dtlrow); // Delete
-				if ($bDelete === FALSE)
-					break;
-			}
-		}
-
-		// Call Row Deleted event
-		if ($bDelete) {
-			foreach ($dtlrows as $dtlrow) {
-				$GLOBALS["pago_avaluo"]->Row_Deleted($dtlrow);
-			}
-		}
-
-		// Cascade delete detail table 'viewdocumentosavaluosc'
-		if (!isset($GLOBALS["viewdocumentosavaluosc"])) $GLOBALS["viewdocumentosavaluosc"] = new cviewdocumentosavaluosc();
-		$rscascade = $GLOBALS["viewdocumentosavaluosc"]->LoadRs("`avaluo` = " . ew_QuotedValue($rs['id'], EW_DATATYPE_NUMBER, "DB")); 
-		$dtlrows = ($rscascade) ? $rscascade->GetRows() : array();
-
-		// Call Row Deleting event
-		foreach ($dtlrows as $dtlrow) {
-			$bDelete = $GLOBALS["viewdocumentosavaluosc"]->Row_Deleting($dtlrow);
-			if (!$bDelete) break;
-		}
-		if ($bDelete) {
-			foreach ($dtlrows as $dtlrow) {
-				$bDelete = $GLOBALS["viewdocumentosavaluosc"]->Delete($dtlrow); // Delete
-				if ($bDelete === FALSE)
-					break;
-			}
-		}
-
-		// Call Row Deleted event
-		if ($bDelete) {
-			foreach ($dtlrows as $dtlrow) {
-				$GLOBALS["viewdocumentosavaluosc"]->Row_Deleted($dtlrow);
-			}
-		}
 		if ($bDelete)
 			$bDelete = $conn->Execute($this->DeleteSQL($rs, $where, $curfilter));
 		return $bDelete;
@@ -734,7 +561,7 @@ class cviewavaluosc extends cTable {
 		if (@$_SESSION[$name] <> "") {
 			return $_SESSION[$name];
 		} else {
-			return "viewavaluosclist.php";
+			return "viewavaluosofprocesadoslist.php";
 		}
 	}
 
@@ -745,11 +572,11 @@ class cviewavaluosc extends cTable {
 	// Get modal caption
 	function GetModalCaption($pageName) {
 		global $Language;
-		if ($pageName == "viewavaluoscview.php")
+		if ($pageName == "viewavaluosofprocesadosview.php")
 			return $Language->Phrase("View");
-		elseif ($pageName == "viewavaluoscedit.php")
+		elseif ($pageName == "viewavaluosofprocesadosedit.php")
 			return $Language->Phrase("Edit");
-		elseif ($pageName == "viewavaluoscadd.php")
+		elseif ($pageName == "viewavaluosofprocesadosadd.php")
 			return $Language->Phrase("Add");
 		else
 			return "";
@@ -757,33 +584,30 @@ class cviewavaluosc extends cTable {
 
 	// List URL
 	function GetListUrl() {
-		return "viewavaluosclist.php";
+		return "viewavaluosofprocesadoslist.php";
 	}
 
 	// View URL
 	function GetViewUrl($parm = "") {
 		if ($parm <> "")
-			$url = $this->KeyUrl("viewavaluoscview.php", $this->UrlParm($parm));
+			$url = $this->KeyUrl("viewavaluosofprocesadosview.php", $this->UrlParm($parm));
 		else
-			$url = $this->KeyUrl("viewavaluoscview.php", $this->UrlParm(EW_TABLE_SHOW_DETAIL . "="));
+			$url = $this->KeyUrl("viewavaluosofprocesadosview.php", $this->UrlParm(EW_TABLE_SHOW_DETAIL . "="));
 		return $this->AddMasterUrl($url);
 	}
 
 	// Add URL
 	function GetAddUrl($parm = "") {
 		if ($parm <> "")
-			$url = "viewavaluoscadd.php?" . $this->UrlParm($parm);
+			$url = "viewavaluosofprocesadosadd.php?" . $this->UrlParm($parm);
 		else
-			$url = "viewavaluoscadd.php";
+			$url = "viewavaluosofprocesadosadd.php";
 		return $this->AddMasterUrl($url);
 	}
 
 	// Edit URL
 	function GetEditUrl($parm = "") {
-		if ($parm <> "")
-			$url = $this->KeyUrl("viewavaluoscedit.php", $this->UrlParm($parm));
-		else
-			$url = $this->KeyUrl("viewavaluoscedit.php", $this->UrlParm(EW_TABLE_SHOW_DETAIL . "="));
+		$url = $this->KeyUrl("viewavaluosofprocesadosedit.php", $this->UrlParm($parm));
 		return $this->AddMasterUrl($url);
 	}
 
@@ -795,10 +619,7 @@ class cviewavaluosc extends cTable {
 
 	// Copy URL
 	function GetCopyUrl($parm = "") {
-		if ($parm <> "")
-			$url = $this->KeyUrl("viewavaluoscadd.php", $this->UrlParm($parm));
-		else
-			$url = $this->KeyUrl("viewavaluoscadd.php", $this->UrlParm(EW_TABLE_SHOW_DETAIL . "="));
+		$url = $this->KeyUrl("viewavaluosofprocesadosadd.php", $this->UrlParm($parm));
 		return $this->AddMasterUrl($url);
 	}
 
@@ -810,7 +631,7 @@ class cviewavaluosc extends cTable {
 
 	// Delete URL
 	function GetDeleteUrl() {
-		return $this->KeyUrl("viewavaluoscdelete.php", $this->UrlParm());
+		return $this->KeyUrl("viewavaluosofprocesadosdelete.php", $this->UrlParm());
 	}
 
 	// Add master url
@@ -912,8 +733,8 @@ class cviewavaluosc extends cTable {
 	// Load row values from recordset
 	function LoadListRowValues(&$rs) {
 		$this->id->setDbValue($rs->fields('id'));
-		$this->codigoavaluo->setDbValue($rs->fields('codigoavaluo'));
 		$this->tipoinmueble->setDbValue($rs->fields('tipoinmueble'));
+		$this->codigoavaluo->setDbValue($rs->fields('codigoavaluo'));
 		$this->id_solicitud->setDbValue($rs->fields('id_solicitud'));
 		$this->id_oficialcredito->setDbValue($rs->fields('id_oficialcredito'));
 		$this->id_inspector->setDbValue($rs->fields('id_inspector'));
@@ -931,9 +752,9 @@ class cviewavaluosc extends cTable {
 		$this->CreatedBy->setDbValue($rs->fields('CreatedBy'));
 		$this->ModifiedBy->setDbValue($rs->fields('ModifiedBy'));
 		$this->DeletedBy->setDbValue($rs->fields('DeletedBy'));
-		$this->monto_pago->setDbValue($rs->fields('monto_pago'));
+		$this->id_sucursal->setDbValue($rs->fields('id_sucursal'));
+		$this->informe->Upload->DbValue = $rs->fields('informe');
 		$this->comentario->setDbValue($rs->fields('comentario'));
-		$this->documento_pago->Upload->DbValue = $rs->fields('documento_pago');
 	}
 
 	// Render list row values
@@ -948,22 +769,31 @@ class cviewavaluosc extends cTable {
 
 		$this->id->CellCssStyle = "white-space: nowrap;";
 
-		// codigoavaluo
 		// tipoinmueble
-
-		$this->tipoinmueble->CellCssStyle = "white-space: nowrap;";
-
+		// codigoavaluo
 		// id_solicitud
 		// id_oficialcredito
-		// id_inspector
-		// id_cliente
 
+		$this->id_oficialcredito->CellCssStyle = "white-space: nowrap;";
+
+		// id_inspector
+		$this->id_inspector->CellCssStyle = "white-space: nowrap;";
+
+		// id_cliente
 		$this->id_cliente->CellCssStyle = "white-space: nowrap;";
 
 		// is_active
+		$this->is_active->CellCssStyle = "white-space: nowrap;";
+
 		// estado
+		$this->estado->CellCssStyle = "white-space: nowrap;";
+
 		// estadointerno
+		$this->estadointerno->CellCssStyle = "white-space: nowrap;";
+
 		// estadopago
+		$this->estadopago->CellCssStyle = "white-space: nowrap;";
+
 		// fecha_avaluo
 		// montoincial
 
@@ -990,17 +820,13 @@ class cviewavaluosc extends cTable {
 		// DeletedBy
 		$this->DeletedBy->CellCssStyle = "white-space: nowrap;";
 
-		// monto_pago
+		// id_sucursal
+		// informe
 		// comentario
-		// documento_pago
 		// id
 
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
-
-		// codigoavaluo
-		$this->codigoavaluo->ViewValue = $this->codigoavaluo->CurrentValue;
-		$this->codigoavaluo->ViewCustomAttributes = "";
 
 		// tipoinmueble
 		if (strval($this->tipoinmueble->CurrentValue) <> "") {
@@ -1025,13 +851,16 @@ class cviewavaluosc extends cTable {
 		}
 		$this->tipoinmueble->ViewCustomAttributes = "";
 
+		// codigoavaluo
+		$this->codigoavaluo->ViewValue = $this->codigoavaluo->CurrentValue;
+		$this->codigoavaluo->ViewCustomAttributes = "";
+
 		// id_solicitud
-		$this->id_solicitud->ViewValue = $this->id_solicitud->CurrentValue;
 		if (strval($this->id_solicitud->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, `email` AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
 		$sWhereWrk = "";
-		$this->id_solicitud->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
+		$this->id_solicitud->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1041,7 +870,6 @@ class cviewavaluosc extends cTable {
 				$arwrk[1] = $rswrk->fields('DispFld');
 				$arwrk[2] = $rswrk->fields('Disp2Fld');
 				$arwrk[3] = $rswrk->fields('Disp3Fld');
-				$arwrk[4] = $rswrk->fields('Disp4Fld');
 				$this->id_solicitud->ViewValue = $this->id_solicitud->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -1053,42 +881,15 @@ class cviewavaluosc extends cTable {
 		$this->id_solicitud->ViewCustomAttributes = "";
 
 		// id_oficialcredito
-		if ($this->id_oficialcredito->VirtualValue <> "") {
-			$this->id_oficialcredito->ViewValue = $this->id_oficialcredito->VirtualValue;
-		} else {
-		if (strval($this->id_oficialcredito->CurrentValue) <> "") {
-			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_oficialcredito->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-		$sWhereWrk = "";
-		$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = $rswrk->fields('Disp2Fld');
-				$this->id_oficialcredito->ViewValue = $this->id_oficialcredito->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_oficialcredito->ViewValue = $this->id_oficialcredito->CurrentValue;
-			}
-		} else {
-			$this->id_oficialcredito->ViewValue = NULL;
-		}
-		}
+		$this->id_oficialcredito->ViewValue = $this->id_oficialcredito->CurrentValue;
 		$this->id_oficialcredito->ViewCustomAttributes = "";
 
 		// id_inspector
-		if ($this->id_inspector->VirtualValue <> "") {
-			$this->id_inspector->ViewValue = $this->id_inspector->VirtualValue;
-		} else {
 		if (strval($this->id_inspector->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_inspector->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+		$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
 		$sWhereWrk = "";
-		$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
+		$this->id_inspector->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_inspector, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1105,13 +906,12 @@ class cviewavaluosc extends cTable {
 		} else {
 			$this->id_inspector->ViewValue = NULL;
 		}
-		}
 		$this->id_inspector->ViewCustomAttributes = "";
 
 		// id_cliente
 		if (strval($this->id_cliente->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_cliente->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `cliente`";
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, `email` AS `Disp3Fld`, `phone` AS `Disp4Fld` FROM `cliente`";
 		$sWhereWrk = "";
 		$this->id_cliente->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1122,6 +922,8 @@ class cviewavaluosc extends cTable {
 				$arwrk = array();
 				$arwrk[1] = $rswrk->fields('DispFld');
 				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$arwrk[3] = $rswrk->fields('Disp3Fld');
+				$arwrk[4] = $rswrk->fields('Disp4Fld');
 				$this->id_cliente->ViewValue = $this->id_cliente->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -1133,11 +935,7 @@ class cviewavaluosc extends cTable {
 		$this->id_cliente->ViewCustomAttributes = "";
 
 		// is_active
-		if (strval($this->is_active->CurrentValue) <> "") {
-			$this->is_active->ViewValue = $this->is_active->OptionCaption($this->is_active->CurrentValue);
-		} else {
-			$this->is_active->ViewValue = NULL;
-		}
+		$this->is_active->ViewValue = $this->is_active->CurrentValue;
 		$this->is_active->ViewCustomAttributes = "";
 
 		// estado
@@ -1145,7 +943,7 @@ class cviewavaluosc extends cTable {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estado->CurrentValue, EW_DATATYPE_NUMBER, "");
 		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
 		$sWhereWrk = "";
-		$this->estado->LookupFilters = array();
+		$this->estado->LookupFilters = array("dx1" => '`descripcion`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1168,7 +966,7 @@ class cviewavaluosc extends cTable {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
 		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
 		$sWhereWrk = "";
-		$this->estadointerno->LookupFilters = array();
+		$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1211,35 +1009,15 @@ class cviewavaluosc extends cTable {
 
 		// fecha_avaluo
 		$this->fecha_avaluo->ViewValue = $this->fecha_avaluo->CurrentValue;
-		$this->fecha_avaluo->ViewValue = ew_FormatDateTime($this->fecha_avaluo->ViewValue, 10);
+		$this->fecha_avaluo->ViewValue = ew_FormatDateTime($this->fecha_avaluo->ViewValue, 0);
 		$this->fecha_avaluo->ViewCustomAttributes = "";
 
 		// montoincial
 		$this->montoincial->ViewValue = $this->montoincial->CurrentValue;
-		$this->montoincial->ViewValue = ew_FormatNumber($this->montoincial->ViewValue, 0, -2, -2, -2);
 		$this->montoincial->ViewCustomAttributes = "";
 
 		// id_metodopago
-		if (strval($this->id_metodopago->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_metodopago->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `short_name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `metodopago`";
-		$sWhereWrk = "";
-		$this->id_metodopago->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_metodopago, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->id_metodopago->ViewValue = $this->id_metodopago->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_metodopago->ViewValue = $this->id_metodopago->CurrentValue;
-			}
-		} else {
-			$this->id_metodopago->ViewValue = NULL;
-		}
+		$this->id_metodopago->ViewValue = $this->id_metodopago->CurrentValue;
 		$this->id_metodopago->ViewCustomAttributes = "";
 
 		// created_at
@@ -1269,37 +1047,37 @@ class cviewavaluosc extends cTable {
 		$this->DeletedBy->ViewValue = $this->DeletedBy->CurrentValue;
 		$this->DeletedBy->ViewCustomAttributes = "";
 
-		// monto_pago
-		$this->monto_pago->ViewValue = $this->monto_pago->CurrentValue;
-		$this->monto_pago->ViewCustomAttributes = "";
+		// id_sucursal
+		$this->id_sucursal->ViewValue = $this->id_sucursal->CurrentValue;
+		$this->id_sucursal->ViewCustomAttributes = "";
+
+		// informe
+		if (!ew_Empty($this->informe->Upload->DbValue)) {
+			$this->informe->ViewValue = "viewavaluosofprocesados_informe_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->informe->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->informe->Upload->DbValue, 0, 11)));
+		} else {
+			$this->informe->ViewValue = "";
+		}
+		$this->informe->ViewCustomAttributes = "";
 
 		// comentario
 		$this->comentario->ViewValue = $this->comentario->CurrentValue;
 		$this->comentario->ViewCustomAttributes = "";
-
-		// documento_pago
-		if (!ew_Empty($this->documento_pago->Upload->DbValue)) {
-			$this->documento_pago->ViewValue = "viewavaluosc_documento_pago_bv.php?" . "id=" . $this->id->CurrentValue;
-			$this->documento_pago->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->documento_pago->Upload->DbValue, 0, 11)));
-		} else {
-			$this->documento_pago->ViewValue = "";
-		}
-		$this->documento_pago->ViewCustomAttributes = "";
 
 		// id
 		$this->id->LinkCustomAttributes = "";
 		$this->id->HrefValue = "";
 		$this->id->TooltipValue = "";
 
-		// codigoavaluo
-		$this->codigoavaluo->LinkCustomAttributes = "";
-		$this->codigoavaluo->HrefValue = "";
-		$this->codigoavaluo->TooltipValue = "";
-
 		// tipoinmueble
 		$this->tipoinmueble->LinkCustomAttributes = "";
 		$this->tipoinmueble->HrefValue = "";
 		$this->tipoinmueble->TooltipValue = "";
+
+		// codigoavaluo
+		$this->codigoavaluo->LinkCustomAttributes = "";
+		$this->codigoavaluo->HrefValue = "";
+		$this->codigoavaluo->TooltipValue = "";
 
 		// id_solicitud
 		$this->id_solicitud->LinkCustomAttributes = "";
@@ -1386,27 +1164,27 @@ class cviewavaluosc extends cTable {
 		$this->DeletedBy->HrefValue = "";
 		$this->DeletedBy->TooltipValue = "";
 
-		// monto_pago
-		$this->monto_pago->LinkCustomAttributes = "";
-		$this->monto_pago->HrefValue = "";
-		$this->monto_pago->TooltipValue = "";
+		// id_sucursal
+		$this->id_sucursal->LinkCustomAttributes = "";
+		$this->id_sucursal->HrefValue = "";
+		$this->id_sucursal->TooltipValue = "";
+
+		// informe
+		$this->informe->LinkCustomAttributes = "";
+		if (!empty($this->informe->Upload->DbValue)) {
+			$this->informe->HrefValue = "viewavaluosofprocesados_informe_bv.php?id=" . $this->id->CurrentValue;
+			$this->informe->LinkAttrs["target"] = "_blank";
+			if ($this->Export <> "") $this->informe->HrefValue = ew_FullUrl($this->informe->HrefValue, "href");
+		} else {
+			$this->informe->HrefValue = "";
+		}
+		$this->informe->HrefValue2 = "viewavaluosofprocesados_informe_bv.php?id=" . $this->id->CurrentValue;
+		$this->informe->TooltipValue = "";
 
 		// comentario
 		$this->comentario->LinkCustomAttributes = "";
 		$this->comentario->HrefValue = "";
 		$this->comentario->TooltipValue = "";
-
-		// documento_pago
-		$this->documento_pago->LinkCustomAttributes = "";
-		if (!empty($this->documento_pago->Upload->DbValue)) {
-			$this->documento_pago->HrefValue = "viewavaluosc_documento_pago_bv.php?id=" . $this->id->CurrentValue;
-			$this->documento_pago->LinkAttrs["target"] = "_blank";
-			if ($this->Export <> "") $this->documento_pago->HrefValue = ew_FullUrl($this->documento_pago->HrefValue, "href");
-		} else {
-			$this->documento_pago->HrefValue = "";
-		}
-		$this->documento_pago->HrefValue2 = "viewavaluosc_documento_pago_bv.php?id=" . $this->id->CurrentValue;
-		$this->documento_pago->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -1428,25 +1206,24 @@ class cviewavaluosc extends cTable {
 		$this->id->EditValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
-		// codigoavaluo
-		$this->codigoavaluo->EditAttrs["class"] = "form-control";
-		$this->codigoavaluo->EditCustomAttributes = "";
-		$this->codigoavaluo->EditValue = $this->codigoavaluo->CurrentValue;
-		$this->codigoavaluo->ViewCustomAttributes = "";
-
 		// tipoinmueble
 		$this->tipoinmueble->EditAttrs["class"] = "form-control";
 		$this->tipoinmueble->EditCustomAttributes = "";
 
+		// codigoavaluo
+		$this->codigoavaluo->EditAttrs["class"] = "form-control";
+		$this->codigoavaluo->EditCustomAttributes = "";
+		$this->codigoavaluo->EditValue = $this->codigoavaluo->CurrentValue;
+		$this->codigoavaluo->PlaceHolder = ew_RemoveHtml($this->codigoavaluo->FldTitle());
+
 		// id_solicitud
 		$this->id_solicitud->EditAttrs["class"] = "form-control";
 		$this->id_solicitud->EditCustomAttributes = "";
-		$this->id_solicitud->EditValue = $this->id_solicitud->CurrentValue;
 		if (strval($this->id_solicitud->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_solicitud->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `name` AS `Disp2Fld`, `lastname` AS `Disp3Fld`, `email` AS `Disp4Fld` FROM `solicitud`";
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, `email` AS `Disp3Fld`, '' AS `Disp4Fld` FROM `solicitud`";
 		$sWhereWrk = "";
-		$this->id_solicitud->LookupFilters = array("dx1" => '`id`', "dx2" => '`name`', "dx3" => '`lastname`', "dx4" => '`email`');
+		$this->id_solicitud->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_solicitud, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1456,7 +1233,6 @@ class cviewavaluosc extends cTable {
 				$arwrk[1] = $rswrk->fields('DispFld');
 				$arwrk[2] = $rswrk->fields('Disp2Fld');
 				$arwrk[3] = $rswrk->fields('Disp3Fld');
-				$arwrk[4] = $rswrk->fields('Disp4Fld');
 				$this->id_solicitud->EditValue = $this->id_solicitud->DisplayValue($arwrk);
 				$rswrk->Close();
 			} else {
@@ -1470,44 +1246,15 @@ class cviewavaluosc extends cTable {
 		// id_oficialcredito
 		$this->id_oficialcredito->EditAttrs["class"] = "form-control";
 		$this->id_oficialcredito->EditCustomAttributes = "";
-		if ($this->id_oficialcredito->VirtualValue <> "") {
-			$this->id_oficialcredito->EditValue = $this->id_oficialcredito->VirtualValue;
-		} else {
-		if (strval($this->id_oficialcredito->CurrentValue) <> "") {
-			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_oficialcredito->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `oficialcredito`";
-		$sWhereWrk = "";
-		$this->id_oficialcredito->LookupFilters = array("dx1" => '`nombre`', "dx2" => '`apellido`');
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->id_oficialcredito, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = $rswrk->fields('Disp2Fld');
-				$this->id_oficialcredito->EditValue = $this->id_oficialcredito->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->id_oficialcredito->EditValue = $this->id_oficialcredito->CurrentValue;
-			}
-		} else {
-			$this->id_oficialcredito->EditValue = NULL;
-		}
-		}
-		$this->id_oficialcredito->ViewCustomAttributes = "";
 
 		// id_inspector
 		$this->id_inspector->EditAttrs["class"] = "form-control";
 		$this->id_inspector->EditCustomAttributes = "";
-		if ($this->id_inspector->VirtualValue <> "") {
-			$this->id_inspector->EditValue = $this->id_inspector->VirtualValue;
-		} else {
 		if (strval($this->id_inspector->CurrentValue) <> "") {
 			$sFilterWrk = "`login`" . ew_SearchString("=", $this->id_inspector->CurrentValue, EW_DATATYPE_STRING, "");
-		$sSqlWrk = "SELECT `login`, `apellido` AS `DispFld`, `nombre` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
+		$sSqlWrk = "SELECT `login`, `nombre` AS `DispFld`, `apellido` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `inspector`";
 		$sWhereWrk = "";
-		$this->id_inspector->LookupFilters = array("dx1" => '`apellido`', "dx2" => '`nombre`');
+		$this->id_inspector->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_inspector, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1524,7 +1271,6 @@ class cviewavaluosc extends cTable {
 		} else {
 			$this->id_inspector->EditValue = NULL;
 		}
-		}
 		$this->id_inspector->ViewCustomAttributes = "";
 
 		// id_cliente
@@ -1534,24 +1280,88 @@ class cviewavaluosc extends cTable {
 		// is_active
 		$this->is_active->EditAttrs["class"] = "form-control";
 		$this->is_active->EditCustomAttributes = "";
-		$this->is_active->EditValue = $this->is_active->Options(TRUE);
+		$this->is_active->EditValue = $this->is_active->CurrentValue;
+		$this->is_active->PlaceHolder = ew_RemoveHtml($this->is_active->FldTitle());
 
 		// estado
 		$this->estado->EditAttrs["class"] = "form-control";
 		$this->estado->EditCustomAttributes = "";
+		if (strval($this->estado->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estado->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estado`";
+		$sWhereWrk = "";
+		$this->estado->LookupFilters = array("dx1" => '`descripcion`');
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->estado, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->estado->EditValue = $this->estado->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->estado->EditValue = $this->estado->CurrentValue;
+			}
+		} else {
+			$this->estado->EditValue = NULL;
+		}
+		$this->estado->ViewCustomAttributes = "";
 
 		// estadointerno
 		$this->estadointerno->EditAttrs["class"] = "form-control";
 		$this->estadointerno->EditCustomAttributes = "";
+		if (strval($this->estadointerno->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
+		$sWhereWrk = "";
+		$this->estadointerno->LookupFilters = array("dx1" => '`descripcion`');
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->estadointerno->EditValue = $this->estadointerno->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->estadointerno->EditValue = $this->estadointerno->CurrentValue;
+			}
+		} else {
+			$this->estadointerno->EditValue = NULL;
+		}
+		$this->estadointerno->ViewCustomAttributes = "";
 
 		// estadopago
 		$this->estadopago->EditAttrs["class"] = "form-control";
 		$this->estadopago->EditCustomAttributes = "";
+		if (strval($this->estadopago->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadopago->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadopago`";
+		$sWhereWrk = "";
+		$this->estadopago->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->estadopago, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->estadopago->EditValue = $this->estadopago->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->estadopago->EditValue = $this->estadopago->CurrentValue;
+			}
+		} else {
+			$this->estadopago->EditValue = NULL;
+		}
+		$this->estadopago->ViewCustomAttributes = "";
 
 		// fecha_avaluo
 		$this->fecha_avaluo->EditAttrs["class"] = "form-control";
 		$this->fecha_avaluo->EditCustomAttributes = "";
-		$this->fecha_avaluo->EditValue = ew_FormatDateTime($this->fecha_avaluo->CurrentValue, 10);
+		$this->fecha_avaluo->EditValue = ew_FormatDateTime($this->fecha_avaluo->CurrentValue, 8);
 		$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
 
 		// montoincial
@@ -1559,11 +1369,13 @@ class cviewavaluosc extends cTable {
 		$this->montoincial->EditCustomAttributes = "";
 		$this->montoincial->EditValue = $this->montoincial->CurrentValue;
 		$this->montoincial->PlaceHolder = ew_RemoveHtml($this->montoincial->FldTitle());
-		if (strval($this->montoincial->EditValue) <> "" && is_numeric($this->montoincial->EditValue)) $this->montoincial->EditValue = ew_FormatNumber($this->montoincial->EditValue, -2, -2, -2, -2);
+		if (strval($this->montoincial->EditValue) <> "" && is_numeric($this->montoincial->EditValue)) $this->montoincial->EditValue = ew_FormatNumber($this->montoincial->EditValue, -2, -1, -2, 0);
 
 		// id_metodopago
 		$this->id_metodopago->EditAttrs["class"] = "form-control";
 		$this->id_metodopago->EditCustomAttributes = "";
+		$this->id_metodopago->EditValue = $this->id_metodopago->CurrentValue;
+		$this->id_metodopago->PlaceHolder = ew_RemoveHtml($this->id_metodopago->FldTitle());
 
 		// created_at
 		$this->created_at->EditAttrs["class"] = "form-control";
@@ -1601,28 +1413,26 @@ class cviewavaluosc extends cTable {
 		$this->DeletedBy->EditValue = $this->DeletedBy->CurrentValue;
 		$this->DeletedBy->PlaceHolder = ew_RemoveHtml($this->DeletedBy->FldTitle());
 
-		// monto_pago
-		$this->monto_pago->EditAttrs["class"] = "form-control";
-		$this->monto_pago->EditCustomAttributes = "";
-		$this->monto_pago->EditValue = $this->monto_pago->CurrentValue;
-		$this->monto_pago->PlaceHolder = ew_RemoveHtml($this->monto_pago->FldTitle());
-		if (strval($this->monto_pago->EditValue) <> "" && is_numeric($this->monto_pago->EditValue)) $this->monto_pago->EditValue = ew_FormatNumber($this->monto_pago->EditValue, -2, -1, -2, 0);
+		// id_sucursal
+		$this->id_sucursal->EditAttrs["class"] = "form-control";
+		$this->id_sucursal->EditCustomAttributes = "";
+
+		// informe
+		$this->informe->EditAttrs["class"] = "form-control";
+		$this->informe->EditCustomAttributes = "";
+		if (!ew_Empty($this->informe->Upload->DbValue)) {
+			$this->informe->EditValue = "viewavaluosofprocesados_informe_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->informe->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->informe->Upload->DbValue, 0, 11)));
+		} else {
+			$this->informe->EditValue = "";
+		}
+		$this->informe->ViewCustomAttributes = "";
 
 		// comentario
 		$this->comentario->EditAttrs["class"] = "form-control";
 		$this->comentario->EditCustomAttributes = "";
 		$this->comentario->EditValue = $this->comentario->CurrentValue;
 		$this->comentario->PlaceHolder = ew_RemoveHtml($this->comentario->FldTitle());
-
-		// documento_pago
-		$this->documento_pago->EditAttrs["class"] = "form-control";
-		$this->documento_pago->EditCustomAttributes = "";
-		if (!ew_Empty($this->documento_pago->Upload->DbValue)) {
-			$this->documento_pago->EditValue = "viewavaluosc_documento_pago_bv.php?" . "id=" . $this->id->CurrentValue;
-			$this->documento_pago->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->documento_pago->Upload->DbValue, 0, 11)));
-		} else {
-			$this->documento_pago->EditValue = "";
-		}
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -1651,29 +1461,19 @@ class cviewavaluosc extends cTable {
 			if ($Doc->Horizontal) { // Horizontal format, write header
 				$Doc->BeginExportRow();
 				if ($ExportPageType == "view") {
+					if ($this->tipoinmueble->Exportable) $Doc->ExportCaption($this->tipoinmueble);
 					if ($this->codigoavaluo->Exportable) $Doc->ExportCaption($this->codigoavaluo);
 					if ($this->id_solicitud->Exportable) $Doc->ExportCaption($this->id_solicitud);
-					if ($this->id_oficialcredito->Exportable) $Doc->ExportCaption($this->id_oficialcredito);
-					if ($this->id_inspector->Exportable) $Doc->ExportCaption($this->id_inspector);
-					if ($this->is_active->Exportable) $Doc->ExportCaption($this->is_active);
-					if ($this->estado->Exportable) $Doc->ExportCaption($this->estado);
-					if ($this->estadointerno->Exportable) $Doc->ExportCaption($this->estadointerno);
-					if ($this->estadopago->Exportable) $Doc->ExportCaption($this->estadopago);
 					if ($this->fecha_avaluo->Exportable) $Doc->ExportCaption($this->fecha_avaluo);
-					if ($this->monto_pago->Exportable) $Doc->ExportCaption($this->monto_pago);
+					if ($this->informe->Exportable) $Doc->ExportCaption($this->informe);
 					if ($this->comentario->Exportable) $Doc->ExportCaption($this->comentario);
-					if ($this->documento_pago->Exportable) $Doc->ExportCaption($this->documento_pago);
 				} else {
+					if ($this->tipoinmueble->Exportable) $Doc->ExportCaption($this->tipoinmueble);
 					if ($this->codigoavaluo->Exportable) $Doc->ExportCaption($this->codigoavaluo);
 					if ($this->id_solicitud->Exportable) $Doc->ExportCaption($this->id_solicitud);
 					if ($this->id_oficialcredito->Exportable) $Doc->ExportCaption($this->id_oficialcredito);
 					if ($this->id_inspector->Exportable) $Doc->ExportCaption($this->id_inspector);
-					if ($this->is_active->Exportable) $Doc->ExportCaption($this->is_active);
-					if ($this->estado->Exportable) $Doc->ExportCaption($this->estado);
-					if ($this->estadointerno->Exportable) $Doc->ExportCaption($this->estadointerno);
-					if ($this->estadopago->Exportable) $Doc->ExportCaption($this->estadopago);
 					if ($this->fecha_avaluo->Exportable) $Doc->ExportCaption($this->fecha_avaluo);
-					if ($this->monto_pago->Exportable) $Doc->ExportCaption($this->monto_pago);
 				}
 				$Doc->EndExportRow();
 			}
@@ -1705,29 +1505,19 @@ class cviewavaluosc extends cTable {
 				if (!$Doc->ExportCustom) {
 					$Doc->BeginExportRow($RowCnt); // Allow CSS styles if enabled
 					if ($ExportPageType == "view") {
+						if ($this->tipoinmueble->Exportable) $Doc->ExportField($this->tipoinmueble);
 						if ($this->codigoavaluo->Exportable) $Doc->ExportField($this->codigoavaluo);
 						if ($this->id_solicitud->Exportable) $Doc->ExportField($this->id_solicitud);
-						if ($this->id_oficialcredito->Exportable) $Doc->ExportField($this->id_oficialcredito);
-						if ($this->id_inspector->Exportable) $Doc->ExportField($this->id_inspector);
-						if ($this->is_active->Exportable) $Doc->ExportField($this->is_active);
-						if ($this->estado->Exportable) $Doc->ExportField($this->estado);
-						if ($this->estadointerno->Exportable) $Doc->ExportField($this->estadointerno);
-						if ($this->estadopago->Exportable) $Doc->ExportField($this->estadopago);
 						if ($this->fecha_avaluo->Exportable) $Doc->ExportField($this->fecha_avaluo);
-						if ($this->monto_pago->Exportable) $Doc->ExportField($this->monto_pago);
+						if ($this->informe->Exportable) $Doc->ExportField($this->informe);
 						if ($this->comentario->Exportable) $Doc->ExportField($this->comentario);
-						if ($this->documento_pago->Exportable) $Doc->ExportField($this->documento_pago);
 					} else {
+						if ($this->tipoinmueble->Exportable) $Doc->ExportField($this->tipoinmueble);
 						if ($this->codigoavaluo->Exportable) $Doc->ExportField($this->codigoavaluo);
 						if ($this->id_solicitud->Exportable) $Doc->ExportField($this->id_solicitud);
 						if ($this->id_oficialcredito->Exportable) $Doc->ExportField($this->id_oficialcredito);
 						if ($this->id_inspector->Exportable) $Doc->ExportField($this->id_inspector);
-						if ($this->is_active->Exportable) $Doc->ExportField($this->is_active);
-						if ($this->estado->Exportable) $Doc->ExportField($this->estado);
-						if ($this->estadointerno->Exportable) $Doc->ExportField($this->estadointerno);
-						if ($this->estadopago->Exportable) $Doc->ExportField($this->estadopago);
 						if ($this->fecha_avaluo->Exportable) $Doc->ExportField($this->fecha_avaluo);
-						if ($this->monto_pago->Exportable) $Doc->ExportField($this->monto_pago);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}
@@ -1767,37 +1557,6 @@ class cviewavaluosc extends cTable {
 		} else {
 			return FALSE;
 		}
-	}
-
-	// Send email after update success
-	function SendEmailOnEdit(&$rsold, &$rsnew) {
-		global $Language;
-		$sTable = 'viewavaluosc';
-		$sSubject = $sTable . " ". $Language->Phrase("RecordUpdated");
-		$sAction = $Language->Phrase("ActionUpdated");
-
-		// Get key value
-		$sKey = "";
-		if ($sKey <> "") $sKey .= $GLOBALS["EW_COMPOSITE_KEY_SEPARATOR"];
-		$sKey .= $rsold['id'];
-		$Email = new cEmail();
-		$Email->Load(EW_EMAIL_NOTIFY_TEMPLATE);
-		$Email->ReplaceSender(EW_SENDER_EMAIL); // Replace Sender
-		$Email->ReplaceRecipient(EW_RECIPIENT_EMAIL); // Replace Recipient
-		$Email->ReplaceSubject($sSubject); // Replace Subject
-		$Email->ReplaceContent("<!--table-->", $sTable);
-		$Email->ReplaceContent("<!--key-->", $sKey);
-		$Email->ReplaceContent("<!--action-->", $sAction);
-		$Args = array();
-		$Args["rsold"] = &$rsold;
-		$Args["rsnew"] = &$rsnew;
-		$bEmailSent = FALSE;
-		if ($this->Email_Sending($Email, $Args))
-			$bEmailSent = $Email->Send();
-
-		// Send email failed
-		if (!$bEmailSent)
-			$this->setFailureMessage($Email->SendErrDescription);
 	}
 
 	// Table level events
@@ -1860,62 +1619,6 @@ class cviewavaluosc extends cTable {
 		// Enter your code here
 		// To cancel, set return value to FALSE
 
-	if ($rsold['estadointerno']!=$rsnew['estadointerno']){
-			switch ($rsold['estadointerno']) {
-		case 1:
-	   	case 2:
-				$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]."ya no puede ser actualizado porque esta en progreso");
-				return FALSE;
-				break;
-		case 3:
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-				$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]."no puede ser actualizado porque esta en progreso revision");
-				return FALSE;
-				break;
-		case 8:
-			   	   $sql_comentarios="INSERT INTO `comentariosavaluo`(`descripcion`, `id_avaluo`) VALUES ('".$rsnew['comentario']."','".$rsold['id']."')";
-				   	$sql_historico="INSERT INTO `historico`(`proceso`, `responsable`, `salida`, `comentario`, `id_solicitud`, `id_avaluo`) VALUES ('".$rsnew['estadointerno']."','".$_SESSION["usr"]."',NOW(),'".$rsnew["comentario"]."','".$rsold["id_solicitud"]."','".$rsold["id"]."')";
-					$MyResult4 = ew_Execute($sql_comentarios);
-					$MyResult5 = ew_Execute($sql_historico);
-
-			//	$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]."ya no puede ser actualizado porque esta en progreso");
-				break;
-		}
-		}
-	if ($rsold['estadopago']!=$rsnew['estadopago']){
-		switch ($rsnew['estadopago']) {
-		case 1:
-				$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]." esta en proceso de pago");
-				return FALSE;
-				break;
-	   	case 2:
-	   	        $sql_pago="INSERT INTO `pago_avaluo`(`avaluo_id`, `q`, `id_metodopago`, `id_banco`, `monto`, `documentopago`) VALUES ('".$rsold['id']."',1,1,1,'".$rsnew['montoincial']."','".$rsnew['documento_pago']."')";
-				$MyResult5 = ew_Execute($sql_pago);
-				$this->setFailureMessage("El Avaluo ".$rsold["codigoavaluo"]."tuvo un pago parcial");
-				return TRUE;
-				break;
-		case 3:
-	   	        $sql_pago="INSERT INTO `pago_avaluo`(`avaluo_id`, `q`, `id_metodopago`, `id_banco`, `monto`, `documentopago`) VALUES ('".$rsold['id']."',1,1,1,'".$rsnew['montoincial']."','".$rsnew['documento_pago']."')";
-				$MyResult5 = ew_Execute($sql_pago);
-				$this->setFailureMessage("El Avaluo ".$rsold["codigoavaluo"]." tuvo un pago total");
-				return TRUE;
-				break;
-		case 4:
-				$this->setFailureMessage("El Avaluo ".$rsnew["codigoavaluo"]." termino el pago");
-				return TRUE;
-				break;
-		}
-		}else{
-		if ($rsnew['estadopago']==2)
-		 $sql_pago="INSERT INTO `pago_avaluo`(`avaluo_id`, `q`, `id_metodopago`, `id_banco`, `monto`, `documentopago`) VALUES ('".$rsold['id']."',1,1,1,'".$rsnew['montoincial']."','".$rsnew['documento_pago']."')";
-				$MyResult5 = ew_Execute($sql_pago);
-				$this->setFailureMessage("El Avaluo ".$rsold["codigoavaluo"]."tuvo un pago parcial");
-				return TRUE;
-				break;
-		}	
 		return TRUE;
 	}
 

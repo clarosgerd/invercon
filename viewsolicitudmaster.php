@@ -7,7 +7,6 @@
 // address
 // email_contacto
 // lastname
-// id_sucursal
 // tipoinmueble
 // tipovehiculo
 // tipomaquinaria
@@ -105,19 +104,6 @@
 <span id="el_viewsolicitud_lastname">
 <span<?php echo $viewsolicitud->lastname->ViewAttributes() ?>>
 <?php echo $viewsolicitud->lastname->ListViewValue() ?></span>
-</span>
-</script>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($viewsolicitud->id_sucursal->Visible) { // id_sucursal ?>
-		<tr id="r_id_sucursal">
-			<td class="col-sm-3"><script id="tpc_viewsolicitud_id_sucursal" class="viewsolicitudmaster" type="text/html"><span><?php echo $viewsolicitud->id_sucursal->FldCaption() ?></span></script></td>
-			<td<?php echo $viewsolicitud->id_sucursal->CellAttributes() ?>>
-<script id="tpx_viewsolicitud_id_sucursal" class="viewsolicitudmaster" type="text/html">
-<span id="el_viewsolicitud_id_sucursal">
-<span<?php echo $viewsolicitud->id_sucursal->ViewAttributes() ?>>
-<?php echo $viewsolicitud->id_sucursal->ListViewValue() ?></span>
 </span>
 </script>
 </td>

@@ -1594,23 +1594,9 @@ class cestadointerno_list extends cestadointerno {
 		// owner
 		if (strval($this->owner->CurrentValue) <> "") {
 			$sFilterWrk = "`userlevelname`" . ew_SearchString("=", $this->owner->CurrentValue, EW_DATATYPE_STRING, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-				$sWhereWrk = "";
-				$this->owner->LookupFilters = array();
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-				$sWhereWrk = "";
-				$this->owner->LookupFilters = array();
-				break;
-			default:
-				$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
-				$sWhereWrk = "";
-				$this->owner->LookupFilters = array();
-				break;
-		}
+		$sSqlWrk = "SELECT `userlevelname`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+		$sWhereWrk = "";
+		$this->owner->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->owner, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;

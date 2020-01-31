@@ -1591,7 +1591,11 @@ class ctipoinmueble_list extends ctipoinmueble {
 		$this->tipo->ViewCustomAttributes = "";
 
 		// estado
-		$this->estado->ViewValue = $this->estado->CurrentValue;
+		if (strval($this->estado->CurrentValue) <> "") {
+			$this->estado->ViewValue = $this->estado->OptionCaption($this->estado->CurrentValue);
+		} else {
+			$this->estado->ViewValue = NULL;
+		}
 		$this->estado->ViewCustomAttributes = "";
 
 			// nombre
@@ -2073,8 +2077,10 @@ ftipoinmueblelist.Form_CustomValidate =
 ftipoinmueblelist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+ftipoinmueblelist.Lists["x_estado"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+ftipoinmueblelist.Lists["x_estado"].Options = <?php echo json_encode($tipoinmueble_list->estado->Options()) ?>;
 
+// Form object for search
 var CurrentSearchForm = ftipoinmueblelistsrch = new ew_Form("ftipoinmueblelistsrch");
 </script>
 <script type="text/javascript">
@@ -2203,7 +2209,7 @@ $tipoinmueble_list->ListOptions->Render("header", "left");
 		<th data-name="estado" class="<?php echo $tipoinmueble->estado->HeaderCellClass() ?>"><div id="elh_tipoinmueble_estado" class="tipoinmueble_estado"><div class="ewTableHeaderCaption"><?php echo $tipoinmueble->estado->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="estado" class="<?php echo $tipoinmueble->estado->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $tipoinmueble->SortUrl($tipoinmueble->estado) ?>',1);"><div id="elh_tipoinmueble_estado" class="tipoinmueble_estado">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $tipoinmueble->estado->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($tipoinmueble->estado->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($tipoinmueble->estado->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $tipoinmueble->estado->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($tipoinmueble->estado->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($tipoinmueble->estado->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>

@@ -854,29 +854,34 @@ class coficialcredito_add extends coficialcredito {
 		$this->ci->ViewCustomAttributes = "";
 
 		// id_rol
-		$this->id_rol->ViewValue = $this->id_rol->CurrentValue;
+		if (strval($this->id_rol->CurrentValue) <> "") {
+			$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+		$sWhereWrk = "";
+		$this->id_rol->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->id_rol->ViewValue = $this->id_rol->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->id_rol->ViewValue = $this->id_rol->CurrentValue;
+			}
+		} else {
+			$this->id_rol->ViewValue = NULL;
+		}
 		$this->id_rol->ViewCustomAttributes = "";
 
 		// id_sucursal
 		if (strval($this->id_sucursal->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-				$sWhereWrk = "";
-				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-				$sWhereWrk = "";
-				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-				$sWhereWrk = "";
-				$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+		$sWhereWrk = "";
+		$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1087,8 +1092,21 @@ class coficialcredito_add extends coficialcredito {
 			// id_rol
 			$this->id_rol->EditAttrs["class"] = "form-control";
 			$this->id_rol->EditCustomAttributes = "";
-			$this->id_rol->EditValue = ew_HtmlEncode($this->id_rol->CurrentValue);
-			$this->id_rol->PlaceHolder = ew_RemoveHtml($this->id_rol->FldTitle());
+			if (trim(strval($this->id_rol->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`userlevelid`" . ew_SearchString("=", $this->id_rol->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `userlevelid`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `userlevels`";
+			$sWhereWrk = "";
+			$this->id_rol->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->id_rol->EditValue = $arwrk;
 
 			// id_sucursal
 			$this->id_sucursal->EditCustomAttributes = "";
@@ -1097,23 +1115,9 @@ class coficialcredito_add extends coficialcredito {
 			} else {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->id_sucursal->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
-					$sWhereWrk = "";
-					$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
-					$sWhereWrk = "";
-					$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
-					$sWhereWrk = "";
-					$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `sucursal`";
+			$sWhereWrk = "";
+			$this->id_sucursal->LookupFilters = array("dx1" => '`nombre`');
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
 			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
@@ -1328,9 +1332,6 @@ class coficialcredito_add extends coficialcredito {
 		if (!$this->id_rol->FldIsDetailKey && !is_null($this->id_rol->FormValue) && $this->id_rol->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->id_rol->FldCaption(), $this->id_rol->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->id_rol->FormValue)) {
-			ew_AddMessage($gsFormError, $this->id_rol->FldErrMsg());
-		}
 		if (!$this->id_sucursal->FldIsDetailKey && !is_null($this->id_sucursal->FormValue) && $this->id_sucursal->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->id_sucursal->FldCaption(), $this->id_sucursal->ReqErrMsg));
 		}
@@ -1496,25 +1497,23 @@ class coficialcredito_add extends coficialcredito {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
+		case "x_id_rol":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `userlevelid` AS `LinkFld`, `userlevelname` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `userlevels`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`userlevelid` IN ({filter_value})', "t0" => "3", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->id_rol, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		case "x_id_sucursal":
 			$sSqlWrk = "";
-			switch (@$gsLanguage) {
-				case "en":
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-					$sWhereWrk = "{filter}";
-					$fld->LookupFilters = array("dx1" => '`nombre`');
-					break;
-				case "es":
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-					$sWhereWrk = "{filter}";
-					$fld->LookupFilters = array("dx1" => '`nombre`');
-					break;
-				default:
-					$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
-					$sWhereWrk = "{filter}";
-					$fld->LookupFilters = array("dx1" => '`nombre`');
-					break;
-			}
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `sucursal`";
+			$sWhereWrk = "{filter}";
+			$fld->LookupFilters = array("dx1" => '`nombre`');
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
 			$this->Lookup_Selecting($this->id_sucursal, $sWhereWrk); // Call Lookup Selecting
@@ -1662,9 +1661,6 @@ foficialcreditoadd.Validate = function() {
 			elm = this.GetElements("x" + infix + "_id_rol");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $oficialcredito->id_rol->FldCaption(), $oficialcredito->id_rol->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_id_rol");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($oficialcredito->id_rol->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_id_sucursal");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $oficialcredito->id_sucursal->FldCaption(), $oficialcredito->id_sucursal->ReqErrMsg)) ?>");
@@ -1706,6 +1702,8 @@ foficialcreditoadd.Form_CustomValidate =
 foficialcreditoadd.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
+foficialcreditoadd.Lists["x_id_rol"] = {"LinkField":"x_userlevelid","Ajax":true,"AutoFill":false,"DisplayFields":["x_userlevelname","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"userlevels"};
+foficialcreditoadd.Lists["x_id_rol"].Data = "<?php echo $oficialcredito_add->id_rol->LookupFilterQuery(FALSE, "add") ?>";
 foficialcreditoadd.Lists["x_id_sucursal"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"sucursal"};
 foficialcreditoadd.Lists["x_id_sucursal"].Data = "<?php echo $oficialcredito_add->id_sucursal->LookupFilterQuery(FALSE, "add") ?>";
 foficialcreditoadd.Lists["x_status"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
@@ -1859,7 +1857,9 @@ $oficialcredito_add->ShowMessage();
 		<label id="elh_oficialcredito_id_rol" for="x_id_rol" class="<?php echo $oficialcredito_add->LeftColumnClass ?>"><?php echo $oficialcredito->id_rol->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $oficialcredito_add->RightColumnClass ?>"><div<?php echo $oficialcredito->id_rol->CellAttributes() ?>>
 <span id="el_oficialcredito_id_rol">
-<input type="text" data-table="oficialcredito" data-field="x_id_rol" name="x_id_rol" id="x_id_rol" size="30" placeholder="<?php echo ew_HtmlEncode($oficialcredito->id_rol->getPlaceHolder()) ?>" value="<?php echo $oficialcredito->id_rol->EditValue ?>"<?php echo $oficialcredito->id_rol->EditAttributes() ?>>
+<select data-table="oficialcredito" data-field="x_id_rol" data-value-separator="<?php echo $oficialcredito->id_rol->DisplayValueSeparatorAttribute() ?>" id="x_id_rol" name="x_id_rol"<?php echo $oficialcredito->id_rol->EditAttributes() ?>>
+<?php echo $oficialcredito->id_rol->SelectOptionListHtml("x_id_rol") ?>
+</select>
 </span>
 <?php echo $oficialcredito->id_rol->CustomMsg ?></div></div>
 	</div>
@@ -1868,7 +1868,9 @@ $oficialcredito_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_oficialcredito_id_rol"><?php echo $oficialcredito->id_rol->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
 		<td<?php echo $oficialcredito->id_rol->CellAttributes() ?>>
 <span id="el_oficialcredito_id_rol">
-<input type="text" data-table="oficialcredito" data-field="x_id_rol" name="x_id_rol" id="x_id_rol" size="30" placeholder="<?php echo ew_HtmlEncode($oficialcredito->id_rol->getPlaceHolder()) ?>" value="<?php echo $oficialcredito->id_rol->EditValue ?>"<?php echo $oficialcredito->id_rol->EditAttributes() ?>>
+<select data-table="oficialcredito" data-field="x_id_rol" data-value-separator="<?php echo $oficialcredito->id_rol->DisplayValueSeparatorAttribute() ?>" id="x_id_rol" name="x_id_rol"<?php echo $oficialcredito->id_rol->EditAttributes() ?>>
+<?php echo $oficialcredito->id_rol->SelectOptionListHtml("x_id_rol") ?>
+</select>
 </span>
 <?php echo $oficialcredito->id_rol->CustomMsg ?></td>
 	</tr>

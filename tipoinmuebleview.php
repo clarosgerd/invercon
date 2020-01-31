@@ -686,7 +686,11 @@ class ctipoinmueble_view extends ctipoinmueble {
 		$this->tipo->ViewCustomAttributes = "";
 
 		// estado
-		$this->estado->ViewValue = $this->estado->CurrentValue;
+		if (strval($this->estado->CurrentValue) <> "") {
+			$this->estado->ViewValue = $this->estado->OptionCaption($this->estado->CurrentValue);
+		} else {
+			$this->estado->ViewValue = NULL;
+		}
 		$this->estado->ViewCustomAttributes = "";
 		}
 

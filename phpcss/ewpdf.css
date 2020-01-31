@@ -13,7 +13,7 @@ body {
 	width: 100%;
 	border-top: 0.5px solid;
 	border-left: 0.5px solid;
-	border-color: #CFCFCF; /* border color */
+	border-color: #BFD3EE; /* border color */
 	margin-left: 0;
 	margin-right: 0;
 }
@@ -23,11 +23,11 @@ body {
 	border-left: 0px;
 	border-right: 0.5px solid; /* border width, vertical grid line */
 	border-bottom: 0.5px solid; /* border width, horizontal grid line */
-	border-color: #CFCFCF; /* border color */
+	border-color: #BFD3EE; /* border color */
 }
 .ewTable .ewTableHeader td, .ewTable .ewTableHeader th {
 	background-image: none; /* remove header bg image */
-	background-color: #40546A;	/* header bgcolor */
+	background-color: #2647A0;	/* header bgcolor */
 	color: #FFFFFF; /* header font color */
 	vertical-align: top;
 }
@@ -39,10 +39,10 @@ body {
 
 /* alternate row color */
 .ewTable .ewTableAltRow, .ewTable .ewTableAltRow td {
-	background-color: #F7F6F3; /* alt row color 2 */
+	background-color: #EDF5FF; /* alt row color 2 */
 }
 
 /* main table footer */
 .ewTable .ewTableFooter td {
-	background-color: #EAEAEA; /* footer color */
+	background-color: #D4E7FD; /* footer color */
 }

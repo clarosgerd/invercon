@@ -120,8 +120,6 @@ class cLanguage {
 			$this->LanguageId = EW_LANGUAGE_DEFAULT_ID;
 		}
 		$gsLanguage = $this->LanguageId;
-		global $EW_CSS_FLIP, $EW_RTL_LANGUAGES;
-		$EW_CSS_FLIP = in_array($gsLanguage, $EW_RTL_LANGUAGES);
 		$this->Load($this->LanguageId);
 
 		// Call Language Load event

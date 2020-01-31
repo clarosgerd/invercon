@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2020/1/27" version="14.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2020/1/30" version="14.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -663,9 +663,6 @@
     <menu id="55">
       <phrase id="menutext" value="PAGO" />
     </menu>
-    <menu id="58">
-      <phrase id="menutext" value="SOLICITUD" />
-    </menu>
     <menu id="258">
       <phrase id="menutext" value="SOLICITUD INSPECTOR" />
     </menu>
@@ -696,6 +693,9 @@
     <menu id="334">
       <phrase id="menutext" value="AVALUO SUPERVISOR HISTORIAL" />
     </menu>
+    <menu id="338">
+      <phrase id="menutext" value="AVALUO  PROCESADOS OF" />
+    </menu>
     <menu id="237">
       <phrase id="menutext" value="GESTION SOLICITUD" />
     </menu>
@@ -704,6 +704,9 @@
     </menu>
     <menu id="10">
       <phrase id="menutext" value="SOLICITUD DETALLE" />
+    </menu>
+    <menu id="58">
+      <phrase id="menutext" value="SOLICITUD" />
     </menu>
     <menu id="330">
       <phrase id="menutext" value="ADJUNTOS HISTORIAL" />
@@ -1438,6 +1441,10 @@
       </field>
       <field id="estado">
         <phrase id="fldcaption" value="ESTADO" />
+        <phrase id="fldtagvalue1" value="1" />
+        <phrase id="fldtagcaption1" value="ACTIVO" />
+        <phrase id="fldtagvalue2" value="0" />
+        <phrase id="fldtagcaption2" value="INACTIVO" />
       </field>
     </table>
     <table id="avaluocore_php">
@@ -1456,6 +1463,10 @@
       </field>
       <field id="is_active">
         <phrase id="fldcaption" value="ACTIVO" />
+        <phrase id="fldtagvalue1" value="1" />
+        <phrase id="fldtagcaption1" value="ACTIVO" />
+        <phrase id="fldtagvalue2" value="0" />
+        <phrase id="fldtagcaption2" value="INACTIVO" />
       </field>
       <field id="datemodified" />
       <field id="datedeleted">
@@ -1670,7 +1681,7 @@
         <phrase id="fldcaption" value="AVATAR" />
       </field>
       <field id="codigo">
-        <phrase id="fldcaption" value="codigo" />
+        <phrase id="fldcaption" value="CODIGO" />
       </field>
     </table>
     <table id="supervisor">
@@ -3718,6 +3729,78 @@
       </field>
       <field id="fecha">
         <phrase id="fldcaption" value="FECHA" />
+      </field>
+    </table>
+    <table id="viewavaluosofprocesados">
+      <phrase id="tblcaption" value="AVALUO  PROCESADOS OF" />
+      <field id="id">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="tipoinmueble">
+        <phrase id="fldcaption" value="TIPO AVALUO" />
+      </field>
+      <field id="codigoavaluo">
+        <phrase id="fldcaption" value="CODIGO AVALUO" />
+      </field>
+      <field id="id_solicitud">
+        <phrase id="fldcaption" value="SOLICITUD" />
+      </field>
+      <field id="id_oficialcredito">
+        <phrase id="fldcaption" value="OFICIAL CREDITO" />
+      </field>
+      <field id="id_inspector">
+        <phrase id="fldcaption" value="INSPECTOR" />
+      </field>
+      <field id="id_cliente">
+        <phrase id="fldcaption" value="CLIENTE" />
+      </field>
+      <field id="is_active">
+        <phrase id="fldcaption" value="ACTIVO" />
+      </field>
+      <field id="estado">
+        <phrase id="fldcaption" value="ESTADO AVALUO" />
+      </field>
+      <field id="estadointerno">
+        <phrase id="fldcaption" value="ESTADO INTERNO" />
+      </field>
+      <field id="estadopago">
+        <phrase id="fldcaption" value="ESTADO PAGO" />
+      </field>
+      <field id="fecha_avaluo">
+        <phrase id="fldcaption" value="FECHA AVALUO" />
+      </field>
+      <field id="montoincial">
+        <phrase id="fldcaption" value="MONTO AVALUO" />
+      </field>
+      <field id="id_metodopago">
+        <phrase id="fldcaption" value="METODO DE PAGO" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="created at" />
+      </field>
+      <field id="datemodified">
+        <phrase id="fldcaption" value="Date Modified" />
+      </field>
+      <field id="datedeleted">
+        <phrase id="fldcaption" value="Date Deleted" />
+      </field>
+      <field id="createdby">
+        <phrase id="fldcaption" value="Created By" />
+      </field>
+      <field id="modifiedby">
+        <phrase id="fldcaption" value="Modified By" />
+      </field>
+      <field id="deletedby">
+        <phrase id="fldcaption" value="Deleted By" />
+      </field>
+      <field id="id_sucursal">
+        <phrase id="fldcaption" value="SUCURSAL" />
+      </field>
+      <field id="informe">
+        <phrase id="fldcaption" value="INFORME" />
+      </field>
+      <field id="comentario">
+        <phrase id="fldcaption" value="comentario" />
       </field>
     </table>
   </project>

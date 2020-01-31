@@ -61,8 +61,11 @@ class ctipoinmueble extends cTable {
 		$this->fields['tipo'] = &$this->tipo;
 
 		// estado
-		$this->estado = new cField('tipoinmueble', 'tipoinmueble', 'x_estado', 'estado', '`estado`', '`estado`', 3, -1, FALSE, '`estado`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->estado = new cField('tipoinmueble', 'tipoinmueble', 'x_estado', 'estado', '`estado`', '`estado`', 3, -1, FALSE, '`estado`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->estado->Sortable = TRUE; // Allow sort
+		$this->estado->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->estado->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
+		$this->estado->OptionCount = 2;
 		$this->estado->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['estado'] = &$this->estado;
 	}
@@ -627,7 +630,11 @@ class ctipoinmueble extends cTable {
 		$this->tipo->ViewCustomAttributes = "";
 
 		// estado
-		$this->estado->ViewValue = $this->estado->CurrentValue;
+		if (strval($this->estado->CurrentValue) <> "") {
+			$this->estado->ViewValue = $this->estado->OptionCaption($this->estado->CurrentValue);
+		} else {
+			$this->estado->ViewValue = NULL;
+		}
 		$this->estado->ViewCustomAttributes = "";
 
 		// id_tipoinmueble
@@ -685,8 +692,7 @@ class ctipoinmueble extends cTable {
 		// estado
 		$this->estado->EditAttrs["class"] = "form-control";
 		$this->estado->EditCustomAttributes = "";
-		$this->estado->EditValue = $this->estado->CurrentValue;
-		$this->estado->PlaceHolder = ew_RemoveHtml($this->estado->FldTitle());
+		$this->estado->EditValue = $this->estado->Options(TRUE);
 
 		// Call Row Rendered event
 		$this->Row_Rendered();

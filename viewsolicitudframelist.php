@@ -398,7 +398,9 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 		// 
 		// Security = null;
 		// 
+		// Create form object
 
+		$objForm = new cFormObj();
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
 
 		// Get grid add count
@@ -588,6 +590,27 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 			if ($this->Export == "")
 				$this->SetupBreadcrumb();
 
+			// Check QueryString parameters
+			if (@$_GET["a"] <> "") {
+				$this->CurrentAction = $_GET["a"];
+
+				// Clear inline mode
+				if ($this->CurrentAction == "cancel")
+					$this->ClearInlineMode();
+
+				// Switch to inline edit mode
+				if ($this->CurrentAction == "edit")
+					$this->InlineEditMode();
+			} else {
+				if (@$_POST["a_list"] <> "") {
+					$this->CurrentAction = $_POST["a_list"]; // Get action
+
+					// Inline Update
+					if (($this->CurrentAction == "update" || $this->CurrentAction == "overwrite") && @$_SESSION[EW_SESSION_INLINE_MODE] == "edit")
+						$this->InlineUpdate();
+				}
+			}
+
 			// Hide list options
 			if ($this->Export <> "") {
 				$this->ListOptions->HideAllOptions(array("sequence"));
@@ -676,6 +699,77 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 			$this->StartRec = 1;
 			$this->setStartRecordNumber($this->StartRec);
 		}
+	}
+
+	// Exit inline mode
+	function ClearInlineMode() {
+		$this->setKey("id", ""); // Clear inline edit key
+		$this->LastAction = $this->CurrentAction; // Save last action
+		$this->CurrentAction = ""; // Clear action
+		$_SESSION[EW_SESSION_INLINE_MODE] = ""; // Clear inline mode
+	}
+
+	// Switch to Inline Edit mode
+	function InlineEditMode() {
+		global $Security, $Language;
+		if (!$Security->CanEdit())
+			$this->Page_Terminate("login.php"); // Go to login page
+		$bInlineEdit = TRUE;
+		if (isset($_GET["id"])) {
+			$this->id->setQueryStringValue($_GET["id"]);
+		} else {
+			$bInlineEdit = FALSE;
+		}
+		if ($bInlineEdit) {
+			if ($this->LoadRow()) {
+				$this->setKey("id", $this->id->CurrentValue); // Set up inline edit key
+				$_SESSION[EW_SESSION_INLINE_MODE] = "edit"; // Enable inline edit
+			}
+		}
+	}
+
+	// Perform update to Inline Edit record
+	function InlineUpdate() {
+		global $Language, $objForm, $gsFormError;
+		$objForm->Index = 1;
+		$this->LoadFormValues(); // Get form values
+
+		// Validate form
+		$bInlineUpdate = TRUE;
+		if (!$this->ValidateForm()) {
+			$bInlineUpdate = FALSE; // Form error, reset action
+			$this->setFailureMessage($gsFormError);
+		} else {
+			$bInlineUpdate = FALSE;
+			$rowkey = strval($objForm->GetValue($this->FormKeyName));
+			if ($this->SetupKeyValues($rowkey)) { // Set up key values
+				if ($this->CheckInlineEditKey()) { // Check key
+					$this->SendEmail = TRUE; // Send email on update success
+					$bInlineUpdate = $this->EditRow(); // Update record
+				} else {
+					$bInlineUpdate = FALSE;
+				}
+			}
+		}
+		if ($bInlineUpdate) { // Update success
+			if ($this->getSuccessMessage() == "")
+				$this->setSuccessMessage($Language->Phrase("UpdateSuccess")); // Set up success message
+			$this->ClearInlineMode(); // Clear inline edit mode
+		} else {
+			if ($this->getFailureMessage() == "")
+				$this->setFailureMessage($Language->Phrase("UpdateFailed")); // Set update failed message
+			$this->EventCancelled = TRUE; // Cancel event
+			$this->CurrentAction = "edit"; // Stay in edit mode
+		}
+	}
+
+	// Check Inline Edit key
+	function CheckInlineEditKey() {
+
+		//CheckInlineEditKey = True
+		if (strval($this->getKey("id")) <> strval($this->id->CurrentValue))
+			return FALSE;
+		return TRUE;
 	}
 
 	// Build filter for all keys
@@ -834,11 +928,42 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 		// Call ListOptions_Rendering event
 		$this->ListOptions_Rendering();
 
+		// Set up row action and key
+		if (is_numeric($this->RowIndex) && $this->CurrentMode <> "view") {
+			$objForm->Index = $this->RowIndex;
+			$ActionName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormActionName);
+			$OldKeyName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormOldKeyName);
+			$KeyName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormKeyName);
+			$BlankRowName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormBlankRowName);
+			if ($this->RowAction <> "")
+				$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $ActionName . "\" id=\"" . $ActionName . "\" value=\"" . $this->RowAction . "\">";
+			if ($this->RowAction == "delete") {
+				$rowkey = $objForm->GetValue($this->FormKeyName);
+				$this->SetupKeyValues($rowkey);
+			}
+			if ($this->RowAction == "insert" && $this->CurrentAction == "F" && $this->EmptyRow())
+				$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $BlankRowName . "\" id=\"" . $BlankRowName . "\" value=\"1\">";
+		}
+
+		// "edit"
+		$oListOpt = &$this->ListOptions->Items["edit"];
+		if ($this->CurrentAction == "edit" && $this->RowType == EW_ROWTYPE_EDIT) { // Inline-Edit
+			$this->ListOptions->CustomItem = "edit"; // Show edit column only
+			$cancelurl = $this->AddMasterUrl($this->PageUrl() . "a=cancel");
+				$oListOpt->Body = "<div" . (($oListOpt->OnLeft) ? " style=\"text-align: right\"" : "") . ">" .
+					"<a class=\"ewGridLink ewInlineUpdate\" title=\"" . ew_HtmlTitle($Language->Phrase("UpdateLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("UpdateLink")) . "\" href=\"\" onclick=\"return ewForms(this).Submit('" . ew_UrlAddHash($this->PageName(), "r" . $this->RowCnt . "_" . $this->TableVar) . "');\">" . $Language->Phrase("UpdateLink") . "</a>&nbsp;" .
+					"<a class=\"ewGridLink ewInlineCancel\" title=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" href=\"" . $cancelurl . "\">" . $Language->Phrase("CancelLink") . "</a>" .
+					"<input type=\"hidden\" name=\"a_list\" id=\"a_list\" value=\"update\"></div>";
+			$oListOpt->Body .= "<input type=\"hidden\" name=\"k" . $this->RowIndex . "_key\" id=\"k" . $this->RowIndex . "_key\" value=\"" . ew_HtmlEncode($this->id->CurrentValue) . "\">";
+			return;
+		}
+
 		// "edit"
 		$oListOpt = &$this->ListOptions->Items["edit"];
 		$editcaption = ew_HtmlTitle($Language->Phrase("EditLink"));
 		if ($Security->CanEdit()) {
 			$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
+			$oListOpt->Body .= "<a class=\"ewRowLink ewInlineEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" href=\"" . ew_HtmlEncode(ew_UrlAddHash($this->InlineEditUrl, "r" . $this->RowCnt . "_" . $this->TableVar)) . "\">" . $Language->Phrase("InlineEditLink") . "</a>";
 		} else {
 			$oListOpt->Body = "";
 		}
@@ -1096,6 +1221,171 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 		}
 	}
 
+	// Load default values
+	function LoadDefaultValues() {
+		$this->id->CurrentValue = NULL;
+		$this->id->OldValue = $this->id->CurrentValue;
+		$this->name->CurrentValue = NULL;
+		$this->name->OldValue = $this->name->CurrentValue;
+		$this->lastname->CurrentValue = NULL;
+		$this->lastname->OldValue = $this->lastname->CurrentValue;
+		$this->_email->CurrentValue = NULL;
+		$this->_email->OldValue = $this->_email->CurrentValue;
+		$this->address->CurrentValue = NULL;
+		$this->address->OldValue = $this->address->CurrentValue;
+		$this->nombre_contacto->CurrentValue = NULL;
+		$this->nombre_contacto->OldValue = $this->nombre_contacto->CurrentValue;
+		$this->email_contacto->CurrentValue = $_SESSION["usr"];
+		$this->latitud->CurrentValue = NULL;
+		$this->latitud->OldValue = $this->latitud->CurrentValue;
+		$this->longitud->CurrentValue = NULL;
+		$this->longitud->OldValue = $this->longitud->CurrentValue;
+		$this->phone->CurrentValue = NULL;
+		$this->phone->OldValue = $this->phone->CurrentValue;
+		$this->cell->CurrentValue = NULL;
+		$this->cell->OldValue = $this->cell->CurrentValue;
+		$this->id_sucursal->CurrentValue = $_SESSION["sucursal"];
+		$this->tipoinmueble->CurrentValue = NULL;
+		$this->tipoinmueble->OldValue = $this->tipoinmueble->CurrentValue;
+		$this->id_ciudad_inmueble->CurrentValue = NULL;
+		$this->id_ciudad_inmueble->OldValue = $this->id_ciudad_inmueble->CurrentValue;
+		$this->id_provincia_inmueble->CurrentValue = NULL;
+		$this->id_provincia_inmueble->OldValue = $this->id_provincia_inmueble->CurrentValue;
+		$this->imagen_inmueble01->Upload->DbValue = NULL;
+		$this->imagen_inmueble01->OldValue = $this->imagen_inmueble01->Upload->DbValue;
+		$this->imagen_inmueble02->Upload->DbValue = NULL;
+		$this->imagen_inmueble02->OldValue = $this->imagen_inmueble02->Upload->DbValue;
+		$this->imagen_inmueble03->Upload->DbValue = NULL;
+		$this->imagen_inmueble03->OldValue = $this->imagen_inmueble03->Upload->DbValue;
+		$this->imagen_inmueble04->Upload->DbValue = NULL;
+		$this->imagen_inmueble04->OldValue = $this->imagen_inmueble04->Upload->DbValue;
+		$this->imagen_inmueble05->Upload->DbValue = NULL;
+		$this->imagen_inmueble05->OldValue = $this->imagen_inmueble05->Upload->DbValue;
+		$this->imagen_inmueble06->Upload->DbValue = NULL;
+		$this->imagen_inmueble06->OldValue = $this->imagen_inmueble06->Upload->DbValue;
+		$this->imagen_inmueble07->Upload->DbValue = NULL;
+		$this->imagen_inmueble07->OldValue = $this->imagen_inmueble07->Upload->DbValue;
+		$this->imagen_inmueble08->Upload->DbValue = NULL;
+		$this->imagen_inmueble08->OldValue = $this->imagen_inmueble08->Upload->DbValue;
+		$this->tipovehiculo->CurrentValue = NULL;
+		$this->tipovehiculo->OldValue = $this->tipovehiculo->CurrentValue;
+		$this->id_ciudad_vehiculo->CurrentValue = NULL;
+		$this->id_ciudad_vehiculo->OldValue = $this->id_ciudad_vehiculo->CurrentValue;
+		$this->id_provincia_vehiculo->CurrentValue = NULL;
+		$this->id_provincia_vehiculo->OldValue = $this->id_provincia_vehiculo->CurrentValue;
+		$this->imagen_vehiculo01->Upload->DbValue = NULL;
+		$this->imagen_vehiculo01->OldValue = $this->imagen_vehiculo01->Upload->DbValue;
+		$this->imagen_vehiculo02->Upload->DbValue = NULL;
+		$this->imagen_vehiculo02->OldValue = $this->imagen_vehiculo02->Upload->DbValue;
+		$this->imagen_vehiculo03->Upload->DbValue = NULL;
+		$this->imagen_vehiculo03->OldValue = $this->imagen_vehiculo03->Upload->DbValue;
+		$this->imagen_vehiculo04->Upload->DbValue = NULL;
+		$this->imagen_vehiculo04->OldValue = $this->imagen_vehiculo04->Upload->DbValue;
+		$this->imagen_vehiculo05->Upload->DbValue = NULL;
+		$this->imagen_vehiculo05->OldValue = $this->imagen_vehiculo05->Upload->DbValue;
+		$this->imagen_vehiculo06->Upload->DbValue = NULL;
+		$this->imagen_vehiculo06->OldValue = $this->imagen_vehiculo06->Upload->DbValue;
+		$this->imagen_vehiculo07->Upload->DbValue = NULL;
+		$this->imagen_vehiculo07->OldValue = $this->imagen_vehiculo07->Upload->DbValue;
+		$this->imagen_vehiculo08->Upload->DbValue = NULL;
+		$this->imagen_vehiculo08->OldValue = $this->imagen_vehiculo08->Upload->DbValue;
+		$this->tipomaquinaria->CurrentValue = NULL;
+		$this->tipomaquinaria->OldValue = $this->tipomaquinaria->CurrentValue;
+		$this->id_ciudad_maquinaria->CurrentValue = NULL;
+		$this->id_ciudad_maquinaria->OldValue = $this->id_ciudad_maquinaria->CurrentValue;
+		$this->id_provincia_maquinaria->CurrentValue = NULL;
+		$this->id_provincia_maquinaria->OldValue = $this->id_provincia_maquinaria->CurrentValue;
+		$this->imagen_maquinaria01->Upload->DbValue = NULL;
+		$this->imagen_maquinaria01->OldValue = $this->imagen_maquinaria01->Upload->DbValue;
+		$this->imagen_maquinaria02->Upload->DbValue = NULL;
+		$this->imagen_maquinaria02->OldValue = $this->imagen_maquinaria02->Upload->DbValue;
+		$this->imagen_maquinaria03->Upload->DbValue = NULL;
+		$this->imagen_maquinaria03->OldValue = $this->imagen_maquinaria03->Upload->DbValue;
+		$this->imagen_maquinaria04->Upload->DbValue = NULL;
+		$this->imagen_maquinaria04->OldValue = $this->imagen_maquinaria04->Upload->DbValue;
+		$this->imagen_maquinaria05->Upload->DbValue = NULL;
+		$this->imagen_maquinaria05->OldValue = $this->imagen_maquinaria05->Upload->DbValue;
+		$this->imagen_maquinaria06->Upload->DbValue = NULL;
+		$this->imagen_maquinaria06->OldValue = $this->imagen_maquinaria06->Upload->DbValue;
+		$this->imagen_maquinaria07->Upload->DbValue = NULL;
+		$this->imagen_maquinaria07->OldValue = $this->imagen_maquinaria07->Upload->DbValue;
+		$this->imagen_maquinaria08->Upload->DbValue = NULL;
+		$this->imagen_maquinaria08->OldValue = $this->imagen_maquinaria08->Upload->DbValue;
+		$this->tipomercaderia->CurrentValue = NULL;
+		$this->tipomercaderia->OldValue = $this->tipomercaderia->CurrentValue;
+		$this->imagen_mercaderia01->Upload->DbValue = NULL;
+		$this->imagen_mercaderia01->OldValue = $this->imagen_mercaderia01->Upload->DbValue;
+		$this->documento_mercaderia->CurrentValue = NULL;
+		$this->documento_mercaderia->OldValue = $this->documento_mercaderia->CurrentValue;
+		$this->tipoespecial->CurrentValue = NULL;
+		$this->tipoespecial->OldValue = $this->tipoespecial->CurrentValue;
+		$this->imagen_tipoespecial01->Upload->DbValue = NULL;
+		$this->imagen_tipoespecial01->OldValue = $this->imagen_tipoespecial01->Upload->DbValue;
+		$this->is_active->CurrentValue = 1;
+		$this->documentos->CurrentValue = NULL;
+		$this->documentos->OldValue = $this->documentos->CurrentValue;
+		$this->created_at->CurrentValue = NULL;
+		$this->created_at->OldValue = $this->created_at->CurrentValue;
+		$this->DateModified->CurrentValue = NULL;
+		$this->DateModified->OldValue = $this->DateModified->CurrentValue;
+		$this->DateDeleted->CurrentValue = NULL;
+		$this->DateDeleted->OldValue = $this->DateDeleted->CurrentValue;
+		$this->CreatedBy->CurrentValue = NULL;
+		$this->CreatedBy->OldValue = $this->CreatedBy->CurrentValue;
+		$this->ModifiedBy->CurrentValue = NULL;
+		$this->ModifiedBy->OldValue = $this->ModifiedBy->CurrentValue;
+		$this->DeletedBy->CurrentValue = NULL;
+		$this->DeletedBy->OldValue = $this->DeletedBy->CurrentValue;
+	}
+
+	// Load form values
+	function LoadFormValues() {
+
+		// Load from form
+		global $objForm;
+		if (!$this->id->FldIsDetailKey && $this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
+			$this->id->setFormValue($objForm->GetValue("x_id"));
+		if (!$this->name->FldIsDetailKey) {
+			$this->name->setFormValue($objForm->GetValue("x_name"));
+		}
+		if (!$this->lastname->FldIsDetailKey) {
+			$this->lastname->setFormValue($objForm->GetValue("x_lastname"));
+		}
+		if (!$this->_email->FldIsDetailKey) {
+			$this->_email->setFormValue($objForm->GetValue("x__email"));
+		}
+		if (!$this->address->FldIsDetailKey) {
+			$this->address->setFormValue($objForm->GetValue("x_address"));
+		}
+		if (!$this->email_contacto->FldIsDetailKey) {
+			$this->email_contacto->setFormValue($objForm->GetValue("x_email_contacto"));
+		}
+		if (!$this->phone->FldIsDetailKey) {
+			$this->phone->setFormValue($objForm->GetValue("x_phone"));
+		}
+		if (!$this->cell->FldIsDetailKey) {
+			$this->cell->setFormValue($objForm->GetValue("x_cell"));
+		}
+		if (!$this->id_sucursal->FldIsDetailKey) {
+			$this->id_sucursal->setFormValue($objForm->GetValue("x_id_sucursal"));
+		}
+	}
+
+	// Restore form values
+	function RestoreFormValues() {
+		global $objForm;
+		if ($this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
+			$this->id->CurrentValue = $this->id->FormValue;
+		$this->name->CurrentValue = $this->name->FormValue;
+		$this->lastname->CurrentValue = $this->lastname->FormValue;
+		$this->_email->CurrentValue = $this->_email->FormValue;
+		$this->address->CurrentValue = $this->address->FormValue;
+		$this->email_contacto->CurrentValue = $this->email_contacto->FormValue;
+		$this->phone->CurrentValue = $this->phone->FormValue;
+		$this->cell->CurrentValue = $this->cell->FormValue;
+		$this->id_sucursal->CurrentValue = $this->id_sucursal->FormValue;
+	}
+
 	// Load recordset
 	function LoadRecordset($offset = -1, $rowcnt = -1) {
 
@@ -1269,65 +1559,66 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 
 	// Return a row with default values
 	function NewRow() {
+		$this->LoadDefaultValues();
 		$row = array();
-		$row['id'] = NULL;
-		$row['name'] = NULL;
-		$row['lastname'] = NULL;
-		$row['email'] = NULL;
-		$row['address'] = NULL;
-		$row['nombre_contacto'] = NULL;
-		$row['email_contacto'] = NULL;
-		$row['latitud'] = NULL;
-		$row['longitud'] = NULL;
-		$row['phone'] = NULL;
-		$row['cell'] = NULL;
-		$row['id_sucursal'] = NULL;
-		$row['tipoinmueble'] = NULL;
-		$row['id_ciudad_inmueble'] = NULL;
-		$row['id_provincia_inmueble'] = NULL;
-		$row['imagen_inmueble01'] = NULL;
-		$row['imagen_inmueble02'] = NULL;
-		$row['imagen_inmueble03'] = NULL;
-		$row['imagen_inmueble04'] = NULL;
-		$row['imagen_inmueble05'] = NULL;
-		$row['imagen_inmueble06'] = NULL;
-		$row['imagen_inmueble07'] = NULL;
-		$row['imagen_inmueble08'] = NULL;
-		$row['tipovehiculo'] = NULL;
-		$row['id_ciudad_vehiculo'] = NULL;
-		$row['id_provincia_vehiculo'] = NULL;
-		$row['imagen_vehiculo01'] = NULL;
-		$row['imagen_vehiculo02'] = NULL;
-		$row['imagen_vehiculo03'] = NULL;
-		$row['imagen_vehiculo04'] = NULL;
-		$row['imagen_vehiculo05'] = NULL;
-		$row['imagen_vehiculo06'] = NULL;
-		$row['imagen_vehiculo07'] = NULL;
-		$row['imagen_vehiculo08'] = NULL;
-		$row['tipomaquinaria'] = NULL;
-		$row['id_ciudad_maquinaria'] = NULL;
-		$row['id_provincia_maquinaria'] = NULL;
-		$row['imagen_maquinaria01'] = NULL;
-		$row['imagen_maquinaria02'] = NULL;
-		$row['imagen_maquinaria03'] = NULL;
-		$row['imagen_maquinaria04'] = NULL;
-		$row['imagen_maquinaria05'] = NULL;
-		$row['imagen_maquinaria06'] = NULL;
-		$row['imagen_maquinaria07'] = NULL;
-		$row['imagen_maquinaria08'] = NULL;
-		$row['tipomercaderia'] = NULL;
-		$row['imagen_mercaderia01'] = NULL;
-		$row['documento_mercaderia'] = NULL;
-		$row['tipoespecial'] = NULL;
-		$row['imagen_tipoespecial01'] = NULL;
-		$row['is_active'] = NULL;
-		$row['documentos'] = NULL;
-		$row['created_at'] = NULL;
-		$row['DateModified'] = NULL;
-		$row['DateDeleted'] = NULL;
-		$row['CreatedBy'] = NULL;
-		$row['ModifiedBy'] = NULL;
-		$row['DeletedBy'] = NULL;
+		$row['id'] = $this->id->CurrentValue;
+		$row['name'] = $this->name->CurrentValue;
+		$row['lastname'] = $this->lastname->CurrentValue;
+		$row['email'] = $this->_email->CurrentValue;
+		$row['address'] = $this->address->CurrentValue;
+		$row['nombre_contacto'] = $this->nombre_contacto->CurrentValue;
+		$row['email_contacto'] = $this->email_contacto->CurrentValue;
+		$row['latitud'] = $this->latitud->CurrentValue;
+		$row['longitud'] = $this->longitud->CurrentValue;
+		$row['phone'] = $this->phone->CurrentValue;
+		$row['cell'] = $this->cell->CurrentValue;
+		$row['id_sucursal'] = $this->id_sucursal->CurrentValue;
+		$row['tipoinmueble'] = $this->tipoinmueble->CurrentValue;
+		$row['id_ciudad_inmueble'] = $this->id_ciudad_inmueble->CurrentValue;
+		$row['id_provincia_inmueble'] = $this->id_provincia_inmueble->CurrentValue;
+		$row['imagen_inmueble01'] = $this->imagen_inmueble01->Upload->DbValue;
+		$row['imagen_inmueble02'] = $this->imagen_inmueble02->Upload->DbValue;
+		$row['imagen_inmueble03'] = $this->imagen_inmueble03->Upload->DbValue;
+		$row['imagen_inmueble04'] = $this->imagen_inmueble04->Upload->DbValue;
+		$row['imagen_inmueble05'] = $this->imagen_inmueble05->Upload->DbValue;
+		$row['imagen_inmueble06'] = $this->imagen_inmueble06->Upload->DbValue;
+		$row['imagen_inmueble07'] = $this->imagen_inmueble07->Upload->DbValue;
+		$row['imagen_inmueble08'] = $this->imagen_inmueble08->Upload->DbValue;
+		$row['tipovehiculo'] = $this->tipovehiculo->CurrentValue;
+		$row['id_ciudad_vehiculo'] = $this->id_ciudad_vehiculo->CurrentValue;
+		$row['id_provincia_vehiculo'] = $this->id_provincia_vehiculo->CurrentValue;
+		$row['imagen_vehiculo01'] = $this->imagen_vehiculo01->Upload->DbValue;
+		$row['imagen_vehiculo02'] = $this->imagen_vehiculo02->Upload->DbValue;
+		$row['imagen_vehiculo03'] = $this->imagen_vehiculo03->Upload->DbValue;
+		$row['imagen_vehiculo04'] = $this->imagen_vehiculo04->Upload->DbValue;
+		$row['imagen_vehiculo05'] = $this->imagen_vehiculo05->Upload->DbValue;
+		$row['imagen_vehiculo06'] = $this->imagen_vehiculo06->Upload->DbValue;
+		$row['imagen_vehiculo07'] = $this->imagen_vehiculo07->Upload->DbValue;
+		$row['imagen_vehiculo08'] = $this->imagen_vehiculo08->Upload->DbValue;
+		$row['tipomaquinaria'] = $this->tipomaquinaria->CurrentValue;
+		$row['id_ciudad_maquinaria'] = $this->id_ciudad_maquinaria->CurrentValue;
+		$row['id_provincia_maquinaria'] = $this->id_provincia_maquinaria->CurrentValue;
+		$row['imagen_maquinaria01'] = $this->imagen_maquinaria01->Upload->DbValue;
+		$row['imagen_maquinaria02'] = $this->imagen_maquinaria02->Upload->DbValue;
+		$row['imagen_maquinaria03'] = $this->imagen_maquinaria03->Upload->DbValue;
+		$row['imagen_maquinaria04'] = $this->imagen_maquinaria04->Upload->DbValue;
+		$row['imagen_maquinaria05'] = $this->imagen_maquinaria05->Upload->DbValue;
+		$row['imagen_maquinaria06'] = $this->imagen_maquinaria06->Upload->DbValue;
+		$row['imagen_maquinaria07'] = $this->imagen_maquinaria07->Upload->DbValue;
+		$row['imagen_maquinaria08'] = $this->imagen_maquinaria08->Upload->DbValue;
+		$row['tipomercaderia'] = $this->tipomercaderia->CurrentValue;
+		$row['imagen_mercaderia01'] = $this->imagen_mercaderia01->Upload->DbValue;
+		$row['documento_mercaderia'] = $this->documento_mercaderia->CurrentValue;
+		$row['tipoespecial'] = $this->tipoespecial->CurrentValue;
+		$row['imagen_tipoespecial01'] = $this->imagen_tipoespecial01->Upload->DbValue;
+		$row['is_active'] = $this->is_active->CurrentValue;
+		$row['documentos'] = $this->documentos->CurrentValue;
+		$row['created_at'] = $this->created_at->CurrentValue;
+		$row['DateModified'] = $this->DateModified->CurrentValue;
+		$row['DateDeleted'] = $this->DateDeleted->CurrentValue;
+		$row['CreatedBy'] = $this->CreatedBy->CurrentValue;
+		$row['ModifiedBy'] = $this->ModifiedBy->CurrentValue;
+		$row['DeletedBy'] = $this->DeletedBy->CurrentValue;
 		return $row;
 	}
 
@@ -1617,23 +1908,9 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 			}
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='MERCADERIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1663,23 +1940,9 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 		// tipoespecial
 		if (strval($this->tipoespecial->CurrentValue) <> "") {
 			$sFilterWrk = "`id_tipoinmueble`" . ew_SearchString("=", $this->tipoespecial->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='ESPECIAL'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1747,11 +2010,361 @@ class cviewsolicitudframe_list extends cviewsolicitudframe {
 			$this->id_sucursal->LinkCustomAttributes = "";
 			$this->id_sucursal->HrefValue = "";
 			$this->id_sucursal->TooltipValue = "";
+		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
+
+			// id
+			// name
+
+			$this->name->EditAttrs["class"] = "form-control";
+			$this->name->EditCustomAttributes = "";
+			$this->name->EditValue = ew_HtmlEncode($this->name->CurrentValue);
+			$this->name->PlaceHolder = ew_RemoveHtml($this->name->FldTitle());
+
+			// lastname
+			$this->lastname->EditAttrs["class"] = "form-control";
+			$this->lastname->EditCustomAttributes = "";
+			$this->lastname->EditValue = ew_HtmlEncode($this->lastname->CurrentValue);
+			$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
+
+			// email
+			$this->_email->EditAttrs["class"] = "form-control";
+			$this->_email->EditCustomAttributes = "";
+			$this->_email->EditValue = ew_HtmlEncode($this->_email->CurrentValue);
+			$this->_email->PlaceHolder = ew_RemoveHtml($this->_email->FldTitle());
+
+			// address
+			$this->address->EditAttrs["class"] = "form-control";
+			$this->address->EditCustomAttributes = "";
+			$this->address->EditValue = ew_HtmlEncode($this->address->CurrentValue);
+			$this->address->PlaceHolder = ew_RemoveHtml($this->address->FldTitle());
+
+			// email_contacto
+			$this->email_contacto->EditAttrs["class"] = "form-control";
+			$this->email_contacto->EditCustomAttributes = "";
+			$this->email_contacto->CurrentValue = $_SESSION["usr"];
+
+			// phone
+			$this->phone->EditAttrs["class"] = "form-control";
+			$this->phone->EditCustomAttributes = "";
+			$this->phone->EditValue = ew_HtmlEncode($this->phone->CurrentValue);
+			$this->phone->PlaceHolder = ew_RemoveHtml($this->phone->FldTitle());
+
+			// cell
+			$this->cell->EditAttrs["class"] = "form-control";
+			$this->cell->EditCustomAttributes = "";
+			$this->cell->EditValue = ew_HtmlEncode($this->cell->CurrentValue);
+			$this->cell->PlaceHolder = ew_RemoveHtml($this->cell->FldTitle());
+
+			// id_sucursal
+			$this->id_sucursal->EditAttrs["class"] = "form-control";
+			$this->id_sucursal->EditCustomAttributes = "";
+			$this->id_sucursal->CurrentValue = $_SESSION["sucursal"];
+
+			// Add refer script
+			// id
+
+			$this->id->LinkCustomAttributes = "";
+			$this->id->HrefValue = "";
+
+			// name
+			$this->name->LinkCustomAttributes = "";
+			$this->name->HrefValue = "";
+
+			// lastname
+			$this->lastname->LinkCustomAttributes = "";
+			$this->lastname->HrefValue = "";
+
+			// email
+			$this->_email->LinkCustomAttributes = "";
+			$this->_email->HrefValue = "";
+
+			// address
+			$this->address->LinkCustomAttributes = "";
+			$this->address->HrefValue = "";
+
+			// email_contacto
+			$this->email_contacto->LinkCustomAttributes = "";
+			$this->email_contacto->HrefValue = "";
+
+			// phone
+			$this->phone->LinkCustomAttributes = "";
+			$this->phone->HrefValue = "";
+
+			// cell
+			$this->cell->LinkCustomAttributes = "";
+			$this->cell->HrefValue = "";
+
+			// id_sucursal
+			$this->id_sucursal->LinkCustomAttributes = "";
+			$this->id_sucursal->HrefValue = "";
+		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
+
+			// id
+			$this->id->EditAttrs["class"] = "form-control";
+			$this->id->EditCustomAttributes = "";
+			$this->id->EditValue = $this->id->CurrentValue;
+			$this->id->ViewCustomAttributes = "";
+
+			// name
+			$this->name->EditAttrs["class"] = "form-control";
+			$this->name->EditCustomAttributes = "";
+			$this->name->EditValue = ew_HtmlEncode($this->name->CurrentValue);
+			$this->name->PlaceHolder = ew_RemoveHtml($this->name->FldTitle());
+
+			// lastname
+			$this->lastname->EditAttrs["class"] = "form-control";
+			$this->lastname->EditCustomAttributes = "";
+			$this->lastname->EditValue = ew_HtmlEncode($this->lastname->CurrentValue);
+			$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
+
+			// email
+			$this->_email->EditAttrs["class"] = "form-control";
+			$this->_email->EditCustomAttributes = "";
+			$this->_email->EditValue = ew_HtmlEncode($this->_email->CurrentValue);
+			$this->_email->PlaceHolder = ew_RemoveHtml($this->_email->FldTitle());
+
+			// address
+			$this->address->EditAttrs["class"] = "form-control";
+			$this->address->EditCustomAttributes = "";
+			$this->address->EditValue = ew_HtmlEncode($this->address->CurrentValue);
+			$this->address->PlaceHolder = ew_RemoveHtml($this->address->FldTitle());
+
+			// email_contacto
+			$this->email_contacto->EditAttrs["class"] = "form-control";
+			$this->email_contacto->EditCustomAttributes = "";
+
+			// phone
+			$this->phone->EditAttrs["class"] = "form-control";
+			$this->phone->EditCustomAttributes = "";
+			$this->phone->EditValue = ew_HtmlEncode($this->phone->CurrentValue);
+			$this->phone->PlaceHolder = ew_RemoveHtml($this->phone->FldTitle());
+
+			// cell
+			$this->cell->EditAttrs["class"] = "form-control";
+			$this->cell->EditCustomAttributes = "";
+			$this->cell->EditValue = ew_HtmlEncode($this->cell->CurrentValue);
+			$this->cell->PlaceHolder = ew_RemoveHtml($this->cell->FldTitle());
+
+			// id_sucursal
+			$this->id_sucursal->EditAttrs["class"] = "form-control";
+			$this->id_sucursal->EditCustomAttributes = "";
+
+			// Edit refer script
+			// id
+
+			$this->id->LinkCustomAttributes = "";
+			$this->id->HrefValue = "";
+
+			// name
+			$this->name->LinkCustomAttributes = "";
+			$this->name->HrefValue = "";
+
+			// lastname
+			$this->lastname->LinkCustomAttributes = "";
+			$this->lastname->HrefValue = "";
+
+			// email
+			$this->_email->LinkCustomAttributes = "";
+			$this->_email->HrefValue = "";
+
+			// address
+			$this->address->LinkCustomAttributes = "";
+			$this->address->HrefValue = "";
+
+			// email_contacto
+			$this->email_contacto->LinkCustomAttributes = "";
+			$this->email_contacto->HrefValue = "";
+			$this->email_contacto->TooltipValue = "";
+
+			// phone
+			$this->phone->LinkCustomAttributes = "";
+			$this->phone->HrefValue = "";
+
+			// cell
+			$this->cell->LinkCustomAttributes = "";
+			$this->cell->HrefValue = "";
+
+			// id_sucursal
+			$this->id_sucursal->LinkCustomAttributes = "";
+			$this->id_sucursal->HrefValue = "";
+			$this->id_sucursal->TooltipValue = "";
 		}
+		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
+			$this->SetupFieldTitles();
 
 		// Call Row Rendered event
 		if ($this->RowType <> EW_ROWTYPE_AGGREGATEINIT)
 			$this->Row_Rendered();
+	}
+
+	// Validate form
+	function ValidateForm() {
+		global $Language, $gsFormError;
+
+		// Initialize form error message
+		$gsFormError = "";
+
+		// Check if validation required
+		if (!EW_SERVER_VALIDATE)
+			return ($gsFormError == "");
+		if (!$this->name->FldIsDetailKey && !is_null($this->name->FormValue) && $this->name->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->name->FldCaption(), $this->name->ReqErrMsg));
+		}
+		if (!$this->_email->FldIsDetailKey && !is_null($this->_email->FormValue) && $this->_email->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->_email->FldCaption(), $this->_email->ReqErrMsg));
+		}
+		if (!ew_CheckEmail($this->_email->FormValue)) {
+			ew_AddMessage($gsFormError, $this->_email->FldErrMsg());
+		}
+
+		// Return validate result
+		$ValidateForm = ($gsFormError == "");
+
+		// Call Form_CustomValidate event
+		$sFormCustomError = "";
+		$ValidateForm = $ValidateForm && $this->Form_CustomValidate($sFormCustomError);
+		if ($sFormCustomError <> "") {
+			ew_AddMessage($gsFormError, $sFormCustomError);
+		}
+		return $ValidateForm;
+	}
+
+	// Update record based on key values
+	function EditRow() {
+		global $Security, $Language;
+		$sFilter = $this->KeyFilter();
+		$sFilter = $this->ApplyUserIDFilters($sFilter);
+		$conn = &$this->Connection();
+		$this->CurrentFilter = $sFilter;
+		$sSql = $this->SQL();
+		$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+		$rs = $conn->Execute($sSql);
+		$conn->raiseErrorFn = '';
+		if ($rs === FALSE)
+			return FALSE;
+		if ($rs->EOF) {
+			$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
+			$EditRow = FALSE; // Update Failed
+		} else {
+
+			// Save old values
+			$rsold = &$rs->fields;
+			$this->LoadDbValues($rsold);
+			$rsnew = array();
+
+			// name
+			$this->name->SetDbValueDef($rsnew, $this->name->CurrentValue, NULL, $this->name->ReadOnly);
+
+			// lastname
+			$this->lastname->SetDbValueDef($rsnew, $this->lastname->CurrentValue, NULL, $this->lastname->ReadOnly);
+
+			// email
+			$this->_email->SetDbValueDef($rsnew, $this->_email->CurrentValue, NULL, $this->_email->ReadOnly);
+
+			// address
+			$this->address->SetDbValueDef($rsnew, $this->address->CurrentValue, NULL, $this->address->ReadOnly);
+
+			// phone
+			$this->phone->SetDbValueDef($rsnew, $this->phone->CurrentValue, NULL, $this->phone->ReadOnly);
+
+			// cell
+			$this->cell->SetDbValueDef($rsnew, $this->cell->CurrentValue, NULL, $this->cell->ReadOnly);
+
+			// Call Row Updating event
+			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
+			if ($bUpdateRow) {
+				$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+				if (count($rsnew) > 0)
+					$EditRow = $this->Update($rsnew, "", $rsold);
+				else
+					$EditRow = TRUE; // No field to update
+				$conn->raiseErrorFn = '';
+				if ($EditRow) {
+				}
+			} else {
+				if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
+
+					// Use the message, do nothing
+				} elseif ($this->CancelMessage <> "") {
+					$this->setFailureMessage($this->CancelMessage);
+					$this->CancelMessage = "";
+				} else {
+					$this->setFailureMessage($Language->Phrase("UpdateCancelled"));
+				}
+				$EditRow = FALSE;
+			}
+		}
+
+		// Call Row_Updated event
+		if ($EditRow)
+			$this->Row_Updated($rsold, $rsnew);
+		$rs->Close();
+		return $EditRow;
+	}
+
+	// Add record
+	function AddRow($rsold = NULL) {
+		global $Language, $Security;
+		$conn = &$this->Connection();
+
+		// Load db values from rsold
+		$this->LoadDbValues($rsold);
+		if ($rsold) {
+		}
+		$rsnew = array();
+
+		// name
+		$this->name->SetDbValueDef($rsnew, $this->name->CurrentValue, NULL, FALSE);
+
+		// lastname
+		$this->lastname->SetDbValueDef($rsnew, $this->lastname->CurrentValue, NULL, FALSE);
+
+		// email
+		$this->_email->SetDbValueDef($rsnew, $this->_email->CurrentValue, NULL, FALSE);
+
+		// address
+		$this->address->SetDbValueDef($rsnew, $this->address->CurrentValue, NULL, FALSE);
+
+		// email_contacto
+		$this->email_contacto->SetDbValueDef($rsnew, $this->email_contacto->CurrentValue, NULL, FALSE);
+
+		// phone
+		$this->phone->SetDbValueDef($rsnew, $this->phone->CurrentValue, NULL, FALSE);
+
+		// cell
+		$this->cell->SetDbValueDef($rsnew, $this->cell->CurrentValue, NULL, FALSE);
+
+		// id_sucursal
+		$this->id_sucursal->SetDbValueDef($rsnew, $this->id_sucursal->CurrentValue, 0, FALSE);
+
+		// Call Row Inserting event
+		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
+		$bInsertRow = $this->Row_Inserting($rs, $rsnew);
+		if ($bInsertRow) {
+			$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+			$AddRow = $this->Insert($rsnew);
+			$conn->raiseErrorFn = '';
+			if ($AddRow) {
+			}
+		} else {
+			if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
+
+				// Use the message, do nothing
+			} elseif ($this->CancelMessage <> "") {
+				$this->setFailureMessage($this->CancelMessage);
+				$this->CancelMessage = "";
+			} else {
+				$this->setFailureMessage($Language->Phrase("InsertCancelled"));
+			}
+			$AddRow = FALSE;
+		}
+		if ($AddRow) {
+
+			// Call Row Inserted event
+			$rs = ($rsold == NULL) ? NULL : $rsold->fields;
+			$this->Row_Inserted($rs, $rsnew);
+		}
+		return $AddRow;
 	}
 
 	// Set up Breadcrumb
@@ -1934,6 +2547,38 @@ var CurrentPageID = EW_PAGE_ID = "list";
 var CurrentForm = fviewsolicitudframelist = new ew_Form("fviewsolicitudframelist", "list");
 fviewsolicitudframelist.FormKeyCountName = '<?php echo $viewsolicitudframe_list->FormKeyCountName ?>';
 
+// Validate form
+fviewsolicitudframelist.Validate = function() {
+	if (!this.ValidateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.GetForm(), $fobj = $(fobj);
+	if ($fobj.find("#a_confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.FormKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = $fobj.find("#a_list").val() == "gridinsert";
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+			elm = this.GetElements("x" + infix + "_name");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $viewsolicitudframe->name->FldCaption(), $viewsolicitudframe->name->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "__email");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $viewsolicitudframe->_email->FldCaption(), $viewsolicitudframe->_email->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "__email");
+			if (elm && !ew_CheckEmail(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($viewsolicitudframe->_email->FldErrMsg()) ?>");
+
+			// Fire Form_CustomValidate event
+			if (!this.Form_CustomValidate(fobj))
+				return false;
+	}
+	return true;
+}
+
 // Form_CustomValidate event
 fviewsolicitudframelist.Form_CustomValidate = 
  function(fobj) { // DO NOT CHANGE THIS LINE!
@@ -2114,6 +2759,15 @@ if ($viewsolicitudframe->ExportAll && $viewsolicitudframe->Export <> "") {
 	else
 		$viewsolicitudframe_list->StopRec = $viewsolicitudframe_list->TotalRecs;
 }
+
+// Restore number of post back records
+if ($objForm) {
+	$objForm->Index = -1;
+	if ($objForm->HasValue($viewsolicitudframe_list->FormKeyCountName) && ($viewsolicitudframe->CurrentAction == "gridadd" || $viewsolicitudframe->CurrentAction == "gridedit" || $viewsolicitudframe->CurrentAction == "F")) {
+		$viewsolicitudframe_list->KeyCount = $objForm->GetValue($viewsolicitudframe_list->FormKeyCountName);
+		$viewsolicitudframe_list->StopRec = $viewsolicitudframe_list->StartRec + $viewsolicitudframe_list->KeyCount - 1;
+	}
+}
 $viewsolicitudframe_list->RecCnt = $viewsolicitudframe_list->StartRec - 1;
 if ($viewsolicitudframe_list->Recordset && !$viewsolicitudframe_list->Recordset->EOF) {
 	$viewsolicitudframe_list->Recordset->MoveFirst();
@@ -2128,6 +2782,9 @@ if ($viewsolicitudframe_list->Recordset && !$viewsolicitudframe_list->Recordset-
 $viewsolicitudframe->RowType = EW_ROWTYPE_AGGREGATEINIT;
 $viewsolicitudframe->ResetAttrs();
 $viewsolicitudframe_list->RenderRow();
+$viewsolicitudframe_list->EditRowCnt = 0;
+if ($viewsolicitudframe->CurrentAction == "edit")
+	$viewsolicitudframe_list->RowIndex = 1;
 while ($viewsolicitudframe_list->RecCnt < $viewsolicitudframe_list->StopRec) {
 	$viewsolicitudframe_list->RecCnt++;
 	if (intval($viewsolicitudframe_list->RecCnt) >= intval($viewsolicitudframe_list->StartRec)) {
@@ -2140,10 +2797,22 @@ while ($viewsolicitudframe_list->RecCnt < $viewsolicitudframe_list->StopRec) {
 		$viewsolicitudframe->ResetAttrs();
 		$viewsolicitudframe->CssClass = "";
 		if ($viewsolicitudframe->CurrentAction == "gridadd") {
+			$viewsolicitudframe_list->LoadRowValues(); // Load default values
 		} else {
 			$viewsolicitudframe_list->LoadRowValues($viewsolicitudframe_list->Recordset); // Load row values
 		}
 		$viewsolicitudframe->RowType = EW_ROWTYPE_VIEW; // Render view
+		if ($viewsolicitudframe->CurrentAction == "edit") {
+			if ($viewsolicitudframe_list->CheckInlineEditKey() && $viewsolicitudframe_list->EditRowCnt == 0) { // Inline edit
+				$viewsolicitudframe->RowType = EW_ROWTYPE_EDIT; // Render edit
+			}
+		}
+		if ($viewsolicitudframe->CurrentAction == "edit" && $viewsolicitudframe->RowType == EW_ROWTYPE_EDIT && $viewsolicitudframe->EventCancelled) { // Update failed
+			$objForm->Index = 1;
+			$viewsolicitudframe_list->RestoreFormValues(); // Restore form values
+		}
+		if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) // Edit row
+			$viewsolicitudframe_list->EditRowCnt++;
 
 		// Set up row id / data-rowindex
 		$viewsolicitudframe->RowAttrs = array_merge($viewsolicitudframe->RowAttrs, array('data-rowindex'=>$viewsolicitudframe_list->RowCnt, 'id'=>'r' . $viewsolicitudframe_list->RowCnt . '_viewsolicitudframe', 'data-rowtype'=>$viewsolicitudframe->RowType));
@@ -2162,74 +2831,139 @@ $viewsolicitudframe_list->ListOptions->Render("body", "left", $viewsolicitudfram
 ?>
 	<?php if ($viewsolicitudframe->id->Visible) { // id ?>
 		<td data-name="id"<?php echo $viewsolicitudframe->id->CellAttributes() ?>>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_id" class="form-group viewsolicitudframe_id">
+<span<?php echo $viewsolicitudframe->id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $viewsolicitudframe->id->EditValue ?></p></span>
+</span>
+<input type="hidden" data-table="viewsolicitudframe" data-field="x_id" name="x<?php echo $viewsolicitudframe_list->RowIndex ?>_id" id="x<?php echo $viewsolicitudframe_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($viewsolicitudframe->id->CurrentValue) ?>">
+<?php } ?>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_id" class="viewsolicitudframe_id">
 <span<?php echo $viewsolicitudframe->id->ViewAttributes() ?>>
 <?php echo $viewsolicitudframe->id->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($viewsolicitudframe->name->Visible) { // name ?>
 		<td data-name="name"<?php echo $viewsolicitudframe->name->CellAttributes() ?>>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_name" class="form-group viewsolicitudframe_name">
+<input type="text" data-table="viewsolicitudframe" data-field="x_name" name="x<?php echo $viewsolicitudframe_list->RowIndex ?>_name" id="x<?php echo $viewsolicitudframe_list->RowIndex ?>_name" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->name->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->name->EditValue ?>"<?php echo $viewsolicitudframe->name->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_name" class="viewsolicitudframe_name">
 <span<?php echo $viewsolicitudframe->name->ViewAttributes() ?>>
 <?php echo $viewsolicitudframe->name->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($viewsolicitudframe->lastname->Visible) { // lastname ?>
 		<td data-name="lastname"<?php echo $viewsolicitudframe->lastname->CellAttributes() ?>>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_lastname" class="form-group viewsolicitudframe_lastname">
+<input type="text" data-table="viewsolicitudframe" data-field="x_lastname" name="x<?php echo $viewsolicitudframe_list->RowIndex ?>_lastname" id="x<?php echo $viewsolicitudframe_list->RowIndex ?>_lastname" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->lastname->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->lastname->EditValue ?>"<?php echo $viewsolicitudframe->lastname->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_lastname" class="viewsolicitudframe_lastname">
 <span<?php echo $viewsolicitudframe->lastname->ViewAttributes() ?>>
 <?php echo $viewsolicitudframe->lastname->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($viewsolicitudframe->_email->Visible) { // email ?>
 		<td data-name="_email"<?php echo $viewsolicitudframe->_email->CellAttributes() ?>>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe__email" class="form-group viewsolicitudframe__email">
+<input type="text" data-table="viewsolicitudframe" data-field="x__email" name="x<?php echo $viewsolicitudframe_list->RowIndex ?>__email" id="x<?php echo $viewsolicitudframe_list->RowIndex ?>__email" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->_email->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->_email->EditValue ?>"<?php echo $viewsolicitudframe->_email->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe__email" class="viewsolicitudframe__email">
 <span<?php echo $viewsolicitudframe->_email->ViewAttributes() ?>>
 <?php echo $viewsolicitudframe->_email->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($viewsolicitudframe->address->Visible) { // address ?>
 		<td data-name="address"<?php echo $viewsolicitudframe->address->CellAttributes() ?>>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_address" class="form-group viewsolicitudframe_address">
+<input type="text" data-table="viewsolicitudframe" data-field="x_address" name="x<?php echo $viewsolicitudframe_list->RowIndex ?>_address" id="x<?php echo $viewsolicitudframe_list->RowIndex ?>_address" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->address->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->address->EditValue ?>"<?php echo $viewsolicitudframe->address->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_address" class="viewsolicitudframe_address">
 <span<?php echo $viewsolicitudframe->address->ViewAttributes() ?>>
 <?php echo $viewsolicitudframe->address->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($viewsolicitudframe->email_contacto->Visible) { // email_contacto ?>
 		<td data-name="email_contacto"<?php echo $viewsolicitudframe->email_contacto->CellAttributes() ?>>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_email_contacto" class="form-group viewsolicitudframe_email_contacto">
+<input type="hidden" data-table="viewsolicitudframe" data-field="x_email_contacto" name="x<?php echo $viewsolicitudframe_list->RowIndex ?>_email_contacto" id="x<?php echo $viewsolicitudframe_list->RowIndex ?>_email_contacto" value="<?php echo ew_HtmlEncode($viewsolicitudframe->email_contacto->CurrentValue) ?>">
+</span>
+<?php } ?>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_email_contacto" class="viewsolicitudframe_email_contacto">
 <span<?php echo $viewsolicitudframe->email_contacto->ViewAttributes() ?>>
 <?php echo $viewsolicitudframe->email_contacto->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($viewsolicitudframe->phone->Visible) { // phone ?>
 		<td data-name="phone"<?php echo $viewsolicitudframe->phone->CellAttributes() ?>>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_phone" class="form-group viewsolicitudframe_phone">
+<input type="text" data-table="viewsolicitudframe" data-field="x_phone" name="x<?php echo $viewsolicitudframe_list->RowIndex ?>_phone" id="x<?php echo $viewsolicitudframe_list->RowIndex ?>_phone" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->phone->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->phone->EditValue ?>"<?php echo $viewsolicitudframe->phone->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_phone" class="viewsolicitudframe_phone">
 <span<?php echo $viewsolicitudframe->phone->ViewAttributes() ?>>
 <?php echo $viewsolicitudframe->phone->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($viewsolicitudframe->cell->Visible) { // cell ?>
 		<td data-name="cell"<?php echo $viewsolicitudframe->cell->CellAttributes() ?>>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_cell" class="form-group viewsolicitudframe_cell">
+<input type="text" data-table="viewsolicitudframe" data-field="x_cell" name="x<?php echo $viewsolicitudframe_list->RowIndex ?>_cell" id="x<?php echo $viewsolicitudframe_list->RowIndex ?>_cell" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->cell->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->cell->EditValue ?>"<?php echo $viewsolicitudframe->cell->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_cell" class="viewsolicitudframe_cell">
 <span<?php echo $viewsolicitudframe->cell->ViewAttributes() ?>>
 <?php echo $viewsolicitudframe->cell->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($viewsolicitudframe->id_sucursal->Visible) { // id_sucursal ?>
 		<td data-name="id_sucursal"<?php echo $viewsolicitudframe->id_sucursal->CellAttributes() ?>>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_id_sucursal" class="form-group viewsolicitudframe_id_sucursal">
+<input type="hidden" data-table="viewsolicitudframe" data-field="x_id_sucursal" name="x<?php echo $viewsolicitudframe_list->RowIndex ?>_id_sucursal" id="x<?php echo $viewsolicitudframe_list->RowIndex ?>_id_sucursal" value="<?php echo ew_HtmlEncode($viewsolicitudframe->id_sucursal->CurrentValue) ?>">
+</span>
+<?php } ?>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $viewsolicitudframe_list->RowCnt ?>_viewsolicitudframe_id_sucursal" class="viewsolicitudframe_id_sucursal">
 <span<?php echo $viewsolicitudframe->id_sucursal->ViewAttributes() ?>>
 <?php echo $viewsolicitudframe->id_sucursal->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 <?php
@@ -2238,6 +2972,11 @@ $viewsolicitudframe_list->ListOptions->Render("body", "left", $viewsolicitudfram
 $viewsolicitudframe_list->ListOptions->Render("body", "right", $viewsolicitudframe_list->RowCnt);
 ?>
 	</tr>
+<?php if ($viewsolicitudframe->RowType == EW_ROWTYPE_ADD || $viewsolicitudframe->RowType == EW_ROWTYPE_EDIT) { ?>
+<script type="text/javascript">
+fviewsolicitudframelist.UpdateOpts(<?php echo $viewsolicitudframe_list->RowIndex ?>);
+</script>
+<?php } ?>
 <?php
 	}
 	if ($viewsolicitudframe->CurrentAction <> "gridadd")
@@ -2246,6 +2985,9 @@ $viewsolicitudframe_list->ListOptions->Render("body", "right", $viewsolicitudfra
 ?>
 </tbody>
 </table>
+<?php } ?>
+<?php if ($viewsolicitudframe->CurrentAction == "edit") { ?>
+<input type="hidden" name="<?php echo $viewsolicitudframe_list->FormKeyCountName ?>" id="<?php echo $viewsolicitudframe_list->FormKeyCountName ?>" value="<?php echo $viewsolicitudframe_list->KeyCount ?>">
 <?php } ?>
 <?php if ($viewsolicitudframe->CurrentAction == "") { ?>
 <input type="hidden" name="a_list" id="a_list" value="">

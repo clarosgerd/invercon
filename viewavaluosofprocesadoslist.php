@@ -5,10 +5,8 @@ ob_start(); // Turn on output buffering
 <?php include_once "ewcfg14.php" ?>
 <?php include_once ((EW_USE_ADODB) ? "adodb5/adodb.inc.php" : "ewmysql14.php") ?>
 <?php include_once "phpfn14.php" ?>
-<?php include_once "viewavaluoinfo.php" ?>
+<?php include_once "viewavaluosofprocesadosinfo.php" ?>
 <?php include_once "usuarioinfo.php" ?>
-<?php include_once "viewsolicitudinfo.php" ?>
-<?php include_once "viewdocumentooficialcreditogridcls.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -16,9 +14,9 @@ ob_start(); // Turn on output buffering
 // Page class
 //
 
-$viewavaluo_list = NULL; // Initialize page object first
+$viewavaluosofprocesados_list = NULL; // Initialize page object first
 
-class cviewavaluo_list extends cviewavaluo {
+class cviewavaluosofprocesados_list extends cviewavaluosofprocesados {
 
 	// Page ID
 	var $PageID = 'list';
@@ -27,13 +25,13 @@ class cviewavaluo_list extends cviewavaluo {
 	var $ProjectID = '{30AA0C25-B486-48CC-AF92-47D039BF725C}';
 
 	// Table name
-	var $TableName = 'viewavaluo';
+	var $TableName = 'viewavaluosofprocesados';
 
 	// Page object name
-	var $PageObjName = 'viewavaluo_list';
+	var $PageObjName = 'viewavaluosofprocesados_list';
 
 	// Grid form hidden field names
-	var $FormName = 'fviewavaluolist';
+	var $FormName = 'fviewavaluosofprocesadoslist';
 	var $FormActionName = 'k_action';
 	var $FormKeyName = 'k_key';
 	var $FormOldKeyName = 'k_oldkey';
@@ -292,10 +290,10 @@ class cviewavaluo_list extends cviewavaluo {
 		// Parent constuctor
 		parent::__construct();
 
-		// Table object (viewavaluo)
-		if (!isset($GLOBALS["viewavaluo"]) || get_class($GLOBALS["viewavaluo"]) == "cviewavaluo") {
-			$GLOBALS["viewavaluo"] = &$this;
-			$GLOBALS["Table"] = &$GLOBALS["viewavaluo"];
+		// Table object (viewavaluosofprocesados)
+		if (!isset($GLOBALS["viewavaluosofprocesados"]) || get_class($GLOBALS["viewavaluosofprocesados"]) == "cviewavaluosofprocesados") {
+			$GLOBALS["viewavaluosofprocesados"] = &$this;
+			$GLOBALS["Table"] = &$GLOBALS["viewavaluosofprocesados"];
 		}
 
 		// Initialize URLs
@@ -306,18 +304,15 @@ class cviewavaluo_list extends cviewavaluo {
 		$this->ExportXmlUrl = $this->PageUrl() . "export=xml";
 		$this->ExportCsvUrl = $this->PageUrl() . "export=csv";
 		$this->ExportPdfUrl = $this->PageUrl() . "export=pdf";
-		$this->AddUrl = "viewavaluoadd.php?" . EW_TABLE_SHOW_DETAIL . "=";
+		$this->AddUrl = "viewavaluosofprocesadosadd.php";
 		$this->InlineAddUrl = $this->PageUrl() . "a=add";
 		$this->GridAddUrl = $this->PageUrl() . "a=gridadd";
 		$this->GridEditUrl = $this->PageUrl() . "a=gridedit";
-		$this->MultiDeleteUrl = "viewavaluodelete.php";
-		$this->MultiUpdateUrl = "viewavaluoupdate.php";
+		$this->MultiDeleteUrl = "viewavaluosofprocesadosdelete.php";
+		$this->MultiUpdateUrl = "viewavaluosofprocesadosupdate.php";
 
 		// Table object (usuario)
 		if (!isset($GLOBALS['usuario'])) $GLOBALS['usuario'] = new cusuario();
-
-		// Table object (viewsolicitud)
-		if (!isset($GLOBALS['viewsolicitud'])) $GLOBALS['viewsolicitud'] = new cviewsolicitud();
 
 		// Page ID
 		if (!defined("EW_PAGE_ID"))
@@ -325,7 +320,7 @@ class cviewavaluo_list extends cviewavaluo {
 
 		// Table name (for backward compatibility)
 		if (!defined("EW_TABLE_NAME"))
-			define("EW_TABLE_NAME", 'viewavaluo', TRUE);
+			define("EW_TABLE_NAME", 'viewavaluosofprocesados', TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"]))
@@ -367,7 +362,7 @@ class cviewavaluo_list extends cviewavaluo {
 		// Filter options
 		$this->FilterOptions = new cListOptions();
 		$this->FilterOptions->Tag = "div";
-		$this->FilterOptions->TagClassName = "ewFilterOption fviewavaluolistsrch";
+		$this->FilterOptions->TagClassName = "ewFilterOption fviewavaluosofprocesadoslistsrch";
 
 		// List actions
 		$this->ListActions = new cListActions();
@@ -454,8 +449,8 @@ class cviewavaluo_list extends cviewavaluo {
 
 		// Setup export options
 		$this->SetupExportOptions();
-		$this->codigoavaluo->SetVisibility();
 		$this->tipoinmueble->SetVisibility();
+		$this->codigoavaluo->SetVisibility();
 		$this->id_solicitud->SetVisibility();
 		$this->id_oficialcredito->SetVisibility();
 		$this->id_inspector->SetVisibility();
@@ -479,22 +474,6 @@ class cviewavaluo_list extends cviewavaluo {
 
 		// Process auto fill
 		if (@$_POST["ajax"] == "autofill") {
-
-			// Get the keys for master table
-			$sDetailTblVar = $this->getCurrentDetailTable();
-			if ($sDetailTblVar <> "") {
-				$DetailTblVar = explode(",", $sDetailTblVar);
-				if (in_array("viewdocumentooficialcredito", $DetailTblVar)) {
-
-					// Process auto fill for detail table 'viewdocumentooficialcredito'
-					if (preg_match('/^fviewdocumentooficialcredito(grid|add|addopt|edit|update|search)$/', @$_POST["form"])) {
-						if (!isset($GLOBALS["viewdocumentooficialcredito_grid"])) $GLOBALS["viewdocumentooficialcredito_grid"] = new cviewdocumentooficialcredito_grid;
-						$GLOBALS["viewdocumentooficialcredito_grid"]->Page_Init();
-						$this->Page_Terminate();
-						exit();
-					}
-				}
-			}
 			$results = $this->GetAutoFill(@$_POST["name"], @$_POST["q"]);
 			if ($results) {
 
@@ -509,9 +488,6 @@ class cviewavaluo_list extends cviewavaluo {
 
 		// Create Token
 		$this->CreateToken();
-
-		// Set up master detail parameters
-		$this->SetupMasterParms();
 
 		// Setup other options
 		$this->SetupOtherOptions();
@@ -542,13 +518,13 @@ class cviewavaluo_list extends cviewavaluo {
 		Page_Unloaded();
 
 		// Export
-		global $EW_EXPORT, $viewavaluo;
+		global $EW_EXPORT, $viewavaluosofprocesados;
 		if ($this->CustomExport <> "" && $this->CustomExport == $this->Export && array_key_exists($this->CustomExport, $EW_EXPORT)) {
 				$sContent = ob_get_contents();
 			if ($gsExportFile == "") $gsExportFile = $this->TableVar;
 			$class = $EW_EXPORT[$this->CustomExport];
 			if (class_exists($class)) {
-				$doc = new $class($viewavaluo);
+				$doc = new $class($viewavaluosofprocesados);
 				$doc->Text = $sContent;
 				if ($this->Export == "email")
 					echo $this->ExportEmail($doc->Text);
@@ -614,7 +590,6 @@ class cviewavaluo_list extends cviewavaluo {
 	var $MultiSelectKey;
 	var $Command;
 	var $RestoreSearch = FALSE;
-	var $viewdocumentooficialcredito_Count;
 	var $DetailPages;
 	var $Recordset;
 	var $OldRecordset;
@@ -671,8 +646,30 @@ class cviewavaluo_list extends cviewavaluo {
 					$option->HideAllOptions();
 			}
 
+			// Get default search criteria
+			ew_AddFilter($this->DefaultSearchWhere, $this->AdvancedSearchWhere(TRUE));
+
+			// Get and validate search values for advanced search
+			$this->LoadSearchValues(); // Get search values
+
+			// Process filter list
+			$this->ProcessFilterList();
+			if (!$this->ValidateSearch())
+				$this->setFailureMessage($gsSearchError);
+
+			// Restore search parms from Session if not searching / reset / export
+			if (($this->Export <> "" || $this->Command <> "search" && $this->Command <> "reset" && $this->Command <> "resetall") && $this->Command <> "json" && $this->CheckSearchParms())
+				$this->RestoreSearchParms();
+
+			// Call Recordset SearchValidated event
+			$this->Recordset_SearchValidated();
+
 			// Set up sorting order
 			$this->SetupSortOrder();
+
+			// Get search criteria for advanced search
+			if ($gsSearchError == "")
+				$sSrchAdvanced = $this->AdvancedSearchWhere();
 		}
 
 		// Restore display records
@@ -686,32 +683,37 @@ class cviewavaluo_list extends cviewavaluo {
 		if ($this->Command <> "json")
 			$this->LoadSortOrder();
 
+		// Load search default if no existing search criteria
+		if (!$this->CheckSearchParms()) {
+
+			// Load advanced search from default
+			if ($this->LoadAdvancedSearchDefault()) {
+				$sSrchAdvanced = $this->AdvancedSearchWhere();
+			}
+		}
+
+		// Build search criteria
+		ew_AddFilter($this->SearchWhere, $sSrchAdvanced);
+		ew_AddFilter($this->SearchWhere, $sSrchBasic);
+
+		// Call Recordset_Searching event
+		$this->Recordset_Searching($this->SearchWhere);
+
+		// Save search criteria
+		if ($this->Command == "search" && !$this->RestoreSearch) {
+			$this->setSearchWhere($this->SearchWhere); // Save to Session
+			$this->StartRec = 1; // Reset start record counter
+			$this->setStartRecordNumber($this->StartRec);
+		} elseif ($this->Command <> "json") {
+			$this->SearchWhere = $this->getSearchWhere();
+		}
+
 		// Build filter
 		$sFilter = "";
 		if (!$Security->CanList())
 			$sFilter = "(0=1)"; // Filter all records
-
-		// Restore master/detail filter
-		$this->DbMasterFilter = $this->GetMasterFilter(); // Restore master filter
-		$this->DbDetailFilter = $this->GetDetailFilter(); // Restore detail filter
 		ew_AddFilter($sFilter, $this->DbDetailFilter);
 		ew_AddFilter($sFilter, $this->SearchWhere);
-
-		// Load master record
-		if ($this->CurrentMode <> "add" && $this->GetMasterFilter() <> "" && $this->getCurrentMasterTable() == "viewsolicitud") {
-			global $viewsolicitud;
-			$rsmaster = $viewsolicitud->LoadRs($this->DbMasterFilter);
-			$this->MasterRecordExists = ($rsmaster && !$rsmaster->EOF);
-			if (!$this->MasterRecordExists) {
-				$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record found
-				$this->Page_Terminate("viewsolicitudlist.php"); // Return to master page
-			} else {
-				$viewsolicitud->LoadListRowValues($rsmaster);
-				$viewsolicitud->RowType = EW_ROWTYPE_MASTER; // Master row
-				$viewsolicitud->RenderListRow();
-				$rsmaster->Close();
-			}
-		}
 
 		// Set up filter
 		if ($this->Command == "json") {
@@ -803,6 +805,314 @@ class cviewavaluo_list extends cviewavaluo {
 		return TRUE;
 	}
 
+	// Get list of filters
+	function GetFilterList() {
+		global $UserProfile;
+
+		// Initialize
+		$sFilterList = "";
+		$sSavedFilterList = "";
+
+		// Load server side filters
+		if (EW_SEARCH_FILTER_OPTION == "Server" && isset($UserProfile))
+			$sSavedFilterList = $UserProfile->GetSearchFilters(CurrentUserName(), "fviewavaluosofprocesadoslistsrch");
+		$sFilterList = ew_Concat($sFilterList, $this->id->AdvancedSearch->ToJson(), ","); // Field id
+		$sFilterList = ew_Concat($sFilterList, $this->tipoinmueble->AdvancedSearch->ToJson(), ","); // Field tipoinmueble
+		$sFilterList = ew_Concat($sFilterList, $this->codigoavaluo->AdvancedSearch->ToJson(), ","); // Field codigoavaluo
+		$sFilterList = ew_Concat($sFilterList, $this->id_solicitud->AdvancedSearch->ToJson(), ","); // Field id_solicitud
+		$sFilterList = ew_Concat($sFilterList, $this->id_oficialcredito->AdvancedSearch->ToJson(), ","); // Field id_oficialcredito
+		$sFilterList = ew_Concat($sFilterList, $this->id_inspector->AdvancedSearch->ToJson(), ","); // Field id_inspector
+		$sFilterList = ew_Concat($sFilterList, $this->id_cliente->AdvancedSearch->ToJson(), ","); // Field id_cliente
+		$sFilterList = ew_Concat($sFilterList, $this->estado->AdvancedSearch->ToJson(), ","); // Field estado
+		$sFilterList = ew_Concat($sFilterList, $this->estadopago->AdvancedSearch->ToJson(), ","); // Field estadopago
+		$sFilterList = ew_Concat($sFilterList, $this->fecha_avaluo->AdvancedSearch->ToJson(), ","); // Field fecha_avaluo
+		$sFilterList = ew_Concat($sFilterList, $this->comentario->AdvancedSearch->ToJson(), ","); // Field comentario
+		$sFilterList = preg_replace('/,$/', "", $sFilterList);
+
+		// Return filter list in json
+		if ($sFilterList <> "")
+			$sFilterList = "\"data\":{" . $sFilterList . "}";
+		if ($sSavedFilterList <> "") {
+			if ($sFilterList <> "")
+				$sFilterList .= ",";
+			$sFilterList .= "\"filters\":" . $sSavedFilterList;
+		}
+		return ($sFilterList <> "") ? "{" . $sFilterList . "}" : "null";
+	}
+
+	// Process filter list
+	function ProcessFilterList() {
+		global $UserProfile;
+		if (@$_POST["ajax"] == "savefilters") { // Save filter request (Ajax)
+			$filters = @$_POST["filters"];
+			$UserProfile->SetSearchFilters(CurrentUserName(), "fviewavaluosofprocesadoslistsrch", $filters);
+
+			// Clean output buffer
+			if (!EW_DEBUG_ENABLED && ob_get_length())
+				ob_end_clean();
+			echo ew_ArrayToJson(array(array("success" => TRUE))); // Success
+			$this->Page_Terminate();
+			exit();
+		} elseif (@$_POST["cmd"] == "resetfilter") {
+			$this->RestoreFilterList();
+		}
+	}
+
+	// Restore list of filters
+	function RestoreFilterList() {
+
+		// Return if not reset filter
+		if (@$_POST["cmd"] <> "resetfilter")
+			return FALSE;
+		$filter = json_decode(@$_POST["filter"], TRUE);
+		$this->Command = "search";
+
+		// Field id
+		$this->id->AdvancedSearch->SearchValue = @$filter["x_id"];
+		$this->id->AdvancedSearch->SearchOperator = @$filter["z_id"];
+		$this->id->AdvancedSearch->SearchCondition = @$filter["v_id"];
+		$this->id->AdvancedSearch->SearchValue2 = @$filter["y_id"];
+		$this->id->AdvancedSearch->SearchOperator2 = @$filter["w_id"];
+		$this->id->AdvancedSearch->Save();
+
+		// Field tipoinmueble
+		$this->tipoinmueble->AdvancedSearch->SearchValue = @$filter["x_tipoinmueble"];
+		$this->tipoinmueble->AdvancedSearch->SearchOperator = @$filter["z_tipoinmueble"];
+		$this->tipoinmueble->AdvancedSearch->SearchCondition = @$filter["v_tipoinmueble"];
+		$this->tipoinmueble->AdvancedSearch->SearchValue2 = @$filter["y_tipoinmueble"];
+		$this->tipoinmueble->AdvancedSearch->SearchOperator2 = @$filter["w_tipoinmueble"];
+		$this->tipoinmueble->AdvancedSearch->Save();
+
+		// Field codigoavaluo
+		$this->codigoavaluo->AdvancedSearch->SearchValue = @$filter["x_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->SearchOperator = @$filter["z_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->SearchCondition = @$filter["v_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->SearchValue2 = @$filter["y_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->SearchOperator2 = @$filter["w_codigoavaluo"];
+		$this->codigoavaluo->AdvancedSearch->Save();
+
+		// Field id_solicitud
+		$this->id_solicitud->AdvancedSearch->SearchValue = @$filter["x_id_solicitud"];
+		$this->id_solicitud->AdvancedSearch->SearchOperator = @$filter["z_id_solicitud"];
+		$this->id_solicitud->AdvancedSearch->SearchCondition = @$filter["v_id_solicitud"];
+		$this->id_solicitud->AdvancedSearch->SearchValue2 = @$filter["y_id_solicitud"];
+		$this->id_solicitud->AdvancedSearch->SearchOperator2 = @$filter["w_id_solicitud"];
+		$this->id_solicitud->AdvancedSearch->Save();
+
+		// Field id_oficialcredito
+		$this->id_oficialcredito->AdvancedSearch->SearchValue = @$filter["x_id_oficialcredito"];
+		$this->id_oficialcredito->AdvancedSearch->SearchOperator = @$filter["z_id_oficialcredito"];
+		$this->id_oficialcredito->AdvancedSearch->SearchCondition = @$filter["v_id_oficialcredito"];
+		$this->id_oficialcredito->AdvancedSearch->SearchValue2 = @$filter["y_id_oficialcredito"];
+		$this->id_oficialcredito->AdvancedSearch->SearchOperator2 = @$filter["w_id_oficialcredito"];
+		$this->id_oficialcredito->AdvancedSearch->Save();
+
+		// Field id_inspector
+		$this->id_inspector->AdvancedSearch->SearchValue = @$filter["x_id_inspector"];
+		$this->id_inspector->AdvancedSearch->SearchOperator = @$filter["z_id_inspector"];
+		$this->id_inspector->AdvancedSearch->SearchCondition = @$filter["v_id_inspector"];
+		$this->id_inspector->AdvancedSearch->SearchValue2 = @$filter["y_id_inspector"];
+		$this->id_inspector->AdvancedSearch->SearchOperator2 = @$filter["w_id_inspector"];
+		$this->id_inspector->AdvancedSearch->Save();
+
+		// Field id_cliente
+		$this->id_cliente->AdvancedSearch->SearchValue = @$filter["x_id_cliente"];
+		$this->id_cliente->AdvancedSearch->SearchOperator = @$filter["z_id_cliente"];
+		$this->id_cliente->AdvancedSearch->SearchCondition = @$filter["v_id_cliente"];
+		$this->id_cliente->AdvancedSearch->SearchValue2 = @$filter["y_id_cliente"];
+		$this->id_cliente->AdvancedSearch->SearchOperator2 = @$filter["w_id_cliente"];
+		$this->id_cliente->AdvancedSearch->Save();
+
+		// Field estado
+		$this->estado->AdvancedSearch->SearchValue = @$filter["x_estado"];
+		$this->estado->AdvancedSearch->SearchOperator = @$filter["z_estado"];
+		$this->estado->AdvancedSearch->SearchCondition = @$filter["v_estado"];
+		$this->estado->AdvancedSearch->SearchValue2 = @$filter["y_estado"];
+		$this->estado->AdvancedSearch->SearchOperator2 = @$filter["w_estado"];
+		$this->estado->AdvancedSearch->Save();
+
+		// Field estadopago
+		$this->estadopago->AdvancedSearch->SearchValue = @$filter["x_estadopago"];
+		$this->estadopago->AdvancedSearch->SearchOperator = @$filter["z_estadopago"];
+		$this->estadopago->AdvancedSearch->SearchCondition = @$filter["v_estadopago"];
+		$this->estadopago->AdvancedSearch->SearchValue2 = @$filter["y_estadopago"];
+		$this->estadopago->AdvancedSearch->SearchOperator2 = @$filter["w_estadopago"];
+		$this->estadopago->AdvancedSearch->Save();
+
+		// Field fecha_avaluo
+		$this->fecha_avaluo->AdvancedSearch->SearchValue = @$filter["x_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->SearchOperator = @$filter["z_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->SearchCondition = @$filter["v_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->SearchValue2 = @$filter["y_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->SearchOperator2 = @$filter["w_fecha_avaluo"];
+		$this->fecha_avaluo->AdvancedSearch->Save();
+
+		// Field comentario
+		$this->comentario->AdvancedSearch->SearchValue = @$filter["x_comentario"];
+		$this->comentario->AdvancedSearch->SearchOperator = @$filter["z_comentario"];
+		$this->comentario->AdvancedSearch->SearchCondition = @$filter["v_comentario"];
+		$this->comentario->AdvancedSearch->SearchValue2 = @$filter["y_comentario"];
+		$this->comentario->AdvancedSearch->SearchOperator2 = @$filter["w_comentario"];
+		$this->comentario->AdvancedSearch->Save();
+	}
+
+	// Advanced search WHERE clause based on QueryString
+	function AdvancedSearchWhere($Default = FALSE) {
+		global $Security;
+		$sWhere = "";
+		if (!$Security->CanSearch()) return "";
+		$this->BuildSearchSql($sWhere, $this->id, $Default, FALSE); // id
+		$this->BuildSearchSql($sWhere, $this->tipoinmueble, $Default, FALSE); // tipoinmueble
+		$this->BuildSearchSql($sWhere, $this->codigoavaluo, $Default, FALSE); // codigoavaluo
+		$this->BuildSearchSql($sWhere, $this->id_solicitud, $Default, FALSE); // id_solicitud
+		$this->BuildSearchSql($sWhere, $this->id_oficialcredito, $Default, FALSE); // id_oficialcredito
+		$this->BuildSearchSql($sWhere, $this->id_inspector, $Default, FALSE); // id_inspector
+		$this->BuildSearchSql($sWhere, $this->id_cliente, $Default, FALSE); // id_cliente
+		$this->BuildSearchSql($sWhere, $this->estado, $Default, FALSE); // estado
+		$this->BuildSearchSql($sWhere, $this->estadopago, $Default, FALSE); // estadopago
+		$this->BuildSearchSql($sWhere, $this->fecha_avaluo, $Default, FALSE); // fecha_avaluo
+		$this->BuildSearchSql($sWhere, $this->comentario, $Default, FALSE); // comentario
+
+		// Set up search parm
+		if (!$Default && $sWhere <> "" && in_array($this->Command, array("", "reset", "resetall"))) {
+			$this->Command = "search";
+		}
+		if (!$Default && $this->Command == "search") {
+			$this->id->AdvancedSearch->Save(); // id
+			$this->tipoinmueble->AdvancedSearch->Save(); // tipoinmueble
+			$this->codigoavaluo->AdvancedSearch->Save(); // codigoavaluo
+			$this->id_solicitud->AdvancedSearch->Save(); // id_solicitud
+			$this->id_oficialcredito->AdvancedSearch->Save(); // id_oficialcredito
+			$this->id_inspector->AdvancedSearch->Save(); // id_inspector
+			$this->id_cliente->AdvancedSearch->Save(); // id_cliente
+			$this->estado->AdvancedSearch->Save(); // estado
+			$this->estadopago->AdvancedSearch->Save(); // estadopago
+			$this->fecha_avaluo->AdvancedSearch->Save(); // fecha_avaluo
+			$this->comentario->AdvancedSearch->Save(); // comentario
+		}
+		return $sWhere;
+	}
+
+	// Build search SQL
+	function BuildSearchSql(&$Where, &$Fld, $Default, $MultiValue) {
+		$FldParm = $Fld->FldParm();
+		$FldVal = ($Default) ? $Fld->AdvancedSearch->SearchValueDefault : $Fld->AdvancedSearch->SearchValue; // @$_GET["x_$FldParm"]
+		$FldOpr = ($Default) ? $Fld->AdvancedSearch->SearchOperatorDefault : $Fld->AdvancedSearch->SearchOperator; // @$_GET["z_$FldParm"]
+		$FldCond = ($Default) ? $Fld->AdvancedSearch->SearchConditionDefault : $Fld->AdvancedSearch->SearchCondition; // @$_GET["v_$FldParm"]
+		$FldVal2 = ($Default) ? $Fld->AdvancedSearch->SearchValue2Default : $Fld->AdvancedSearch->SearchValue2; // @$_GET["y_$FldParm"]
+		$FldOpr2 = ($Default) ? $Fld->AdvancedSearch->SearchOperator2Default : $Fld->AdvancedSearch->SearchOperator2; // @$_GET["w_$FldParm"]
+		$sWrk = "";
+		if (is_array($FldVal)) $FldVal = implode(",", $FldVal);
+		if (is_array($FldVal2)) $FldVal2 = implode(",", $FldVal2);
+		$FldOpr = strtoupper(trim($FldOpr));
+		if ($FldOpr == "") $FldOpr = "=";
+		$FldOpr2 = strtoupper(trim($FldOpr2));
+		if ($FldOpr2 == "") $FldOpr2 = "=";
+		if (EW_SEARCH_MULTI_VALUE_OPTION == 1)
+			$MultiValue = FALSE;
+		if ($MultiValue) {
+			$sWrk1 = ($FldVal <> "") ? ew_GetMultiSearchSql($Fld, $FldOpr, $FldVal, $this->DBID) : ""; // Field value 1
+			$sWrk2 = ($FldVal2 <> "") ? ew_GetMultiSearchSql($Fld, $FldOpr2, $FldVal2, $this->DBID) : ""; // Field value 2
+			$sWrk = $sWrk1; // Build final SQL
+			if ($sWrk2 <> "")
+				$sWrk = ($sWrk <> "") ? "($sWrk) $FldCond ($sWrk2)" : $sWrk2;
+		} else {
+			$FldVal = $this->ConvertSearchValue($Fld, $FldVal);
+			$FldVal2 = $this->ConvertSearchValue($Fld, $FldVal2);
+			$sWrk = ew_GetSearchSql($Fld, $FldVal, $FldOpr, $FldCond, $FldVal2, $FldOpr2, $this->DBID);
+		}
+		ew_AddFilter($Where, $sWrk);
+	}
+
+	// Convert search value
+	function ConvertSearchValue(&$Fld, $FldVal) {
+		if ($FldVal == EW_NULL_VALUE || $FldVal == EW_NOT_NULL_VALUE)
+			return $FldVal;
+		$Value = $FldVal;
+		if ($Fld->FldDataType == EW_DATATYPE_BOOLEAN) {
+			if ($FldVal <> "") $Value = ($FldVal == "1" || strtolower(strval($FldVal)) == "y" || strtolower(strval($FldVal)) == "t") ? $Fld->TrueValue : $Fld->FalseValue;
+		} elseif ($Fld->FldDataType == EW_DATATYPE_DATE || $Fld->FldDataType == EW_DATATYPE_TIME) {
+			if ($FldVal <> "") $Value = ew_UnFormatDateTime($FldVal, $Fld->FldDateTimeFormat);
+		}
+		return $Value;
+	}
+
+	// Check if search parm exists
+	function CheckSearchParms() {
+		if ($this->id->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->tipoinmueble->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->codigoavaluo->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->id_solicitud->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->id_oficialcredito->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->id_inspector->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->id_cliente->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->estado->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->estadopago->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->fecha_avaluo->AdvancedSearch->IssetSession())
+			return TRUE;
+		if ($this->comentario->AdvancedSearch->IssetSession())
+			return TRUE;
+		return FALSE;
+	}
+
+	// Clear all search parameters
+	function ResetSearchParms() {
+
+		// Clear search WHERE clause
+		$this->SearchWhere = "";
+		$this->setSearchWhere($this->SearchWhere);
+
+		// Clear advanced search parameters
+		$this->ResetAdvancedSearchParms();
+	}
+
+	// Load advanced search default values
+	function LoadAdvancedSearchDefault() {
+		return FALSE;
+	}
+
+	// Clear all advanced search parameters
+	function ResetAdvancedSearchParms() {
+		$this->id->AdvancedSearch->UnsetSession();
+		$this->tipoinmueble->AdvancedSearch->UnsetSession();
+		$this->codigoavaluo->AdvancedSearch->UnsetSession();
+		$this->id_solicitud->AdvancedSearch->UnsetSession();
+		$this->id_oficialcredito->AdvancedSearch->UnsetSession();
+		$this->id_inspector->AdvancedSearch->UnsetSession();
+		$this->id_cliente->AdvancedSearch->UnsetSession();
+		$this->estado->AdvancedSearch->UnsetSession();
+		$this->estadopago->AdvancedSearch->UnsetSession();
+		$this->fecha_avaluo->AdvancedSearch->UnsetSession();
+		$this->comentario->AdvancedSearch->UnsetSession();
+	}
+
+	// Restore all search parameters
+	function RestoreSearchParms() {
+		$this->RestoreSearch = TRUE;
+
+		// Restore advanced search values
+		$this->id->AdvancedSearch->Load();
+		$this->tipoinmueble->AdvancedSearch->Load();
+		$this->codigoavaluo->AdvancedSearch->Load();
+		$this->id_solicitud->AdvancedSearch->Load();
+		$this->id_oficialcredito->AdvancedSearch->Load();
+		$this->id_inspector->AdvancedSearch->Load();
+		$this->id_cliente->AdvancedSearch->Load();
+		$this->estado->AdvancedSearch->Load();
+		$this->estadopago->AdvancedSearch->Load();
+		$this->fecha_avaluo->AdvancedSearch->Load();
+		$this->comentario->AdvancedSearch->Load();
+	}
+
 	// Set up sort parameters
 	function SetupSortOrder() {
 
@@ -810,8 +1120,8 @@ class cviewavaluo_list extends cviewavaluo {
 		if (@$_GET["order"] <> "") {
 			$this->CurrentOrder = @$_GET["order"];
 			$this->CurrentOrderType = @$_GET["ordertype"];
-			$this->UpdateSort($this->codigoavaluo); // codigoavaluo
 			$this->UpdateSort($this->tipoinmueble); // tipoinmueble
+			$this->UpdateSort($this->codigoavaluo); // codigoavaluo
 			$this->UpdateSort($this->id_solicitud); // id_solicitud
 			$this->UpdateSort($this->id_oficialcredito); // id_oficialcredito
 			$this->UpdateSort($this->id_inspector); // id_inspector
@@ -842,20 +1152,16 @@ class cviewavaluo_list extends cviewavaluo {
 		// Check if reset command
 		if (substr($this->Command,0,5) == "reset") {
 
-			// Reset master/detail keys
-			if ($this->Command == "resetall") {
-				$this->setCurrentMasterTable(""); // Clear master table
-				$this->DbMasterFilter = "";
-				$this->DbDetailFilter = "";
-				$this->id_solicitud->setSessionValue("");
-			}
+			// Reset search criteria
+			if ($this->Command == "reset" || $this->Command == "resetall")
+				$this->ResetSearchParms();
 
 			// Reset sorting order
 			if ($this->Command == "resetsort") {
 				$sOrderBy = "";
 				$this->setSessionOrderBy($sOrderBy);
-				$this->codigoavaluo->setSort("");
 				$this->tipoinmueble->setSort("");
+				$this->codigoavaluo->setSort("");
 				$this->id_solicitud->setSort("");
 				$this->id_oficialcredito->setSort("");
 				$this->id_inspector->setSort("");
@@ -879,28 +1185,6 @@ class cviewavaluo_list extends cviewavaluo {
 		$item->Body = "";
 		$item->OnLeft = TRUE;
 		$item->Visible = FALSE;
-
-		// "detail_viewdocumentooficialcredito"
-		$item = &$this->ListOptions->Add("detail_viewdocumentooficialcredito");
-		$item->CssClass = "text-nowrap";
-		$item->Visible = $Security->AllowList(CurrentProjectID() . 'viewdocumentooficialcredito') && !$this->ShowMultipleDetails;
-		$item->OnLeft = TRUE;
-		$item->ShowInButtonGroup = FALSE;
-		if (!isset($GLOBALS["viewdocumentooficialcredito_grid"])) $GLOBALS["viewdocumentooficialcredito_grid"] = new cviewdocumentooficialcredito_grid;
-
-		// Multiple details
-		if ($this->ShowMultipleDetails) {
-			$item = &$this->ListOptions->Add("details");
-			$item->CssClass = "text-nowrap";
-			$item->Visible = $this->ShowMultipleDetails;
-			$item->OnLeft = TRUE;
-			$item->ShowInButtonGroup = FALSE;
-		}
-
-		// Set up detail pages
-		$pages = new cSubPages();
-		$pages->Add("viewdocumentooficialcredito");
-		$this->DetailPages = $pages;
 
 		// List actions
 		$item = &$this->ListOptions->Add("listactions");
@@ -971,48 +1255,6 @@ class cviewavaluo_list extends cviewavaluo {
 				$oListOpt->Visible = TRUE;
 			}
 		}
-		$DetailViewTblVar = "";
-		$DetailCopyTblVar = "";
-		$DetailEditTblVar = "";
-
-		// "detail_viewdocumentooficialcredito"
-		$oListOpt = &$this->ListOptions->Items["detail_viewdocumentooficialcredito"];
-		if ($Security->AllowList(CurrentProjectID() . 'viewdocumentooficialcredito')) {
-			$body = $Language->Phrase("DetailLink") . $Language->TablePhrase("viewdocumentooficialcredito", "TblCaption");
-			$body .= "&nbsp;" . str_replace("%c", $this->viewdocumentooficialcredito_Count, $Language->Phrase("DetailCount"));
-			$body = "<a class=\"btn btn-default btn-sm ewRowLink ewDetail\" data-action=\"list\" href=\"" . ew_HtmlEncode("viewdocumentooficialcreditolist.php?" . EW_TABLE_SHOW_MASTER . "=viewavaluo&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "") . "\">" . $body . "</a>";
-			$links = "";
-			if ($links <> "") {
-				$body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewDetail\" data-toggle=\"dropdown\"><b class=\"caret\"></b></button>";
-				$body .= "<ul class=\"dropdown-menu\">". $links . "</ul>";
-			}
-			$body = "<div class=\"btn-group\">" . $body . "</div>";
-			$oListOpt->Body = $body;
-			if ($this->ShowMultipleDetails) $oListOpt->Visible = FALSE;
-		}
-		if ($this->ShowMultipleDetails) {
-			$body = $Language->Phrase("MultipleMasterDetails");
-			$body = "<div class=\"btn-group\">";
-			$links = "";
-			if ($DetailViewTblVar <> "") {
-				$links .= "<li><a class=\"ewRowLink ewDetailView\" data-action=\"view\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailViewLink")) . "\" href=\"" . ew_HtmlEncode($this->GetViewUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailViewTblVar)) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailViewLink")) . "</a></li>";
-			}
-			if ($DetailEditTblVar <> "") {
-				$links .= "<li><a class=\"ewRowLink ewDetailEdit\" data-action=\"edit\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailEditLink")) . "\" href=\"" . ew_HtmlEncode($this->GetEditUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailEditTblVar)) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailEditLink")) . "</a></li>";
-			}
-			if ($DetailCopyTblVar <> "") {
-				$links .= "<li><a class=\"ewRowLink ewDetailCopy\" data-action=\"add\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailCopyLink")) . "\" href=\"" . ew_HtmlEncode($this->GetCopyUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailCopyTblVar)) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailCopyLink")) . "</a></li>";
-			}
-			if ($links <> "") {
-				$body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewMasterDetail\" title=\"" . ew_HtmlTitle($Language->Phrase("MultipleMasterDetails")) . "\" data-toggle=\"dropdown\">" . $Language->Phrase("MultipleMasterDetails") . "<b class=\"caret\"></b></button>";
-				$body .= "<ul class=\"dropdown-menu ewMenu\">". $links . "</ul>";
-			}
-			$body .= "</div>";
-
-			// Multiple details
-			$oListOpt = &$this->ListOptions->Items["details"];
-			$oListOpt->Body = $body;
-		}
 
 		// "checkbox"
 		$oListOpt = &$this->ListOptions->Items["checkbox"];
@@ -1027,44 +1269,6 @@ class cviewavaluo_list extends cviewavaluo {
 	function SetupOtherOptions() {
 		global $Language, $Security;
 		$options = &$this->OtherOptions;
-		$option = $options["addedit"];
-
-		// Add
-		$item = &$option->Add("add");
-		$addcaption = ew_HtmlTitle($Language->Phrase("AddLink"));
-		if (ew_IsMobile())
-			$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . ew_HtmlEncode($this->AddUrl) . "\">" . $Language->Phrase("AddLink") . "</a>";
-		else
-			$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-table=\"viewavaluo\" data-caption=\"" . $addcaption . "\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'AddBtn',url:'" . ew_HtmlEncode($this->AddUrl) . "'});\">" . $Language->Phrase("AddLink") . "</a>";
-		$item->Visible = ($this->AddUrl <> "" && $Security->CanAdd());
-		$option = $options["detail"];
-		$DetailTableLink = "";
-		$item = &$option->Add("detailadd_viewdocumentooficialcredito");
-		$url = $this->GetAddUrl(EW_TABLE_SHOW_DETAIL . "=viewdocumentooficialcredito");
-		$caption = $Language->Phrase("Add") . "&nbsp;" . $this->TableCaption() . "/" . $GLOBALS["viewdocumentooficialcredito"]->TableCaption();
-		$item->Body = "<a class=\"ewDetailAddGroup ewDetailAdd\" title=\"" . ew_HtmlTitle($caption) . "\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"" . ew_HtmlEncode($url) . "\">" . $caption . "</a>";
-		$item->Visible = ($GLOBALS["viewdocumentooficialcredito"]->DetailAdd && $Security->AllowAdd(CurrentProjectID() . 'viewdocumentooficialcredito') && $Security->CanAdd());
-		if ($item->Visible) {
-			if ($DetailTableLink <> "") $DetailTableLink .= ",";
-			$DetailTableLink .= "viewdocumentooficialcredito";
-		}
-
-		// Add multiple details
-		if ($this->ShowMultipleDetails) {
-			$item = &$option->Add("detailsadd");
-			$url = $this->GetAddUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailTableLink);
-			$caption = $Language->Phrase("AddMasterDetailLink");
-			$item->Body = "<a class=\"ewDetailAddGroup ewDetailAdd\" title=\"" . ew_HtmlTitle($caption) . "\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"" . ew_HtmlEncode($url) . "\">" . $caption . "</a>";
-			$item->Visible = ($DetailTableLink <> "" && $Security->CanAdd());
-
-			// Hide single master/detail items
-			$ar = explode(",", $DetailTableLink);
-			$cnt = count($ar);
-			for ($i = 0; $i < $cnt; $i++) {
-				if ($item = &$option->GetItem("detailadd_" . $ar[$i]))
-					$item->Visible = FALSE;
-			}
-		}
 		$option = $options["action"];
 
 		// Set up options default
@@ -1083,11 +1287,11 @@ class cviewavaluo_list extends cviewavaluo {
 
 		// Filter button
 		$item = &$this->FilterOptions->Add("savecurrentfilter");
-		$item->Body = "<a class=\"ewSaveFilter\" data-form=\"fviewavaluolistsrch\" href=\"#\">" . $Language->Phrase("SaveCurrentFilter") . "</a>";
-		$item->Visible = FALSE;
+		$item->Body = "<a class=\"ewSaveFilter\" data-form=\"fviewavaluosofprocesadoslistsrch\" href=\"#\">" . $Language->Phrase("SaveCurrentFilter") . "</a>";
+		$item->Visible = TRUE;
 		$item = &$this->FilterOptions->Add("deletefilter");
-		$item->Body = "<a class=\"ewDeleteFilter\" data-form=\"fviewavaluolistsrch\" href=\"#\">" . $Language->Phrase("DeleteFilter") . "</a>";
-		$item->Visible = FALSE;
+		$item->Body = "<a class=\"ewDeleteFilter\" data-form=\"fviewavaluosofprocesadoslistsrch\" href=\"#\">" . $Language->Phrase("DeleteFilter") . "</a>";
+		$item->Visible = TRUE;
 		$this->FilterOptions->UseDropDownButton = TRUE;
 		$this->FilterOptions->UseButtonGroup = !$this->FilterOptions->UseDropDownButton;
 		$this->FilterOptions->DropDownButtonPhrase = $Language->Phrase("Filters");
@@ -1110,7 +1314,7 @@ class cviewavaluo_list extends cviewavaluo {
 					$item = &$option->Add("custom_" . $listaction->Action);
 					$caption = $listaction->Caption;
 					$icon = ($listaction->Icon <> "") ? "<span class=\"" . ew_HtmlEncode($listaction->Icon) . "\" data-caption=\"" . ew_HtmlEncode($caption) . "\"></span> " : $caption;
-					$item->Body = "<a class=\"ewAction ewListAction\" title=\"" . ew_HtmlEncode($caption) . "\" data-caption=\"" . ew_HtmlEncode($caption) . "\" href=\"\" onclick=\"ew_SubmitAction(event,jQuery.extend({f:document.fviewavaluolist}," . $listaction->ToJson(TRUE) . "));return false;\">" . $icon . "</a>";
+					$item->Body = "<a class=\"ewAction ewListAction\" title=\"" . ew_HtmlEncode($caption) . "\" data-caption=\"" . ew_HtmlEncode($caption) . "\" href=\"\" onclick=\"ew_SubmitAction(event,jQuery.extend({f:document.fviewavaluosofprocesadoslist}," . $listaction->ToJson(TRUE) . "));return false;\">" . $icon . "</a>";
 					$item->Visible = $listaction->Allow;
 				}
 			}
@@ -1211,6 +1415,17 @@ class cviewavaluo_list extends cviewavaluo {
 		$this->SearchOptions->Tag = "div";
 		$this->SearchOptions->TagClassName = "ewSearchOption";
 
+		// Search button
+		$item = &$this->SearchOptions->Add("searchtoggle");
+		$SearchToggleClass = ($this->SearchWhere <> "") ? " active" : " active";
+		$item->Body = "<button type=\"button\" class=\"btn btn-default ewSearchToggle" . $SearchToggleClass . "\" title=\"" . $Language->Phrase("SearchPanel") . "\" data-caption=\"" . $Language->Phrase("SearchPanel") . "\" data-toggle=\"button\" data-form=\"fviewavaluosofprocesadoslistsrch\">" . $Language->Phrase("SearchLink") . "</button>";
+		$item->Visible = TRUE;
+
+		// Show all button
+		$item = &$this->SearchOptions->Add("showall");
+		$item->Body = "<a class=\"btn btn-default ewShowAll\" title=\"" . $Language->Phrase("ShowAll") . "\" data-caption=\"" . $Language->Phrase("ShowAll") . "\" href=\"" . $this->PageUrl() . "cmd=reset\">" . $Language->Phrase("ShowAllBtn") . "</a>";
+		$item->Visible = ($this->SearchWhere <> $this->DefaultSearchWhere && $this->SearchWhere <> "0=101");
+
 		// Button group for search
 		$this->SearchOptions->UseDropDownButton = FALSE;
 		$this->SearchOptions->UseImageAndText = TRUE;
@@ -1276,6 +1491,63 @@ class cviewavaluo_list extends cviewavaluo {
 		}
 	}
 
+	// Load search values for validation
+	function LoadSearchValues() {
+		global $objForm;
+
+		// Load search values
+		// id
+
+		$this->id->AdvancedSearch->SearchValue = @$_GET["x_id"];
+		if ($this->id->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->id->AdvancedSearch->SearchOperator = @$_GET["z_id"];
+
+		// tipoinmueble
+		$this->tipoinmueble->AdvancedSearch->SearchValue = @$_GET["x_tipoinmueble"];
+		if ($this->tipoinmueble->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->tipoinmueble->AdvancedSearch->SearchOperator = @$_GET["z_tipoinmueble"];
+
+		// codigoavaluo
+		$this->codigoavaluo->AdvancedSearch->SearchValue = @$_GET["x_codigoavaluo"];
+		if ($this->codigoavaluo->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->codigoavaluo->AdvancedSearch->SearchOperator = @$_GET["z_codigoavaluo"];
+
+		// id_solicitud
+		$this->id_solicitud->AdvancedSearch->SearchValue = @$_GET["x_id_solicitud"];
+		if ($this->id_solicitud->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->id_solicitud->AdvancedSearch->SearchOperator = @$_GET["z_id_solicitud"];
+
+		// id_oficialcredito
+		$this->id_oficialcredito->AdvancedSearch->SearchValue = @$_GET["x_id_oficialcredito"];
+		if ($this->id_oficialcredito->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->id_oficialcredito->AdvancedSearch->SearchOperator = @$_GET["z_id_oficialcredito"];
+
+		// id_inspector
+		$this->id_inspector->AdvancedSearch->SearchValue = @$_GET["x_id_inspector"];
+		if ($this->id_inspector->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->id_inspector->AdvancedSearch->SearchOperator = @$_GET["z_id_inspector"];
+
+		// estado
+		$this->estado->AdvancedSearch->SearchValue = @$_GET["x_estado"];
+		if ($this->estado->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->estado->AdvancedSearch->SearchOperator = @$_GET["z_estado"];
+
+		// estadopago
+		$this->estadopago->AdvancedSearch->SearchValue = @$_GET["x_estadopago"];
+		if ($this->estadopago->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->estadopago->AdvancedSearch->SearchOperator = @$_GET["z_estadopago"];
+
+		// fecha_avaluo
+		$this->fecha_avaluo->AdvancedSearch->SearchValue = @$_GET["x_fecha_avaluo"];
+		if ($this->fecha_avaluo->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->fecha_avaluo->AdvancedSearch->SearchOperator = @$_GET["z_fecha_avaluo"];
+
+		// comentario
+		$this->comentario->AdvancedSearch->SearchValue = @$_GET["x_comentario"];
+		if ($this->comentario->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->comentario->AdvancedSearch->SearchOperator = @$_GET["z_comentario"];
+	}
+
 	// Load recordset
 	function LoadRecordset($offset = -1, $rowcnt = -1) {
 
@@ -1336,8 +1608,8 @@ class cviewavaluo_list extends cviewavaluo {
 		if (!$rs || $rs->EOF)
 			return;
 		$this->id->setDbValue($row['id']);
-		$this->codigoavaluo->setDbValue($row['codigoavaluo']);
 		$this->tipoinmueble->setDbValue($row['tipoinmueble']);
+		$this->codigoavaluo->setDbValue($row['codigoavaluo']);
 		$this->id_solicitud->setDbValue($row['id_solicitud']);
 		$this->id_oficialcredito->setDbValue($row['id_oficialcredito']);
 		$this->id_inspector->setDbValue($row['id_inspector']);
@@ -1360,21 +1632,14 @@ class cviewavaluo_list extends cviewavaluo {
 		if (is_array($this->informe->Upload->DbValue) || is_object($this->informe->Upload->DbValue)) // Byte array
 			$this->informe->Upload->DbValue = ew_BytesToStr($this->informe->Upload->DbValue);
 		$this->comentario->setDbValue($row['comentario']);
-		if (!isset($GLOBALS["viewdocumentooficialcredito_grid"])) $GLOBALS["viewdocumentooficialcredito_grid"] = new cviewdocumentooficialcredito_grid;
-		$sDetailFilter = $GLOBALS["viewdocumentooficialcredito"]->SqlDetailFilter_viewavaluo();
-		$sDetailFilter = str_replace("@path_drive@", ew_AdjustSql($this->id->DbValue, "DB"), $sDetailFilter);
-		$sDetailFilter = str_replace("@avaluo@", ew_AdjustSql($this->id->DbValue, "DB"), $sDetailFilter);
-		$GLOBALS["viewdocumentooficialcredito"]->setCurrentMasterTable("viewavaluo");
-		$sDetailFilter = $GLOBALS["viewdocumentooficialcredito"]->ApplyUserIDFilters($sDetailFilter);
-		$this->viewdocumentooficialcredito_Count = $GLOBALS["viewdocumentooficialcredito"]->LoadRecordCount($sDetailFilter);
 	}
 
 	// Return a row with default values
 	function NewRow() {
 		$row = array();
 		$row['id'] = NULL;
-		$row['codigoavaluo'] = NULL;
 		$row['tipoinmueble'] = NULL;
+		$row['codigoavaluo'] = NULL;
 		$row['id_solicitud'] = NULL;
 		$row['id_oficialcredito'] = NULL;
 		$row['id_inspector'] = NULL;
@@ -1404,8 +1669,8 @@ class cviewavaluo_list extends cviewavaluo {
 			return;
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
-		$this->codigoavaluo->DbValue = $row['codigoavaluo'];
 		$this->tipoinmueble->DbValue = $row['tipoinmueble'];
+		$this->codigoavaluo->DbValue = $row['codigoavaluo'];
 		$this->id_solicitud->DbValue = $row['id_solicitud'];
 		$this->id_oficialcredito->DbValue = $row['id_oficialcredito'];
 		$this->id_inspector->DbValue = $row['id_inspector'];
@@ -1470,8 +1735,8 @@ class cviewavaluo_list extends cviewavaluo {
 
 		$this->id->CellCssStyle = "white-space: nowrap;";
 
-		// codigoavaluo
 		// tipoinmueble
+		// codigoavaluo
 		// id_solicitud
 		// id_oficialcredito
 
@@ -1527,10 +1792,6 @@ class cviewavaluo_list extends cviewavaluo {
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
-		// codigoavaluo
-		$this->codigoavaluo->ViewValue = $this->codigoavaluo->CurrentValue;
-		$this->codigoavaluo->ViewCustomAttributes = "";
-
 		// tipoinmueble
 		if (strval($this->tipoinmueble->CurrentValue) <> "") {
 			$sFilterWrk = "`nombre`" . ew_SearchString("=", $this->tipoinmueble->CurrentValue, EW_DATATYPE_STRING, "");
@@ -1553,6 +1814,10 @@ class cviewavaluo_list extends cviewavaluo {
 			$this->tipoinmueble->ViewValue = NULL;
 		}
 		$this->tipoinmueble->ViewCustomAttributes = "";
+
+		// codigoavaluo
+		$this->codigoavaluo->ViewValue = $this->codigoavaluo->CurrentValue;
+		$this->codigoavaluo->ViewCustomAttributes = "";
 
 		// id_solicitud
 		if (strval($this->id_solicitud->CurrentValue) <> "") {
@@ -1660,22 +1925,22 @@ class cviewavaluo_list extends cviewavaluo {
 
 		// informe
 		if (!ew_Empty($this->informe->Upload->DbValue)) {
-			$this->informe->ViewValue = "viewavaluo_informe_bv.php?" . "id=" . $this->id->CurrentValue;
+			$this->informe->ViewValue = "viewavaluosofprocesados_informe_bv.php?" . "id=" . $this->id->CurrentValue;
 			$this->informe->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->informe->Upload->DbValue, 0, 11)));
 		} else {
 			$this->informe->ViewValue = "";
 		}
 		$this->informe->ViewCustomAttributes = "";
 
-			// codigoavaluo
-			$this->codigoavaluo->LinkCustomAttributes = "";
-			$this->codigoavaluo->HrefValue = "";
-			$this->codigoavaluo->TooltipValue = "";
-
 			// tipoinmueble
 			$this->tipoinmueble->LinkCustomAttributes = "";
 			$this->tipoinmueble->HrefValue = "";
 			$this->tipoinmueble->TooltipValue = "";
+
+			// codigoavaluo
+			$this->codigoavaluo->LinkCustomAttributes = "";
+			$this->codigoavaluo->HrefValue = "";
+			$this->codigoavaluo->TooltipValue = "";
 
 			// id_solicitud
 			$this->id_solicitud->LinkCustomAttributes = "";
@@ -1710,19 +1975,107 @@ class cviewavaluo_list extends cviewavaluo {
 			// informe
 			$this->informe->LinkCustomAttributes = "";
 			if (!empty($this->informe->Upload->DbValue)) {
-				$this->informe->HrefValue = "viewavaluo_informe_bv.php?id=" . $this->id->CurrentValue;
+				$this->informe->HrefValue = "viewavaluosofprocesados_informe_bv.php?id=" . $this->id->CurrentValue;
 				$this->informe->LinkAttrs["target"] = "_blank";
 				if ($this->Export <> "") $this->informe->HrefValue = ew_FullUrl($this->informe->HrefValue, "href");
 			} else {
 				$this->informe->HrefValue = "";
 			}
-			$this->informe->HrefValue2 = "viewavaluo_informe_bv.php?id=" . $this->id->CurrentValue;
+			$this->informe->HrefValue2 = "viewavaluosofprocesados_informe_bv.php?id=" . $this->id->CurrentValue;
 			$this->informe->TooltipValue = "";
+		} elseif ($this->RowType == EW_ROWTYPE_SEARCH) { // Search row
+
+			// tipoinmueble
+			$this->tipoinmueble->EditAttrs["class"] = "form-control";
+			$this->tipoinmueble->EditCustomAttributes = "";
+
+			// codigoavaluo
+			$this->codigoavaluo->EditAttrs["class"] = "form-control";
+			$this->codigoavaluo->EditCustomAttributes = "";
+			$this->codigoavaluo->EditValue = ew_HtmlEncode($this->codigoavaluo->AdvancedSearch->SearchValue);
+			$this->codigoavaluo->PlaceHolder = ew_RemoveHtml($this->codigoavaluo->FldTitle());
+
+			// id_solicitud
+			$this->id_solicitud->EditAttrs["class"] = "form-control";
+			$this->id_solicitud->EditCustomAttributes = "";
+
+			// id_oficialcredito
+			$this->id_oficialcredito->EditAttrs["class"] = "form-control";
+			$this->id_oficialcredito->EditCustomAttributes = "";
+			$this->id_oficialcredito->EditValue = ew_HtmlEncode($this->id_oficialcredito->AdvancedSearch->SearchValue);
+			$this->id_oficialcredito->PlaceHolder = ew_RemoveHtml($this->id_oficialcredito->FldTitle());
+
+			// id_inspector
+			$this->id_inspector->EditAttrs["class"] = "form-control";
+			$this->id_inspector->EditCustomAttributes = "";
+
+			// estado
+			$this->estado->EditAttrs["class"] = "form-control";
+			$this->estado->EditCustomAttributes = "";
+
+			// estadopago
+			$this->estadopago->EditAttrs["class"] = "form-control";
+			$this->estadopago->EditCustomAttributes = "";
+
+			// fecha_avaluo
+			$this->fecha_avaluo->EditAttrs["class"] = "form-control";
+			$this->fecha_avaluo->EditCustomAttributes = "";
+			$this->fecha_avaluo->EditValue = ew_HtmlEncode(ew_FormatDateTime(ew_UnFormatDateTime($this->fecha_avaluo->AdvancedSearch->SearchValue, 0), 8));
+			$this->fecha_avaluo->PlaceHolder = ew_RemoveHtml($this->fecha_avaluo->FldTitle());
+
+			// informe
+			$this->informe->EditAttrs["class"] = "form-control";
+			$this->informe->EditCustomAttributes = "";
+			if (!ew_Empty($this->informe->Upload->DbValue)) {
+				$this->informe->EditValue = "viewavaluosofprocesados_informe_bv.php?" . "id=" . $this->id->CurrentValue;
+				$this->informe->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->informe->Upload->DbValue, 0, 11)));
+			} else {
+				$this->informe->EditValue = "";
+			}
 		}
+		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
+			$this->SetupFieldTitles();
 
 		// Call Row Rendered event
 		if ($this->RowType <> EW_ROWTYPE_AGGREGATEINIT)
 			$this->Row_Rendered();
+	}
+
+	// Validate search
+	function ValidateSearch() {
+		global $gsSearchError;
+
+		// Initialize
+		$gsSearchError = "";
+
+		// Check if validation required
+		if (!EW_SERVER_VALIDATE)
+			return TRUE;
+
+		// Return validate result
+		$ValidateSearch = ($gsSearchError == "");
+
+		// Call Form_CustomValidate event
+		$sFormCustomError = "";
+		$ValidateSearch = $ValidateSearch && $this->Form_CustomValidate($sFormCustomError);
+		if ($sFormCustomError <> "") {
+			ew_AddMessage($gsSearchError, $sFormCustomError);
+		}
+		return $ValidateSearch;
+	}
+
+	// Load advanced search
+	function LoadAdvancedSearch() {
+		$this->id->AdvancedSearch->Load();
+		$this->tipoinmueble->AdvancedSearch->Load();
+		$this->codigoavaluo->AdvancedSearch->Load();
+		$this->id_solicitud->AdvancedSearch->Load();
+		$this->id_oficialcredito->AdvancedSearch->Load();
+		$this->id_inspector->AdvancedSearch->Load();
+		$this->estado->AdvancedSearch->Load();
+		$this->estadopago->AdvancedSearch->Load();
+		$this->fecha_avaluo->AdvancedSearch->Load();
+		$this->comentario->AdvancedSearch->Load();
 	}
 
 	// Set up export options
@@ -1767,7 +2120,7 @@ class cviewavaluo_list extends cviewavaluo {
 		// Export to Email
 		$item = &$this->ExportOptions->Add("email");
 		$url = "";
-		$item->Body = "<button id=\"emf_viewavaluo\" class=\"ewExportLink ewEmail\" title=\"" . $Language->Phrase("ExportToEmailText") . "\" data-caption=\"" . $Language->Phrase("ExportToEmailText") . "\" onclick=\"ew_EmailDialogShow({lnk:'emf_viewavaluo',hdr:ewLanguage.Phrase('ExportToEmailText'),f:document.fviewavaluolist,sel:false" . $url . "});\">" . $Language->Phrase("ExportToEmail") . "</button>";
+		$item->Body = "<button id=\"emf_viewavaluosofprocesados\" class=\"ewExportLink ewEmail\" title=\"" . $Language->Phrase("ExportToEmailText") . "\" data-caption=\"" . $Language->Phrase("ExportToEmailText") . "\" onclick=\"ew_EmailDialogShow({lnk:'emf_viewavaluosofprocesados',hdr:ewLanguage.Phrase('ExportToEmailText'),f:document.fviewavaluosofprocesadoslist,sel:false" . $url . "});\">" . $Language->Phrase("ExportToEmail") . "</button>";
 		$item->Visible = TRUE;
 
 		// Drop down button for export
@@ -1839,25 +2192,6 @@ class cviewavaluo_list extends cviewavaluo {
 		// Call Page Exporting server event
 		$this->ExportDoc->ExportCustom = !$this->Page_Exporting();
 		$ParentTable = "";
-
-		// Export master record
-		if (EW_EXPORT_MASTER_RECORD && $this->GetMasterFilter() <> "" && $this->getCurrentMasterTable() == "viewsolicitud") {
-			global $viewsolicitud;
-			if (!isset($viewsolicitud)) $viewsolicitud = new cviewsolicitud;
-			$rsmaster = $viewsolicitud->LoadRs($this->DbMasterFilter); // Load master record
-			if ($rsmaster && !$rsmaster->EOF) {
-				$ExportStyle = $Doc->Style;
-				$Doc->SetStyle("v"); // Change to vertical
-				if ($this->Export <> "csv" || EW_EXPORT_MASTER_RECORD_FOR_CSV) {
-					$Doc->Table = &$viewsolicitud;
-					$viewsolicitud->ExportDocument($Doc, $rsmaster, 1, 1);
-					$Doc->ExportEmptyRow();
-					$Doc->Table = &$this;
-				}
-				$Doc->SetStyle($ExportStyle); // Restore
-				$rsmaster->Close();
-			}
-		}
 		$sHeader = $this->PageHeader;
 		$this->Page_DataRendering($sHeader);
 		$Doc->Text .= $sHeader;
@@ -1984,8 +2318,19 @@ class cviewavaluo_list extends cviewavaluo {
 		$sQry = "export=html";
 
 		// Build QueryString for search
-		// Build QueryString for pager
+		$this->AddSearchQueryString($sQry, $this->id); // id
+		$this->AddSearchQueryString($sQry, $this->tipoinmueble); // tipoinmueble
+		$this->AddSearchQueryString($sQry, $this->codigoavaluo); // codigoavaluo
+		$this->AddSearchQueryString($sQry, $this->id_solicitud); // id_solicitud
+		$this->AddSearchQueryString($sQry, $this->id_oficialcredito); // id_oficialcredito
+		$this->AddSearchQueryString($sQry, $this->id_inspector); // id_inspector
+		$this->AddSearchQueryString($sQry, $this->id_cliente); // id_cliente
+		$this->AddSearchQueryString($sQry, $this->estado); // estado
+		$this->AddSearchQueryString($sQry, $this->estadopago); // estadopago
+		$this->AddSearchQueryString($sQry, $this->fecha_avaluo); // fecha_avaluo
+		$this->AddSearchQueryString($sQry, $this->comentario); // comentario
 
+		// Build QueryString for pager
 		$sQry .= "&" . EW_TABLE_REC_PER_PAGE . "=" . urlencode($this->getRecordsPerPage()) . "&" . EW_TABLE_START_REC . "=" . urlencode($this->getStartRecordNumber());
 		return $sQry;
 	}
@@ -2006,74 +2351,6 @@ class cviewavaluo_list extends cviewavaluo {
 		}
 	}
 
-	// Set up master/detail based on QueryString
-	function SetupMasterParms() {
-		$bValidMaster = FALSE;
-
-		// Get the keys for master table
-		if (isset($_GET[EW_TABLE_SHOW_MASTER])) {
-			$sMasterTblVar = $_GET[EW_TABLE_SHOW_MASTER];
-			if ($sMasterTblVar == "") {
-				$bValidMaster = TRUE;
-				$this->DbMasterFilter = "";
-				$this->DbDetailFilter = "";
-			}
-			if ($sMasterTblVar == "viewsolicitud") {
-				$bValidMaster = TRUE;
-				if (@$_GET["fk_id"] <> "") {
-					$GLOBALS["viewsolicitud"]->id->setQueryStringValue($_GET["fk_id"]);
-					$this->id_solicitud->setQueryStringValue($GLOBALS["viewsolicitud"]->id->QueryStringValue);
-					$this->id_solicitud->setSessionValue($this->id_solicitud->QueryStringValue);
-					if (!is_numeric($GLOBALS["viewsolicitud"]->id->QueryStringValue)) $bValidMaster = FALSE;
-				} else {
-					$bValidMaster = FALSE;
-				}
-			}
-		} elseif (isset($_POST[EW_TABLE_SHOW_MASTER])) {
-			$sMasterTblVar = $_POST[EW_TABLE_SHOW_MASTER];
-			if ($sMasterTblVar == "") {
-				$bValidMaster = TRUE;
-				$this->DbMasterFilter = "";
-				$this->DbDetailFilter = "";
-			}
-			if ($sMasterTblVar == "viewsolicitud") {
-				$bValidMaster = TRUE;
-				if (@$_POST["fk_id"] <> "") {
-					$GLOBALS["viewsolicitud"]->id->setFormValue($_POST["fk_id"]);
-					$this->id_solicitud->setFormValue($GLOBALS["viewsolicitud"]->id->FormValue);
-					$this->id_solicitud->setSessionValue($this->id_solicitud->FormValue);
-					if (!is_numeric($GLOBALS["viewsolicitud"]->id->FormValue)) $bValidMaster = FALSE;
-				} else {
-					$bValidMaster = FALSE;
-				}
-			}
-		}
-		if ($bValidMaster) {
-
-			// Update URL
-			$this->AddUrl = $this->AddMasterUrl($this->AddUrl);
-			$this->InlineAddUrl = $this->AddMasterUrl($this->InlineAddUrl);
-			$this->GridAddUrl = $this->AddMasterUrl($this->GridAddUrl);
-			$this->GridEditUrl = $this->AddMasterUrl($this->GridEditUrl);
-
-			// Save current master table
-			$this->setCurrentMasterTable($sMasterTblVar);
-
-			// Reset start record counter (new master key)
-			if (!$this->IsAddOrEdit()) {
-				$this->StartRec = 1;
-				$this->setStartRecordNumber($this->StartRec);
-			}
-
-			// Clear previous master key from Session
-			if ($sMasterTblVar <> "viewsolicitud") {
-				if ($this->id_solicitud->CurrentValue == "") $this->id_solicitud->setSessionValue("");
-			}
-		}
-		$this->DbMasterFilter = $this->GetMasterFilter(); // Get master filter
-		$this->DbDetailFilter = $this->GetDetailFilter(); // Get detail filter
-	}
-
 	// Set up Breadcrumb
 	function SetupBreadcrumb() {
 		global $Breadcrumb, $Language;
@@ -2087,7 +2364,24 @@ class cviewavaluo_list extends cviewavaluo {
 	function SetupLookupFilters($fld, $pageId = null) {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
-		switch ($fld->FldVar) {
+		if ($pageId == "list") {
+			switch ($fld->FldVar) {
+			}
+		} elseif ($pageId == "extbs") {
+			switch ($fld->FldVar) {
+		case "x_id_cliente":
+			$sSqlWrk = "";
+				$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, `lastname` AS `Disp2Fld`, `email` AS `Disp3Fld`, `phone` AS `Disp4Fld` FROM `cliente`";
+				$sWhereWrk = "";
+				$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
+			$sSqlWrk = "";
+				$this->Lookup_Selecting($this->id_cliente, $sWhereWrk); // Call Lookup Selecting
+				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+			}
 		}
 	}
 
@@ -2095,7 +2389,12 @@ class cviewavaluo_list extends cviewavaluo {
 	function SetupAutoSuggestFilters($fld, $pageId = null) {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
-		switch ($fld->FldVar) {
+		if ($pageId == "list") {
+			switch ($fld->FldVar) {
+			}
+		} elseif ($pageId == "extbs") {
+			switch ($fld->FldVar) {
+			}
 		}
 	}
 
@@ -2232,31 +2531,31 @@ class cviewavaluo_list extends cviewavaluo {
 <?php
 
 // Create page object
-if (!isset($viewavaluo_list)) $viewavaluo_list = new cviewavaluo_list();
+if (!isset($viewavaluosofprocesados_list)) $viewavaluosofprocesados_list = new cviewavaluosofprocesados_list();
 
 // Page init
-$viewavaluo_list->Page_Init();
+$viewavaluosofprocesados_list->Page_Init();
 
 // Page main
-$viewavaluo_list->Page_Main();
+$viewavaluosofprocesados_list->Page_Main();
 
 // Global Page Rendering event (in userfn*.php)
 Page_Rendering();
 
 // Page Rendering event
-$viewavaluo_list->Page_Render();
+$viewavaluosofprocesados_list->Page_Render();
 ?>
 <?php include_once "header.php" ?>
-<?php if ($viewavaluo->Export == "") { ?>
+<?php if ($viewavaluosofprocesados->Export == "") { ?>
 <script type="text/javascript">
 
 // Form object
 var CurrentPageID = EW_PAGE_ID = "list";
-var CurrentForm = fviewavaluolist = new ew_Form("fviewavaluolist", "list");
-fviewavaluolist.FormKeyCountName = '<?php echo $viewavaluo_list->FormKeyCountName ?>';
+var CurrentForm = fviewavaluosofprocesadoslist = new ew_Form("fviewavaluosofprocesadoslist", "list");
+fviewavaluosofprocesadoslist.FormKeyCountName = '<?php echo $viewavaluosofprocesados_list->FormKeyCountName ?>';
 
 // Form_CustomValidate event
-fviewavaluolist.Form_CustomValidate = 
+fviewavaluosofprocesadoslist.Form_CustomValidate = 
  function(fobj) { // DO NOT CHANGE THIS LINE!
 
  	// Your custom validation code here, return false if invalid.
@@ -2264,320 +2563,376 @@ fviewavaluolist.Form_CustomValidate =
  }
 
 // Use JavaScript validation or not
-fviewavaluolist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
+fviewavaluosofprocesadoslist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-fviewavaluolist.Lists["x_tipoinmueble"] = {"LinkField":"x_nombre","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
-fviewavaluolist.Lists["x_tipoinmueble"].Data = "<?php echo $viewavaluo_list->tipoinmueble->LookupFilterQuery(FALSE, "list") ?>";
-fviewavaluolist.Lists["x_id_solicitud"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","x__email",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"solicitud"};
-fviewavaluolist.Lists["x_id_solicitud"].Data = "<?php echo $viewavaluo_list->id_solicitud->LookupFilterQuery(FALSE, "list") ?>";
-fviewavaluolist.Lists["x_id_inspector"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","x_apellido","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"inspector"};
-fviewavaluolist.Lists["x_id_inspector"].Data = "<?php echo $viewavaluo_list->id_inspector->LookupFilterQuery(FALSE, "list") ?>";
-fviewavaluolist.Lists["x_estado"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estado"};
-fviewavaluolist.Lists["x_estado"].Data = "<?php echo $viewavaluo_list->estado->LookupFilterQuery(FALSE, "list") ?>";
-fviewavaluolist.Lists["x_estadopago"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadopago"};
-fviewavaluolist.Lists["x_estadopago"].Data = "<?php echo $viewavaluo_list->estadopago->LookupFilterQuery(FALSE, "list") ?>";
+fviewavaluosofprocesadoslist.Lists["x_tipoinmueble"] = {"LinkField":"x_nombre","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"tipoinmueble"};
+fviewavaluosofprocesadoslist.Lists["x_tipoinmueble"].Data = "<?php echo $viewavaluosofprocesados_list->tipoinmueble->LookupFilterQuery(FALSE, "list") ?>";
+fviewavaluosofprocesadoslist.Lists["x_id_solicitud"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","x_lastname","x__email",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"solicitud"};
+fviewavaluosofprocesadoslist.Lists["x_id_solicitud"].Data = "<?php echo $viewavaluosofprocesados_list->id_solicitud->LookupFilterQuery(FALSE, "list") ?>";
+fviewavaluosofprocesadoslist.Lists["x_id_inspector"] = {"LinkField":"x__login","Ajax":true,"AutoFill":false,"DisplayFields":["x_nombre","x_apellido","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"inspector"};
+fviewavaluosofprocesadoslist.Lists["x_id_inspector"].Data = "<?php echo $viewavaluosofprocesados_list->id_inspector->LookupFilterQuery(FALSE, "list") ?>";
+fviewavaluosofprocesadoslist.Lists["x_estado"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estado"};
+fviewavaluosofprocesadoslist.Lists["x_estado"].Data = "<?php echo $viewavaluosofprocesados_list->estado->LookupFilterQuery(FALSE, "list") ?>";
+fviewavaluosofprocesadoslist.Lists["x_estadopago"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_descripcion","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"estadopago"};
+fviewavaluosofprocesadoslist.Lists["x_estadopago"].Data = "<?php echo $viewavaluosofprocesados_list->estadopago->LookupFilterQuery(FALSE, "list") ?>";
 
 // Form object for search
+var CurrentSearchForm = fviewavaluosofprocesadoslistsrch = new ew_Form("fviewavaluosofprocesadoslistsrch");
+
+// Validate function for search
+fviewavaluosofprocesadoslistsrch.Validate = function(fobj) {
+	if (!this.ValidateRequired)
+		return true; // Ignore validation
+	fobj = fobj || this.Form;
+	var infix = "";
+
+	// Fire Form_CustomValidate event
+	if (!this.Form_CustomValidate(fobj))
+		return false;
+	return true;
+}
+
+// Form_CustomValidate event
+fviewavaluosofprocesadoslistsrch.Form_CustomValidate = 
+ function(fobj) { // DO NOT CHANGE THIS LINE!
+
+ 	// Your custom validation code here, return false if invalid.
+ 	return true;
+ }
+
+// Use JavaScript validation or not
+fviewavaluosofprocesadoslistsrch.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
+
+// Dynamic selection lists
 </script>
 <script type="text/javascript">
 
 // Write your client script here, no need to add script tags.
 </script>
 <?php } ?>
-<?php if ($viewavaluo->Export == "") { ?>
+<?php if ($viewavaluosofprocesados->Export == "") { ?>
 <div class="ewToolbar">
-<?php if ($viewavaluo_list->TotalRecs > 0 && $viewavaluo_list->ExportOptions->Visible()) { ?>
-<?php $viewavaluo_list->ExportOptions->Render("body") ?>
+<?php if ($viewavaluosofprocesados_list->TotalRecs > 0 && $viewavaluosofprocesados_list->ExportOptions->Visible()) { ?>
+<?php $viewavaluosofprocesados_list->ExportOptions->Render("body") ?>
+<?php } ?>
+<?php if ($viewavaluosofprocesados_list->SearchOptions->Visible()) { ?>
+<?php $viewavaluosofprocesados_list->SearchOptions->Render("body") ?>
+<?php } ?>
+<?php if ($viewavaluosofprocesados_list->FilterOptions->Visible()) { ?>
+<?php $viewavaluosofprocesados_list->FilterOptions->Render("body") ?>
 <?php } ?>
 <div class="clearfix"></div>
 </div>
 <?php } ?>
-<?php if (($viewavaluo->Export == "") || (EW_EXPORT_MASTER_RECORD && $viewavaluo->Export == "print")) { ?>
 <?php
-if ($viewavaluo_list->DbMasterFilter <> "" && $viewavaluo->getCurrentMasterTable() == "viewsolicitud") {
-	if ($viewavaluo_list->MasterRecordExists) {
-?>
-<?php include_once "viewsolicitudmaster.php" ?>
-<?php
-	}
-}
-?>
-<?php } ?>
-<?php
-	$bSelectLimit = $viewavaluo_list->UseSelectLimit;
+	$bSelectLimit = $viewavaluosofprocesados_list->UseSelectLimit;
 	if ($bSelectLimit) {
-		if ($viewavaluo_list->TotalRecs <= 0)
-			$viewavaluo_list->TotalRecs = $viewavaluo->ListRecordCount();
+		if ($viewavaluosofprocesados_list->TotalRecs <= 0)
+			$viewavaluosofprocesados_list->TotalRecs = $viewavaluosofprocesados->ListRecordCount();
 	} else {
-		if (!$viewavaluo_list->Recordset && ($viewavaluo_list->Recordset = $viewavaluo_list->LoadRecordset()))
-			$viewavaluo_list->TotalRecs = $viewavaluo_list->Recordset->RecordCount();
+		if (!$viewavaluosofprocesados_list->Recordset && ($viewavaluosofprocesados_list->Recordset = $viewavaluosofprocesados_list->LoadRecordset()))
+			$viewavaluosofprocesados_list->TotalRecs = $viewavaluosofprocesados_list->Recordset->RecordCount();
 	}
-	$viewavaluo_list->StartRec = 1;
-	if ($viewavaluo_list->DisplayRecs <= 0 || ($viewavaluo->Export <> "" && $viewavaluo->ExportAll)) // Display all records
-		$viewavaluo_list->DisplayRecs = $viewavaluo_list->TotalRecs;
-	if (!($viewavaluo->Export <> "" && $viewavaluo->ExportAll))
-		$viewavaluo_list->SetupStartRec(); // Set up start record position
+	$viewavaluosofprocesados_list->StartRec = 1;
+	if ($viewavaluosofprocesados_list->DisplayRecs <= 0 || ($viewavaluosofprocesados->Export <> "" && $viewavaluosofprocesados->ExportAll)) // Display all records
+		$viewavaluosofprocesados_list->DisplayRecs = $viewavaluosofprocesados_list->TotalRecs;
+	if (!($viewavaluosofprocesados->Export <> "" && $viewavaluosofprocesados->ExportAll))
+		$viewavaluosofprocesados_list->SetupStartRec(); // Set up start record position
 	if ($bSelectLimit)
-		$viewavaluo_list->Recordset = $viewavaluo_list->LoadRecordset($viewavaluo_list->StartRec-1, $viewavaluo_list->DisplayRecs);
+		$viewavaluosofprocesados_list->Recordset = $viewavaluosofprocesados_list->LoadRecordset($viewavaluosofprocesados_list->StartRec-1, $viewavaluosofprocesados_list->DisplayRecs);
 
 	// Set no record found message
-	if ($viewavaluo->CurrentAction == "" && $viewavaluo_list->TotalRecs == 0) {
+	if ($viewavaluosofprocesados->CurrentAction == "" && $viewavaluosofprocesados_list->TotalRecs == 0) {
 		if (!$Security->CanList())
-			$viewavaluo_list->setWarningMessage(ew_DeniedMsg());
-		if ($viewavaluo_list->SearchWhere == "0=101")
-			$viewavaluo_list->setWarningMessage($Language->Phrase("EnterSearchCriteria"));
+			$viewavaluosofprocesados_list->setWarningMessage(ew_DeniedMsg());
+		if ($viewavaluosofprocesados_list->SearchWhere == "0=101")
+			$viewavaluosofprocesados_list->setWarningMessage($Language->Phrase("EnterSearchCriteria"));
 		else
-			$viewavaluo_list->setWarningMessage($Language->Phrase("NoRecord"));
+			$viewavaluosofprocesados_list->setWarningMessage($Language->Phrase("NoRecord"));
 	}
-$viewavaluo_list->RenderOtherOptions();
+$viewavaluosofprocesados_list->RenderOtherOptions();
 ?>
-<?php $viewavaluo_list->ShowPageHeader(); ?>
+<?php if ($Security->CanSearch()) { ?>
+<?php if ($viewavaluosofprocesados->Export == "" && $viewavaluosofprocesados->CurrentAction == "") { ?>
+<form name="fviewavaluosofprocesadoslistsrch" id="fviewavaluosofprocesadoslistsrch" class="form-inline ewForm ewExtSearchForm" action="<?php echo ew_CurrentPage() ?>">
+<?php $SearchPanelClass = ($viewavaluosofprocesados_list->SearchWhere <> "") ? " in" : " in"; ?>
+<div id="fviewavaluosofprocesadoslistsrch_SearchPanel" class="ewSearchPanel collapse<?php echo $SearchPanelClass ?>">
+<input type="hidden" name="cmd" value="search">
+<input type="hidden" name="t" value="viewavaluosofprocesados">
+	<div class="ewBasicSearch">
 <?php
-$viewavaluo_list->ShowMessage();
+if ($gsSearchError == "")
+	$viewavaluosofprocesados_list->LoadAdvancedSearch(); // Load advanced search
+
+// Render for search
+$viewavaluosofprocesados->RowType = EW_ROWTYPE_SEARCH;
+
+// Render row
+$viewavaluosofprocesados->ResetAttrs();
+$viewavaluosofprocesados_list->RenderRow();
 ?>
-<?php if ($viewavaluo_list->TotalRecs > 0 || $viewavaluo->CurrentAction <> "") { ?>
-<div class="box ewBox ewGrid<?php if ($viewavaluo_list->IsAddOrEdit()) { ?> ewGridAddEdit<?php } ?> viewavaluo">
-<form name="fviewavaluolist" id="fviewavaluolist" class="form-inline ewForm ewListForm" action="<?php echo ew_CurrentPage() ?>" method="post">
-<?php if ($viewavaluo_list->CheckToken) { ?>
-<input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $viewavaluo_list->Token ?>">
+<div id="xsr_1" class="ewRow">
+<?php if ($viewavaluosofprocesados->codigoavaluo->Visible) { // codigoavaluo ?>
+	<div id="xsc_codigoavaluo" class="ewCell form-group">
+		<label for="x_codigoavaluo" class="ewSearchCaption ewLabel"><?php echo $viewavaluosofprocesados->codigoavaluo->FldCaption() ?></label>
+		<span class="ewSearchOperator"><?php echo $Language->Phrase("LIKE") ?><input type="hidden" name="z_codigoavaluo" id="z_codigoavaluo" value="LIKE"></span>
+		<span class="ewSearchField">
+<input type="text" data-table="viewavaluosofprocesados" data-field="x_codigoavaluo" name="x_codigoavaluo" id="x_codigoavaluo" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewavaluosofprocesados->codigoavaluo->getPlaceHolder()) ?>" value="<?php echo $viewavaluosofprocesados->codigoavaluo->EditValue ?>"<?php echo $viewavaluosofprocesados->codigoavaluo->EditAttributes() ?>>
+</span>
+	</div>
 <?php } ?>
-<input type="hidden" name="t" value="viewavaluo">
-<?php if ($viewavaluo->getCurrentMasterTable() == "viewsolicitud" && $viewavaluo->CurrentAction <> "") { ?>
-<input type="hidden" name="<?php echo EW_TABLE_SHOW_MASTER ?>" value="viewsolicitud">
-<input type="hidden" name="fk_id" value="<?php echo $viewavaluo->id_solicitud->getSessionValue() ?>">
+</div>
+<div id="xsr_2" class="ewRow">
+	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("SearchBtn") ?></button>
+</div>
+	</div>
+</div>
+</form>
 <?php } ?>
-<div id="gmp_viewavaluo" class="<?php if (ew_IsResponsiveLayout()) { ?>table-responsive <?php } ?>ewGridMiddlePanel">
-<?php if ($viewavaluo_list->TotalRecs > 0 || $viewavaluo->CurrentAction == "gridedit") { ?>
-<table id="tbl_viewavaluolist" class="table ewTable">
+<?php } ?>
+<?php $viewavaluosofprocesados_list->ShowPageHeader(); ?>
+<?php
+$viewavaluosofprocesados_list->ShowMessage();
+?>
+<?php if ($viewavaluosofprocesados_list->TotalRecs > 0 || $viewavaluosofprocesados->CurrentAction <> "") { ?>
+<div class="box ewBox ewGrid<?php if ($viewavaluosofprocesados_list->IsAddOrEdit()) { ?> ewGridAddEdit<?php } ?> viewavaluosofprocesados">
+<form name="fviewavaluosofprocesadoslist" id="fviewavaluosofprocesadoslist" class="form-inline ewForm ewListForm" action="<?php echo ew_CurrentPage() ?>" method="post">
+<?php if ($viewavaluosofprocesados_list->CheckToken) { ?>
+<input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $viewavaluosofprocesados_list->Token ?>">
+<?php } ?>
+<input type="hidden" name="t" value="viewavaluosofprocesados">
+<div id="gmp_viewavaluosofprocesados" class="<?php if (ew_IsResponsiveLayout()) { ?>table-responsive <?php } ?>ewGridMiddlePanel">
+<?php if ($viewavaluosofprocesados_list->TotalRecs > 0 || $viewavaluosofprocesados->CurrentAction == "gridedit") { ?>
+<table id="tbl_viewavaluosofprocesadoslist" class="table ewTable">
 <thead>
 	<tr class="ewTableHeader">
 <?php
 
 // Header row
-$viewavaluo_list->RowType = EW_ROWTYPE_HEADER;
+$viewavaluosofprocesados_list->RowType = EW_ROWTYPE_HEADER;
 
 // Render list options
-$viewavaluo_list->RenderListOptions();
+$viewavaluosofprocesados_list->RenderListOptions();
 
 // Render list options (header, left)
-$viewavaluo_list->ListOptions->Render("header", "left");
+$viewavaluosofprocesados_list->ListOptions->Render("header", "left");
 ?>
-<?php if ($viewavaluo->codigoavaluo->Visible) { // codigoavaluo ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->codigoavaluo) == "") { ?>
-		<th data-name="codigoavaluo" class="<?php echo $viewavaluo->codigoavaluo->HeaderCellClass() ?>"><div id="elh_viewavaluo_codigoavaluo" class="viewavaluo_codigoavaluo"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->codigoavaluo->FldCaption() ?></div></div></th>
+<?php if ($viewavaluosofprocesados->tipoinmueble->Visible) { // tipoinmueble ?>
+	<?php if ($viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->tipoinmueble) == "") { ?>
+		<th data-name="tipoinmueble" class="<?php echo $viewavaluosofprocesados->tipoinmueble->HeaderCellClass() ?>"><div id="elh_viewavaluosofprocesados_tipoinmueble" class="viewavaluosofprocesados_tipoinmueble"><div class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->tipoinmueble->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="codigoavaluo" class="<?php echo $viewavaluo->codigoavaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluo->SortUrl($viewavaluo->codigoavaluo) ?>',1);"><div id="elh_viewavaluo_codigoavaluo" class="viewavaluo_codigoavaluo">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->codigoavaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->codigoavaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->codigoavaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="tipoinmueble" class="<?php echo $viewavaluosofprocesados->tipoinmueble->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->tipoinmueble) ?>',1);"><div id="elh_viewavaluosofprocesados_tipoinmueble" class="viewavaluosofprocesados_tipoinmueble">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->tipoinmueble->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluosofprocesados->tipoinmueble->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluosofprocesados->tipoinmueble->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewavaluo->tipoinmueble->Visible) { // tipoinmueble ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->tipoinmueble) == "") { ?>
-		<th data-name="tipoinmueble" class="<?php echo $viewavaluo->tipoinmueble->HeaderCellClass() ?>"><div id="elh_viewavaluo_tipoinmueble" class="viewavaluo_tipoinmueble"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->tipoinmueble->FldCaption() ?></div></div></th>
+<?php if ($viewavaluosofprocesados->codigoavaluo->Visible) { // codigoavaluo ?>
+	<?php if ($viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->codigoavaluo) == "") { ?>
+		<th data-name="codigoavaluo" class="<?php echo $viewavaluosofprocesados->codigoavaluo->HeaderCellClass() ?>"><div id="elh_viewavaluosofprocesados_codigoavaluo" class="viewavaluosofprocesados_codigoavaluo"><div class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->codigoavaluo->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="tipoinmueble" class="<?php echo $viewavaluo->tipoinmueble->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluo->SortUrl($viewavaluo->tipoinmueble) ?>',1);"><div id="elh_viewavaluo_tipoinmueble" class="viewavaluo_tipoinmueble">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->tipoinmueble->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->tipoinmueble->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->tipoinmueble->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="codigoavaluo" class="<?php echo $viewavaluosofprocesados->codigoavaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->codigoavaluo) ?>',1);"><div id="elh_viewavaluosofprocesados_codigoavaluo" class="viewavaluosofprocesados_codigoavaluo">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->codigoavaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluosofprocesados->codigoavaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluosofprocesados->codigoavaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewavaluo->id_solicitud->Visible) { // id_solicitud ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->id_solicitud) == "") { ?>
-		<th data-name="id_solicitud" class="<?php echo $viewavaluo->id_solicitud->HeaderCellClass() ?>"><div id="elh_viewavaluo_id_solicitud" class="viewavaluo_id_solicitud"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->id_solicitud->FldCaption() ?></div></div></th>
+<?php if ($viewavaluosofprocesados->id_solicitud->Visible) { // id_solicitud ?>
+	<?php if ($viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->id_solicitud) == "") { ?>
+		<th data-name="id_solicitud" class="<?php echo $viewavaluosofprocesados->id_solicitud->HeaderCellClass() ?>"><div id="elh_viewavaluosofprocesados_id_solicitud" class="viewavaluosofprocesados_id_solicitud"><div class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->id_solicitud->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_solicitud" class="<?php echo $viewavaluo->id_solicitud->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluo->SortUrl($viewavaluo->id_solicitud) ?>',1);"><div id="elh_viewavaluo_id_solicitud" class="viewavaluo_id_solicitud">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->id_solicitud->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->id_solicitud->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->id_solicitud->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="id_solicitud" class="<?php echo $viewavaluosofprocesados->id_solicitud->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->id_solicitud) ?>',1);"><div id="elh_viewavaluosofprocesados_id_solicitud" class="viewavaluosofprocesados_id_solicitud">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->id_solicitud->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluosofprocesados->id_solicitud->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluosofprocesados->id_solicitud->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewavaluo->id_oficialcredito->Visible) { // id_oficialcredito ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->id_oficialcredito) == "") { ?>
-		<th data-name="id_oficialcredito" class="<?php echo $viewavaluo->id_oficialcredito->HeaderCellClass() ?>"><div id="elh_viewavaluo_id_oficialcredito" class="viewavaluo_id_oficialcredito"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluo->id_oficialcredito->FldCaption() ?></div></div></th>
+<?php if ($viewavaluosofprocesados->id_oficialcredito->Visible) { // id_oficialcredito ?>
+	<?php if ($viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->id_oficialcredito) == "") { ?>
+		<th data-name="id_oficialcredito" class="<?php echo $viewavaluosofprocesados->id_oficialcredito->HeaderCellClass() ?>"><div id="elh_viewavaluosofprocesados_id_oficialcredito" class="viewavaluosofprocesados_id_oficialcredito"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluosofprocesados->id_oficialcredito->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_oficialcredito" class="<?php echo $viewavaluo->id_oficialcredito->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluo->SortUrl($viewavaluo->id_oficialcredito) ?>',1);"><div id="elh_viewavaluo_id_oficialcredito" class="viewavaluo_id_oficialcredito">
-			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->id_oficialcredito->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->id_oficialcredito->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->id_oficialcredito->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="id_oficialcredito" class="<?php echo $viewavaluosofprocesados->id_oficialcredito->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->id_oficialcredito) ?>',1);"><div id="elh_viewavaluosofprocesados_id_oficialcredito" class="viewavaluosofprocesados_id_oficialcredito">
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->id_oficialcredito->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluosofprocesados->id_oficialcredito->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluosofprocesados->id_oficialcredito->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewavaluo->id_inspector->Visible) { // id_inspector ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->id_inspector) == "") { ?>
-		<th data-name="id_inspector" class="<?php echo $viewavaluo->id_inspector->HeaderCellClass() ?>"><div id="elh_viewavaluo_id_inspector" class="viewavaluo_id_inspector"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluo->id_inspector->FldCaption() ?></div></div></th>
+<?php if ($viewavaluosofprocesados->id_inspector->Visible) { // id_inspector ?>
+	<?php if ($viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->id_inspector) == "") { ?>
+		<th data-name="id_inspector" class="<?php echo $viewavaluosofprocesados->id_inspector->HeaderCellClass() ?>"><div id="elh_viewavaluosofprocesados_id_inspector" class="viewavaluosofprocesados_id_inspector"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluosofprocesados->id_inspector->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id_inspector" class="<?php echo $viewavaluo->id_inspector->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluo->SortUrl($viewavaluo->id_inspector) ?>',1);"><div id="elh_viewavaluo_id_inspector" class="viewavaluo_id_inspector">
-			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->id_inspector->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->id_inspector->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->id_inspector->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="id_inspector" class="<?php echo $viewavaluosofprocesados->id_inspector->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->id_inspector) ?>',1);"><div id="elh_viewavaluosofprocesados_id_inspector" class="viewavaluosofprocesados_id_inspector">
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->id_inspector->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluosofprocesados->id_inspector->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluosofprocesados->id_inspector->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewavaluo->estado->Visible) { // estado ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->estado) == "") { ?>
-		<th data-name="estado" class="<?php echo $viewavaluo->estado->HeaderCellClass() ?>"><div id="elh_viewavaluo_estado" class="viewavaluo_estado"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluo->estado->FldCaption() ?></div></div></th>
+<?php if ($viewavaluosofprocesados->estado->Visible) { // estado ?>
+	<?php if ($viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->estado) == "") { ?>
+		<th data-name="estado" class="<?php echo $viewavaluosofprocesados->estado->HeaderCellClass() ?>"><div id="elh_viewavaluosofprocesados_estado" class="viewavaluosofprocesados_estado"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluosofprocesados->estado->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="estado" class="<?php echo $viewavaluo->estado->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluo->SortUrl($viewavaluo->estado) ?>',1);"><div id="elh_viewavaluo_estado" class="viewavaluo_estado">
-			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->estado->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->estado->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->estado->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="estado" class="<?php echo $viewavaluosofprocesados->estado->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->estado) ?>',1);"><div id="elh_viewavaluosofprocesados_estado" class="viewavaluosofprocesados_estado">
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->estado->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluosofprocesados->estado->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluosofprocesados->estado->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewavaluo->estadopago->Visible) { // estadopago ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->estadopago) == "") { ?>
-		<th data-name="estadopago" class="<?php echo $viewavaluo->estadopago->HeaderCellClass() ?>"><div id="elh_viewavaluo_estadopago" class="viewavaluo_estadopago"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluo->estadopago->FldCaption() ?></div></div></th>
+<?php if ($viewavaluosofprocesados->estadopago->Visible) { // estadopago ?>
+	<?php if ($viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->estadopago) == "") { ?>
+		<th data-name="estadopago" class="<?php echo $viewavaluosofprocesados->estadopago->HeaderCellClass() ?>"><div id="elh_viewavaluosofprocesados_estadopago" class="viewavaluosofprocesados_estadopago"><div class="ewTableHeaderCaption" style="white-space: nowrap;"><?php echo $viewavaluosofprocesados->estadopago->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="estadopago" class="<?php echo $viewavaluo->estadopago->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluo->SortUrl($viewavaluo->estadopago) ?>',1);"><div id="elh_viewavaluo_estadopago" class="viewavaluo_estadopago">
-			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->estadopago->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->estadopago->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->estadopago->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="estadopago" class="<?php echo $viewavaluosofprocesados->estadopago->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->estadopago) ?>',1);"><div id="elh_viewavaluosofprocesados_estadopago" class="viewavaluosofprocesados_estadopago">
+			<div class="ewTableHeaderBtn" style="white-space: nowrap;"><span class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->estadopago->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluosofprocesados->estadopago->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluosofprocesados->estadopago->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewavaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->fecha_avaluo) == "") { ?>
-		<th data-name="fecha_avaluo" class="<?php echo $viewavaluo->fecha_avaluo->HeaderCellClass() ?>"><div id="elh_viewavaluo_fecha_avaluo" class="viewavaluo_fecha_avaluo"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->fecha_avaluo->FldCaption() ?></div></div></th>
+<?php if ($viewavaluosofprocesados->fecha_avaluo->Visible) { // fecha_avaluo ?>
+	<?php if ($viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->fecha_avaluo) == "") { ?>
+		<th data-name="fecha_avaluo" class="<?php echo $viewavaluosofprocesados->fecha_avaluo->HeaderCellClass() ?>"><div id="elh_viewavaluosofprocesados_fecha_avaluo" class="viewavaluosofprocesados_fecha_avaluo"><div class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->fecha_avaluo->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="fecha_avaluo" class="<?php echo $viewavaluo->fecha_avaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluo->SortUrl($viewavaluo->fecha_avaluo) ?>',1);"><div id="elh_viewavaluo_fecha_avaluo" class="viewavaluo_fecha_avaluo">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->fecha_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->fecha_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->fecha_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="fecha_avaluo" class="<?php echo $viewavaluosofprocesados->fecha_avaluo->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->fecha_avaluo) ?>',1);"><div id="elh_viewavaluosofprocesados_fecha_avaluo" class="viewavaluosofprocesados_fecha_avaluo">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->fecha_avaluo->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluosofprocesados->fecha_avaluo->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluosofprocesados->fecha_avaluo->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewavaluo->informe->Visible) { // informe ?>
-	<?php if ($viewavaluo->SortUrl($viewavaluo->informe) == "") { ?>
-		<th data-name="informe" class="<?php echo $viewavaluo->informe->HeaderCellClass() ?>"><div id="elh_viewavaluo_informe" class="viewavaluo_informe"><div class="ewTableHeaderCaption"><?php echo $viewavaluo->informe->FldCaption() ?></div></div></th>
+<?php if ($viewavaluosofprocesados->informe->Visible) { // informe ?>
+	<?php if ($viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->informe) == "") { ?>
+		<th data-name="informe" class="<?php echo $viewavaluosofprocesados->informe->HeaderCellClass() ?>"><div id="elh_viewavaluosofprocesados_informe" class="viewavaluosofprocesados_informe"><div class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->informe->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="informe" class="<?php echo $viewavaluo->informe->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluo->SortUrl($viewavaluo->informe) ?>',1);"><div id="elh_viewavaluo_informe" class="viewavaluo_informe">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluo->informe->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluo->informe->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluo->informe->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="informe" class="<?php echo $viewavaluosofprocesados->informe->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewavaluosofprocesados->SortUrl($viewavaluosofprocesados->informe) ?>',1);"><div id="elh_viewavaluosofprocesados_informe" class="viewavaluosofprocesados_informe">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewavaluosofprocesados->informe->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewavaluosofprocesados->informe->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewavaluosofprocesados->informe->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
 <?php
 
 // Render list options (header, right)
-$viewavaluo_list->ListOptions->Render("header", "right");
+$viewavaluosofprocesados_list->ListOptions->Render("header", "right");
 ?>
 	</tr>
 </thead>
 <tbody>
 <?php
-if ($viewavaluo->ExportAll && $viewavaluo->Export <> "") {
-	$viewavaluo_list->StopRec = $viewavaluo_list->TotalRecs;
+if ($viewavaluosofprocesados->ExportAll && $viewavaluosofprocesados->Export <> "") {
+	$viewavaluosofprocesados_list->StopRec = $viewavaluosofprocesados_list->TotalRecs;
 } else {
 
 	// Set the last record to display
-	if ($viewavaluo_list->TotalRecs > $viewavaluo_list->StartRec + $viewavaluo_list->DisplayRecs - 1)
-		$viewavaluo_list->StopRec = $viewavaluo_list->StartRec + $viewavaluo_list->DisplayRecs - 1;
+	if ($viewavaluosofprocesados_list->TotalRecs > $viewavaluosofprocesados_list->StartRec + $viewavaluosofprocesados_list->DisplayRecs - 1)
+		$viewavaluosofprocesados_list->StopRec = $viewavaluosofprocesados_list->StartRec + $viewavaluosofprocesados_list->DisplayRecs - 1;
 	else
-		$viewavaluo_list->StopRec = $viewavaluo_list->TotalRecs;
+		$viewavaluosofprocesados_list->StopRec = $viewavaluosofprocesados_list->TotalRecs;
 }
-$viewavaluo_list->RecCnt = $viewavaluo_list->StartRec - 1;
-if ($viewavaluo_list->Recordset && !$viewavaluo_list->Recordset->EOF) {
-	$viewavaluo_list->Recordset->MoveFirst();
-	$bSelectLimit = $viewavaluo_list->UseSelectLimit;
-	if (!$bSelectLimit && $viewavaluo_list->StartRec > 1)
-		$viewavaluo_list->Recordset->Move($viewavaluo_list->StartRec - 1);
-} elseif (!$viewavaluo->AllowAddDeleteRow && $viewavaluo_list->StopRec == 0) {
-	$viewavaluo_list->StopRec = $viewavaluo->GridAddRowCount;
+$viewavaluosofprocesados_list->RecCnt = $viewavaluosofprocesados_list->StartRec - 1;
+if ($viewavaluosofprocesados_list->Recordset && !$viewavaluosofprocesados_list->Recordset->EOF) {
+	$viewavaluosofprocesados_list->Recordset->MoveFirst();
+	$bSelectLimit = $viewavaluosofprocesados_list->UseSelectLimit;
+	if (!$bSelectLimit && $viewavaluosofprocesados_list->StartRec > 1)
+		$viewavaluosofprocesados_list->Recordset->Move($viewavaluosofprocesados_list->StartRec - 1);
+} elseif (!$viewavaluosofprocesados->AllowAddDeleteRow && $viewavaluosofprocesados_list->StopRec == 0) {
+	$viewavaluosofprocesados_list->StopRec = $viewavaluosofprocesados->GridAddRowCount;
 }
 
 // Initialize aggregate
-$viewavaluo->RowType = EW_ROWTYPE_AGGREGATEINIT;
-$viewavaluo->ResetAttrs();
-$viewavaluo_list->RenderRow();
-while ($viewavaluo_list->RecCnt < $viewavaluo_list->StopRec) {
-	$viewavaluo_list->RecCnt++;
-	if (intval($viewavaluo_list->RecCnt) >= intval($viewavaluo_list->StartRec)) {
-		$viewavaluo_list->RowCnt++;
+$viewavaluosofprocesados->RowType = EW_ROWTYPE_AGGREGATEINIT;
+$viewavaluosofprocesados->ResetAttrs();
+$viewavaluosofprocesados_list->RenderRow();
+while ($viewavaluosofprocesados_list->RecCnt < $viewavaluosofprocesados_list->StopRec) {
+	$viewavaluosofprocesados_list->RecCnt++;
+	if (intval($viewavaluosofprocesados_list->RecCnt) >= intval($viewavaluosofprocesados_list->StartRec)) {
+		$viewavaluosofprocesados_list->RowCnt++;
 
 		// Set up key count
-		$viewavaluo_list->KeyCount = $viewavaluo_list->RowIndex;
+		$viewavaluosofprocesados_list->KeyCount = $viewavaluosofprocesados_list->RowIndex;
 
 		// Init row class and style
-		$viewavaluo->ResetAttrs();
-		$viewavaluo->CssClass = "";
-		if ($viewavaluo->CurrentAction == "gridadd") {
+		$viewavaluosofprocesados->ResetAttrs();
+		$viewavaluosofprocesados->CssClass = "";
+		if ($viewavaluosofprocesados->CurrentAction == "gridadd") {
 		} else {
-			$viewavaluo_list->LoadRowValues($viewavaluo_list->Recordset); // Load row values
+			$viewavaluosofprocesados_list->LoadRowValues($viewavaluosofprocesados_list->Recordset); // Load row values
 		}
-		$viewavaluo->RowType = EW_ROWTYPE_VIEW; // Render view
+		$viewavaluosofprocesados->RowType = EW_ROWTYPE_VIEW; // Render view
 
 		// Set up row id / data-rowindex
-		$viewavaluo->RowAttrs = array_merge($viewavaluo->RowAttrs, array('data-rowindex'=>$viewavaluo_list->RowCnt, 'id'=>'r' . $viewavaluo_list->RowCnt . '_viewavaluo', 'data-rowtype'=>$viewavaluo->RowType));
+		$viewavaluosofprocesados->RowAttrs = array_merge($viewavaluosofprocesados->RowAttrs, array('data-rowindex'=>$viewavaluosofprocesados_list->RowCnt, 'id'=>'r' . $viewavaluosofprocesados_list->RowCnt . '_viewavaluosofprocesados', 'data-rowtype'=>$viewavaluosofprocesados->RowType));
 
 		// Render row
-		$viewavaluo_list->RenderRow();
+		$viewavaluosofprocesados_list->RenderRow();
 
 		// Render list options
-		$viewavaluo_list->RenderListOptions();
+		$viewavaluosofprocesados_list->RenderListOptions();
 ?>
-	<tr<?php echo $viewavaluo->RowAttributes() ?>>
+	<tr<?php echo $viewavaluosofprocesados->RowAttributes() ?>>
 <?php
 
 // Render list options (body, left)
-$viewavaluo_list->ListOptions->Render("body", "left", $viewavaluo_list->RowCnt);
+$viewavaluosofprocesados_list->ListOptions->Render("body", "left", $viewavaluosofprocesados_list->RowCnt);
 ?>
-	<?php if ($viewavaluo->codigoavaluo->Visible) { // codigoavaluo ?>
-		<td data-name="codigoavaluo"<?php echo $viewavaluo->codigoavaluo->CellAttributes() ?>>
-<span id="el<?php echo $viewavaluo_list->RowCnt ?>_viewavaluo_codigoavaluo" class="viewavaluo_codigoavaluo">
-<span<?php echo $viewavaluo->codigoavaluo->ViewAttributes() ?>>
-<?php echo $viewavaluo->codigoavaluo->ListViewValue() ?></span>
+	<?php if ($viewavaluosofprocesados->tipoinmueble->Visible) { // tipoinmueble ?>
+		<td data-name="tipoinmueble"<?php echo $viewavaluosofprocesados->tipoinmueble->CellAttributes() ?>>
+<span id="el<?php echo $viewavaluosofprocesados_list->RowCnt ?>_viewavaluosofprocesados_tipoinmueble" class="viewavaluosofprocesados_tipoinmueble">
+<span<?php echo $viewavaluosofprocesados->tipoinmueble->ViewAttributes() ?>>
+<?php echo $viewavaluosofprocesados->tipoinmueble->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->tipoinmueble->Visible) { // tipoinmueble ?>
-		<td data-name="tipoinmueble"<?php echo $viewavaluo->tipoinmueble->CellAttributes() ?>>
-<span id="el<?php echo $viewavaluo_list->RowCnt ?>_viewavaluo_tipoinmueble" class="viewavaluo_tipoinmueble">
-<span<?php echo $viewavaluo->tipoinmueble->ViewAttributes() ?>>
-<?php echo $viewavaluo->tipoinmueble->ListViewValue() ?></span>
+	<?php if ($viewavaluosofprocesados->codigoavaluo->Visible) { // codigoavaluo ?>
+		<td data-name="codigoavaluo"<?php echo $viewavaluosofprocesados->codigoavaluo->CellAttributes() ?>>
+<span id="el<?php echo $viewavaluosofprocesados_list->RowCnt ?>_viewavaluosofprocesados_codigoavaluo" class="viewavaluosofprocesados_codigoavaluo">
+<span<?php echo $viewavaluosofprocesados->codigoavaluo->ViewAttributes() ?>>
+<?php echo $viewavaluosofprocesados->codigoavaluo->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->id_solicitud->Visible) { // id_solicitud ?>
-		<td data-name="id_solicitud"<?php echo $viewavaluo->id_solicitud->CellAttributes() ?>>
-<span id="el<?php echo $viewavaluo_list->RowCnt ?>_viewavaluo_id_solicitud" class="viewavaluo_id_solicitud">
-<span<?php echo $viewavaluo->id_solicitud->ViewAttributes() ?>>
-<?php echo $viewavaluo->id_solicitud->ListViewValue() ?></span>
+	<?php if ($viewavaluosofprocesados->id_solicitud->Visible) { // id_solicitud ?>
+		<td data-name="id_solicitud"<?php echo $viewavaluosofprocesados->id_solicitud->CellAttributes() ?>>
+<span id="el<?php echo $viewavaluosofprocesados_list->RowCnt ?>_viewavaluosofprocesados_id_solicitud" class="viewavaluosofprocesados_id_solicitud">
+<span<?php echo $viewavaluosofprocesados->id_solicitud->ViewAttributes() ?>>
+<?php echo $viewavaluosofprocesados->id_solicitud->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->id_oficialcredito->Visible) { // id_oficialcredito ?>
-		<td data-name="id_oficialcredito"<?php echo $viewavaluo->id_oficialcredito->CellAttributes() ?>>
-<span id="el<?php echo $viewavaluo_list->RowCnt ?>_viewavaluo_id_oficialcredito" class="viewavaluo_id_oficialcredito">
-<span<?php echo $viewavaluo->id_oficialcredito->ViewAttributes() ?>>
-<?php echo $viewavaluo->id_oficialcredito->ListViewValue() ?></span>
+	<?php if ($viewavaluosofprocesados->id_oficialcredito->Visible) { // id_oficialcredito ?>
+		<td data-name="id_oficialcredito"<?php echo $viewavaluosofprocesados->id_oficialcredito->CellAttributes() ?>>
+<span id="el<?php echo $viewavaluosofprocesados_list->RowCnt ?>_viewavaluosofprocesados_id_oficialcredito" class="viewavaluosofprocesados_id_oficialcredito">
+<span<?php echo $viewavaluosofprocesados->id_oficialcredito->ViewAttributes() ?>>
+<?php echo $viewavaluosofprocesados->id_oficialcredito->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->id_inspector->Visible) { // id_inspector ?>
-		<td data-name="id_inspector"<?php echo $viewavaluo->id_inspector->CellAttributes() ?>>
-<span id="el<?php echo $viewavaluo_list->RowCnt ?>_viewavaluo_id_inspector" class="viewavaluo_id_inspector">
-<span<?php echo $viewavaluo->id_inspector->ViewAttributes() ?>>
-<?php echo $viewavaluo->id_inspector->ListViewValue() ?></span>
+	<?php if ($viewavaluosofprocesados->id_inspector->Visible) { // id_inspector ?>
+		<td data-name="id_inspector"<?php echo $viewavaluosofprocesados->id_inspector->CellAttributes() ?>>
+<span id="el<?php echo $viewavaluosofprocesados_list->RowCnt ?>_viewavaluosofprocesados_id_inspector" class="viewavaluosofprocesados_id_inspector">
+<span<?php echo $viewavaluosofprocesados->id_inspector->ViewAttributes() ?>>
+<?php echo $viewavaluosofprocesados->id_inspector->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->estado->Visible) { // estado ?>
-		<td data-name="estado"<?php echo $viewavaluo->estado->CellAttributes() ?>>
-<span id="el<?php echo $viewavaluo_list->RowCnt ?>_viewavaluo_estado" class="viewavaluo_estado">
-<span<?php echo $viewavaluo->estado->ViewAttributes() ?>>
-<?php echo $viewavaluo->estado->ListViewValue() ?></span>
+	<?php if ($viewavaluosofprocesados->estado->Visible) { // estado ?>
+		<td data-name="estado"<?php echo $viewavaluosofprocesados->estado->CellAttributes() ?>>
+<span id="el<?php echo $viewavaluosofprocesados_list->RowCnt ?>_viewavaluosofprocesados_estado" class="viewavaluosofprocesados_estado">
+<span<?php echo $viewavaluosofprocesados->estado->ViewAttributes() ?>>
+<?php echo $viewavaluosofprocesados->estado->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->estadopago->Visible) { // estadopago ?>
-		<td data-name="estadopago"<?php echo $viewavaluo->estadopago->CellAttributes() ?>>
-<span id="el<?php echo $viewavaluo_list->RowCnt ?>_viewavaluo_estadopago" class="viewavaluo_estadopago">
-<span<?php echo $viewavaluo->estadopago->ViewAttributes() ?>>
-<?php echo $viewavaluo->estadopago->ListViewValue() ?></span>
+	<?php if ($viewavaluosofprocesados->estadopago->Visible) { // estadopago ?>
+		<td data-name="estadopago"<?php echo $viewavaluosofprocesados->estadopago->CellAttributes() ?>>
+<span id="el<?php echo $viewavaluosofprocesados_list->RowCnt ?>_viewavaluosofprocesados_estadopago" class="viewavaluosofprocesados_estadopago">
+<span<?php echo $viewavaluosofprocesados->estadopago->ViewAttributes() ?>>
+<?php echo $viewavaluosofprocesados->estadopago->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->fecha_avaluo->Visible) { // fecha_avaluo ?>
-		<td data-name="fecha_avaluo"<?php echo $viewavaluo->fecha_avaluo->CellAttributes() ?>>
-<span id="el<?php echo $viewavaluo_list->RowCnt ?>_viewavaluo_fecha_avaluo" class="viewavaluo_fecha_avaluo">
-<span<?php echo $viewavaluo->fecha_avaluo->ViewAttributes() ?>>
-<?php echo $viewavaluo->fecha_avaluo->ListViewValue() ?></span>
+	<?php if ($viewavaluosofprocesados->fecha_avaluo->Visible) { // fecha_avaluo ?>
+		<td data-name="fecha_avaluo"<?php echo $viewavaluosofprocesados->fecha_avaluo->CellAttributes() ?>>
+<span id="el<?php echo $viewavaluosofprocesados_list->RowCnt ?>_viewavaluosofprocesados_fecha_avaluo" class="viewavaluosofprocesados_fecha_avaluo">
+<span<?php echo $viewavaluosofprocesados->fecha_avaluo->ViewAttributes() ?>>
+<?php echo $viewavaluosofprocesados->fecha_avaluo->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>
-	<?php if ($viewavaluo->informe->Visible) { // informe ?>
-		<td data-name="informe"<?php echo $viewavaluo->informe->CellAttributes() ?>>
-<span id="el<?php echo $viewavaluo_list->RowCnt ?>_viewavaluo_informe" class="viewavaluo_informe">
-<span<?php echo $viewavaluo->informe->ViewAttributes() ?>>
-<?php echo ew_GetFileViewTag($viewavaluo->informe, $viewavaluo->informe->ListViewValue()) ?>
+	<?php if ($viewavaluosofprocesados->informe->Visible) { // informe ?>
+		<td data-name="informe"<?php echo $viewavaluosofprocesados->informe->CellAttributes() ?>>
+<span id="el<?php echo $viewavaluosofprocesados_list->RowCnt ?>_viewavaluosofprocesados_informe" class="viewavaluosofprocesados_informe">
+<span<?php echo $viewavaluosofprocesados->informe->ViewAttributes() ?>>
+<?php echo ew_GetFileViewTag($viewavaluosofprocesados->informe, $viewavaluosofprocesados->informe->ListViewValue()) ?>
 </span>
 </span>
 </td>
@@ -2585,19 +2940,19 @@ $viewavaluo_list->ListOptions->Render("body", "left", $viewavaluo_list->RowCnt);
 <?php
 
 // Render list options (body, right)
-$viewavaluo_list->ListOptions->Render("body", "right", $viewavaluo_list->RowCnt);
+$viewavaluosofprocesados_list->ListOptions->Render("body", "right", $viewavaluosofprocesados_list->RowCnt);
 ?>
 	</tr>
 <?php
 	}
-	if ($viewavaluo->CurrentAction <> "gridadd")
-		$viewavaluo_list->Recordset->MoveNext();
+	if ($viewavaluosofprocesados->CurrentAction <> "gridadd")
+		$viewavaluosofprocesados_list->Recordset->MoveNext();
 }
 ?>
 </tbody>
 </table>
 <?php } ?>
-<?php if ($viewavaluo->CurrentAction == "") { ?>
+<?php if ($viewavaluosofprocesados->CurrentAction == "") { ?>
 <input type="hidden" name="a_list" id="a_list" value="">
 <?php } ?>
 </div>
@@ -2605,48 +2960,48 @@ $viewavaluo_list->ListOptions->Render("body", "right", $viewavaluo_list->RowCnt)
 <?php
 
 // Close recordset
-if ($viewavaluo_list->Recordset)
-	$viewavaluo_list->Recordset->Close();
+if ($viewavaluosofprocesados_list->Recordset)
+	$viewavaluosofprocesados_list->Recordset->Close();
 ?>
-<?php if ($viewavaluo->Export == "") { ?>
+<?php if ($viewavaluosofprocesados->Export == "") { ?>
 <div class="box-footer ewGridLowerPanel">
-<?php if ($viewavaluo->CurrentAction <> "gridadd" && $viewavaluo->CurrentAction <> "gridedit") { ?>
+<?php if ($viewavaluosofprocesados->CurrentAction <> "gridadd" && $viewavaluosofprocesados->CurrentAction <> "gridedit") { ?>
 <form name="ewPagerForm" class="ewForm form-inline ewPagerForm" action="<?php echo ew_CurrentPage() ?>">
-<?php if (!isset($viewavaluo_list->Pager)) $viewavaluo_list->Pager = new cNumericPager($viewavaluo_list->StartRec, $viewavaluo_list->DisplayRecs, $viewavaluo_list->TotalRecs, $viewavaluo_list->RecRange, $viewavaluo_list->AutoHidePager) ?>
-<?php if ($viewavaluo_list->Pager->RecordCount > 0 && $viewavaluo_list->Pager->Visible) { ?>
+<?php if (!isset($viewavaluosofprocesados_list->Pager)) $viewavaluosofprocesados_list->Pager = new cNumericPager($viewavaluosofprocesados_list->StartRec, $viewavaluosofprocesados_list->DisplayRecs, $viewavaluosofprocesados_list->TotalRecs, $viewavaluosofprocesados_list->RecRange, $viewavaluosofprocesados_list->AutoHidePager) ?>
+<?php if ($viewavaluosofprocesados_list->Pager->RecordCount > 0 && $viewavaluosofprocesados_list->Pager->Visible) { ?>
 <div class="ewPager">
 <div class="ewNumericPage"><ul class="pagination">
-	<?php if ($viewavaluo_list->Pager->FirstButton->Enabled) { ?>
-	<li><a href="<?php echo $viewavaluo_list->PageUrl() ?>start=<?php echo $viewavaluo_list->Pager->FirstButton->Start ?>"><?php echo $Language->Phrase("PagerFirst") ?></a></li>
+	<?php if ($viewavaluosofprocesados_list->Pager->FirstButton->Enabled) { ?>
+	<li><a href="<?php echo $viewavaluosofprocesados_list->PageUrl() ?>start=<?php echo $viewavaluosofprocesados_list->Pager->FirstButton->Start ?>"><?php echo $Language->Phrase("PagerFirst") ?></a></li>
 	<?php } ?>
-	<?php if ($viewavaluo_list->Pager->PrevButton->Enabled) { ?>
-	<li><a href="<?php echo $viewavaluo_list->PageUrl() ?>start=<?php echo $viewavaluo_list->Pager->PrevButton->Start ?>"><?php echo $Language->Phrase("PagerPrevious") ?></a></li>
+	<?php if ($viewavaluosofprocesados_list->Pager->PrevButton->Enabled) { ?>
+	<li><a href="<?php echo $viewavaluosofprocesados_list->PageUrl() ?>start=<?php echo $viewavaluosofprocesados_list->Pager->PrevButton->Start ?>"><?php echo $Language->Phrase("PagerPrevious") ?></a></li>
 	<?php } ?>
-	<?php foreach ($viewavaluo_list->Pager->Items as $PagerItem) { ?>
-		<li<?php if (!$PagerItem->Enabled) { echo " class=\" active\""; } ?>><a href="<?php if ($PagerItem->Enabled) { echo $viewavaluo_list->PageUrl() . "start=" . $PagerItem->Start; } else { echo "#"; } ?>"><?php echo $PagerItem->Text ?></a></li>
+	<?php foreach ($viewavaluosofprocesados_list->Pager->Items as $PagerItem) { ?>
+		<li<?php if (!$PagerItem->Enabled) { echo " class=\" active\""; } ?>><a href="<?php if ($PagerItem->Enabled) { echo $viewavaluosofprocesados_list->PageUrl() . "start=" . $PagerItem->Start; } else { echo "#"; } ?>"><?php echo $PagerItem->Text ?></a></li>
 	<?php } ?>
-	<?php if ($viewavaluo_list->Pager->NextButton->Enabled) { ?>
-	<li><a href="<?php echo $viewavaluo_list->PageUrl() ?>start=<?php echo $viewavaluo_list->Pager->NextButton->Start ?>"><?php echo $Language->Phrase("PagerNext") ?></a></li>
+	<?php if ($viewavaluosofprocesados_list->Pager->NextButton->Enabled) { ?>
+	<li><a href="<?php echo $viewavaluosofprocesados_list->PageUrl() ?>start=<?php echo $viewavaluosofprocesados_list->Pager->NextButton->Start ?>"><?php echo $Language->Phrase("PagerNext") ?></a></li>
 	<?php } ?>
-	<?php if ($viewavaluo_list->Pager->LastButton->Enabled) { ?>
-	<li><a href="<?php echo $viewavaluo_list->PageUrl() ?>start=<?php echo $viewavaluo_list->Pager->LastButton->Start ?>"><?php echo $Language->Phrase("PagerLast") ?></a></li>
+	<?php if ($viewavaluosofprocesados_list->Pager->LastButton->Enabled) { ?>
+	<li><a href="<?php echo $viewavaluosofprocesados_list->PageUrl() ?>start=<?php echo $viewavaluosofprocesados_list->Pager->LastButton->Start ?>"><?php echo $Language->Phrase("PagerLast") ?></a></li>
 	<?php } ?>
 </ul></div>
 </div>
 <?php } ?>
-<?php if ($viewavaluo_list->Pager->RecordCount > 0) { ?>
+<?php if ($viewavaluosofprocesados_list->Pager->RecordCount > 0) { ?>
 <div class="ewPager ewRec">
-	<span><?php echo $Language->Phrase("Record") ?>&nbsp;<?php echo $viewavaluo_list->Pager->FromIndex ?>&nbsp;<?php echo $Language->Phrase("To") ?>&nbsp;<?php echo $viewavaluo_list->Pager->ToIndex ?>&nbsp;<?php echo $Language->Phrase("Of") ?>&nbsp;<?php echo $viewavaluo_list->Pager->RecordCount ?></span>
+	<span><?php echo $Language->Phrase("Record") ?>&nbsp;<?php echo $viewavaluosofprocesados_list->Pager->FromIndex ?>&nbsp;<?php echo $Language->Phrase("To") ?>&nbsp;<?php echo $viewavaluosofprocesados_list->Pager->ToIndex ?>&nbsp;<?php echo $Language->Phrase("Of") ?>&nbsp;<?php echo $viewavaluosofprocesados_list->Pager->RecordCount ?></span>
 </div>
 <?php } ?>
-<?php if ($viewavaluo_list->TotalRecs > 0 && (!$viewavaluo_list->AutoHidePageSizeSelector || $viewavaluo_list->Pager->Visible)) { ?>
+<?php if ($viewavaluosofprocesados_list->TotalRecs > 0 && (!$viewavaluosofprocesados_list->AutoHidePageSizeSelector || $viewavaluosofprocesados_list->Pager->Visible)) { ?>
 <div class="ewPager">
-<input type="hidden" name="t" value="viewavaluo">
+<input type="hidden" name="t" value="viewavaluosofprocesados">
 <select name="<?php echo EW_TABLE_REC_PER_PAGE ?>" class="form-control input-sm ewTooltip" title="<?php echo $Language->Phrase("RecordsPerPage") ?>" onchange="this.form.submit();">
-<option value="10"<?php if ($viewavaluo_list->DisplayRecs == 10) { ?> selected<?php } ?>>10</option>
-<option value="20"<?php if ($viewavaluo_list->DisplayRecs == 20) { ?> selected<?php } ?>>20</option>
-<option value="50"<?php if ($viewavaluo_list->DisplayRecs == 50) { ?> selected<?php } ?>>50</option>
-<option value="ALL"<?php if ($viewavaluo->getRecordsPerPage() == -1) { ?> selected<?php } ?>><?php echo $Language->Phrase("AllRecords") ?></option>
+<option value="10"<?php if ($viewavaluosofprocesados_list->DisplayRecs == 10) { ?> selected<?php } ?>>10</option>
+<option value="20"<?php if ($viewavaluosofprocesados_list->DisplayRecs == 20) { ?> selected<?php } ?>>20</option>
+<option value="50"<?php if ($viewavaluosofprocesados_list->DisplayRecs == 50) { ?> selected<?php } ?>>50</option>
+<option value="ALL"<?php if ($viewavaluosofprocesados->getRecordsPerPage() == -1) { ?> selected<?php } ?>><?php echo $Language->Phrase("AllRecords") ?></option>
 </select>
 </div>
 <?php } ?>
@@ -2654,7 +3009,7 @@ if ($viewavaluo_list->Recordset)
 <?php } ?>
 <div class="ewListOtherOptions">
 <?php
-	foreach ($viewavaluo_list->OtherOptions as &$option)
+	foreach ($viewavaluosofprocesados_list->OtherOptions as &$option)
 		$option->Render("body", "bottom");
 ?>
 </div>
@@ -2663,10 +3018,10 @@ if ($viewavaluo_list->Recordset)
 <?php } ?>
 </div>
 <?php } ?>
-<?php if ($viewavaluo_list->TotalRecs == 0 && $viewavaluo->CurrentAction == "") { // Show other options ?>
+<?php if ($viewavaluosofprocesados_list->TotalRecs == 0 && $viewavaluosofprocesados->CurrentAction == "") { // Show other options ?>
 <div class="ewListOtherOptions">
 <?php
-	foreach ($viewavaluo_list->OtherOptions as &$option) {
+	foreach ($viewavaluosofprocesados_list->OtherOptions as &$option) {
 		$option->ButtonClass = "";
 		$option->Render("body", "");
 	}
@@ -2674,17 +3029,19 @@ if ($viewavaluo_list->Recordset)
 </div>
 <div class="clearfix"></div>
 <?php } ?>
-<?php if ($viewavaluo->Export == "") { ?>
+<?php if ($viewavaluosofprocesados->Export == "") { ?>
 <script type="text/javascript">
-fviewavaluolist.Init();
+fviewavaluosofprocesadoslistsrch.FilterList = <?php echo $viewavaluosofprocesados_list->GetFilterList() ?>;
+fviewavaluosofprocesadoslistsrch.Init();
+fviewavaluosofprocesadoslist.Init();
 </script>
 <?php } ?>
 <?php
-$viewavaluo_list->ShowPageFooter();
+$viewavaluosofprocesados_list->ShowPageFooter();
 if (EW_DEBUG_ENABLED)
 	echo ew_DebugMsg();
 ?>
-<?php if ($viewavaluo->Export == "") { ?>
+<?php if ($viewavaluosofprocesados->Export == "") { ?>
 <script type="text/javascript">
 
 // Write your table-specific startup script here
@@ -2694,5 +3051,5 @@ if (EW_DEBUG_ENABLED)
 <?php } ?>
 <?php include_once "footer.php" ?>
 <?php
-$viewavaluo_list->Page_Terminate();
+$viewavaluosofprocesados_list->Page_Terminate();
 ?>

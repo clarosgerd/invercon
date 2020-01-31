@@ -328,18 +328,6 @@ class cviewsolicitudframe_edit extends cviewsolicitudframe {
 		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
 		$gbOldSkipHeaderFooter = $gbSkipHeaderFooter;
 		$gbSkipHeaderFooter = TRUE;
-		$this->id->SetVisibility();
-		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
-			$this->id->Visible = FALSE;
-		$this->name->SetVisibility();
-		$this->lastname->SetVisibility();
-		$this->_email->SetVisibility();
-		$this->address->SetVisibility();
-		$this->nombre_contacto->SetVisibility();
-		$this->email_contacto->SetVisibility();
-		$this->phone->SetVisibility();
-		$this->cell->SetVisibility();
-		$this->id_sucursal->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -379,17 +367,23 @@ class cviewsolicitudframe_edit extends cviewsolicitudframe {
 		global $gsExportFile, $gTmpImages;
 		global $gbOldSkipHeaderFooter, $gbSkipHeaderFooter;
 		$gbSkipHeaderFooter = $gbOldSkipHeaderFooter;
+		if (@$_POST["customexport"] == "") {
 
 		// Page Unload event
 		$this->Page_Unload();
 
 		// Global Page Unloaded event (in userfn*.php)
 		Page_Unloaded();
+		}
 
 		// Export
 		global $EW_EXPORT, $viewsolicitudframe;
 		if ($this->CustomExport <> "" && $this->CustomExport == $this->Export && array_key_exists($this->CustomExport, $EW_EXPORT)) {
-				$sContent = ob_get_contents();
+			if (is_array(@$_SESSION[EW_SESSION_TEMP_IMAGES])) // Restore temp images
+				$gTmpImages = @$_SESSION[EW_SESSION_TEMP_IMAGES];
+			if (@$_POST["data"] <> "")
+				$sContent = $_POST["data"];
+			$gsExportFile = @$_POST["filename"];
 			if ($gsExportFile == "") $gsExportFile = $this->TableVar;
 			$class = $EW_EXPORT[$this->CustomExport];
 			if (class_exists($class)) {
@@ -403,6 +397,10 @@ class cviewsolicitudframe_edit extends cviewsolicitudframe {
 				exit();
 			}
 		}
+	if ($this->CustomExport <> "") { // Save temp images array for custom export
+		if (is_array($gTmpImages))
+			$_SESSION[EW_SESSION_TEMP_IMAGES] = $gTmpImages;
+	}
 		$this->Page_Redirecting($url);
 
 		// Close connection
@@ -1038,23 +1036,9 @@ class cviewsolicitudframe_edit extends cviewsolicitudframe {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 			}
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='MERCADERIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1084,23 +1068,9 @@ class cviewsolicitudframe_edit extends cviewsolicitudframe {
 		// tipoespecial
 		if (strval($this->tipoespecial->CurrentValue) <> "") {
 			$sFilterWrk = "`id_tipoinmueble`" . ew_SearchString("=", $this->tipoespecial->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='ESPECIAL'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -1282,6 +1252,10 @@ class cviewsolicitudframe_edit extends cviewsolicitudframe {
 		// Call Row Rendered event
 		if ($this->RowType <> EW_ROWTYPE_AGGREGATEINIT)
 			$this->Row_Rendered();
+
+		// Save data for Custom Template
+		if ($this->RowType == EW_ROWTYPE_VIEW || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_ADD)
+			$this->Rows[] = $this->CustomTemplateFieldValues();
 	}
 
 	// Validate form
@@ -1579,34 +1553,94 @@ $viewsolicitudframe_edit->ShowMessage();
 <input type="hidden" name="t" value="viewsolicitudframe">
 <input type="hidden" name="a_edit" id="a_edit" value="U">
 <input type="hidden" name="modal" value="<?php echo intval($viewsolicitudframe_edit->IsModal) ?>">
+<div id="tpd_viewsolicitudframeedit" class="ewCustomTemplate"></div>
+<script id="tpm_viewsolicitudframeedit" type="text/html">
+<div id="ct_viewsolicitudframe_edit"><!-- table* -->
+<?php echo "hola";?>
+<table id="tbl_solicitudedit1" class="table table-bordered table-striped table-highlight">
+	<tr id="r_name">
+		<td>
+<span id="el_solicitud_name">
+</span>
+</td>
+		<td>
+<span id="el_solicitud_name">
+{{include tmpl="#tpc_viewsolicitudframe_name"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudframe_name"/}}
+</span>
+</td>
+<td>
+<span id="el_solicitud__email">
+{{include tmpl="#tpc_viewsolicitudframe__email"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudframe__email"/}}
+</span>
+</td>
+	<td>
+<span id="el_solicitud_phone">
+{{include tmpl="#tpc_viewsolicitudframe_phone"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudframe_phone"/}}
+</span>
+</td>
+	<td>
+<span id="el_solicitud_cell">
+{{include tmpl="#tpc_viewsolicitudframe_cell"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudframe_cell"/}}
+</span>
+</td>
+</tr>
+	<tr id="r__email">
+<td>
+<span id="el_solicitud_address">
+{{include tmpl="#tpc_viewsolicitudframe_address"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudframe_address"/}}
+</span>
+</td>
+<td>
+<span id="el_solicitud_nomnbre_contacto">
+{{include tmpl="#tpx_monto_inicial"/}}
+</span>
+</td>
+<td>
+<span id="el_solicitud_nomnbre_contacto">
+{{include tmpl="#tpc_viewsolicitudframe_nombre_contacto"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudframe_nombre_contacto"/}}
+</span>
+</td>
+<td>
+<span id="el_solicitud_lastname">
+{{include tmpl="#tpc_viewsolicitudframe_lastname"/}}&nbsp;{{include tmpl="#tpx_viewsolicitudframe_lastname"/}}
+</span>
+</td>
+	</tr>	
+</table>
+</div>
+</script>
 <?php if (!$viewsolicitudframe_edit->IsMobileOrModal) { ?>
 <div class="ewDesktop"><!-- desktop -->
 <?php } ?>
 <?php if ($viewsolicitudframe_edit->IsMobileOrModal) { ?>
-<div class="ewEditDiv"><!-- page* -->
+<div class="ewEditDiv hidden"><!-- page* -->
 <?php } else { ?>
-<table id="tbl_viewsolicitudframeedit" class="table table-striped table-bordered table-hover table-condensed ewDesktopTable"><!-- table* -->
+<table id="tbl_viewsolicitudframeedit" class="table table-striped table-bordered table-hover table-condensed ewDesktopTable hidden"><!-- table* -->
 <?php } ?>
 <?php if ($viewsolicitudframe->id->Visible) { // id ?>
 <?php if ($viewsolicitudframe_edit->IsMobileOrModal) { ?>
 	<div id="r_id" class="form-group">
-		<label id="elh_viewsolicitudframe_id" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><?php echo $viewsolicitudframe->id->FldCaption() ?></label>
+		<label id="elh_viewsolicitudframe_id" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><script id="tpc_viewsolicitudframe_id" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->id->FldCaption() ?></span></script></label>
 		<div class="<?php echo $viewsolicitudframe_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudframe->id->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_id" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_id">
 <span<?php echo $viewsolicitudframe->id->ViewAttributes() ?>>
 <p class="form-control-static"><?php echo $viewsolicitudframe->id->EditValue ?></p></span>
 </span>
+</script>
 <input type="hidden" data-table="viewsolicitudframe" data-field="x_id" name="x_id" id="x_id" value="<?php echo ew_HtmlEncode($viewsolicitudframe->id->CurrentValue) ?>">
 <?php echo $viewsolicitudframe->id->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_id">
-		<td class="col-sm-3"><span id="elh_viewsolicitudframe_id"><?php echo $viewsolicitudframe->id->FldCaption() ?></span></td>
+		<td class="col-sm-3"><span id="elh_viewsolicitudframe_id"><script id="tpc_viewsolicitudframe_id" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->id->FldCaption() ?></span></script></span></td>
 		<td<?php echo $viewsolicitudframe->id->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_id" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_id">
 <span<?php echo $viewsolicitudframe->id->ViewAttributes() ?>>
 <p class="form-control-static"><?php echo $viewsolicitudframe->id->EditValue ?></p></span>
 </span>
+</script>
 <input type="hidden" data-table="viewsolicitudframe" data-field="x_id" name="x_id" id="x_id" value="<?php echo ew_HtmlEncode($viewsolicitudframe->id->CurrentValue) ?>">
 <?php echo $viewsolicitudframe->id->CustomMsg ?></td>
 	</tr>
@@ -1615,20 +1649,24 @@ $viewsolicitudframe_edit->ShowMessage();
 <?php if ($viewsolicitudframe->name->Visible) { // name ?>
 <?php if ($viewsolicitudframe_edit->IsMobileOrModal) { ?>
 	<div id="r_name" class="form-group">
-		<label id="elh_viewsolicitudframe_name" for="x_name" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><?php echo $viewsolicitudframe->name->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_viewsolicitudframe_name" for="x_name" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><script id="tpc_viewsolicitudframe_name" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->name->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></script></label>
 		<div class="<?php echo $viewsolicitudframe_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudframe->name->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_name" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_name">
 <input type="text" data-table="viewsolicitudframe" data-field="x_name" name="x_name" id="x_name" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->name->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->name->EditValue ?>"<?php echo $viewsolicitudframe->name->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->name->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_name">
-		<td class="col-sm-3"><span id="elh_viewsolicitudframe_name"><?php echo $viewsolicitudframe->name->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
+		<td class="col-sm-3"><span id="elh_viewsolicitudframe_name"><script id="tpc_viewsolicitudframe_name" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->name->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></script></span></td>
 		<td<?php echo $viewsolicitudframe->name->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_name" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_name">
 <input type="text" data-table="viewsolicitudframe" data-field="x_name" name="x_name" id="x_name" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->name->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->name->EditValue ?>"<?php echo $viewsolicitudframe->name->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->name->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1636,20 +1674,24 @@ $viewsolicitudframe_edit->ShowMessage();
 <?php if ($viewsolicitudframe->lastname->Visible) { // lastname ?>
 <?php if ($viewsolicitudframe_edit->IsMobileOrModal) { ?>
 	<div id="r_lastname" class="form-group">
-		<label id="elh_viewsolicitudframe_lastname" for="x_lastname" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><?php echo $viewsolicitudframe->lastname->FldCaption() ?></label>
+		<label id="elh_viewsolicitudframe_lastname" for="x_lastname" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><script id="tpc_viewsolicitudframe_lastname" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->lastname->FldCaption() ?></span></script></label>
 		<div class="<?php echo $viewsolicitudframe_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudframe->lastname->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_lastname" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_lastname">
 <input type="text" data-table="viewsolicitudframe" data-field="x_lastname" name="x_lastname" id="x_lastname" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->lastname->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->lastname->EditValue ?>"<?php echo $viewsolicitudframe->lastname->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->lastname->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_lastname">
-		<td class="col-sm-3"><span id="elh_viewsolicitudframe_lastname"><?php echo $viewsolicitudframe->lastname->FldCaption() ?></span></td>
+		<td class="col-sm-3"><span id="elh_viewsolicitudframe_lastname"><script id="tpc_viewsolicitudframe_lastname" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->lastname->FldCaption() ?></span></script></span></td>
 		<td<?php echo $viewsolicitudframe->lastname->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_lastname" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_lastname">
 <input type="text" data-table="viewsolicitudframe" data-field="x_lastname" name="x_lastname" id="x_lastname" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->lastname->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->lastname->EditValue ?>"<?php echo $viewsolicitudframe->lastname->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->lastname->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1657,20 +1699,24 @@ $viewsolicitudframe_edit->ShowMessage();
 <?php if ($viewsolicitudframe->_email->Visible) { // email ?>
 <?php if ($viewsolicitudframe_edit->IsMobileOrModal) { ?>
 	<div id="r__email" class="form-group">
-		<label id="elh_viewsolicitudframe__email" for="x__email" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><?php echo $viewsolicitudframe->_email->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_viewsolicitudframe__email" for="x__email" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><script id="tpc_viewsolicitudframe__email" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->_email->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></script></label>
 		<div class="<?php echo $viewsolicitudframe_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudframe->_email->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe__email" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe__email">
 <input type="text" data-table="viewsolicitudframe" data-field="x__email" name="x__email" id="x__email" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->_email->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->_email->EditValue ?>"<?php echo $viewsolicitudframe->_email->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->_email->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r__email">
-		<td class="col-sm-3"><span id="elh_viewsolicitudframe__email"><?php echo $viewsolicitudframe->_email->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></td>
+		<td class="col-sm-3"><span id="elh_viewsolicitudframe__email"><script id="tpc_viewsolicitudframe__email" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->_email->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></span></script></span></td>
 		<td<?php echo $viewsolicitudframe->_email->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe__email" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe__email">
 <input type="text" data-table="viewsolicitudframe" data-field="x__email" name="x__email" id="x__email" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->_email->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->_email->EditValue ?>"<?php echo $viewsolicitudframe->_email->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->_email->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1678,20 +1724,24 @@ $viewsolicitudframe_edit->ShowMessage();
 <?php if ($viewsolicitudframe->address->Visible) { // address ?>
 <?php if ($viewsolicitudframe_edit->IsMobileOrModal) { ?>
 	<div id="r_address" class="form-group">
-		<label id="elh_viewsolicitudframe_address" for="x_address" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><?php echo $viewsolicitudframe->address->FldCaption() ?></label>
+		<label id="elh_viewsolicitudframe_address" for="x_address" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><script id="tpc_viewsolicitudframe_address" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->address->FldCaption() ?></span></script></label>
 		<div class="<?php echo $viewsolicitudframe_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudframe->address->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_address" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_address">
 <input type="text" data-table="viewsolicitudframe" data-field="x_address" name="x_address" id="x_address" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->address->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->address->EditValue ?>"<?php echo $viewsolicitudframe->address->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->address->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_address">
-		<td class="col-sm-3"><span id="elh_viewsolicitudframe_address"><?php echo $viewsolicitudframe->address->FldCaption() ?></span></td>
+		<td class="col-sm-3"><span id="elh_viewsolicitudframe_address"><script id="tpc_viewsolicitudframe_address" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->address->FldCaption() ?></span></script></span></td>
 		<td<?php echo $viewsolicitudframe->address->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_address" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_address">
 <input type="text" data-table="viewsolicitudframe" data-field="x_address" name="x_address" id="x_address" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->address->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->address->EditValue ?>"<?php echo $viewsolicitudframe->address->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->address->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1699,23 +1749,27 @@ $viewsolicitudframe_edit->ShowMessage();
 <?php if ($viewsolicitudframe->nombre_contacto->Visible) { // nombre_contacto ?>
 <?php if ($viewsolicitudframe_edit->IsMobileOrModal) { ?>
 	<div id="r_nombre_contacto" class="form-group">
-		<label id="elh_viewsolicitudframe_nombre_contacto" for="x_nombre_contacto" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><?php echo $viewsolicitudframe->nombre_contacto->FldCaption() ?></label>
+		<label id="elh_viewsolicitudframe_nombre_contacto" for="x_nombre_contacto" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><script id="tpc_viewsolicitudframe_nombre_contacto" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->nombre_contacto->FldCaption() ?></span></script></label>
 		<div class="<?php echo $viewsolicitudframe_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudframe->nombre_contacto->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_nombre_contacto" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_nombre_contacto">
 <span<?php echo $viewsolicitudframe->nombre_contacto->ViewAttributes() ?>>
 <p class="form-control-static"><?php echo $viewsolicitudframe->nombre_contacto->EditValue ?></p></span>
 </span>
+</script>
 <input type="hidden" data-table="viewsolicitudframe" data-field="x_nombre_contacto" name="x_nombre_contacto" id="x_nombre_contacto" value="<?php echo ew_HtmlEncode($viewsolicitudframe->nombre_contacto->CurrentValue) ?>">
 <?php echo $viewsolicitudframe->nombre_contacto->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_nombre_contacto">
-		<td class="col-sm-3"><span id="elh_viewsolicitudframe_nombre_contacto"><?php echo $viewsolicitudframe->nombre_contacto->FldCaption() ?></span></td>
+		<td class="col-sm-3"><span id="elh_viewsolicitudframe_nombre_contacto"><script id="tpc_viewsolicitudframe_nombre_contacto" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->nombre_contacto->FldCaption() ?></span></script></span></td>
 		<td<?php echo $viewsolicitudframe->nombre_contacto->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_nombre_contacto" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_nombre_contacto">
 <span<?php echo $viewsolicitudframe->nombre_contacto->ViewAttributes() ?>>
 <p class="form-control-static"><?php echo $viewsolicitudframe->nombre_contacto->EditValue ?></p></span>
 </span>
+</script>
 <input type="hidden" data-table="viewsolicitudframe" data-field="x_nombre_contacto" name="x_nombre_contacto" id="x_nombre_contacto" value="<?php echo ew_HtmlEncode($viewsolicitudframe->nombre_contacto->CurrentValue) ?>">
 <?php echo $viewsolicitudframe->nombre_contacto->CustomMsg ?></td>
 	</tr>
@@ -1724,20 +1778,24 @@ $viewsolicitudframe_edit->ShowMessage();
 <?php if ($viewsolicitudframe->phone->Visible) { // phone ?>
 <?php if ($viewsolicitudframe_edit->IsMobileOrModal) { ?>
 	<div id="r_phone" class="form-group">
-		<label id="elh_viewsolicitudframe_phone" for="x_phone" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><?php echo $viewsolicitudframe->phone->FldCaption() ?></label>
+		<label id="elh_viewsolicitudframe_phone" for="x_phone" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><script id="tpc_viewsolicitudframe_phone" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->phone->FldCaption() ?></span></script></label>
 		<div class="<?php echo $viewsolicitudframe_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudframe->phone->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_phone" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_phone">
 <input type="text" data-table="viewsolicitudframe" data-field="x_phone" name="x_phone" id="x_phone" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->phone->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->phone->EditValue ?>"<?php echo $viewsolicitudframe->phone->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->phone->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_phone">
-		<td class="col-sm-3"><span id="elh_viewsolicitudframe_phone"><?php echo $viewsolicitudframe->phone->FldCaption() ?></span></td>
+		<td class="col-sm-3"><span id="elh_viewsolicitudframe_phone"><script id="tpc_viewsolicitudframe_phone" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->phone->FldCaption() ?></span></script></span></td>
 		<td<?php echo $viewsolicitudframe->phone->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_phone" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_phone">
 <input type="text" data-table="viewsolicitudframe" data-field="x_phone" name="x_phone" id="x_phone" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->phone->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->phone->EditValue ?>"<?php echo $viewsolicitudframe->phone->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->phone->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1745,20 +1803,24 @@ $viewsolicitudframe_edit->ShowMessage();
 <?php if ($viewsolicitudframe->cell->Visible) { // cell ?>
 <?php if ($viewsolicitudframe_edit->IsMobileOrModal) { ?>
 	<div id="r_cell" class="form-group">
-		<label id="elh_viewsolicitudframe_cell" for="x_cell" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><?php echo $viewsolicitudframe->cell->FldCaption() ?></label>
+		<label id="elh_viewsolicitudframe_cell" for="x_cell" class="<?php echo $viewsolicitudframe_edit->LeftColumnClass ?>"><script id="tpc_viewsolicitudframe_cell" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->cell->FldCaption() ?></span></script></label>
 		<div class="<?php echo $viewsolicitudframe_edit->RightColumnClass ?>"><div<?php echo $viewsolicitudframe->cell->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_cell" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_cell">
 <input type="text" data-table="viewsolicitudframe" data-field="x_cell" name="x_cell" id="x_cell" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->cell->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->cell->EditValue ?>"<?php echo $viewsolicitudframe->cell->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->cell->CustomMsg ?></div></div>
 	</div>
 <?php } else { ?>
 	<tr id="r_cell">
-		<td class="col-sm-3"><span id="elh_viewsolicitudframe_cell"><?php echo $viewsolicitudframe->cell->FldCaption() ?></span></td>
+		<td class="col-sm-3"><span id="elh_viewsolicitudframe_cell"><script id="tpc_viewsolicitudframe_cell" class="viewsolicitudframeedit" type="text/html"><span><?php echo $viewsolicitudframe->cell->FldCaption() ?></span></script></span></td>
 		<td<?php echo $viewsolicitudframe->cell->CellAttributes() ?>>
+<script id="tpx_viewsolicitudframe_cell" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_cell">
 <input type="text" data-table="viewsolicitudframe" data-field="x_cell" name="x_cell" id="x_cell" size="30" maxlength="255" placeholder="<?php echo ew_HtmlEncode($viewsolicitudframe->cell->getPlaceHolder()) ?>" value="<?php echo $viewsolicitudframe->cell->EditValue ?>"<?php echo $viewsolicitudframe->cell->EditAttributes() ?>>
 </span>
+</script>
 <?php echo $viewsolicitudframe->cell->CustomMsg ?></td>
 	</tr>
 <?php } ?>
@@ -1768,12 +1830,16 @@ $viewsolicitudframe_edit->ShowMessage();
 <?php } else { ?>
 </table><!-- /table* -->
 <?php } ?>
+<script id="tpx_viewsolicitudframe_email_contacto" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_email_contacto">
 <input type="hidden" data-table="viewsolicitudframe" data-field="x_email_contacto" name="x_email_contacto" id="x_email_contacto" value="<?php echo ew_HtmlEncode($viewsolicitudframe->email_contacto->CurrentValue) ?>">
 </span>
+</script>
+<script id="tpx_viewsolicitudframe_id_sucursal" class="viewsolicitudframeedit" type="text/html">
 <span id="el_viewsolicitudframe_id_sucursal">
 <input type="hidden" data-table="viewsolicitudframe" data-field="x_id_sucursal" name="x_id_sucursal" id="x_id_sucursal" value="<?php echo ew_HtmlEncode($viewsolicitudframe->id_sucursal->CurrentValue) ?>">
 </span>
+</script>
 <?php if (!$viewsolicitudframe_edit->IsModal) { ?>
 <div class="form-group"><!-- buttons .form-group -->
 	<div class="<?php echo $viewsolicitudframe_edit->OffsetColumnClass ?>"><!-- buttons offset -->
@@ -1786,6 +1852,11 @@ $viewsolicitudframe_edit->ShowMessage();
 </div><!-- /desktop -->
 <?php } ?>
 </form>
+<script type="text/javascript">
+ewVar.templateData = { rows: <?php echo ew_ArrayToJson($viewsolicitudframe->Rows) ?> };
+ew_ApplyTemplate("tpd_viewsolicitudframeedit", "tpm_viewsolicitudframeedit", "viewsolicitudframeedit", "<?php echo $viewsolicitudframe->CustomExport ?>", ewVar.templateData.rows[0]);
+jQuery("script.viewsolicitudframeedit_js").each(function(){ew_AddScript(this.text);});
+</script>
 <script type="text/javascript">
 fviewsolicitudframeedit.Init();
 </script>

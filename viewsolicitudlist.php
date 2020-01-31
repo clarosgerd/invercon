@@ -457,7 +457,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 		$this->address->SetVisibility();
 		$this->email_contacto->SetVisibility();
 		$this->lastname->SetVisibility();
-		$this->id_sucursal->SetVisibility();
 		$this->tipoinmueble->SetVisibility();
 		$this->tipovehiculo->SetVisibility();
 		$this->tipomaquinaria->SetVisibility();
@@ -1344,7 +1343,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 			$this->UpdateSort($this->address); // address
 			$this->UpdateSort($this->email_contacto); // email_contacto
 			$this->UpdateSort($this->lastname); // lastname
-			$this->UpdateSort($this->id_sucursal); // id_sucursal
 			$this->UpdateSort($this->tipoinmueble); // tipoinmueble
 			$this->UpdateSort($this->tipovehiculo); // tipovehiculo
 			$this->UpdateSort($this->tipomaquinaria); // tipomaquinaria
@@ -1389,7 +1387,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 				$this->address->setSort("");
 				$this->email_contacto->setSort("");
 				$this->lastname->setSort("");
-				$this->id_sucursal->setSort("");
 				$this->tipoinmueble->setSort("");
 				$this->tipovehiculo->setSort("");
 				$this->tipomaquinaria->setSort("");
@@ -2501,23 +2498,9 @@ class cviewsolicitud_list extends cviewsolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipoinmueble->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='INMUEBLE'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2552,23 +2535,9 @@ class cviewsolicitud_list extends cviewsolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipovehiculo->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='VEHICULO'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2603,23 +2572,9 @@ class cviewsolicitud_list extends cviewsolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`nombre`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_STRING, "");
 			}
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `nombre`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipomaquinaria->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='MAQUINARIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2654,23 +2609,9 @@ class cviewsolicitud_list extends cviewsolicitud {
 				if ($sFilterWrk <> "") $sFilterWrk .= " OR ";
 				$sFilterWrk .= "`id_tipoinmueble`" . ew_SearchString("=", trim($wrk), EW_DATATYPE_NUMBER, "");
 			}
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipomercaderia->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='MERCADERIA'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2700,23 +2641,9 @@ class cviewsolicitud_list extends cviewsolicitud {
 		// tipoespecial
 		if (strval($this->tipoespecial->CurrentValue) <> "") {
 			$sFilterWrk = "`id_tipoinmueble`" . ew_SearchString("=", $this->tipoespecial->CurrentValue, EW_DATATYPE_NUMBER, "");
-		switch (@$gsLanguage) {
-			case "en":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			case "es":
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
-				break;
-			default:
-				$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
-				$sWhereWrk = "";
-				$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
-				break;
-		}
+		$sSqlWrk = "SELECT `id_tipoinmueble`, `nombre` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `tipoinmueble`";
+		$sWhereWrk = "";
+		$this->tipoespecial->LookupFilters = array("dx1" => '`nombre`');
 		$lookuptblfilter = "`tipo`='ESPECIAL'";
 		ew_AddFilter($sWhereWrk, $lookuptblfilter);
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
@@ -2774,11 +2701,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 			$this->lastname->LinkCustomAttributes = "";
 			$this->lastname->HrefValue = "";
 			$this->lastname->TooltipValue = "";
-
-			// id_sucursal
-			$this->id_sucursal->LinkCustomAttributes = "";
-			$this->id_sucursal->HrefValue = "";
-			$this->id_sucursal->TooltipValue = "";
 
 			// tipoinmueble
 			$this->tipoinmueble->LinkCustomAttributes = "";
@@ -2847,12 +2769,6 @@ class cviewsolicitud_list extends cviewsolicitud {
 			$this->lastname->EditCustomAttributes = "";
 			$this->lastname->EditValue = ew_HtmlEncode($this->lastname->AdvancedSearch->SearchValue);
 			$this->lastname->PlaceHolder = ew_RemoveHtml($this->lastname->FldTitle());
-
-			// id_sucursal
-			$this->id_sucursal->EditAttrs["class"] = "form-control";
-			$this->id_sucursal->EditCustomAttributes = "";
-			$this->id_sucursal->EditValue = ew_HtmlEncode($this->id_sucursal->AdvancedSearch->SearchValue);
-			$this->id_sucursal->PlaceHolder = ew_RemoveHtml($this->id_sucursal->FldTitle());
 
 			// tipoinmueble
 			$this->tipoinmueble->EditAttrs["class"] = "form-control";
@@ -3660,15 +3576,6 @@ $viewsolicitud_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($viewsolicitud->id_sucursal->Visible) { // id_sucursal ?>
-	<?php if ($viewsolicitud->SortUrl($viewsolicitud->id_sucursal) == "") { ?>
-		<th data-name="id_sucursal" class="<?php echo $viewsolicitud->id_sucursal->HeaderCellClass() ?>"><div id="elh_viewsolicitud_id_sucursal" class="viewsolicitud_id_sucursal"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_sucursal->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id_sucursal" class="<?php echo $viewsolicitud->id_sucursal->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $viewsolicitud->SortUrl($viewsolicitud->id_sucursal) ?>',1);"><div id="elh_viewsolicitud_id_sucursal" class="viewsolicitud_id_sucursal">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $viewsolicitud->id_sucursal->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($viewsolicitud->id_sucursal->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($viewsolicitud->id_sucursal->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
 <?php if ($viewsolicitud->tipoinmueble->Visible) { // tipoinmueble ?>
 	<?php if ($viewsolicitud->SortUrl($viewsolicitud->tipoinmueble) == "") { ?>
 		<th data-name="tipoinmueble" class="<?php echo $viewsolicitud->tipoinmueble->HeaderCellClass() ?>"><div id="elh_viewsolicitud_tipoinmueble" class="viewsolicitud_tipoinmueble"><div class="ewTableHeaderCaption"><?php echo $viewsolicitud->tipoinmueble->FldCaption() ?></div></div></th>
@@ -3832,14 +3739,6 @@ $viewsolicitud_list->ListOptions->Render("body", "left", $viewsolicitud_list->Ro
 <span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_lastname" class="viewsolicitud_lastname">
 <span<?php echo $viewsolicitud->lastname->ViewAttributes() ?>>
 <?php echo $viewsolicitud->lastname->ListViewValue() ?></span>
-</span>
-</td>
-	<?php } ?>
-	<?php if ($viewsolicitud->id_sucursal->Visible) { // id_sucursal ?>
-		<td data-name="id_sucursal"<?php echo $viewsolicitud->id_sucursal->CellAttributes() ?>>
-<span id="el<?php echo $viewsolicitud_list->RowCnt ?>_viewsolicitud_id_sucursal" class="viewsolicitud_id_sucursal">
-<span<?php echo $viewsolicitud->id_sucursal->ViewAttributes() ?>>
-<?php echo $viewsolicitud->id_sucursal->ListViewValue() ?></span>
 </span>
 </td>
 	<?php } ?>

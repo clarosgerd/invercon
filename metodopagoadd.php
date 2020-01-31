@@ -705,7 +705,11 @@ class cmetodopago_add extends cmetodopago {
 		$this->name->ViewCustomAttributes = "";
 
 		// is_active
-		$this->is_active->ViewValue = $this->is_active->CurrentValue;
+		if (strval($this->is_active->CurrentValue) <> "") {
+			$this->is_active->ViewValue = $this->is_active->OptionCaption($this->is_active->CurrentValue);
+		} else {
+			$this->is_active->ViewValue = NULL;
+		}
 		$this->is_active->ViewCustomAttributes = "";
 
 			// short_name
@@ -739,8 +743,7 @@ class cmetodopago_add extends cmetodopago {
 			// is_active
 			$this->is_active->EditAttrs["class"] = "form-control";
 			$this->is_active->EditCustomAttributes = "";
-			$this->is_active->EditValue = ew_HtmlEncode($this->is_active->CurrentValue);
-			$this->is_active->PlaceHolder = ew_RemoveHtml($this->is_active->FldTitle());
+			$this->is_active->EditValue = $this->is_active->Options(TRUE);
 
 			// Add refer script
 			// short_name
@@ -774,9 +777,6 @@ class cmetodopago_add extends cmetodopago {
 		// Check if validation required
 		if (!EW_SERVER_VALIDATE)
 			return ($gsFormError == "");
-		if (!ew_CheckInteger($this->is_active->FormValue)) {
-			ew_AddMessage($gsFormError, $this->is_active->FldErrMsg());
-		}
 
 		// Return validate result
 		$ValidateForm = ($gsFormError == "");
@@ -974,9 +974,6 @@ fmetodopagoadd.Validate = function() {
 	for (var i = startcnt; i <= rowcnt; i++) {
 		var infix = ($k[0]) ? String(i) : "";
 		$fobj.data("rowindex", infix);
-			elm = this.GetElements("x" + infix + "_is_active");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($metodopago->is_active->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -1006,8 +1003,10 @@ fmetodopagoadd.Form_CustomValidate =
 fmetodopagoadd.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+fmetodopagoadd.Lists["x_is_active"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+fmetodopagoadd.Lists["x_is_active"].Options = <?php echo json_encode($metodopago_add->is_active->Options()) ?>;
 
+// Form object for search
 </script>
 <script type="text/javascript">
 
@@ -1080,7 +1079,9 @@ $metodopago_add->ShowMessage();
 		<label id="elh_metodopago_is_active" for="x_is_active" class="<?php echo $metodopago_add->LeftColumnClass ?>"><?php echo $metodopago->is_active->FldCaption() ?></label>
 		<div class="<?php echo $metodopago_add->RightColumnClass ?>"><div<?php echo $metodopago->is_active->CellAttributes() ?>>
 <span id="el_metodopago_is_active">
-<input type="text" data-table="metodopago" data-field="x_is_active" name="x_is_active" id="x_is_active" size="30" placeholder="<?php echo ew_HtmlEncode($metodopago->is_active->getPlaceHolder()) ?>" value="<?php echo $metodopago->is_active->EditValue ?>"<?php echo $metodopago->is_active->EditAttributes() ?>>
+<select data-table="metodopago" data-field="x_is_active" data-value-separator="<?php echo $metodopago->is_active->DisplayValueSeparatorAttribute() ?>" id="x_is_active" name="x_is_active"<?php echo $metodopago->is_active->EditAttributes() ?>>
+<?php echo $metodopago->is_active->SelectOptionListHtml("x_is_active") ?>
+</select>
 </span>
 <?php echo $metodopago->is_active->CustomMsg ?></div></div>
 	</div>
@@ -1089,7 +1090,9 @@ $metodopago_add->ShowMessage();
 		<td class="col-sm-3"><span id="elh_metodopago_is_active"><?php echo $metodopago->is_active->FldCaption() ?></span></td>
 		<td<?php echo $metodopago->is_active->CellAttributes() ?>>
 <span id="el_metodopago_is_active">
-<input type="text" data-table="metodopago" data-field="x_is_active" name="x_is_active" id="x_is_active" size="30" placeholder="<?php echo ew_HtmlEncode($metodopago->is_active->getPlaceHolder()) ?>" value="<?php echo $metodopago->is_active->EditValue ?>"<?php echo $metodopago->is_active->EditAttributes() ?>>
+<select data-table="metodopago" data-field="x_is_active" data-value-separator="<?php echo $metodopago->is_active->DisplayValueSeparatorAttribute() ?>" id="x_is_active" name="x_is_active"<?php echo $metodopago->is_active->EditAttributes() ?>>
+<?php echo $metodopago->is_active->SelectOptionListHtml("x_is_active") ?>
+</select>
 </span>
 <?php echo $metodopago->is_active->CustomMsg ?></td>
 	</tr>
