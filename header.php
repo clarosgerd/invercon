@@ -134,7 +134,18 @@ var ewVar = <?php echo json_encode($EW_CLIENT_VAR); ?>;
 </script>
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/userfn14.js"></script>
 <script type="text/javascript">
+    $('#getdata').click(function(){
 
+        $.ajax({
+            url: "getdata.php",
+            type:'POST',
+            dataType: 'json',
+            success: function(output_string){
+                $("#result_table").append(output_string);
+            } // End of success function of ajax form
+        }); // End of ajax call
+
+    });
 // Write your client script here, no need to add script tags.
 </script>
 <?php } ?>

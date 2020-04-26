@@ -465,6 +465,7 @@ class cusuario_list extends cusuario {
 		$this->id_institucion->SetVisibility();
 		$this->celular2->SetVisibility();
 		$this->especialidad->SetVisibility();
+		$this->avatar->SetVisibility();
 		$this->created_at->SetVisibility();
 		if ($this->IsAddOrEdit())
 			$this->created_at->Visible = FALSE;
@@ -1978,6 +1979,16 @@ class cusuario_list extends cusuario {
 		$this->especialidad->ViewValue = $this->especialidad->CurrentValue;
 		$this->especialidad->ViewCustomAttributes = "";
 
+		// avatar
+		if (!ew_Empty($this->avatar->Upload->DbValue)) {
+			$this->avatar->ImageAlt = $this->avatar->FldAlt();
+			$this->avatar->ViewValue = "usuario_avatar_bv.php?" . "_login=" . $this->_login->CurrentValue;
+			$this->avatar->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->avatar->Upload->DbValue, 0, 11)));
+		} else {
+			$this->avatar->ViewValue = "";
+		}
+		$this->avatar->ViewCustomAttributes = "";
+
 		// created_at
 		$this->created_at->ViewValue = $this->created_at->CurrentValue;
 		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
@@ -2070,6 +2081,24 @@ class cusuario_list extends cusuario {
 			$this->especialidad->LinkCustomAttributes = "";
 			$this->especialidad->HrefValue = "";
 			$this->especialidad->TooltipValue = "";
+
+			// avatar
+			$this->avatar->LinkCustomAttributes = "";
+			if (!empty($this->avatar->Upload->DbValue)) {
+				$this->avatar->HrefValue = "usuario_avatar_bv.php?_login=" . $this->_login->CurrentValue;
+				$this->avatar->LinkAttrs["target"] = "_blank";
+				if ($this->Export <> "") $this->avatar->HrefValue = ew_FullUrl($this->avatar->HrefValue, "href");
+			} else {
+				$this->avatar->HrefValue = "";
+			}
+			$this->avatar->HrefValue2 = "usuario_avatar_bv.php?_login=" . $this->_login->CurrentValue;
+			$this->avatar->TooltipValue = "";
+			if ($this->avatar->UseColorbox) {
+				if (ew_Empty($this->avatar->TooltipValue))
+					$this->avatar->LinkAttrs["title"] = $Language->Phrase("ViewImageGallery");
+				$this->avatar->LinkAttrs["data-rel"] = "usuario_x" . $this->RowCnt . "_avatar";
+				ew_AppendClass($this->avatar->LinkAttrs["class"], "ewLightbox");
+			}
 
 			// created_at
 			$this->created_at->LinkCustomAttributes = "";
@@ -2815,6 +2844,15 @@ $usuario_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
+<?php if ($usuario->avatar->Visible) { // avatar ?>
+	<?php if ($usuario->SortUrl($usuario->avatar) == "") { ?>
+		<th data-name="avatar" class="<?php echo $usuario->avatar->HeaderCellClass() ?>"><div id="elh_usuario_avatar" class="usuario_avatar"><div class="ewTableHeaderCaption"><?php echo $usuario->avatar->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="avatar" class="<?php echo $usuario->avatar->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $usuario->SortUrl($usuario->avatar) ?>',1);"><div id="elh_usuario_avatar" class="usuario_avatar">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $usuario->avatar->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($usuario->avatar->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($usuario->avatar->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		</div></div></th>
+	<?php } ?>
+<?php } ?>
 <?php if ($usuario->created_at->Visible) { // created_at ?>
 	<?php if ($usuario->SortUrl($usuario->created_at) == "") { ?>
 		<th data-name="created_at" class="<?php echo $usuario->created_at->HeaderCellClass() ?>"><div id="elh_usuario_created_at" class="usuario_created_at"><div class="ewTableHeaderCaption"><?php echo $usuario->created_at->FldCaption() ?></div></div></th>
@@ -3032,6 +3070,15 @@ $usuario_list->ListOptions->Render("body", "left", $usuario_list->RowCnt);
 <span id="el<?php echo $usuario_list->RowCnt ?>_usuario_especialidad" class="usuario_especialidad">
 <span<?php echo $usuario->especialidad->ViewAttributes() ?>>
 <?php echo $usuario->especialidad->ListViewValue() ?></span>
+</span>
+</td>
+	<?php } ?>
+	<?php if ($usuario->avatar->Visible) { // avatar ?>
+		<td data-name="avatar"<?php echo $usuario->avatar->CellAttributes() ?>>
+<span id="el<?php echo $usuario_list->RowCnt ?>_usuario_avatar" class="usuario_avatar">
+<span>
+<?php echo ew_GetFileViewTag($usuario->avatar, $usuario->avatar->ListViewValue()) ?>
+</span>
 </span>
 </td>
 	<?php } ?>

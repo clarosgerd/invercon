@@ -3840,7 +3840,7 @@ class cviewavaluosc_list extends cviewavaluosc {
 
     // Page Load event
     function Page_Load() {
-
+        //$this->CustomActions["ready"] = new cListAction("ready", "Ready", IsLoggedIn(), ACTION_AJAX, ACTION_MULTIPLE, "Set Status to READY for selected records?", "fa fa-thumbs-up fa-2x ewIcon");
         //echo "Page Load";
     }
 
@@ -4074,6 +4074,7 @@ class cviewavaluosc_list extends cviewavaluosc {
         $button2.="Historiales";
         $button2.="</button>";
         $button2.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
+        $button2.="<li><span   class=\"dropdown-item\" onclick=\"sortTable('emp_name');\">Ajay</span></li>";
         $button2.="<li><a class=\"dropdown-item\" href=historicolist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"frame\">Historial</a></li>";
         $button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
         $button2.="<li><a class=\"dropdown-item\" href=viewsolicitudframelist.php?id=".CurrentTable()->id_solicitud->CurrentValue." target=\"framesol\">Datos Solicitud</a></li>";
@@ -4083,7 +4084,9 @@ class cviewavaluosc_list extends cviewavaluosc {
         $this->ListOptions->Items["new"]->Body = $button4;
         $this->ListOptions->Items["new1"]->Body = $button;
         $this->ListOptions->Items["new2"]->Body = $button2;
-
+        //$this->ListOptions->Items["ready_x"]->Body =
+        //     "<a href=\"#\" onclick=\"return SubmitAction(event, {action: 'ready', method: 'postback', msg: 'Set to Ready?', key: " . $this->KeyToJson() . ", success: 'myreload'});\">
+//<span class=\"glyphicon glyphicon-thumbs-up ewIcon\" ></span>&nbsp&nbspUpdate to Ready</a>";
         //	$this->ListOptions->Items["edit"]->Visible = FALSE;
         //$this->ListOptions->Items["detail_orderdetails"]->Visible = FALSE;
 
@@ -4092,8 +4095,17 @@ class cviewavaluosc_list extends cviewavaluosc {
     // Row Custom Action event
     function Row_CustomAction($action, $row) {
 
-        // Return FALSE to abort
-        return TRUE;
+        if ($action == "ready") { // Check action name
+            $rsnew = ["Status" => "Ready", "lastselected" => null]; // Array of field(s) to be updated
+            $result = $this->update($rsnew); // Note: The Update() method updates the current record only
+            if (!$result) { // Failure
+                $this->setFailureMessage("Failed to update record to READY, ID = " . $row["id"]);
+                return FALSE; // Abort and rollback
+            } elseif ($this->SelectedIndex == $this->SelectedCount) { // Last row
+                $this->setSuccessMessage("All selected records updated.");
+            }
+            return TRUE; // Success
+        }
     }
 
     // Page Exporting event

@@ -158,7 +158,7 @@ class cusuario extends cTable {
 		$this->fields['especialidad'] = &$this->especialidad;
 
 		// avatar
-		$this->avatar = new cField('usuario', 'usuario', 'x_avatar', 'avatar', '`avatar`', '`avatar`', 205, -1, TRUE, '`avatar`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
+		$this->avatar = new cField('usuario', 'usuario', 'x_avatar', 'avatar', '`avatar`', '`avatar`', 205, -1, TRUE, '`avatar`', FALSE, FALSE, FALSE, 'IMAGE', 'FILE');
 		$this->avatar->Sortable = TRUE; // Allow sort
 		$this->fields['avatar'] = &$this->avatar;
 
@@ -895,6 +895,7 @@ class cusuario extends cTable {
 
 		// avatar
 		if (!ew_Empty($this->avatar->Upload->DbValue)) {
+			$this->avatar->ImageAlt = $this->avatar->FldAlt();
 			$this->avatar->ViewValue = "usuario_avatar_bv.php?" . "_login=" . $this->_login->CurrentValue;
 			$this->avatar->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->avatar->Upload->DbValue, 0, 11)));
 		} else {
@@ -1011,6 +1012,12 @@ class cusuario extends cTable {
 		}
 		$this->avatar->HrefValue2 = "usuario_avatar_bv.php?_login=" . $this->_login->CurrentValue;
 		$this->avatar->TooltipValue = "";
+		if ($this->avatar->UseColorbox) {
+			if (ew_Empty($this->avatar->TooltipValue))
+				$this->avatar->LinkAttrs["title"] = $Language->Phrase("ViewImageGallery");
+			$this->avatar->LinkAttrs["data-rel"] = "usuario_x_avatar";
+			ew_AppendClass($this->avatar->LinkAttrs["class"], "ewLightbox");
+		}
 
 		// created_at
 		$this->created_at->LinkCustomAttributes = "";
@@ -1152,6 +1159,7 @@ class cusuario extends cTable {
 		$this->avatar->EditAttrs["class"] = "form-control";
 		$this->avatar->EditCustomAttributes = "";
 		if (!ew_Empty($this->avatar->Upload->DbValue)) {
+			$this->avatar->ImageAlt = $this->avatar->FldAlt();
 			$this->avatar->EditValue = "usuario_avatar_bv.php?" . "_login=" . $this->_login->CurrentValue;
 			$this->avatar->IsBlobImage = ew_IsImageFile(ew_ContentExt(substr($this->avatar->Upload->DbValue, 0, 11)));
 		} else {
