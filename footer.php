@@ -20,9 +20,16 @@
 $count = ew_ExecuteScalar("SELECT count(*) FROM notificaciones WHERE recibidopor = '" . ew_AdjustSql(CurrentUserName()) . "' AND leido=0 AND internal=1");
 if ($count == 0)
 {
+
+?>
+
+<?php
+
 echo "<li class=\"dropdown notifications-menu\">\n";
 echo "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n";
 echo "<i class=\"fa fa-bell-o\"></i></br>\n";
+//  echo "<i class=\"far fa-comments\"></i></br>\n";
+//echo "<span class=\"badge badge-danger navbar-badge\">$count</span>";
 echo "<span class=\"label label-danger\">$count</span>\n";
 echo "</a>\n";
 echo "<ul class=\"dropdown-menu\">\n";
@@ -68,7 +75,7 @@ echo "<h4>\n";
 echo "$name_enviado\n";
 echo "<small><i class=\"fa fa-clock-o\" style=\"font-size:5px;color:red\"></i>$min_enviado</small>\n";
 echo "</h4>\n";
-echo "<p>$mensaje</p>\n";
+//echo "<p>$mensaje</p>\n";
 echo "</a>\n";
 echo "</li>\n";
 $all_mensaje_result->MoveNext();
@@ -138,7 +145,7 @@ echo "<h4>\n";
 echo "$name_enviado\n";
 echo "<small><i class=\"fa fa-clock-o\"></i>$min_enviado</small>\n";
 echo "</h4>\n";
-echo "<p>$mensaje</p>\n";
+//echo "<p>$mensaje</p>\n";
 echo "</a>\n";
 echo "</li>\n";
 $all_mensaje_result->MoveNext();
@@ -205,7 +212,7 @@ echo "<h4>\n";
 echo "$name_enviado\n";
 echo "<small><i class=\"fa fa-clock-o\"></i>$min_enviado</small>\n";
 echo "</h4>\n";
-echo "<p>$mensaje</p>\n";
+//echo "<p>$mensaje</p>\n";
 echo "</a>\n";
 echo "</li>\n";
 $all_mensaje_result->MoveNext();
@@ -371,7 +378,22 @@ ew_RenderJsTemplates();
 <script type="text/javascript">
 jQuery.get("<?php echo $EW_RELATIVE_PATH ?>phpjs/userevt14.js");
 </script>
-<script type="text/javascript">
+    <!--<script src="plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- overlayScrollbars -->
+    <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- AdminLTE App -->
+
+    <!-- jQuery Mapael -->
+    <script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+    <script src="plugins/raphael/raphael.min.js"></script>
+    <script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>
+    <script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>
+    <!-- ChartJS -->
+    <script src="plugins/chart.js/Chart.min.js"></script>
+
+    <script type="text/javascript">
 
 // Write your global startup script here
 // document.write("page loaded");

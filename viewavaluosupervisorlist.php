@@ -2295,7 +2295,7 @@ class cviewavaluosupervisor_list extends cviewavaluosupervisor {
 		if (strval($this->estadointerno->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
 		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, `owner` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-		$sWhereWrk = "";
+		$sWhereWrk =  "owner='supervisor'";
 		$this->estadointerno->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
@@ -2703,7 +2703,7 @@ class cviewavaluosupervisor_list extends cviewavaluosupervisor {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
 			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, `owner` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadointerno`";
-			$sWhereWrk = "";
+			$sWhereWrk = "owner='supervisor'";
 			$this->estadointerno->LookupFilters = array();
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
@@ -3443,7 +3443,7 @@ class cviewavaluosupervisor_list extends cviewavaluosupervisor {
 		case "x_estadointerno":
 			$sSqlWrk = "";
 				$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, `owner` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-				$sWhereWrk = "";
+				$sWhereWrk = "owner='supervisor'";
 				$fld->LookupFilters = array();
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
@@ -3544,7 +3544,7 @@ class cviewavaluosupervisor_list extends cviewavaluosupervisor {
 
 			if (isset($_GET ["avaluo"]))
 		{
-		 $footer = "<table style=\"width: 100% !important;height: 100%;\">";
+		/* $footer = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $footer .= "<tr>";
 		 $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
@@ -3562,10 +3562,12 @@ class cviewavaluosupervisor_list extends cviewavaluosupervisor {
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
-		 $footer .= "</table>";
+		 $footer .= "</table>";*/
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
 		}else
 		{
 		$var=0;
+		/*
 		 $footer = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $footer .= "<tr>";
 		 $footer .= "<td>";
@@ -3584,10 +3586,12 @@ class cviewavaluosupervisor_list extends cviewavaluosupervisor {
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
-		 $footer .= "</table>";
+		 $footer .= "</table>";*/
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
 		}
 		if (isset($_GET ["id"]))
 		{
+		    /*
 		 $footer = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $footer .= "<tr>";
 		 $footer .= "<td>";
@@ -3606,7 +3610,8 @@ class cviewavaluosupervisor_list extends cviewavaluosupervisor {
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
-		 $footer .= "</table>";
+		 $footer .= "</table>";*/
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
 		}
 	}
 
@@ -3626,10 +3631,10 @@ class cviewavaluosupervisor_list extends cviewavaluosupervisor {
 		//$opt->OnLeft = TRUE; // Link on left
 		//$opt->MoveTo(0); // Move to first column
 
-			$opt = &$this->ListOptions->Add("new");
+			/*$opt = &$this->ListOptions->Add("new");
 		$opt->Header = "Terminar Inspeccion";
 		$opt->OnLeft = TRUE; // Link on left
-		$opt->MoveTo(0); // Move to first column
+		$opt->MoveTo(0); // Move to first column*/
 
 		//$this->ListOptions->Add("print_x"); // Replace abclink with your name of the link
 		//$this->ListOptions->Items["print_x"]->Header = "<b>Print X</b>";
@@ -3655,15 +3660,15 @@ class cviewavaluosupervisor_list extends cviewavaluosupervisor {
 		// Example:
 		//$this->ListOptions->Items["new"]->Body = "xxx";
 
-			$this->ListOptions->Items["new"]->Body = "<a href='core.php?id=".CurrentTable()->id->CurrentValue."' class='btn btn-primary'>Terminar Inspeccion</a>";
+			//$this->ListOptions->Items["new"]->Body = "<a href='core.php?id=".CurrentTable()->id->CurrentValue."' class='btn btn-primary'>Terminar Inspeccion</a>";
 		$button2="<div class=\"btn-group\" role=\"group\" aria-label=\"Button group with nested dropdown\">";
 		$button2.=	"<button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
 		$button2.="Historiales";
 		$button2.="</button>";
 		$button2.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
-		$button2.="<li><a class=\"dropdown-item\" href=historicolist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"frame\">Historial</a></li>";
-		$button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
-		   $button2.="<li><a class=\"dropdown-item\" href=viewpagoavaluoslist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framepagos\">Historial de Pagos</a></li>";
+        $button2.="<li><a  href=\"#\"  value=".CurrentTable()->id->CurrentValue." name=\"id\" class=\"switchHisto\" id=".CurrentTable()->id->CurrentValue." >Historial</a></li>";
+		//$button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
+		  // $button2.="<li><a class=\"dropdown-item\" href=viewpagoavaluoslist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framepagos\">Historial de Pagos</a></li>";
 		$button2.="</ul>";
 		$button2.="</div>";
 		$this->ListOptions->Items["new1"]->Body = $button2;

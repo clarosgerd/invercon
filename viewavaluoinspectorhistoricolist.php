@@ -2849,6 +2849,7 @@ class cviewavaluoinspectorhistorico_list extends cviewavaluoinspectorhistorico {
 
 			if (isset($_GET ["avaluo"]))
 		{
+            /*
 		 $footer = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $footer .= "<tr>";
 		 $footer .= "<td>";
@@ -2867,11 +2868,12 @@ class cviewavaluoinspectorhistorico_list extends cviewavaluoinspectorhistorico {
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
-		 $footer .= "</table>";
+		 $footer .= "</table>";*/
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
 		}else
 		{
 		$var=0;
-		 $footer = "<table style=\"width: 100% !important;height: 100%;\">";
+		/* $footer = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $footer .= "<tr>";
 		 $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
@@ -2889,11 +2891,12 @@ class cviewavaluoinspectorhistorico_list extends cviewavaluoinspectorhistorico {
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
-		 $footer .= "</table>";
+		 $footer .= "</table>";*/
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
 		}
 		if (isset($_GET ["id"]))
 		{
-		 $footer = "<table style=\"width: 100% !important;height: 100%;\">";
+		/* $footer = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $footer .= "<tr>";
 		 $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
@@ -2911,7 +2914,8 @@ class cviewavaluoinspectorhistorico_list extends cviewavaluoinspectorhistorico {
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
-		 $footer .= "</table>";
+		 $footer .= "</table>";*/
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
 		}
 	}
 
@@ -2932,10 +2936,10 @@ class cviewavaluoinspectorhistorico_list extends cviewavaluoinspectorhistorico {
 		//$opt->MoveTo(0); // Move to first column
 			// Example:
 
-		$opt = &$this->ListOptions->Add("new");
+		/*$opt = &$this->ListOptions->Add("new");
 		$opt->Header = "Terminar Inspeccion";
 		$opt->OnLeft = TRUE; // Link on left
-		$opt->MoveTo(0); // Move to first column
+		$opt->MoveTo(0); // Move to first column*/
 
 		//$this->ListOptions->Add("print_x"); // Replace abclink with your name of the link
 		//$this->ListOptions->Items["print_x"]->Header = "<b>Print X</b>";
@@ -2961,14 +2965,14 @@ class cviewavaluoinspectorhistorico_list extends cviewavaluoinspectorhistorico {
 		// Example:
 		//$this->ListOptions->Items["new"]->Body = "xxx";
 
-			$this->ListOptions->Items["new"]->Body = "<a href='core.php?id=".CurrentTable()->id->CurrentValue."' class='btn btn-primary'>Terminar Inspeccion</a>";
+			//$this->ListOptions->Items["new"]->Body = "<a href='core.php?id=".CurrentTable()->id->CurrentValue."' class='btn btn-primary'>Terminar Inspeccion</a>";
 		$button2="<div class=\"btn-group\" role=\"group\" aria-label=\"Button group with nested dropdown\">";
 		$button2.=	"<button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
 		$button2.="Historiales";
 		$button2.="</button>";
 		$button2.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
-		$button2.="<li><a class=\"dropdown-item\" href=historicolist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"frame\">Historial</a></li>";
-		$button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
+        $button2.="<li><a  href=\"#\"  value=".CurrentTable()->id->CurrentValue." name=\"id\" class=\"switchHisto\" id=".CurrentTable()->id->CurrentValue." >Historial</a></li>";
+	//	$button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
 		$button2.="</ul>";
 		$button2.="</div>";
 		$this->ListOptions->Items["new1"]->Body = $button2;

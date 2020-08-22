@@ -2414,7 +2414,6 @@ class cviewsolicitud_add extends cviewsolicitud {
 	// Page Render event
 	function Page_Render() {
 
-		//echo "Page Render";
 	}
 
 	// Page Data Rendering event

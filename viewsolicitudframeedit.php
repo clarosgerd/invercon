@@ -6,8 +6,7 @@ ob_start(); // Turn on output buffering
 <?php include_once ((EW_USE_ADODB) ? "adodb5/adodb.inc.php" : "ewmysql14.php") ?>
 <?php include_once "phpfn14.php" ?>
 <?php include_once "viewsolicitudframeinfo.php" ?>
-<?php include_once "usuarioinfo.php" ?>
-<?php include_once "userfn14.php" ?>
+
 <?php
 
 //

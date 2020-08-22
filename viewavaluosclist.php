@@ -1373,27 +1373,28 @@ class cviewavaluosc_list extends cviewavaluosc {
         // List actions
         $item = &$this->ListOptions->Add("listactions");
         $item->CssClass = "text-nowrap";
-        $item->OnLeft = TRUE;
+        $item->OnLeft = FALSE;
         $item->Visible = FALSE;
         $item->ShowInButtonGroup = FALSE;
         $item->ShowInDropDown = FALSE;
 
         // "checkbox"
+
         $item = &$this->ListOptions->Add("checkbox");
         $item->Visible = $Security->CanEdit();
-        $item->OnLeft = TRUE;
+        $item->OnLeft = FALSE;
         $item->Header = "<input type=\"checkbox\" name=\"key\" id=\"key\" onclick=\"ew_SelectAllKey(this);\">";
         $item->MoveTo(0);
         $item->ShowInDropDown = FALSE;
         $item->ShowInButtonGroup = FALSE;
 
         // Drop down button for ListOptions
-        $this->ListOptions->UseImageAndText = TRUE;
+        $this->ListOptions->UseImageAndText = FALSE;
         $this->ListOptions->UseDropDownButton = FALSE;
         $this->ListOptions->DropDownButtonPhrase = $Language->Phrase("ButtonListOptions");
         $this->ListOptions->UseButtonGroup = FALSE;
         if ($this->ListOptions->UseButtonGroup && ew_IsMobile())
-            $this->ListOptions->UseDropDownButton = TRUE;
+            $this->ListOptions->UseDropDownButton = FALSE;
         $this->ListOptions->ButtonClass = "btn-sm"; // Class for button group
 
         // Call ListOptions_Load event
@@ -1445,8 +1446,8 @@ class cviewavaluosc_list extends cviewavaluosc {
         $oListOpt = &$this->ListOptions->Items["edit"];
         $editcaption = ew_HtmlTitle($Language->Phrase("EditLink"));
         if ($Security->CanEdit()) {
-            $oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
-            $oListOpt->Body .= "<a class=\"ewRowLink ewInlineEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" href=\"" . ew_HtmlEncode(ew_UrlAddHash($this->InlineEditUrl, "r" . $this->RowCnt . "_" . $this->TableVar)) . "\">" . $Language->Phrase("InlineEditLink") . "</a>";
+           // $oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
+            $oListOpt->Body = "<a class=\"ewRowLink ewInlineEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" href=\"" . ew_HtmlEncode(ew_UrlAddHash($this->InlineEditUrl, "r" . $this->RowCnt . "_" . $this->TableVar)) . "\">" . $Language->Phrase("InlineEditLink") . "</a>";
         } else {
             $oListOpt->Body = "";
         }
@@ -1463,7 +1464,7 @@ class cviewavaluosc_list extends cviewavaluosc {
                     $icon = ($listaction->Icon <> "") ? "<span class=\"" . ew_HtmlEncode(str_replace(" ewIcon", "", $listaction->Icon)) . "\" data-caption=\"" . ew_HtmlTitle($caption) . "\"></span> " : "";
                     $links[] = "<li><a class=\"ewAction ewListAction\" data-action=\"" . ew_HtmlEncode($action) . "\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"\" onclick=\"ew_SubmitAction(event,jQuery.extend({key:" . $this->KeyToJson() . "}," . $listaction->ToJson(TRUE) . "));return false;\">" . $icon . $listaction->Caption . "</a></li>";
                     if (count($links) == 1) // Single button
-                        $body = "<a class=\"ewAction ewListAction\" data-action=\"" . ew_HtmlEncode($action) . "\" title=\"" . ew_HtmlTitle($caption) . "\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"\" onclick=\"ew_SubmitAction(event,jQuery.extend({key:" . $this->KeyToJson() . "}," . $listaction->ToJson(TRUE) . "));return false;\">" . $Language->Phrase("ListActionButton") . "</a>";
+                       $body = "<a class=\"ewAction ewListAction\" data-action=\"" . ew_HtmlEncode($action) . "\" title=\"" . ew_HtmlTitle($caption) . "\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"\" onclick=\"ew_SubmitAction(event,jQuery.extend({key:" . $this->KeyToJson() . "}," . $listaction->ToJson(TRUE) . "));return false;\">" . $Language->Phrase("ListActionButton") . "</a>";
                 }
             }
             if (count($links) > 1) { // More than one buttons, use dropdown
@@ -1484,71 +1485,71 @@ class cviewavaluosc_list extends cviewavaluosc {
         $DetailEditTblVar = "";
 
         // "detail_pago_avaluo"
-        $oListOpt = &$this->ListOptions->Items["detail_pago_avaluo"];
-        if ($Security->AllowList(CurrentProjectID() . 'pago_avaluo')) {
-            $body = $Language->Phrase("DetailLink") . $Language->TablePhrase("pago_avaluo", "TblCaption");
-            $body = "<a class=\"btn btn-default btn-sm ewRowLink ewDetail\" data-action=\"list\" href=\"" . ew_HtmlEncode("pago_avaluolist.php?" . EW_TABLE_SHOW_MASTER . "=viewavaluosc&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "") . "\">" . $body . "</a>";
-            $links = "";
-            if ($GLOBALS["pago_avaluo_grid"]->DetailEdit && $Security->CanEdit() && $Security->AllowEdit(CurrentProjectID() . 'pago_avaluo')) {
-                $caption = $Language->Phrase("MasterDetailEditLink");
-                $url = $this->GetEditUrl(EW_TABLE_SHOW_DETAIL . "=pago_avaluo");
-                $links .= "<li><a class=\"ewRowLink ewDetailEdit\" data-action=\"edit\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"" . ew_HtmlEncode($url) . "\">" . ew_HtmlImageAndText($caption) . "</a></li>";
-                if ($DetailEditTblVar <> "") $DetailEditTblVar .= ",";
-                $DetailEditTblVar .= "pago_avaluo";
-            }
-            if ($links <> "") {
-                $body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewDetail\" data-toggle=\"dropdown\"><b class=\"caret\"></b></button>";
-                $body .= "<ul class=\"dropdown-menu\">". $links . "</ul>";
-            }
-            $body = "<div class=\"btn-group\">" . $body . "</div>";
-            $oListOpt->Body = $body;
-            if ($this->ShowMultipleDetails) $oListOpt->Visible = FALSE;
-        }
+        /*    $oListOpt = &$this->ListOptions->Items["detail_pago_avaluo"];
+           if ($Security->AllowList(CurrentProjectID() . 'pago_avaluo')) {
+               $body = $Language->Phrase("DetailLink") . $Language->TablePhrase("pago_avaluo", "TblCaption");
+               $body = "<a class=\"btn btn-default btn-sm ewRowLink ewDetail\" data-action=\"list\" href=\"" . ew_HtmlEncode("pago_avaluolist.php?" . EW_TABLE_SHOW_MASTER . "=viewavaluosc&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "") . "\">" . $body . "</a>";
+               $links = "";
+               if ($GLOBALS["pago_avaluo_grid"]->DetailEdit && $Security->CanEdit() && $Security->AllowEdit(CurrentProjectID() . 'pago_avaluo')) {
+                   $caption = $Language->Phrase("MasterDetailEditLink");
+                   $url = $this->GetEditUrl(EW_TABLE_SHOW_DETAIL . "=pago_avaluo");
+                   $links .= "<li><a class=\"ewRowLink ewDetailEdit\" data-action=\"edit\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"" . ew_HtmlEncode($url) . "\">" . ew_HtmlImageAndText($caption) . "</a></li>";
+                   if ($DetailEditTblVar <> "") $DetailEditTblVar .= ",";
+                   $DetailEditTblVar .= "pago_avaluo";
+               }
+               if ($links <> "") {
+                   $body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewDetail\" data-toggle=\"dropdown\"><b class=\"caret\"></b></button>";
+                   $body .= "<ul class=\"dropdown-menu\">". $links . "</ul>";
+               }
+               $body = "<div class=\"btn-group\">" . $body . "</div>";
+               $oListOpt->Body = $body;
+               if ($this->ShowMultipleDetails) $oListOpt->Visible = FALSE;
+           }
 
-        // "detail_viewdocumentosavaluosc"
-        $oListOpt = &$this->ListOptions->Items["detail_viewdocumentosavaluosc"];
-        if ($Security->AllowList(CurrentProjectID() . 'viewdocumentosavaluosc')) {
-            $body = $Language->Phrase("DetailLink") . $Language->TablePhrase("viewdocumentosavaluosc", "TblCaption");
-            $body = "<a class=\"btn btn-default btn-sm ewRowLink ewDetail\" data-action=\"list\" href=\"" . ew_HtmlEncode("viewdocumentosavaluosclist.php?" . EW_TABLE_SHOW_MASTER . "=viewavaluosc&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "") . "\">" . $body . "</a>";
-            $links = "";
-            if ($GLOBALS["viewdocumentosavaluosc_grid"]->DetailEdit && $Security->CanEdit() && $Security->AllowEdit(CurrentProjectID() . 'viewdocumentosavaluosc')) {
-                $caption = $Language->Phrase("MasterDetailEditLink");
-                $url = $this->GetEditUrl(EW_TABLE_SHOW_DETAIL . "=viewdocumentosavaluosc");
-                $links .= "<li><a class=\"ewRowLink ewDetailEdit\" data-action=\"edit\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"" . ew_HtmlEncode($url) . "\">" . ew_HtmlImageAndText($caption) . "</a></li>";
-                if ($DetailEditTblVar <> "") $DetailEditTblVar .= ",";
-                $DetailEditTblVar .= "viewdocumentosavaluosc";
-            }
-            if ($links <> "") {
-                $body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewDetail\" data-toggle=\"dropdown\"><b class=\"caret\"></b></button>";
-                $body .= "<ul class=\"dropdown-menu\">". $links . "</ul>";
-            }
-            $body = "<div class=\"btn-group\">" . $body . "</div>";
-            $oListOpt->Body = $body;
-            if ($this->ShowMultipleDetails) $oListOpt->Visible = FALSE;
-        }
-        if ($this->ShowMultipleDetails) {
-            $body = $Language->Phrase("MultipleMasterDetails");
-            $body = "<div class=\"btn-group\">";
-            $links = "";
-            if ($DetailViewTblVar <> "") {
-                $links .= "<li><a class=\"ewRowLink ewDetailView\" data-action=\"view\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailViewLink")) . "\" href=\"" . ew_HtmlEncode($this->GetViewUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailViewTblVar)) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailViewLink")) . "</a></li>";
-            }
-            if ($DetailEditTblVar <> "") {
-                $links .= "<li><a class=\"ewRowLink ewDetailEdit\" data-action=\"edit\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailEditLink")) . "\" href=\"" . ew_HtmlEncode($this->GetEditUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailEditTblVar)) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailEditLink")) . "</a></li>";
-            }
-            if ($DetailCopyTblVar <> "") {
-                $links .= "<li><a class=\"ewRowLink ewDetailCopy\" data-action=\"add\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailCopyLink")) . "\" href=\"" . ew_HtmlEncode($this->GetCopyUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailCopyTblVar)) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailCopyLink")) . "</a></li>";
-            }
-            if ($links <> "") {
-                $body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewMasterDetail\" title=\"" . ew_HtmlTitle($Language->Phrase("MultipleMasterDetails")) . "\" data-toggle=\"dropdown\">" . $Language->Phrase("MultipleMasterDetails") . "<b class=\"caret\"></b></button>";
-                $body .= "<ul class=\"dropdown-menu ewMenu\">". $links . "</ul>";
-            }
-            $body .= "</div>";
+           // "detail_viewdocumentosavaluosc"
+          $oListOpt = &$this->ListOptions->Items["detail_viewdocumentosavaluosc"];
+           if ($Security->AllowList(CurrentProjectID() . 'viewdocumentosavaluosc')) {
+               $body = $Language->Phrase("DetailLink") . $Language->TablePhrase("viewdocumentosavaluosc", "TblCaption");
+               $body = "<a class=\"btn btn-default btn-sm ewRowLink ewDetail\" data-action=\"list\" href=\"" . ew_HtmlEncode("viewdocumentosavaluosclist.php?" . EW_TABLE_SHOW_MASTER . "=viewavaluosc&fk_id=" . urlencode(strval($this->id->CurrentValue)) . "") . "\">" . $body . "</a>";
+               $links = "";
+               if ($GLOBALS["viewdocumentosavaluosc_grid"]->DetailEdit && $Security->CanEdit() && $Security->AllowEdit(CurrentProjectID() . 'viewdocumentosavaluosc')) {
+                   $caption = $Language->Phrase("MasterDetailEditLink");
+                   $url = $this->GetEditUrl(EW_TABLE_SHOW_DETAIL . "=viewdocumentosavaluosc");
+                   $links .= "<li><a class=\"ewRowLink ewDetailEdit\" data-action=\"edit\" data-caption=\"" . ew_HtmlTitle($caption) . "\" href=\"" . ew_HtmlEncode($url) . "\">" . ew_HtmlImageAndText($caption) . "</a></li>";
+                   if ($DetailEditTblVar <> "") $DetailEditTblVar .= ",";
+                   $DetailEditTblVar .= "viewdocumentosavaluosc";
+               }
+               if ($links <> "") {
+                   $body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewDetail\" data-toggle=\"dropdown\"><b class=\"caret\"></b></button>";
+                   $body .= "<ul class=\"dropdown-menu\">". $links . "</ul>";
+               }
+               $body = "<div class=\"btn-group\">" . $body . "</div>";
+               $oListOpt->Body = $body;
+               if ($this->ShowMultipleDetails) $oListOpt->Visible = FALSE;
+           }
+           if ($this->ShowMultipleDetails) {
+               $body = $Language->Phrase("MultipleMasterDetails");
+               $body = "<div class=\"btn-group\">";
+               $links = "";
+               if ($DetailViewTblVar <> "") {
+                   $links .= "<li><a class=\"ewRowLink ewDetailView\" data-action=\"view\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailViewLink")) . "\" href=\"" . ew_HtmlEncode($this->GetViewUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailViewTblVar)) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailViewLink")) . "</a></li>";
+               }
+               if ($DetailEditTblVar <> "") {
+                   $links .= "<li><a class=\"ewRowLink ewDetailEdit\" data-action=\"edit\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailEditLink")) . "\" href=\"" . ew_HtmlEncode($this->GetEditUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailEditTblVar)) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailEditLink")) . "</a></li>";
+               }
+               if ($DetailCopyTblVar <> "") {
+                   $links .= "<li><a class=\"ewRowLink ewDetailCopy\" data-action=\"add\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("MasterDetailCopyLink")) . "\" href=\"" . ew_HtmlEncode($this->GetCopyUrl(EW_TABLE_SHOW_DETAIL . "=" . $DetailCopyTblVar)) . "\">" . ew_HtmlImageAndText($Language->Phrase("MasterDetailCopyLink")) . "</a></li>";
+               }
+               if ($links <> "") {
+                   $body .= "<button class=\"dropdown-toggle btn btn-default btn-sm ewMasterDetail\" title=\"" . ew_HtmlTitle($Language->Phrase("MultipleMasterDetails")) . "\" data-toggle=\"dropdown\">" . $Language->Phrase("MultipleMasterDetails") . "<b class=\"caret\"></b></button>";
+                   $body .= "<ul class=\"dropdown-menu ewMenu\">". $links . "</ul>";
+               }
+               $body .= "</div>";
 
-            // Multiple details
-            $oListOpt = &$this->ListOptions->Items["details"];
-            $oListOpt->Body = $body;
-        }
+               // Multiple details
+               $oListOpt = &$this->ListOptions->Items["details"];
+               $oListOpt->Body = $body;
+           }*/
 
         // "checkbox"
         $oListOpt = &$this->ListOptions->Items["checkbox"];
@@ -3895,7 +3896,8 @@ class cviewavaluosc_list extends cviewavaluosc {
             $header .= "<tr>";
             $header .= "<td>";
             $header .= "<div class=\"card-body p-0\">";
-            $header .= "<iframe src=\"viewsolicitudframeedit.php?solicitud=".$var."\" height=\"200\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
+           // $header .= "<iframe src=\"viewsolicitudframeedit.php?solicitud=".$var."\" height=\"200\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
+            $header .="<div id=\"Results\">Results Div</div>";
             $header .= "</div>";
             $header .= "</td>";
             $header .= "</tr>";
@@ -3907,7 +3909,7 @@ class cviewavaluosc_list extends cviewavaluosc {
             $header .= "<tr>";
             $header .= "<td>";
             $header .= "<div class=\"card-body p-0\">";
-            $header .= "<iframe src=\"viewsolicitudframeedit.php?solicitud=".$_GET["id"]."\" height=\"200\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framesol\"></iframe>";
+            $header .="<div id=\"Results\">Results Div</div>";
             $header .= "</div>";
             $header .= "</td>";
             $header .= "</tr>";
@@ -3923,69 +3925,73 @@ class cviewavaluosc_list extends cviewavaluosc {
 
         if (isset($_GET ["avaluo"]))
         {
-            $footer = "<table style=\"width: 100% !important;height: 100%;\">";
-            $footer .= "<tr>";
-            $footer .= "<td>";
-            $footer .= "<div class=\"card-body p-0\">";
-            $footer .= "<iframe src=\"historicolist.php?avaluo=".$_GET ["avaluo"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"frame\"></iframe>";
-            $footer .= "</div>";
-            $footer .= "</td><td></td>";
-            $footer .= "<td>";
-            $footer .= "<div class=\"card-body p-0\">";
-            $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["avaluo"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
-            $footer .= "</div>";
-            $footer .= "</td>";
-            $footer .= "<td>";
-            $footer .= "<div class=\"card-body p-0\">";
-            $footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$_GET ["avaluo"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
-            $footer .= "</div>";
-            $footer .= "</td>";
-            $footer .= "</tr>";
-            $footer .= "</table>";
+        ///    $footer = "<table style=\"width: 100% !important;height: 100%;\">";
+        ///    $footer .= "<tr>";
+        //    $footer .= "<td>";
+            //    $footer .= "<div class=\"card-body p-0\">";
+            //$footer .= "<iframe src=\"historicolist.php?avaluo=".$_GET ["avaluo"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"frame\"></iframe>";
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
+            //$footer .= "</div>";
+            //$footer .= "</td>";
+            // $footer .= "<td>";
+            // $footer .= "<div class=\"card-body p-0\">";
+            //  $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["avaluo"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
+            // $footer .= "</div>";
+            //   $footer .= "</td>";
+        //    $footer .= "<td>";
+            //    $footer .= "<div class=\"card-body p-0\">";
+            //$footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$_GET ["avaluo"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
+            //$footer .= "</div>";
+            //$footer .= "</td>";
+            //$footer .= "</tr>";
+            //$footer .= "</table>";
         }else
         {
             $var=0;
-            $footer = "<table style=\"width: 100% !important;height: 100%;\">";
-            $footer .= "<tr>";
-            $footer .= "<td>";
-            $footer .= "<div class=\"card-body p-0\">";
-            $footer .= "<iframe src=\"historicolist.php?avaluo=".$var."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"frame\"></iframe>";
-            $footer .= "</div>";
-            $footer .= "</td><td></td>";
-            $footer .= "<td>";
-            $footer .= "<div class=\"card-body p-0\">";
-            $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$var."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
-            $footer .= "</div>";
-            $footer .= "</td>";
-            $footer .= "<td>";
-            $footer .= "<div class=\"card-body p-0\">";
-            $footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$var."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
-            $footer .= "</div>";
-            $footer .= "</td>";
-            $footer .= "</tr>";
-            $footer .= "</table>";
+            // $footer = "<table style=\"width: 100% !important;height: 100%;\">";
+            // $footer .= "<tr>";
+            //  $footer .= "<td>";
+            // $footer .= "<div class=\"card-body p-0\">";
+            //$footer .= "<iframe src=\"historicolist.php?avaluo=".$var."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"frame\"></iframe>";
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
+
+            //$footer .= "<iframe src=\"historicolist.php?avaluo=".$var."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"frame\"></iframe>";
+            // $footer .= "</div>";
+         //   $footer .= "<td>";
+            //   $footer .= "<div class=\"card-body p-0\">";
+            //$footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$var."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
+            //$footer .= "</div>";
+            //$footer .= "</td>";
+            //$footer .= "<td>";
+            //$footer .= "<div class=\"card-body p-0\">";
+            //$footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$var."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
+            //$footer .= "</div>";
+            //$footer .= "</td>";
+            //   $footer .= "</tr>";
+            //  $footer .= "</table>";
         }
         if (isset($_GET ["id"]))
         {
-            $footer = "<table style=\"width: 100% !important;height: 100%;\">";
-            $footer .= "<tr>";
-            $footer .= "<td>";
-            $footer .= "<div class=\"card-body p-0\">";
-            $footer .= "<iframe src=\"historicolist.php?avaluo=".$_GET ["id"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"frame\"></iframe>";
-            $footer .= "</div>";
-            $footer .= "</td><td></td>";
-            $footer .= "<td>";
-            $footer .= "<div class=\"card-body p-0\">";
-            $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["id"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
-            $footer .= "</div>";
-            $footer .= "</td>";
-            $footer .= "<td>";
-            $footer .= "<div class=\"card-body p-0\">";
-            $footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$_GET ["id"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
-            $footer .= "</div>";
-            $footer .= "</td>";
-            $footer .= "</tr>";
-            $footer .= "</table>";
+            // $footer = "<table style=\"width: 100% !important;height: 100%;\">";
+            // $footer .= "<tr>";
+            // $footer .= "<td>";
+            // $footer .= "<div class=\"card-body p-0\">";
+            //$footer .= "<iframe src=\"historicolist.php?avaluo=".$_GET ["avaluo"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"frame\"></iframe>";
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
+            // $footer .= "</div>";
+            // $footer .= "</td>";
+            // $footer .= "<td>";
+            // $footer .= "<div class=\"card-body p-0\">";
+            //  $footer .= "<iframe src=\"viewdocumentosavaluoframelist.php?avaluo=".$_GET ["avaluo"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framedoc\"></iframe>";
+            // $footer .= "</div>";
+            //   $footer .= "</td>";
+            //    $footer .= "<td>";
+            //    $footer .= "<div class=\"card-body p-0\">";
+            //$footer .= "<iframe src=\"viewpagoavaluoslist.php?avaluo=".$_GET ["avaluo"]."\" height=\"100\" width=\"100%\" style=\"border:none;\" scrolling=\"yes\" name=\"framepagos\"></iframe>";
+            //$footer .= "</div>";
+            //$footer .= "</td>";
+            //$footer .= "</tr>";
+            // $footer .= "</table>";
         }
     }
 
@@ -4074,11 +4080,14 @@ class cviewavaluosc_list extends cviewavaluosc {
         $button2.="Historiales";
         $button2.="</button>";
         $button2.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
-        $button2.="<li><span   class=\"dropdown-item\" onclick=\"sortTable('emp_name');\">Ajay</span></li>";
-        $button2.="<li><a class=\"dropdown-item\" href=historicolist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"frame\">Historial</a></li>";
-        $button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
-        $button2.="<li><a class=\"dropdown-item\" href=viewsolicitudframelist.php?id=".CurrentTable()->id_solicitud->CurrentValue." target=\"framesol\">Datos Solicitud</a></li>";
-        $button2.="<li><a class=\"dropdown-item\" href=viewpagoavaluoslist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framepagos\">Historial de Pagos</a></li>";
+    //    $button2.="<li><span   class=\"dropdown-item\" onclick=\"sortTable('emp_name');\">Ajay</span></li>";
+        //$button2.="<li><a class=\"dropdown-item\" href=historicolist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"frame\">Historial</a></li>";
+        $button2.="<li><a  href=\"#\"  value=".CurrentTable()->id->CurrentValue." name=\"id\" class=\"switchHisto\" id=".CurrentTable()->id->CurrentValue." >Historial</a></li>";
+       // $button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
+        //$button2.="<li><a class=\"dropdown-item\" href=viewsolicitudframelist.php?id=".CurrentTable()->id_solicitud->CurrentValue." target=\"framesol\">Datos Solicitud</a></li>";
+        $button2.="<li><a  href=\"#\"  value=".CurrentTable()->id_solicitud->CurrentValue." name=\"id\" class=\"switchChar\" id=".CurrentTable()->id_solicitud->CurrentValue." >Datos Solicitud</a></li>";
+
+       // $button2.="<li><a class=\"dropdown-item\" href=viewpagoavaluoslist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framepagos\">Historial de Pagos</a></li>";
         $button2.="</ul>";
         $button2.="</div>";
         $this->ListOptions->Items["new"]->Body = $button4;

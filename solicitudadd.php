@@ -3339,6 +3339,7 @@ class csolicitud_add extends csolicitud {
 	function Page_Render() {
 
 		//echo "Page Render";
+
 	}
 
 	// Page Data Rendering event
@@ -3346,7 +3347,10 @@ class csolicitud_add extends csolicitud {
 
 		// Example:
 		//$header = "your header";
-
+        //$header = "<button class='btn ewButton' name='myFirstBtn' id='myFirstBtn' type='submit'>My First Button</button>";
+        $url="/leafletmapportal/addarea.php";
+        print $url;
+        $header= "<button class=\"dropdown-item\" title=\"Adjuntar documentos\" data-table=\"avaluo\" data-caption=\"test\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:null,url:'" . ew_HtmlEncode($url) . "'});\">Adjuntar</button>";
 	}
 
 	// Page Data Rendered event

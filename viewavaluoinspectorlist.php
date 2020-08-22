@@ -1308,8 +1308,8 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		$oListOpt = &$this->ListOptions->Items["edit"];
 		$editcaption = ew_HtmlTitle($Language->Phrase("EditLink"));
 		if ($Security->CanEdit()) {
-			$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
-			$oListOpt->Body .= "<a class=\"ewRowLink ewInlineEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" href=\"" . ew_HtmlEncode(ew_UrlAddHash($this->InlineEditUrl, "r" . $this->RowCnt . "_" . $this->TableVar)) . "\">" . $Language->Phrase("InlineEditLink") . "</a>";
+			//$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
+			$oListOpt->Body = "<a class=\"ewRowLink ewInlineEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" href=\"" . ew_HtmlEncode(ew_UrlAddHash($this->InlineEditUrl, "r" . $this->RowCnt . "_" . $this->TableVar)) . "\">" . $Language->Phrase("InlineEditLink") . "</a>";
 		} else {
 			$oListOpt->Body = "";
 		}
@@ -2172,7 +2172,7 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		if (strval($this->estadointerno->CurrentValue) <> "") {
 			$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
 		$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-		$sWhereWrk = "";
+		$sWhereWrk = "owner='inspector'";
 		$this->estadointerno->LookupFilters = array();
 		ew_AddFilter($sWhereWrk, $sFilterWrk);
 		$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
@@ -2427,7 +2427,7 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 				$sFilterWrk = "`id`" . ew_SearchString("=", $this->estadointerno->CurrentValue, EW_DATATYPE_NUMBER, "");
 			}
 			$sSqlWrk = "SELECT `id`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `estadointerno`";
-			$sWhereWrk = "";
+			$sWhereWrk = "owner='inspector'";
 			$this->estadointerno->LookupFilters = array();
 			ew_AddFilter($sWhereWrk, $sFilterWrk);
 			$this->Lookup_Selecting($this->estadointerno, $sWhereWrk); // Call Lookup Selecting
@@ -3038,7 +3038,7 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		case "x_estadointerno":
 			$sSqlWrk = "";
 				$sSqlWrk = "SELECT `id` AS `LinkFld`, `descripcion` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `estadointerno`";
-				$sWhereWrk = "";
+				$sWhereWrk = "owner='inspector'";
 				$fld->LookupFilters = array();
 			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
 			$sSqlWrk = "";
@@ -3133,7 +3133,7 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		// Example:
 		//$url = "your URL";
 
-	}
+}
 
 	// Message Showing event
 	// $type = ''|'success'|'failure'|'warning'
@@ -3175,7 +3175,7 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 
 			if (isset($_GET ["avaluo"]))
 		{
-		 $footer = "<table style=\"width: 100% !important;height: 100%;\">";
+		/* $footer = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $footer .= "<tr>";
 		 $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
@@ -3188,11 +3188,12 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
-		 $footer .= "</table>";
+		 $footer .= "</table>";*/
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
 		}else
 		{
 		$var=0;
-		 $footer = "<table style=\"width: 100% !important;height: 100%;\">";
+		 /*$footer = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $footer .= "<tr>";
 		 $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
@@ -3205,11 +3206,12 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
-		 $footer .= "</table>";
+		 $footer .= "</table>";*/
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
 		}
 		if (isset($_GET ["id"]))
 		{
-		 $footer = "<table style=\"width: 100% !important;height: 100%;\">";
+		/* $footer = "<table style=\"width: 100% !important;height: 100%;\">";
 		 $footer .= "<tr>";
 		 $footer .= "<td>";
 		 $footer .= "<div class=\"card-body p-0\">";
@@ -3222,7 +3224,8 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		 $footer .= "</div>";
 		 $footer .= "</td>";
 		 $footer .= "</tr>";
-		 $footer .= "</table>";
+		 $footer .= "</table>";*/
+            $footer ="<div id=\"ResultsHisto\">Results Div</div>";
 		}
 	}
 
@@ -3239,10 +3242,10 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		// Example:
 	//	$this->ListOptions->Items["edit"]->Visible = FALSE; // if you enabled "Multiple detail tables"
 
-		$opt = &$this->ListOptions->Add("new");
+	/*	$opt = &$this->ListOptions->Add("new");
 		$opt->Header = "Terminar Inspeccion";
 		$opt->OnLeft = TRUE; // Link on left
-		$opt->MoveTo(0); // Move to first column
+		$opt->MoveTo(0); // Move to first column*/
 
 		//$this->ListOptions->Add("print_x"); // Replace abclink with your name of the link
 		//$this->ListOptions->Items["print_x"]->Header = "<b>Print X</b>";
@@ -3268,7 +3271,7 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		// Example:
 		//$this->ListOptions->Items["new"]->Body = "xxx";
 
-		$this->ListOptions->Items["new"]->Body = "<a href='core.php?id=".CurrentTable()->id->CurrentValue."' class='btn btn-primary'>Terminar Inspeccion</a>";
+		//$this->ListOptions->Items["new"]->Body = "<a href='core.php?id=".CurrentTable()->id->CurrentValue."' class='btn btn-primary'>Terminar Inspeccion</a>";
 		$url="viewdocumentoinspectoradd.php?showmaster=viewavaluoinspector&fk_id=".CurrentTable()->id->CurrentValue;
 
 	//	$urlview="documentosavaluolist.php?cmd=search&t=documentosavaluo&z_avaluo=%3D&x_avaluo=".CurrentTable()->id->CurrentValue;
@@ -3277,8 +3280,9 @@ class cviewavaluoinspector_list extends cviewavaluoinspector {
 		$button2.="Historiales";
 		$button2.="</button>";
 		$button2.="<ul class=\"dropdown-menu ewMenu\" aria-labelledby=\"dropdownMenuButton\">";
-		$button2.="<li><a class=\"dropdown-item\" href=historicolist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"frame\">Historial</a></li>";
-		$button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
+		//$button2.="<li><a class=\"dropdown-item\" href=historicolist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"frame\">Historial</a></li>";
+		//$button2.="<li><a class=\"dropdown-item\" href=viewdocumentosavaluoframelist.php?avaluo=".CurrentTable()->id->CurrentValue." target=\"framedoc\" >Adjunto</a></li>";
+        $button2.="<li><a  href=\"#\"  value=".CurrentTable()->id->CurrentValue." name=\"id\" class=\"switchHisto\" id=".CurrentTable()->id->CurrentValue." >Historial</a></li>";
 		$button2.= "<li><a class=\"dropdown-item\" title=\"Adjuntar documentos\" data-table=\"avaluo\" data-caption=\"test\" href=\"javascript:void(0);\" onclick=\"ew_ModalDialogShow({lnk:this,btn:'AddBtn',url:'" . ew_HtmlEncode($url) . "'});\">Adjuntar</a></li>";
 		$button2.="</ul>";
 		$button2.="</div>";

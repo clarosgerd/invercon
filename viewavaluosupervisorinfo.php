@@ -343,7 +343,7 @@ class cviewavaluosupervisor extends cTable {
 
 	function getSqlWhere() { // Where
 		$sWhere = ($this->_SqlWhere <> "") ? $this->_SqlWhere : "";
-		$this->TableFilter = "`id_sucursal`='".$_SESSION["sucursal"]."' and `estadointerno`=5";
+        $this->TableFilter = "`estadointerno`>=5 and `estadointerno`<=7";
 		ew_AddFilter($sWhere, $this->TableFilter);
 		return $sWhere;
 	}

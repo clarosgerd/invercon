@@ -13,6 +13,11 @@ if (!isset($Language)) {
 	<title><?php echo $Language->ProjectPhrase("BodyTitle") ?></title>
 <meta charset="utf-8">
 <?php if (@$gsExport == "" || @$gsExport == "print") { ?>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <!-- <link rel="stylesheet" href="dist/css/adminlte.min.css">-->
+    <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="<?php echo $EW_RELATIVE_PATH ?>bootstrap3/css/<?php echo ew_CssFile("bootstrap.css") ?>">
 <link rel="stylesheet" type="text/css" href="<?php echo $EW_RELATIVE_PATH ?>bootstrap3/css/<?php echo ew_CssFile("bootstrap-theme.css") ?>"><!-- Optional theme -->
 <link rel="stylesheet" type="text/css" href="<?php echo $EW_RELATIVE_PATH ?>adminlte/css/<?php echo ew_CssFile("AdminLTE.css") ?>">
@@ -54,6 +59,7 @@ if (!isset($Language)) {
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>colorbox/jquery.colorbox-min.js"></script>
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/mobile-detect.min.js"></script>
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>moment/moment.min.js"></script>
+
 <?php
 	foreach ($EW_JAVASCRIPT_FILES as $jsfile) { // External JavaScripts
 		if (preg_match('/^(https?:)?\/\//i', $jsfile) == 0)
@@ -134,16 +140,39 @@ var ewVar = <?php echo json_encode($EW_CLIENT_VAR); ?>;
 </script>
 <script type="text/javascript" src="<?php echo $EW_RELATIVE_PATH ?>phpjs/userfn14.js"></script>
 <script type="text/javascript">
-    $('#getdata').click(function(){
-
-        $.ajax({
-            url: "getdata.php",
-            type:'POST',
-            dataType: 'json',
-            success: function(output_string){
-                $("#result_table").append(output_string);
-            } // End of success function of ajax form
-        }); // End of ajax call
+    $(document).ready(function() {
+        $('a.switchChar').click(function() {
+            var data=$(this).attr('value'); //this 'a' element (not 'input'), 'value' -> attribute
+            $("#Results").html("");
+            var dataString ='id='+ data ;
+         //   alert (dataString);
+            console.log(dataString)
+            $.ajax({
+                url: "getSolicitud.php", /* Will add this later */
+                type: "GET",
+                data: dataString,
+                cache: false,
+                success: function(data){
+                    $("#Results").html(data);
+                }
+            });
+        });
+        $('a.switchHisto').click(function() {
+            var data=$(this).attr('value'); //this 'a' element (not 'input'), 'value' -> attribute
+            $("#ResultsHisto").html("");
+            var dataString ='id='+ data ;
+              alert (dataString);
+            console.log(dataString)
+            $.ajax({
+                url: "getHistorial.php", /* Will add this later */
+                type: "GET",
+                data: dataString,
+                cache: false,
+                success: function(data){
+                    $("#ResultsHisto").html(data);
+                }
+            });
+        });
 
     });
 // Write your client script here, no need to add script tags.

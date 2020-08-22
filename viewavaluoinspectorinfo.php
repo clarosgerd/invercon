@@ -317,7 +317,7 @@ class cviewavaluoinspector extends cTable {
 
 	function getSqlWhere() { // Where
 		$sWhere = ($this->_SqlWhere <> "") ? $this->_SqlWhere : "";
-		$this->TableFilter = "`id_inspector`='".$_SESSION["usr"]."' and `estadointerno`=2";
+		$this->TableFilter = "`id_inspector`='".$_SESSION["usr"]."' and `estadointerno`>=2 and `estadointerno`<=5";
 		ew_AddFilter($sWhere, $this->TableFilter);
 		return $sWhere;
 	}
@@ -1828,7 +1828,7 @@ class cviewavaluoinspector extends cTable {
 		// To cancel, set return value to FALSE
 	//var_dump($rsold);
 
-	if ($rsnew['estadointerno']==3)
+	if ($rsnew['estadointerno']==3 || $rsnew['estadointerno']==4 || $rsnew['estadointerno']==5)
 				{
 
 					//$rsnew['estado']=2;
