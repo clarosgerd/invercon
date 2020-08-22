@@ -1,14 +1,3 @@
-<?php
-if (session_id() == "") session_start(); // Init session data
-ob_start(); // Turn on output buffering
-?>
-<?php include_once "ewcfg14.php" ?>
-<?php $EW_ROOT_RELATIVE_PATH = ""; ?>
-<?php include_once ((EW_USE_ADODB) ? "adodb5/adodb.inc.php" : "ewmysql14.php") ?>
-<?php include_once "phpfn14.php" ?>
-<?php
-$conn = ew_Connect();
-?>
 <head>
  <title>Agregar un área</title>
  <script src="js/jquery.min.js"></script>
