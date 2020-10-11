@@ -10,9 +10,9 @@ $keywords = strip_tags( $_POST['keywords'] );
 <!DOCTYPE html>
 <html>
  <head>
-  <title>Street added</title>
+  <title>Calle agregada</title>
  </head>
  <body>
-  <h1>Street has been added</h1>
+  <h1>Se ha añadido una calle</h1>
  </body>
 </html>
